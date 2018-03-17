@@ -45,7 +45,7 @@ class Reporter(object):
     def save(self):
         if self._save_dir:
             p = pathlib.Path(self._save_dir)
-            p.mkdir(parents=True)
+            p.mkdir(parents=True, exist_ok=True)
             with (p / self._filename).open("w") as f:
                 json.dump(self._container, f)
 
@@ -76,7 +76,7 @@ class Reporter(object):
 
 
 class ListReporter(Reporter):
-    def __init__(self, reporters: Iterable):
+    def __init__(self, *reporters):
         super(ListReporter, self).__init__(None)
         for r in reporters:
             assert isinstance(r, Reporter)
@@ -157,10 +157,11 @@ class VisdomReporter(Reporter):
         super(VisdomReporter, self).__init__(save_dir)
         self._viz = Visdom(port=port, env=self._now)
         self._lines = defaultdict()
-        assert self._viz.check_connection(), f"""
+        if not self._viz.check_connection():
+            print(f"""
         Please launch visdom.server before calling VisdomReporter.
         $python -m visdom.server -port {port}
-        """
+        """)
 
     def add_scalar(self, x, name: str, idx: int, **kwargs):
         self.add_scalars({name: x}, name=name, idx=idx, **kwargs)
@@ -169,14 +170,15 @@ class VisdomReporter(Reporter):
         x = {k: self._to_numpy(v) for k, v in x.items()}
         num_lines = len(x)
         is_new = self._lines.get(name) is None
-        self._lines[name] = 1
+        self._lines[name] = 1  # any non-None value
         for k, v in x.items():
             self._register_data(v, k, idx)
-        opts = dict(title=name,
-                    legend=list(x.keys()))
+        opts = dict(title=name, legend=list(x.keys()))
         opts.update(**kwargs)
-        X = np.column_stack((self._to_numpy(idx) for _ in range(num_lines)))
-        Y = np.column_stack(x.values())
+        X = np.column_stack([self._to_numpy(idx) for _ in range(num_lines)])
+        Y = np.column_stack([i for i in x.values()])
+        if num_lines == 1:
+            X, Y = X.reshape(-1), Y.reshape(-1)
         self._viz.line(X=X, Y=Y, update=None if is_new else "append", win=name, opts=opts)
 
     def add_parameters(self, x, name: str, idx: int, **kwargs):
@@ -202,7 +204,7 @@ class VisdomReporter(Reporter):
             x = np.array([x])
         elif "Tensor" in str(type(x)):
             x = x.numpy()
-        return
+        return x
 
     def close(self):
         super(VisdomReporter, self).close()

@@ -16,7 +16,7 @@ class Trainer(object):
             reporters = [reporters]
         self._reporters = ListReporter(reporters)
         self._scheduler = scheduler
-        self._steps = {"train": 0, "test": 0}
+        self._steps = 0
         self._epochs = 0
         self._log_freq = log_freq
         self._verb = verb
@@ -45,13 +45,12 @@ class Trainer(object):
             loop_loss += loss
             for k in loop_metrics.keys():
                 loop_metrics[k] += metrics[k]
-            self._steps[mode] += 1
+            self._steps += 1
 
-            if is_train and self._steps[mode] % self._log_freq == 0:
-                self._reporters.add_scalar("iter_train_loss", loss, self._steps[mode])
+            if is_train and self._steps % self._log_freq == 0:
+                self._reporters.add_scalar("iter_train_loss", loss, self._steps)
 
-        for reporter in self._reporters:
-            reporter.add_scalar(f"epoch_{mode}_loss", loop_loss / len(data_loader), self._epochs)
+        self._reporters.add_scalar(f"epoch_{mode}_loss", loop_loss / len(data_loader), self._epochs)
 
         for name, metrics in loop_metrics.items():
             if metrics:
@@ -77,7 +76,7 @@ class Trainer(object):
             self._scheduler.step()
         if self._report_parameters:
             for name, param in self.model.named_parameters():
-                    self._reporters.add_histogram(name, param, self._epochs, bins="sqrt")
+                self._reporters.add_histogram(name, param, self._epochs, bins="sqrt")
         self._epochs += 1
 
     def test(self, data_loader):
