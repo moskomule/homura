@@ -48,13 +48,13 @@ class Trainer(object):
             self._steps += 1
 
             if is_train and self._steps % self._log_freq == 0:
-                self._reporters.add_scalar("iter_train_loss", loss, self._steps)
+                self._reporters.add_scalar(loss, "iter_train_loss", self._steps)
 
-        self._reporters.add_scalar(f"epoch_{mode}_loss", loop_loss / len(data_loader), self._epochs)
+        self._reporters.add_scalar(loop_loss / len(data_loader), f"epoch_{mode}_loss", self._epochs)
 
         for name, metrics in loop_metrics.items():
             if metrics:
-                self._reporters.add_scalar(f"{mode}_{name}", metrics / len(data_loader), self._epochs)
+                self._reporters.add_scalar(metrics / len(data_loader), f"{mode}_{name}", self._epochs)
 
     def _iteration(self, data, is_train):
         input, target = data
@@ -76,7 +76,7 @@ class Trainer(object):
             self._scheduler.step()
         if self._report_parameters:
             for name, param in self.model.named_parameters():
-                self._reporters.add_histogram(name, param, self._epochs, bins="sqrt")
+                self._reporters.add_histogram(param, name, self._epochs)
         self._epochs += 1
 
     def test(self, data_loader):
@@ -96,10 +96,23 @@ class Trainer(object):
             self._reporters.close()
 
     @staticmethod
-    def correct(input, target):
-        return (input.max(dim=1)[1] == target).data.mean()[0]
+    def correct(input, target, k=1):
+        input = Trainer.to_tensor(input)
+        target = Trainer.to_tensor(target)
+
+        _, pred_idx = input.topk(k, dim=1)
+        target = target.view(-1, 1).expand_as(pred_idx)
+        return (pred_idx == target).float().sum(dim=1).mean()
 
     def variable(self, t, **kwargs):
         if self._use_cuda:
             t = t.cuda()
         return Variable(t, **kwargs)
+
+    @staticmethod
+    def to_tensor(v, cpu=True):
+        if isinstance(v, Variable):
+            v = v.data
+        if cpu:
+            v = v.cpu()
+        return v

@@ -26,7 +26,7 @@ class Reporter(object):
     def add_scalars(self, x: dict, name, idx: int):
         raise NotImplementedError
 
-    def add_parameters(self, x, name: str, idx: int):
+    def add_histogram(self, x, name: str, idx: int):
         raise NotImplementedError
 
     def add_text(self, x, name: str, idx: int):
@@ -90,9 +90,9 @@ class ListReporter(Reporter):
         for r in self.reporters:
             r.add_scalars(x, name, idx)
 
-    def add_parameters(self, x, name: str, idx: int):
+    def add_histogram(self, x, name: str, idx: int):
         for r in self.reporters:
-            r.add_parameters(x, name, idx)
+            r.add_histogram(x, name, idx)
 
     def add_text(self, x, name: str, idx: int):
         for r in self.reporters:
@@ -110,6 +110,10 @@ class ListReporter(Reporter):
         for r in self.reporters:
             r.close()
 
+    def __iter__(self):
+        for x in self.reporters:
+            yield x
+
 
 class TQDMReporter(Reporter):
     def __init__(self, iterable, save_dir=None):
@@ -121,11 +125,15 @@ class TQDMReporter(Reporter):
         from tqdm import tqdm
 
         super(TQDMReporter, self).__init__(save_dir)
-        self._tqdm = tqdm(iterable, ncols=100)
+        self._tqdm = tqdm(iterable, ncols=80)
+        self._size = len(iterable)
 
     def __iter__(self):
         for x in self._tqdm:
             yield x
+
+    def __len__(self):
+        return self._size
 
     def add_scalar(self, x, name: str, idx: int):
         self._register_data(x, name, idx)
@@ -140,7 +148,7 @@ class TQDMReporter(Reporter):
     def add_text(self, x, name: str, idx: int):
         pass
 
-    def add_parameters(self, x, name: str, idx: int):
+    def add_histogram(self, x, name: str, idx: int):
         pass
 
     def add_image(self, x, name: str, idx: int):
@@ -181,7 +189,7 @@ class VisdomReporter(Reporter):
             X, Y = X.reshape(-1), Y.reshape(-1)
         self._viz.line(X=X, Y=Y, update=None if is_new else "append", win=name, opts=opts)
 
-    def add_parameters(self, x, name: str, idx: int, **kwargs):
+    def add_histogram(self, x, name: str, idx: int, **kwargs):
         # todo
         raise NotImplementedError
 
@@ -192,12 +200,12 @@ class VisdomReporter(Reporter):
     def add_image(self, x, name: str, idx: int):
         x, dim = self._tensor_type_check(x)
         assert dim == 3
-        self._viz.image(self._normalize(x), opts=dict(title="name", caption=str(idx)))
+        self._viz.image(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def add_images(self, x, name: str, idx: int):
         x, dim = self._tensor_type_check(x)
         assert dim == 4
-        self._viz.images(self._normalize(x), opts=dict(title="name", caption=str(idx)))
+        self._viz.images(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def _to_numpy(self, x):
         if isinstance(x, numbers.Number):
@@ -208,7 +216,7 @@ class VisdomReporter(Reporter):
 
     def close(self):
         super(VisdomReporter, self).close()
-        self._viz.close()
+        self._viz.save([self._now])
 
     @staticmethod
     def _normalize(x):
@@ -245,7 +253,7 @@ class TensorBoardReporter(Reporter):
         self._register_data(x, name, idx)
         self._writer.add_text(name, x, idx)
 
-    def add_parameters(self, x, name: str, idx: int):
+    def add_histogram(self, x, name: str, idx: int):
         self._writer.add_histogram(name, x, idx, bins="sqrt")
 
     def close(self):
