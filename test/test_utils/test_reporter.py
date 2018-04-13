@@ -48,4 +48,3 @@ class TestReporter(unittest.TestCase):
             lr = ListReporter(vr, tr)
             for i in tr:
                 lr.add_text("test", "test_text", i)
-

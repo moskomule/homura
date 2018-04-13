@@ -1,3 +1,4 @@
+from torch.autograd import Variable
 import subprocess
 
 
@@ -14,6 +15,14 @@ def get_git_hash():
         return _decode_bytes(git_hash)
     else:
         return ""
+
+
+def to_tensor(v, cpu=True):
+    if isinstance(v, Variable):
+        v = v.data
+    if cpu:
+        v = v.cpu()
+    return v
 
 
 if __name__ == '__main__':
