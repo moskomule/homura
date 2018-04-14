@@ -18,5 +18,6 @@ tqdm
 ```
 tensorboardX
 visdom
-ray
 ```
+
+## install
