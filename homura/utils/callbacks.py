@@ -1,6 +1,12 @@
 from typing import Iterable, Callable
+from collections import ChainMap
+from pathlib import Path
+
+import torch
+
 from .miscs import to_tensor
 from .vocabulary import V
+from .reporter import Reporter, ReporterList
 
 
 class Callback(object):
@@ -8,23 +14,29 @@ class Callback(object):
     Base class of Callback class
     """
 
-    def start_iteration(self, data: dict):
+    def start_iteration(self, data: dict) -> dict:
         pass
 
-    def end_iteration(self, data: dict):
+    def end_iteration(self, data: dict) -> dict:
         pass
 
-    def start_epoch(self, data: dict):
+    def start_epoch(self, data: dict) -> dict:
         pass
 
-    def end_epoch(self, data: dict):
+    def end_epoch(self, data: dict) -> dict:
         pass
 
-    def end_all(self, data: dict):
+    def end_all(self, data: dict) -> dict:
         pass
 
     def close(self):
         pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
 
 class MetricCallback(Callback):
@@ -57,6 +69,12 @@ class MetricCallback(Callback):
                 self._metrics_history[key][-1] += metric
         return _iter_metrics
 
+    def start_epoch(self, data: dict):
+        name = data[V.NAME]
+        for k in self.top_k:
+            key = self._key(k, name)
+            self._metrics_history[key].append(0)
+
     def end_epoch(self, data: dict):
         _epoch_metrics = {}
         name = data[V.NAME]
@@ -65,12 +83,8 @@ class MetricCallback(Callback):
             key = self._key(k, name)
             self._metrics_history[key][-1] /= iter_per_epoch
             _epoch_metrics[key] = self._metrics_history[key][-1]
-            self._metrics_history[key].append(0)
-        return _epoch_metrics
 
-    def end_all(self, data: dict):
-        # remove 0 which self.end_epoch adds at the final epoch
-        return {k: v[:-1] for k, v in self._metrics_history.items()}
+        return _epoch_metrics
 
     def _key(self, k, name):
         if len(self.top_k) == 1:
@@ -81,6 +95,10 @@ class MetricCallback(Callback):
 
 class CallbackList(Callback):
     def __init__(self, *callbacks: Callback):
+        """
+        collect some callbacks
+        :param callbacks: callbacks
+        """
         if callbacks is None:
             callbacks = Callback()
 
@@ -93,27 +111,35 @@ class CallbackList(Callback):
         self._callbacks = callbacks
 
     def start_iteration(self, data: dict):
-        return [c.start_iteration(data) for c in self._callbacks]
+        return self._cat([c.start_iteration(data) for c in self._callbacks])
 
     def end_iteration(self, data: dict):
-        return [c.end_iteration(data) for c in self._callbacks]
+        return self._cat([c.end_iteration(data) for c in self._callbacks])
 
     def start_epoch(self, data: dict):
-        return [c.start_epoch(data) for c in self._callbacks]
+        return self._cat([c.start_epoch(data) for c in self._callbacks])
 
     def end_epoch(self, data: dict):
-        return [c.end_epoch(data) for c in self._callbacks]
+        return self._cat([c.end_epoch(data) for c in self._callbacks])
 
     def end_all(self, data: dict):
-        return [c.end_all(data) for c in self._callbacks]
+        return self._cat([c.end_all(data) for c in self._callbacks])
 
     def close(self):
         for c in self._callbacks:
             c.close()
 
+    @staticmethod
+    def _cat(maps: list):
+        return dict(ChainMap(*maps))
+
 
 class AccuracyCallback(MetricCallback):
     def __init__(self, k: int or tuple = 1):
+        """
+        calculate and accumulate accuracy
+        :param k: top k accuracy (e.g. (1, 5) then top 1 and 5 accuracy)
+        """
         super(AccuracyCallback, self).__init__(metric=self.accuracy, top_k=k, name="accuracy")
 
     @staticmethod
@@ -129,5 +155,53 @@ class AccuracyCallback(MetricCallback):
 
 class LossCallback(MetricCallback):
     def __init__(self):
+        """
+        accumulate loss
+        """
         super(LossCallback, self).__init__(metric=lambda data, _: data[V.LOSS],
                                            top_k=1, name="loss")
+
+
+class WeightSave(Callback):
+    def __init__(self, save_path: str or Path, save_freq: int = 1):
+        """
+        save weights after every epoch
+        :param save_path: path to be saved
+        :param save_freq: frequency of saving
+        """
+        self.save_path = Path(save_path)
+        self.save_freq = save_freq
+
+        if not self.save_path.exists():
+            self.save_path.mkdir(parents=True)
+
+    def end_epoch(self, data: dict):
+        if data[V.EPOCH] % self.save_freq:
+            torch.save({V.MODEL: data[V.MODEL].state_dict(),
+                        V.OPTIMIZER: data[V.OPTIMIZER].state_dict(),
+                        V.EPOCH: data[V.EPOCH]},
+                       self.save_path)
+
+
+class ReporterCallback(Callback):
+    def __init__(self, reporter: Reporter, callback: Callback, *,
+                 report_freq: int = -1):
+        self.reporter = reporter
+        self.callback = callback
+        self.report_freq = report_freq
+
+    def end_iteration(self, data: dict):
+        results = self.callback.end_iteration(data)
+
+        if (data[V.STEP] % self.report_freq == 0) and self.report_freq > 0:
+            for k, v in results.items():
+                self.reporter.add_scalar(v, name=k, idx=data[V.STEP])
+
+    def end_epoch(self, data: dict):
+        results = self.callback.end_epoch(data)
+        for k, v in results.items():
+            self.reporter.add_scalar(v, name=k, idx=data[V.EPOCH])
+
+    def close(self):
+        self.reporter.close()
+        self.callback.close()

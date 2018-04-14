@@ -7,8 +7,9 @@ from .vocabulary import V
 
 class Trainer(object):
 
-    def __init__(self, model, optimizer, loss_f, *, callbacks=None, scheduler=None,
-                 verb=True, use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
+    def __init__(self, model, optimizer, loss_f, *,
+                 callbacks=None, scheduler=None, verb=True,
+                 use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
         self._model = model
         self._optimizer = optimizer
         self._loss_f = loss_f

@@ -13,7 +13,7 @@ class TestCallbacks(unittest.TestCase):
 
     def test_callback_list(self):
         c = callbacks.CallbackList(callbacks.AccuracyCallback(1))
-        acc, *_ = c.end_iteration({"output": output, "target": target, "name": "train"})
+        acc = c.end_iteration({"output": output, "target": target, "name": "train"})
         self.assertEqual(acc["accuracy_train"], 2 / 4)
 
     def test_accuracy_callback(self):
