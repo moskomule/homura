@@ -5,9 +5,9 @@ https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua
 
 import torch.nn as nn
 
-__all__ = [resnet20, resnet32, resnet56, resnet110,
-           preact_resnet20, preact_resnet32, preact_resnet56, preact_resnet110,
-           ResNet]
+__all__ = ["resnet20", "resnet32", "resnet56", "resnet110",
+           "preact_resnet20", "preact_resnet32", "preact_resnet56", "preact_resnet110",
+           "ResNet", "PreActResNet"]
 
 
 def conv3x3(in_planes, out_planes, stride=1):

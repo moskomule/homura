@@ -8,6 +8,9 @@ from ._miscs import to_tensor
 from ._vocabulary import V
 from .reporter import Reporter, ReporterList
 
+__all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
+           "LossCallback", "WeightSave", "ReporterCallback"]
+
 
 class Callback(object):
     """
@@ -131,6 +134,7 @@ class CallbackList(Callback):
 
     @staticmethod
     def _cat(maps: list):
+        maps = [m for m in maps if m is not None]
         return dict(ChainMap(*maps))
 
 

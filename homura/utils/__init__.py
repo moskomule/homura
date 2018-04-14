@@ -1,1 +1,3 @@
-__all__ = ["callbacks", "hyperparameters", "reporter", "trainer"]
+__all__ = ["callbacks", "reporter", "Trainer", "HyperParameter"]
+from .trainer import Trainer
+from .hyperparameters import HyperParameter

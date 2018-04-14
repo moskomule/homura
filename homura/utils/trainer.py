@@ -35,7 +35,7 @@ class Trainer(object):
                                      V.NAME: name,
                                      V.TRAINER: self})
         input, target = data
-        input = self.variable(input, volatile=not is_train),
+        input = self.variable(input, volatile=not is_train)
         target = self.variable(target, volatile=not is_train)
         output = self._model(input)
         loss = self._loss_f(output, target)
