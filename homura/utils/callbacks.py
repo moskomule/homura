@@ -4,8 +4,8 @@ from pathlib import Path
 
 import torch
 
-from .miscs import to_tensor
-from .vocabulary import V
+from ._miscs import to_tensor
+from ._vocabulary import V
 from .reporter import Reporter, ReporterList
 
 

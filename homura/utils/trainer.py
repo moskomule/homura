@@ -2,7 +2,7 @@ import torch
 from torch.autograd import Variable
 from .reporter import TQDMReporter
 from .callbacks import CallbackList
-from .vocabulary import V
+from ._vocabulary import V
 
 
 class Trainer(object):

@@ -4,8 +4,8 @@ import json
 import numbers
 
 import numpy as np
-from .miscs import get_git_hash
-from .vocabulary import V
+from ._miscs import get_git_hash
+from ._vocabulary import V
 
 
 class Reporter(object):

@@ -42,8 +42,9 @@ class HyperParameter(object):
                 dic = yaml.load(f)
             else:
                 raise Exception(f"Unknown file type {path.stem}")
-        self._check_duplicated(dic.keys())
-        self._update(dic)
+            
+            self._check_duplicated(dic.keys())
+            self._update(dic)
 
     def _check_duplicated(self, keys):
         for k in self._container.keys():
