@@ -1,118 +1,97 @@
-import collections
 import torch
 from torch.autograd import Variable
-from .reporter import TQDMReporter, ListReporter
+from .reporter import TQDMReporter
+from .callbacks import CallbackList
+from .vocabulary import V
 
 
 class Trainer(object):
 
-    def __init__(self, model, optimizer, loss_f, reporters, scheduler=None,
-                 log_freq=10, verb=True, metrics="default",
-                 use_cuda=True, use_cudnn_bnenchmark=True, report_parameters=False, **kwargs):
-        self.model = model
+    def __init__(self, model, optimizer, loss_f, *, callbacks=None, scheduler=None,
+                 verb=True, use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
+        self._model = model
         self._optimizer = optimizer
         self._loss_f = loss_f
-        if not isinstance(reporters, collections.Iterable):
-            reporters = [reporters]
-        self._reporters = ListReporter(reporters)
+        self._callbacks = CallbackList(callbacks)
         self._scheduler = scheduler
-        self._steps = 0
-        self._epochs = 0
-        self._log_freq = log_freq
+        self._step = 0
+        self._epoch = 0
         self._verb = verb
-        self._metrics = {"accuracy": self.correct} if metrics == "default" else metrics
         self._use_cuda = use_cuda and torch.cuda.is_available()
         if self._use_cuda:
             if use_cudnn_bnenchmark:
                 torch.backends.cudnn.benchmark = True
-            self.model.cuda()
+            self._model.cuda()
 
-        self._report_parameters = report_parameters
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
             setattr(self, k, v)
 
-    def _loop(self, data_loader, is_train=True):
-        mode = "train" if is_train else "test"
-        data_loader = TQDMReporter(data_loader) if self._verb else data_loader
-
-        loop_loss = 0
-        loop_metrics = {k: 0 for k in self._metrics.keys()}
-
-        for data in data_loader:
-            loss, metrics = self._iteration(data, is_train)
-            loop_loss += loss
-            for k in loop_metrics.keys():
-                loop_metrics[k] += metrics[k]
-            self._steps += 1
-
-            if is_train and self._steps % self._log_freq == 0:
-                self._reporters.add_scalar(loss, "iter_train_loss", self._steps)
-
-        self._reporters.add_scalar(loop_loss / len(data_loader), f"epoch_{mode}_loss", self._epochs)
-
-        for name, metrics in loop_metrics.items():
-            if metrics:
-                self._reporters.add_scalar(metrics / len(data_loader), f"{mode}_{name}", self._epochs)
-
-    def _iteration(self, data, is_train):
+    def _iteration(self, data, is_train, name):
+        self._callbacks.start_epoch({V.MODEL: self._model,
+                                     V.STEP: self._step,
+                                     V.NAME: name,
+                                     V.TRAINER: self})
         input, target = data
-        input, target = self.variable(input, volatile=not is_train), self.variable(target, volatile=not is_train)
-        output = self.model(input)
+        input = self.variable(input, volatile=not is_train),
+        target = self.variable(target, volatile=not is_train)
+        output = self._model(input)
         loss = self._loss_f(output, target)
         if is_train:
             self._optimizer.zero_grad()
             loss.backward()
             self._optimizer.step()
-        loss = loss.data[0]
-        metrics = {k: fn(output, target) for k, fn in self._metrics.items()}
-        return loss, metrics
+        self._callbacks.end_iteration({V.OUTPUT: output,
+                                       V.TARGET: target,
+                                       V.MODEL: self._model,
+                                       V.LOSS: loss.data[0],
+                                       V.STEP: self._step,
+                                       V.NAME: name,
+                                       V.TRAINER: self})
+
+    def _loop(self, data_loader, is_train, name):
+        self._callbacks.start_epoch({V.MODEL: self._model,
+                                     V.NAME: name,
+                                     V.TRAINER: self})
+        data_loader = TQDMReporter(data_loader) if self._verb else data_loader
+
+        for data in data_loader:
+            self._iteration(data, is_train, name)
+            if is_train:
+                self._step += 1
+        self._callbacks.end_epoch({V.MODEL: self._model,
+                                   V.EPOCH: self._epoch,
+                                   V.NAME: name,
+                                   V.ITER_PER_EPOCH: len(data_loader),
+                                   V.TRAINER: self})
 
     def train(self, data_loader):
-        self.model.train()
-        self._loop(data_loader)
+        self._model.train()
+        self._loop(data_loader, is_train=True, name=V.TRAIN)
         if self._scheduler is not None:
             self._scheduler.step()
-        if self._report_parameters:
-            for name, param in self.model.named_parameters():
-                self._reporters.add_histogram(param, name, self._epochs)
-        self._epochs += 1
+        self._epoch += 1
 
-    def test(self, data_loader):
-        self.model.eval()
-        self._loop(data_loader, is_train=False)
+    def test(self, data_loader, name=V.TEST):
+        self._model.eval()
+        self._loop(data_loader, is_train=False, name=name)
 
     def run(self, epochs, train_data, test_data):
         try:
             for ep in range(1, epochs + 1):
-                if self._verb:
-                    print(f"epochs: {ep}")
                 self.train(train_data)
                 self.test(test_data)
+            self._callbacks.end_all({V.MODEL: self._model,
+                                     V.OPTIMIZER: self._optimizer,
+                                     V.TRAINER: self})
+
         except KeyboardInterrupt:
             print("\ninterrupted")
         finally:
-            self._reporters.close()
-
-    @staticmethod
-    def correct(input, target, k=1):
-        input = Trainer.to_tensor(input)
-        target = Trainer.to_tensor(target)
-
-        _, pred_idx = input.topk(k, dim=1)
-        target = target.view(-1, 1).expand_as(pred_idx)
-        return (pred_idx == target).float().sum(dim=1).mean()
+            self._callbacks.close()
 
     def variable(self, t, **kwargs):
         if self._use_cuda:
             t = t.cuda()
         return Variable(t, **kwargs)
-
-    @staticmethod
-    def to_tensor(v, cpu=True):
-        if isinstance(v, Variable):
-            v = v.data
-        if cpu:
-            v = v.cpu()
-        return v

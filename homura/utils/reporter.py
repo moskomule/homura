@@ -75,9 +75,9 @@ class Reporter(object):
         return x, dim
 
 
-class ListReporter(Reporter):
+class ReporterList(Reporter):
     def __init__(self, *reporters):
-        super(ListReporter, self).__init__(None)
+        super(ReporterList, self).__init__(None)
         for r in reporters:
             assert isinstance(r, Reporter)
         self.reporters = reporters
