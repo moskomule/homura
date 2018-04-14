@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 # vocabularies
 class V:
     EPOCH = "epoch"
@@ -12,3 +15,4 @@ class V:
     TRAIN = "train"
     TRAINER = "trainer"
     STEP = "step"
+    NOW = datetime.now().strftime("%b%d-%H-%M-%S")

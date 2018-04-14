@@ -2,9 +2,10 @@ import pathlib
 from collections import defaultdict, Iterable
 import json
 import numbers
-from datetime import datetime
+
 import numpy as np
 from .miscs import get_git_hash
+from .vocabulary import V
 
 
 class Reporter(object):
@@ -17,8 +18,7 @@ class Reporter(object):
         """
         self._container = defaultdict(list)
         self._save_dir = save_dir
-        self._now = datetime.now().strftime("%b%d-%H-%M-%S")
-        self._filename = self._now + get_git_hash() + ".json"
+        self._filename = V.NOW + get_git_hash() + ".json"
 
     def add_scalar(self, x, name: str, idx: int):
         raise NotImplementedError
@@ -163,7 +163,7 @@ class VisdomReporter(Reporter):
         from visdom import Visdom
 
         super(VisdomReporter, self).__init__(save_dir)
-        self._viz = Visdom(port=port, env=self._now)
+        self._viz = Visdom(port=port, env=V.NOW)
         self._lines = defaultdict()
         if not self._viz.check_connection():
             print(f"""
@@ -216,7 +216,7 @@ class VisdomReporter(Reporter):
 
     def close(self):
         super(VisdomReporter, self).close()
-        self._viz.save([self._now])
+        self._viz.save([V.NOW])
 
     @staticmethod
     def _normalize(x):

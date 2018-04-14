@@ -169,7 +169,8 @@ class WeightSave(Callback):
         :param save_path: path to be saved
         :param save_freq: frequency of saving
         """
-        self.save_path = Path(save_path)
+
+        self.save_path = Path(save_path) / V.NOW
         self.save_freq = save_freq
 
         if not self.save_path.exists():
@@ -180,12 +181,18 @@ class WeightSave(Callback):
             torch.save({V.MODEL: data[V.MODEL].state_dict(),
                         V.OPTIMIZER: data[V.OPTIMIZER].state_dict(),
                         V.EPOCH: data[V.EPOCH]},
-                       self.save_path)
+                       self.save_path / f"{data[V.EPOCH]}.pkl")
 
 
 class ReporterCallback(Callback):
     def __init__(self, reporter: Reporter, callback: Callback, *,
                  report_freq: int = -1):
+        """
+        reporter integrated callback
+        :param reporter:
+        :param callback:
+        :param report_freq: report frequency in step. If -1, no report during each iteration.
+        """
         self.reporter = reporter
         self.callback = callback
         self.report_freq = report_freq
@@ -195,7 +202,7 @@ class ReporterCallback(Callback):
 
         if (data[V.STEP] % self.report_freq == 0) and self.report_freq > 0:
             for k, v in results.items():
-                self.reporter.add_scalar(v, name=k, idx=data[V.STEP])
+                self.reporter.add_scalar(v, name=f"{V.STEP}_{k}", idx=data[V.STEP])
 
     def end_epoch(self, data: dict):
         results = self.callback.end_epoch(data)
