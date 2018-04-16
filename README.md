@@ -9,7 +9,7 @@
 ### minimal requirements
 
 ```
-Python >= 3.6
+Python>=3.6
 PyTorch==0.3.1
 torchvision==0.2
 ```
@@ -29,5 +29,5 @@ visdom
 ## install
 
 ```console
-pip install git+https://github.com/moskomule/homura
+pip install git+https://github.com/moskomule/homura#egg=homura#egg=homura
 ```
