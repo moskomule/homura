@@ -2,7 +2,7 @@ import torch
 from torch.autograd import Variable
 from .reporter import TQDMReporter
 from .callbacks import CallbackList
-from ._vocabulary import V
+from ._vocabulary import *
 
 
 class Trainer(object):
@@ -30,10 +30,10 @@ class Trainer(object):
             setattr(self, k, v)
 
     def _iteration(self, data, is_train, name):
-        self._callbacks.start_epoch({V.MODEL: self._model,
-                                     V.STEP: self._step,
-                                     V.NAME: name,
-                                     V.TRAINER: self})
+        self._callbacks.start_epoch({MODEL: self._model,
+                                     STEP: self._step,
+                                     NAME: name,
+                                     TRAINER: self})
         input, target = data
         input = self.variable(input, volatile=not is_train)
         target = self.variable(target, volatile=not is_train)
@@ -43,38 +43,38 @@ class Trainer(object):
             self._optimizer.zero_grad()
             loss.backward()
             self._optimizer.step()
-        self._callbacks.end_iteration({V.OUTPUT: output,
-                                       V.TARGET: target,
-                                       V.MODEL: self._model,
-                                       V.LOSS: loss.data[0],
-                                       V.STEP: self._step,
-                                       V.NAME: name,
-                                       V.TRAINER: self})
+        self._callbacks.end_iteration({OUTPUT: output,
+                                       TARGET: target,
+                                       MODEL: self._model,
+                                       LOSS: loss.data[0],
+                                       STEP: self._step,
+                                       NAME: name,
+                                       TRAINER: self})
 
     def _loop(self, data_loader, is_train, name):
-        self._callbacks.start_epoch({V.MODEL: self._model,
-                                     V.NAME: name,
-                                     V.TRAINER: self})
+        self._callbacks.start_epoch({MODEL: self._model,
+                                     NAME: name,
+                                     TRAINER: self})
         data_loader = TQDMReporter(data_loader) if self._verb else data_loader
 
         for data in data_loader:
             self._iteration(data, is_train, name)
             if is_train:
                 self._step += 1
-        self._callbacks.end_epoch({V.MODEL: self._model,
-                                   V.EPOCH: self._epoch,
-                                   V.NAME: name,
-                                   V.ITER_PER_EPOCH: len(data_loader),
-                                   V.TRAINER: self})
+        self._callbacks.end_epoch({MODEL: self._model,
+                                   EPOCH: self._epoch,
+                                   NAME: name,
+                                   ITER_PER_EPOCH: len(data_loader),
+                                   TRAINER: self})
 
     def train(self, data_loader):
         self._model.train()
-        self._loop(data_loader, is_train=True, name=V.TRAIN)
+        self._loop(data_loader, is_train=True, name=TRAIN)
         if self._scheduler is not None:
             self._scheduler.step()
         self._epoch += 1
 
-    def test(self, data_loader, name=V.TEST):
+    def test(self, data_loader, name=TEST):
         self._model.eval()
         self._loop(data_loader, is_train=False, name=name)
 
@@ -83,9 +83,9 @@ class Trainer(object):
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            self._callbacks.end_all({V.MODEL: self._model,
-                                     V.OPTIMIZER: self._optimizer,
-                                     V.TRAINER: self})
+            self._callbacks.end_all({MODEL: self._model,
+                                     OPTIMIZER: self._optimizer,
+                                     TRAINER: self})
 
         except KeyboardInterrupt:
             print("\ninterrupted")
