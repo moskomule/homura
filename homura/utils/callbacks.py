@@ -4,8 +4,9 @@ from pathlib import Path
 
 import torch
 
-from ._vocabulary import V
-from .reporter import Reporter
+from ._miscs import to_tensor
+from ._vocabulary import *
+from .reporter import Reporter, ReporterList
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "ReporterCallback"]
@@ -59,7 +60,7 @@ class MetricCallback(Callback):
 
     def end_iteration(self, data: dict):
         _iter_metrics = {}
-        name = data[V.NAME]
+        name = data[NAME]
         for k in self.top_k:
             key = self._key(k, name)
             metric = self.metric_function(data, k)
@@ -72,15 +73,15 @@ class MetricCallback(Callback):
         return _iter_metrics
 
     def start_epoch(self, data: dict):
-        name = data[V.NAME]
+        name = data[NAME]
         for k in self.top_k:
             key = self._key(k, name)
             self._metrics_history[key].append(0)
 
     def end_epoch(self, data: dict):
         _epoch_metrics = {}
-        name = data[V.NAME]
-        iter_per_epoch = data[V.ITER_PER_EPOCH]
+        name = data[NAME]
+        iter_per_epoch = data[ITER_PER_EPOCH]
         for k in self.top_k:
             key = self._key(k, name)
             self._metrics_history[key][-1] /= iter_per_epoch
@@ -147,12 +148,13 @@ class AccuracyCallback(MetricCallback):
 
     @staticmethod
     def accuracy(data, k=1):
-        input, target = data[V.OUTPUT], data[V.TARGET]
-        with torch.autograd.no_grad():
+        input, target = data[OUTPUT], data[TARGET]
+        input = to_tensor(input)
+        target = to_tensor(target)
 
-            _, pred_idx = input.topk(k, dim=1)
-            target = target.view(-1, 1).expand_as(pred_idx)
-            return (pred_idx == target).float().sum(dim=1).mean()
+        _, pred_idx = input.topk(k, dim=1)
+        target = target.view(-1, 1).expand_as(pred_idx)
+        return (pred_idx == target).float().sum(dim=1).mean()
 
 
 class LossCallback(MetricCallback):
@@ -160,7 +162,7 @@ class LossCallback(MetricCallback):
         """
         accumulate loss
         """
-        super(LossCallback, self).__init__(metric=lambda data, _: data[V.LOSS],
+        super(LossCallback, self).__init__(metric=lambda data, _: data[LOSS],
                                            top_k=1, name="loss")
 
 
@@ -172,18 +174,18 @@ class WeightSave(Callback):
         :param save_freq: frequency of saving
         """
 
-        self.save_path = Path(save_path) / V.NOW
+        self.save_path = Path(save_path) / NOW
         self.save_freq = save_freq
 
         if not self.save_path.exists():
             self.save_path.mkdir(parents=True)
 
     def end_epoch(self, data: dict):
-        if data[V.EPOCH] % self.save_freq:
-            torch.save({V.MODEL: data[V.MODEL].state_dict(),
-                        V.OPTIMIZER: data[V.OPTIMIZER].state_dict(),
-                        V.EPOCH: data[V.EPOCH]},
-                       self.save_path / f"{data[V.EPOCH]}.pkl")
+        if data[EPOCH] % self.save_freq:
+            torch.save({MODEL: data[MODEL].state_dict(),
+                        OPTIMIZER: data[OPTIMIZER].state_dict(),
+                        EPOCH: data[EPOCH]},
+                       self.save_path / f"{data[EPOCH]}.pkl")
 
 
 class ReporterCallback(Callback):
@@ -202,14 +204,14 @@ class ReporterCallback(Callback):
     def end_iteration(self, data: dict):
         results = self.callback.end_iteration(data)
 
-        if (data[V.STEP] % self.report_freq == 0) and self.report_freq > 0:
+        if (data[STEP] % self.report_freq == 0) and self.report_freq > 0:
             for k, v in results.items():
-                self.reporter.add_scalar(v, name=f"{V.STEP}_{k}", idx=data[V.STEP])
+                self.reporter.add_scalar(v, name=f"{STEP}_{k}", idx=data[STEP])
 
     def end_epoch(self, data: dict):
         results = self.callback.end_epoch(data)
         for k, v in results.items():
-            self.reporter.add_scalar(v, name=k, idx=data[V.EPOCH])
+            self.reporter.add_scalar(v, name=k, idx=data[EPOCH])
 
     def close(self):
         self.reporter.close()

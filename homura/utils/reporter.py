@@ -5,7 +5,7 @@ import numbers
 
 import numpy as np
 from ._miscs import get_git_hash
-from ._vocabulary import V
+from ._vocabulary import *
 
 
 class Reporter(object):
@@ -18,7 +18,7 @@ class Reporter(object):
         """
         self._container = defaultdict(list)
         self._save_dir = save_dir
-        self._filename = V.NOW + get_git_hash() + ".json"
+        self._filename = NOW + get_git_hash() + ".json"
 
     def add_scalar(self, x, name: str, idx: int):
         raise NotImplementedError
@@ -160,7 +160,7 @@ class VisdomReporter(Reporter):
         from visdom import Visdom
 
         super(VisdomReporter, self).__init__(save_dir)
-        self._viz = Visdom(port=port, env=V.NOW)
+        self._viz = Visdom(port=port, env=NOW)
         self._lines = defaultdict()
         if not self._viz.check_connection():
             print(f"""
@@ -213,7 +213,7 @@ class VisdomReporter(Reporter):
 
     def close(self):
         super(VisdomReporter, self).close()
-        self._viz.save([V.NOW])
+        self._viz.save([NOW])
 
     @staticmethod
     def _normalize(x):
