@@ -1,5 +1,4 @@
 import torch
-from torch.autograd import Variable
 from .reporter import TQDMReporter
 from .callbacks import CallbackList
 from ._vocabulary import V
@@ -34,9 +33,7 @@ class Trainer(object):
                                      V.STEP: self._step,
                                      V.NAME: name,
                                      V.TRAINER: self})
-        input, target = data
-        input = self.variable(input, volatile=not is_train)
-        target = self.variable(target, volatile=not is_train)
+        input, target = self.to_device(data)
         output = self._model(input)
         loss = self._loss_f(output, target)
         if is_train:
@@ -92,7 +89,8 @@ class Trainer(object):
         finally:
             self._callbacks.close()
 
-    def variable(self, t, **kwargs):
+    def to_device(self, data):
         if self._use_cuda:
-            t = t.cuda()
-        return Variable(t, **kwargs)
+            return (t.cuda() for t in data)
+        else:
+            return (t for t in data)

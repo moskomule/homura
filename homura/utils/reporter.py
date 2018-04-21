@@ -1,5 +1,5 @@
 import pathlib
-from collections import defaultdict, Iterable
+from collections import defaultdict
 import json
 import numbers
 
@@ -60,9 +60,6 @@ class Reporter(object):
 
     @staticmethod
     def _tensor_type_check(x):
-        if "Variable" in str(type(x)):
-            x = x.data
-
         if "numpy" in str(type(x)):
             dim = x.ndim
         elif "Tensor" in str(type(x)):

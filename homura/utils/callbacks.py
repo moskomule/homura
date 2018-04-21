@@ -4,9 +4,8 @@ from pathlib import Path
 
 import torch
 
-from ._miscs import to_tensor
 from ._vocabulary import V
-from .reporter import Reporter, ReporterList
+from .reporter import Reporter
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "ReporterCallback"]
@@ -149,12 +148,11 @@ class AccuracyCallback(MetricCallback):
     @staticmethod
     def accuracy(data, k=1):
         input, target = data[V.OUTPUT], data[V.TARGET]
-        input = to_tensor(input)
-        target = to_tensor(target)
+        with torch.autograd.no_grad():
 
-        _, pred_idx = input.topk(k, dim=1)
-        target = target.view(-1, 1).expand_as(pred_idx)
-        return (pred_idx == target).float().sum(dim=1).mean()
+            _, pred_idx = input.topk(k, dim=1)
+            target = target.view(-1, 1).expand_as(pred_idx)
+            return (pred_idx == target).float().sum(dim=1).mean()
 
 
 class LossCallback(MetricCallback):
