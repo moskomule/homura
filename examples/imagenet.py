@@ -54,6 +54,6 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument("root")
     p.add_argument("--epochs", default=1)
-    p.add_argument("--batchsize", default=128)
+    p.add_argument("--batch_size", default=128)
     args = p.parse_args()
     main(**vars(args))
