@@ -47,7 +47,7 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         img, target = self.samples[index]
         if not self.pre_load:
-            img, target = self.image_loader(img, target)
+            img, target = self.image_loader((img, target))
 
         if self.transforms is not None:
             img = self.transforms(img)
@@ -65,7 +65,7 @@ class ImageFolder(data.Dataset):
         self.samples = samples
 
     @staticmethod
-    def image_loader(*args):
+    def image_loader(args):
         path, idx = args
         with open(path, 'rb') as f:
             return Image.open(f).convert("RGB"), idx
