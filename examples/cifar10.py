@@ -11,7 +11,7 @@ from homura.models.vision.cifar import resnet20
 def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
     root = Path(root).expanduser()
     if not root.exists():
-        root.mkdir()
+        root.mkdir(parents=True)
     root = str(root)
 
     to_normalized_tensor = [transforms.ToTensor(),
