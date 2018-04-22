@@ -151,7 +151,7 @@ class AccuracyCallback(MetricCallback):
         with torch.autograd.no_grad():
             _, pred_idx = input.topk(k, dim=1)
             target = target.view(-1, 1).expand_as(pred_idx)
-            return (pred_idx == target).float().sum(dim=1).mean()
+            return (pred_idx == target).float().sum(dim=1).mean().item()
 
 
 class LossCallback(MetricCallback):
