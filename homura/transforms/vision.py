@@ -61,10 +61,3 @@ class RandomErase(object):
 
         meta(area_ratio, "area_ratio")
         meta(aspect_ratio, "aspect_ratio")
-
-
-if __name__ == '__main__':
-    img = Image.open("out.jpg")
-    t = RandomErase(0.9, 0.6, 0.2)
-    t(img)
-    img.show()
