@@ -62,9 +62,9 @@ class ImageFolder(data.Dataset):
             return self.image_loader(path), idx
 
         with Pool(cpu_count() // 2) as pool:
-            samples = pool.imap(load_file, self.samples, chunksize=10)
+            samples = pool.map(load_file, self.samples)
 
-        self.samples = tuple(samples)
+        self.samples = samples
 
     @staticmethod
     def image_loader(path):
