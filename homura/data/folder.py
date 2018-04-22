@@ -47,7 +47,7 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         img, target = self.samples[index]
         if not self.pre_load:
-            img = self.image_loader(img)
+            img, target = self.image_loader(img, target)
 
         if self.transforms is not None:
             img = self.transforms(img)
@@ -58,15 +58,14 @@ class ImageFolder(data.Dataset):
         return self.length
 
     def _load_images(self):
-        def load_file(path, idx):
-            return self.image_loader(path), idx
 
         with Pool(cpu_count() // 2) as pool:
-            samples = pool.map(load_file, self.samples)
+            samples = pool.map(self.image_loader, self.samples)
 
         self.samples = samples
 
     @staticmethod
-    def image_loader(path):
+    def image_loader(*args):
+        path, idx = args
         with open(path, 'rb') as f:
-            return Image.open(f).convert("RGB")
+            return Image.open(f).convert("RGB"), idx
