@@ -43,7 +43,7 @@ class Trainer(object):
         self._callbacks.end_iteration({OUTPUT: output,
                                        TARGET: target,
                                        MODEL: self._model,
-                                       LOSS: loss.data[0],
+                                       LOSS: loss.item(),
                                        STEP: self._step,
                                        NAME: name,
                                        TRAINER: self})
