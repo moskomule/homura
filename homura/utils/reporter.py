@@ -2,6 +2,8 @@ import pathlib
 from collections import defaultdict, Iterable
 import json
 import numbers
+from matplotlib.figure import Figure
+from PIL import Image
 
 import numpy as np
 from ._miscs import get_git_hash
@@ -212,6 +214,11 @@ class VisdomReporter(Reporter):
             x = np.array([x])
         elif "Tensor" in str(type(x)):
             x = x.numpy()
+        elif isinstance(x, Figure):
+            x = Image.frombytes("RGB", x.canvas.get_width_height(), x.canvas.tostring_rgb())
+            x = np.asanyarray(x)
+        if not isinstance(x, np.ndarray):
+            raise TypeError(f"Unknown type: {type(x)}")
         return x
 
     def close(self):
