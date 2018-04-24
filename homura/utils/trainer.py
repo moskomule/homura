@@ -1,32 +1,61 @@
-from typing import Callable
+from typing import Callable, Iterable
 
 import torch
-from torch import nn
-from torch.optim import Optimizer
+from torch import nn, optim
 from torch.autograd import Variable
 from .reporter import TQDMReporter
 from .callbacks import CallbackList, Callback
 from ._vocabulary import *
 
+_optimizers = {"sgd": optim.SGD,
+               "adam": optim.Adam,
+               "adagrad": optim.Adagrad}
+
 
 class Trainer(object):
 
-    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
+    def __init__(self, model: nn.Module, optimizer: dict or optim.Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler=None, verb=True,
                  use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
+        """
+        :param model: model to be trained
+        :param optimizer: optimizer for the model. If dict,  {"name": "optimizer name", **kwargs}.
+        :param loss_f: loss function
+        :param callbacks: callbacks
+        :param scheduler: learning rate scheduler
+        :param verb:
+        :param use_cuda:
+        :param use_cudnn_bnenchmark:
+        :param kwargs:
+        """
+
         self._model = model
-        self._optimizer = optimizer
+        self._use_cuda = use_cuda and torch.cuda.is_available()
+        if self._use_cuda:
+            self._model.cuda()
+            if use_cudnn_bnenchmark:
+                torch.backends.cudnn.benchmark = True
+
+        if isinstance(optimizer, dict):
+            opt = optimizer.get("name", "").lower()
+            if opt not in _optimizers.keys():
+                raise NameError(f"Unknown optimizer: {opt} ({list(_optimizers.keys())})")
+            self._optimizer = _optimizers[opt](self._model.parameters(),
+                                               **{k: v for k, v in optimizer.items() if k != "name"})
+        else:
+            self._optimizer = optimizer
+
         self._loss_f = loss_f
-        self._callbacks = CallbackList(callbacks)
+        if isinstance(callbacks, CallbackList):
+            self._callbacks = callbacks
+        else:
+            callbacks = callbacks if isinstance(callbacks, Iterable) else [callbacks]
+            self._callbacks = CallbackList(callbacks)
+
         self._scheduler = scheduler
         self._step = 0
         self._epoch = 0
         self._verb = verb
-        self._use_cuda = use_cuda and torch.cuda.is_available()
-        if self._use_cuda:
-            if use_cudnn_bnenchmark:
-                torch.backends.cudnn.benchmark = True
-            self._model.cuda()
 
         for k, v in kwargs.items():
             if hasattr(self, k):
