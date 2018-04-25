@@ -17,13 +17,5 @@ def get_git_hash():
         return ""
 
 
-def to_tensor(v, cpu=True):
-    if isinstance(v, Variable):
-        v = v.data
-    if cpu:
-        v = v.cpu()
-    return v
-
-
 if __name__ == '__main__':
     get_git_hash()

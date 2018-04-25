@@ -10,7 +10,7 @@
 
 ```
 Python>=3.6
-PyTorch==0.3.1
+PyTorch==0.4.0
 torchvision==0.2
 ```
 
