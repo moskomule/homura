@@ -1,18 +1,13 @@
-from typing import Callable
-
 import torch
-from torch import nn
-from torch.optim import Optimizer
-from torch.autograd import Variable
 from .reporter import TQDMReporter
-from .callbacks import CallbackList, Callback
+from .callbacks import CallbackList
 from ._vocabulary import *
 
 
 class Trainer(object):
 
-    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
-                 callbacks: Callback = None, scheduler=None, verb=True,
+    def __init__(self, model, optimizer, loss_f, *,
+                 callbacks=None, scheduler=None, verb=True,
                  use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
         self._model = model
         self._optimizer = optimizer
@@ -38,9 +33,7 @@ class Trainer(object):
                                      STEP: self._step,
                                      NAME: name,
                                      TRAINER: self})
-        input, target = data
-        input = self.to_device(input, volatile=not is_train)
-        target = self.to_device(target, volatile=not is_train)
+        input, target = self.to_device(data)
         output = self._model(input)
         loss = self._loss_f(output, target)
         if is_train:
@@ -50,7 +43,7 @@ class Trainer(object):
         self._callbacks.end_iteration({OUTPUT: output,
                                        TARGET: target,
                                        MODEL: self._model,
-                                       LOSS: loss.data[0],
+                                       LOSS: loss.item(),
                                        STEP: self._step,
                                        NAME: name,
                                        TRAINER: self})
@@ -96,7 +89,8 @@ class Trainer(object):
         finally:
             self._callbacks.close()
 
-    def to_device(self, t, **kwargs):
+    def to_device(self, data):
         if self._use_cuda:
-            t = t.cuda()
-        return Variable(t, **kwargs)
+            return (t.cuda() for t in data)
+        else:
+            return data
