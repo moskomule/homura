@@ -62,7 +62,7 @@ class Trainer(object):
             setattr(self, k, v)
 
     def _iteration(self, data, is_train, name):
-        with torch.no_grad:
+        with torch.no_grad():
             self._callbacks.start_epoch({MODEL: self._model,
                                          STEP: self._step,
                                          NAME: name,
@@ -84,7 +84,7 @@ class Trainer(object):
                                            TRAINER: self})
 
     def _loop(self, data_loader, is_train, name):
-        with torch.no_grad:
+        with torch.no_grad():
             self._callbacks.start_epoch({MODEL: self._model,
                                          NAME: name,
                                          TRAINER: self})
@@ -96,7 +96,7 @@ class Trainer(object):
             if is_train:
                 self._step += 1
 
-        with torch.no_grad:
+        with torch.no_grad():
             self._callbacks.end_epoch({MODEL: self._model,
                                        EPOCH: self._epoch,
                                        NAME: name,
@@ -105,7 +105,7 @@ class Trainer(object):
 
     def train(self, data_loader):
         self._model.train()
-        with torch.enable_grad:
+        with torch.enable_grad():
             self._loop(data_loader, is_train=True, name=TRAIN)
         if self._scheduler is not None:
             self._scheduler.step()
@@ -113,7 +113,7 @@ class Trainer(object):
 
     def test(self, data_loader, name=TEST):
         self._model.eval()
-        with torch.no_grad:
+        with torch.no_grad():
             self._loop(data_loader, is_train=False, name=name)
 
     def run(self, epochs, train_data, test_data):
@@ -121,7 +121,7 @@ class Trainer(object):
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            with torch.no_grad:
+            with torch.no_grad():
                 self._callbacks.end_all({MODEL: self._model,
                                          OPTIMIZER: self._optimizer,
                                          TRAINER: self})
