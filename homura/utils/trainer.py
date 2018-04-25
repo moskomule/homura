@@ -2,7 +2,6 @@ from typing import Callable, Iterable
 
 import torch
 from torch import nn, optim
-from torch.autograd import Variable
 from .reporter import TQDMReporter
 from .callbacks import CallbackList, Callback
 from ._vocabulary import *
@@ -63,69 +62,77 @@ class Trainer(object):
             setattr(self, k, v)
 
     def _iteration(self, data, is_train, name):
-        self._callbacks.start_epoch({MODEL: self._model,
-                                     STEP: self._step,
-                                     NAME: name,
-                                     TRAINER: self})
-        input, target = data
-        input = self.to_device(input, volatile=not is_train)
-        target = self.to_device(target, volatile=not is_train)
+        with torch.no_grad:
+            self._callbacks.start_epoch({MODEL: self._model,
+                                         STEP: self._step,
+                                         NAME: name,
+                                         TRAINER: self})
+        input, target = self.to_device(data)
         output = self._model(input)
         loss = self._loss_f(output, target)
         if is_train:
             self._optimizer.zero_grad()
             loss.backward()
             self._optimizer.step()
-        self._callbacks.end_iteration({OUTPUT: output,
-                                       TARGET: target,
-                                       MODEL: self._model,
-                                       LOSS: loss.data[0],
-                                       STEP: self._step,
-                                       NAME: name,
-                                       TRAINER: self})
+        with torch.no_grad:
+            self._callbacks.end_iteration({OUTPUT: output,
+                                           TARGET: target,
+                                           MODEL: self._model,
+                                           LOSS: loss.data.item(),
+                                           STEP: self._step,
+                                           NAME: name,
+                                           TRAINER: self})
 
     def _loop(self, data_loader, is_train, name):
-        self._callbacks.start_epoch({MODEL: self._model,
-                                     NAME: name,
-                                     TRAINER: self})
+        with torch.no_grad:
+            self._callbacks.start_epoch({MODEL: self._model,
+                                         NAME: name,
+                                         TRAINER: self})
+
         data_loader = TQDMReporter(data_loader) if self._verb else data_loader
 
         for data in data_loader:
             self._iteration(data, is_train, name)
             if is_train:
                 self._step += 1
-        self._callbacks.end_epoch({MODEL: self._model,
-                                   EPOCH: self._epoch,
-                                   NAME: name,
-                                   ITER_PER_EPOCH: len(data_loader),
-                                   TRAINER: self})
+
+        with torch.no_grad:
+            self._callbacks.end_epoch({MODEL: self._model,
+                                       EPOCH: self._epoch,
+                                       NAME: name,
+                                       ITER_PER_EPOCH: len(data_loader),
+                                       TRAINER: self})
 
     def train(self, data_loader):
         self._model.train()
-        self._loop(data_loader, is_train=True, name=TRAIN)
+        with torch.enable_grad:
+            self._loop(data_loader, is_train=True, name=TRAIN)
         if self._scheduler is not None:
             self._scheduler.step()
         self._epoch += 1
 
     def test(self, data_loader, name=TEST):
         self._model.eval()
-        self._loop(data_loader, is_train=False, name=name)
+        with torch.no_grad:
+            self._loop(data_loader, is_train=False, name=name)
 
     def run(self, epochs, train_data, test_data):
         try:
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            self._callbacks.end_all({MODEL: self._model,
-                                     OPTIMIZER: self._optimizer,
-                                     TRAINER: self})
+            with torch.no_grad:
+                self._callbacks.end_all({MODEL: self._model,
+                                         OPTIMIZER: self._optimizer,
+                                         TRAINER: self})
 
         except KeyboardInterrupt:
             print("\ninterrupted")
         finally:
             self._callbacks.close()
 
-    def to_device(self, t, **kwargs):
+    def to_device(self, data, **kwargs):
         if self._use_cuda:
-            t = t.cuda()
-        return Variable(t, **kwargs)
+            return (t.cuda(**kwargs) for t in data)
+        else:
+            return data
