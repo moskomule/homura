@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 
 from ._vocabulary import *
-from .reporter import Reporter, ReporterList
+from .reporter import Reporter
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "ReporterCallback"]

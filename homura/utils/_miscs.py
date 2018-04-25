@@ -15,7 +15,3 @@ def get_git_hash():
         return _decode_bytes(git_hash)
     else:
         return ""
-
-
-if __name__ == '__main__':
-    get_git_hash()
