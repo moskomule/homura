@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.models import densenet121
 
-from homura.utils import callbacks, reporter, Trainer
+from homura.utils import callbacks, reporter, Trainer, get_logger
 from homura.data import ImageFolder
 
 
@@ -33,20 +33,27 @@ def imagenet_loader(root, batch_size, num_workers=16):
 
 
 def main(root, epochs, batch_size):
+    logger = get_logger(name="ImageNet Training")
     train_loader, test_loader = imagenet_loader(root, batch_size)
     model = torch.nn.DataParallel(densenet121(), device_ids=(0, 1, 2, 3))
     optimizer = optim.SGD(params=model.parameters(), lr=1e-1, momentum=0.9,
                           weight_decay=1e-4)
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, [50, 70])
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(), callbacks.LossCallback(),
+    
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(),
+                               callbacks.LossCallback(),
                                callbacks.WeightSave("checkpoints"))
     r = reporter.TQDMReporter(range(epochs))
+
+    logger.info("start training")
     with callbacks.ReporterCallback(r, c) as rep:
         trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep,
                           scheduler=scheduler)
-        for _ in r:
+        for ep in r:
+            logger.info(f"epoch: {ep}")
             trainer.train(train_loader)
             trainer.test(test_loader)
+    logger.info("finish training")
 
 
 if __name__ == '__main__':
