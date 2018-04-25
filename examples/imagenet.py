@@ -24,9 +24,10 @@ def imagenet_loader(root, batch_size, num_workers=16):
     transfrom_test = transforms.Compose([transforms.Resize(256),
                                          transforms.CenterCrop(224)] + transform_base)
 
-    train_set = ImageFolder(root / "train", transform=transfrom_train, pre_load=True)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    test_loader = DataLoader(ImageFolder(root / "val", transform=transfrom_test, pre_load=True),
+    train_set = ImageFolder(root / "train", transform=transfrom_train, on_memory=True)
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True,
+                              num_workers=num_workers, pin_memory=True)
+    test_loader = DataLoader(ImageFolder(root / "val", transform=transfrom_test, on_memory=True),
                              batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
     return train_loader, test_loader
 
