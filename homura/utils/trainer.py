@@ -48,7 +48,6 @@ class Trainer(object):
         if isinstance(callbacks, CallbackList):
             self._callbacks = callbacks
         else:
-            callbacks = callbacks if isinstance(callbacks, Iterable) else [callbacks]
             self._callbacks = CallbackList(callbacks)
 
         self._scheduler = scheduler
@@ -74,7 +73,7 @@ class Trainer(object):
             self._optimizer.zero_grad()
             loss.backward()
             self._optimizer.step()
-        with torch.no_grad:
+        with torch.no_grad():
             self._callbacks.end_iteration({OUTPUT: output,
                                            TARGET: target,
                                            MODEL: self._model,
