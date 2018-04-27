@@ -28,7 +28,7 @@ def make_dataset(root: Path, class_to_idx: Dict[str, int], extensions: Iterable[
 class ImageFolder(data.Dataset):
     IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']
 
-    def __init__(self, root, transform=None, pre_load=False):
+    def __init__(self, root, transform=None, on_memory=False):
         classes, class_to_idx = find_classes(root)
         samples = make_dataset(root, class_to_idx, self.IMG_EXTENSIONS)
         if len(samples) == 0:
@@ -40,14 +40,13 @@ class ImageFolder(data.Dataset):
         self.samples = samples
         self.length = len(self.samples)
         self.transforms = transform
-        self.pre_load = pre_load
-        if self.pre_load:
-            self._load_images()
+        self.on_memory = on_memory
 
     def __getitem__(self, index):
         img, target = self.samples[index]
-        if not self.pre_load:
+        if isinstance(img, Path):
             img, target = self.image_loader((img, target))
+            self.samples[index] = (img, target)
 
         if self.transforms is not None:
             img = self.transforms(img)
@@ -56,13 +55,6 @@ class ImageFolder(data.Dataset):
 
     def __len__(self):
         return self.length
-
-    def _load_images(self):
-
-        with Pool(cpu_count() // 2) as pool:
-            samples = pool.map(self.image_loader, self.samples)
-
-        self.samples = samples
 
     @staticmethod
     def image_loader(args):
