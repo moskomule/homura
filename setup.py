@@ -9,7 +9,8 @@ with open("requirements.txt") as f:
 setup(name="homura",
       version="alef",  # Hebrew alpha
       author="moskomule",
-      author_email="",
+      author_email="hataya@nlab.jp",
+      packages=["homura"],
       url="https://github.com/moskomule/homura",
       description="support tool for research experiments",
       long_description=readme,

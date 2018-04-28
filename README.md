@@ -30,7 +30,7 @@ visdom
 ## install
 
 ```console
-pip install git+https://github.com/moskomule/homura#egg=homura#egg=homura
+pip install git+https://github.com/moskomule/homura#egg=homura
 ```
 
 ## For old codes
