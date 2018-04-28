@@ -39,7 +39,7 @@ def main(root, epochs, batch_size):
     optimizer = optim.SGD(params=model.parameters(), lr=1e-1, momentum=0.9,
                           weight_decay=1e-4)
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, [50, 70])
-    
+
     c = callbacks.CallbackList(callbacks.AccuracyCallback(),
                                callbacks.LossCallback(),
                                callbacks.WeightSave("checkpoints"))
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
     p.add_argument("root")
-    p.add_argument("--epochs", default=1)
-    p.add_argument("--batch_size", default=128)
+    p.add_argument("--epochs", type=int, default=1)
+    p.add_argument("--batch_size", type=int, default=128)
     args = p.parse_args()
     main(**vars(args))
