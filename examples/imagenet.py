@@ -44,16 +44,17 @@ def main(root, epochs, batch_size):
                                callbacks.LossCallback(),
                                callbacks.WeightSave("checkpoints"))
     r = reporter.TQDMReporter(range(epochs))
+    reporter_list = reporter.ReporterList(r, reporter.TensorBoardReporter())
 
-    logger.info("start training")
-    with callbacks.ReporterCallback(r, c) as rep:
+    logger.debug("start training")
+    with callbacks.ReporterCallback(reporter_list, c) as rep:
         trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep,
                           scheduler=scheduler)
         for ep in r:
-            logger.info(f"epoch: {ep}")
+            logger.debug(f"epoch: {ep}")
             trainer.train(train_loader)
             trainer.test(test_loader)
-    logger.info("finish training")
+    logger.debug("finish training")
 
 
 if __name__ == '__main__':
@@ -61,7 +62,7 @@ if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
     p.add_argument("root")
-    p.add_argument("--epochs", type=int, default=1)
+    p.add_argument("--epochs", type=int, default=90)
     p.add_argument("--batch_size", type=int, default=128)
     args = p.parse_args()
     main(**vars(args))
