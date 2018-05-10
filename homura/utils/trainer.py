@@ -1,4 +1,5 @@
-from typing import Callable, Iterable
+from typing import Callable
+from pathlib import Path
 
 import torch
 from torch import nn, optim
@@ -135,3 +136,17 @@ class Trainer(object):
             return (t.cuda(**kwargs) for t in data)
         else:
             return data
+
+    def load(self, path, load_last=False):
+        path = Path(path)
+        if path.exists():
+            if load_last and path.is_dir():
+                last_checkpoint = max([p.name for p in path.glob("*.pkl")])
+                path = path / last_checkpoint
+            checkpoint = torch.load(path)
+        else:
+            raise FileNotFoundError(f"No file {str(path)}")
+
+        self._model.load_state_dict(checkpoint[MODEL])
+        self._optimizer.load_state_dict(checkpoint[OPTIMIZER])
+        self._epoch = checkpoint[EPOCH]

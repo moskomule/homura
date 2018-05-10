@@ -5,7 +5,8 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from homura.utils import reporter, callbacks, Trainer
-from homura.models.vision.cifar import resnet20
+from homura.vision.models.cifar import resnet20
+from homura.vision.transforms import RandomErase
 
 
 def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
@@ -17,22 +18,17 @@ def get_dataloader(batch_size, root="~/.torch/data/cifar10"):
     to_normalized_tensor = [transforms.ToTensor(),
                             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
     data_augmentation = [transforms.RandomCrop(32, padding=4),
+                         RandomErase(0.2, 0.1, 1),
                          transforms.RandomHorizontalFlip()]
 
     train_loader = DataLoader(
-            datasets.CIFAR10(root, train=True, download=True,
-                             transform=transforms.Compose(data_augmentation + to_normalized_tensor)),
-            batch_size=batch_size, shuffle=True)
+        datasets.CIFAR10(root, train=True, download=True,
+                         transform=transforms.Compose(data_augmentation + to_normalized_tensor)),
+        batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(
-            datasets.CIFAR10(root, train=False, transform=transforms.Compose(to_normalized_tensor)),
-            batch_size=batch_size, shuffle=True)
+        datasets.CIFAR10(root, train=False, transform=transforms.Compose(to_normalized_tensor)),
+        batch_size=batch_size, shuffle=True)
     return train_loader, test_loader
-
-
-class ReporterCallback(callbacks.ReporterCallback):
-    def end_epoch(self, data: dict):
-        results = self.callback.end_epoch(data)
-        self.reporter.add_scalars(results, "results", data["epoch"])
 
 
 def main(batch_size):
@@ -41,9 +37,11 @@ def main(batch_size):
     model = resnet20(num_classes=10)
     optimizer = optim.SGD(params=model.parameters(), lr=1e-1, momentum=0.9,
                           weight_decay=1e-4)
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(), callbacks.LossCallback())
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(),
+                               callbacks.LossCallback(),
+                               callbacks.ParameterReporterCallback(reporter.TensorBoardReporter(), report_freq=100))
     r = reporter.TQDMReporter(range(200))
-    with ReporterCallback(r, c) as rep:
+    with callbacks.ReporterCallback(r, c) as rep:
         trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep)
         for _ in r:
             trainer.train(train_loader)

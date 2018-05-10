@@ -36,7 +36,7 @@ class Encoder(nn.Module):
                 in_channels = out_channels
             setattr(self, f"conv{index}", nn.Sequential(*convs))
             setattr(self, f"pool{index}", nn.MaxPool2d(
-                    kernel_size=2, stride=2, return_indices=True))
+                kernel_size=2, stride=2, return_indices=True))
 
 
 class Decoder(nn.Module):
@@ -52,7 +52,7 @@ class Decoder(nn.Module):
         x = input
         for index in reversed(range(len(self.encoder.config))):
             x = getattr(self, f"unpool{index}")(
-                    x, indices[index], sizes[index])
+                x, indices[index], sizes[index])
             x = getattr(self, f"conv{index}")(x)
         return x
 
@@ -108,13 +108,10 @@ class SegNet(nn.Module):
     def _load_imagenet_weight(self):
         from torchvision.models import vgg16_bn
 
-        vgg = [value for key, value in vgg16_bn(pretrained=True).
-            features.state_dict().items()
+        vgg = [value for key, value in vgg16_bn(pretrained=True).features.state_dict().items()
                if "running" not in key]
-        encoder_convs = [m for m in self.encoder.modules()
-                         if isinstance(m, nn.Conv2d)]
-        decoder_convs = [m for m in self.decoder.modules()
-                         if isinstance(m, nn.Conv2d)]
+        encoder_convs = [m for m in self.encoder.modules() if isinstance(m, nn.Conv2d)]
+        decoder_convs = [m for m in self.decoder.modules() if isinstance(m, nn.Conv2d)]
         for i, (e_m, d_m) in enumerate(zip(encoder_convs, decoder_convs)):
             weight, bias = vgg[4 * i: 4 * i + 2]
             e_m.load_state_dict({"weight": weight, "bias": bias})

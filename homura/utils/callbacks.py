@@ -213,3 +213,27 @@ class ReporterCallback(Callback):
     def close(self):
         self.reporter.close()
         self.callback.close()
+
+
+class ParameterReporterCallback(Callback):
+    def __init__(self, reporter: Reporter, *, report_freq: int = -1):
+        """
+        report parameter histogram
+        :param reporter: reporter which has add_histogram
+        :param report_freq: report frequency in step. If -1, not report at each iteration but report at each epoch
+        """
+        self.reporter = reporter
+        self.report_freq = report_freq
+
+    def end_iteration(self, data: dict):
+        if (data[STEP] % self.report_freq == 0) and self.report_freq > 0:
+            for name, param in data[MODEL].named_parameters():
+                self.reporter.add_histogram(param, name, data[STEP])
+
+    def end_epoch(self, data: dict):
+        if self.report_freq == -1:
+            for name, param in data[MODEL].named_parameters():
+                self.reporter.add_histogram(param, name, data[EPOCH])
+
+    def close(self):
+        self.reporter.close()
