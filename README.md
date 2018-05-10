@@ -17,12 +17,12 @@ torchvision==0.2
 ```
 yaml
 tqdm
-matplotlib
 ```
 
 ### optional
 
 ```
+matplotlib
 tensorboardX
 visdom
 ```

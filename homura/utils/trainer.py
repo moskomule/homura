@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 from pathlib import Path
 
 import torch
@@ -29,10 +29,10 @@ class Trainer(object):
         :param kwargs:
         """
 
-        self._model = model
+        self.model = model
         self._use_cuda = use_cuda and torch.cuda.is_available()
         if self._use_cuda:
-            self._model.cuda()
+            self.model.cuda()
             if use_cudnn_bnenchmark:
                 torch.backends.cudnn.benchmark = True
 
@@ -40,12 +40,12 @@ class Trainer(object):
             opt = optimizer.get("name", "").lower()
             if opt not in _optimizers.keys():
                 raise NameError(f"Unknown optimizer: {opt} ({list(_optimizers.keys())})")
-            self._optimizer = _optimizers[opt](self._model.parameters(),
-                                               **{k: v for k, v in optimizer.items() if k != "name"})
+            self.optimizer = _optimizers[opt](self.model.parameters(),
+                                              **{k: v for k, v in optimizer.items() if k != "name"})
         else:
-            self._optimizer = optimizer
+            self.optimizer = optimizer
 
-        self._loss_f = loss_f
+        self.loss_f = loss_f
         if isinstance(callbacks, CallbackList):
             self._callbacks = callbacks
         else:
@@ -61,31 +61,41 @@ class Trainer(object):
                 raise AttributeError(f"{self} already has {k}")
             setattr(self, k, v)
 
-    def _iteration(self, data, is_train, name):
+    def iteration(self, data: Iterable[torch.Tensor], is_train: bool) -> Iterable[torch.Tensor]:
+        """
+        iteration part, user can override
+        :param data: data used during a iteration
+        :param is_train:
+        :return: loss, output
+        """
+        input, target = self.to_device(data)
+        output = self.model(input)
+        loss = self.loss_f(output, target)
+        if is_train:
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+        return loss, output
+
+    def _iteration(self, data: Iterable[torch.Tensor], is_train: bool, name: str):
         with torch.no_grad():
-            self._callbacks.start_epoch({MODEL: self._model,
+            self._callbacks.start_epoch({MODEL: self.model,
                                          STEP: self._step,
                                          NAME: name,
                                          TRAINER: self})
-        input, target = self.to_device(data)
-        output = self._model(input)
-        loss = self._loss_f(output, target)
-        if is_train:
-            self._optimizer.zero_grad()
-            loss.backward()
-            self._optimizer.step()
+        loss, output = self.iteration(data, is_train)
         with torch.no_grad():
             self._callbacks.end_iteration({OUTPUT: output,
-                                           TARGET: target,
-                                           MODEL: self._model,
+                                           DATA: data,
+                                           MODEL: self.model,
                                            LOSS: loss.data.item(),
                                            STEP: self._step,
                                            NAME: name,
                                            TRAINER: self})
 
-    def _loop(self, data_loader, is_train, name):
+    def _loop(self, data_loader, is_train: bool, name: str):
         with torch.no_grad():
-            self._callbacks.start_epoch({MODEL: self._model,
+            self._callbacks.start_epoch({MODEL: self.model,
                                          NAME: name,
                                          TRAINER: self})
 
@@ -97,14 +107,14 @@ class Trainer(object):
                 self._step += 1
 
         with torch.no_grad():
-            self._callbacks.end_epoch({MODEL: self._model,
+            self._callbacks.end_epoch({MODEL: self.model,
                                        EPOCH: self._epoch,
                                        NAME: name,
                                        ITER_PER_EPOCH: len(data_loader),
                                        TRAINER: self})
 
     def train(self, data_loader):
-        self._model.train()
+        self.model.train()
         with torch.enable_grad():
             self._loop(data_loader, is_train=True, name=TRAIN)
         if self._scheduler is not None:
@@ -112,7 +122,7 @@ class Trainer(object):
         self._epoch += 1
 
     def test(self, data_loader, name=TEST):
-        self._model.eval()
+        self.model.eval()
         with torch.no_grad():
             self._loop(data_loader, is_train=False, name=name)
 
@@ -122,8 +132,8 @@ class Trainer(object):
                 self.train(train_data)
                 self.test(test_data)
             with torch.no_grad():
-                self._callbacks.end_all({MODEL: self._model,
-                                         OPTIMIZER: self._optimizer,
+                self._callbacks.end_all({MODEL: self.model,
+                                         OPTIMIZER: self.optimizer,
                                          TRAINER: self})
 
         except KeyboardInterrupt:
@@ -147,6 +157,6 @@ class Trainer(object):
         else:
             raise FileNotFoundError(f"No file {str(path)}")
 
-        self._model.load_state_dict(checkpoint[MODEL])
-        self._optimizer.load_state_dict(checkpoint[OPTIMIZER])
+        self.model.load_state_dict(checkpoint[MODEL])
+        self.optimizer.load_state_dict(checkpoint[OPTIMIZER])
         self._epoch = checkpoint[EPOCH]
