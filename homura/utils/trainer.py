@@ -131,23 +131,44 @@ class Trainer(object):
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            with torch.no_grad():
-                self._callbacks.end_all({MODEL: self.model,
-                                         OPTIMIZER: self.optimizer,
-                                         TRAINER: self})
+            self._exit()
 
         except KeyboardInterrupt:
             print("\ninterrupted")
         finally:
             self._callbacks.close()
 
+    def __enter__(self):
+        return self
+
+    def _exit(self):
+        with torch.no_grad():
+            self._callbacks.end_all({MODEL: self.model,
+                                     OPTIMIZER: self.optimizer,
+                                     TRAINER: self})
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._exit()
+        self._callbacks.close()
+
     def to_device(self, data, **kwargs):
+        """
+        Handle tuple of data
+        :param data:
+        :param kwargs:
+        :return:
+        """
         if self._use_cuda:
             return (t.cuda(**kwargs) for t in data)
         else:
             return data
 
     def load(self, path, load_last=False):
+        """
+        Load a checkpoints saved by WeightSave callback
+        :param path:
+        :param load_last:
+        """
         path = Path(path)
         if path.exists():
             if load_last and path.is_dir():
