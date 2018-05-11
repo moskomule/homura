@@ -75,7 +75,8 @@ class MetricCallback(Callback):
         name = data[NAME]
         for k in self.top_k:
             key = self._key(k, name)
-            self._metrics_history[key].append(0)
+            if self._metrics_history.get(key) is not None:
+                self._metrics_history[key].append(0)
 
     def end_epoch(self, data: dict):
         _epoch_metrics = {}
