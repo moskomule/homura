@@ -27,6 +27,4 @@ class CategoricalConditionalBatchNorm(_BatchNorm):
                            self.training or not self.track_running_stats, self.momentum, self.eps)
         gamma = self._gamma_emb(categories)
         beta = self._beta_emb(categories)
-        print(gamma.shape)
-        print(ret.shape)
         return gamma * ret + beta
