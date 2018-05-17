@@ -85,7 +85,7 @@ class Trainer(object):
                                          TRAINER: self})
         loss, output = self.iteration(data, is_train)
         with torch.no_grad():
-            self._callbacks.end_iteration({OUTPUT: output,
+            self._callbacks.end_iteration({OUTPUT: output.cpu(),
                                            DATA: data,
                                            MODEL: self.model,
                                            LOSS: loss.data.item(),
