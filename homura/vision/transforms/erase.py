@@ -50,7 +50,7 @@ class RandomErase(object):
 
         def meta(ratio, ratio_name):
             if isinstance(ratio, Number):
-                assert 0 < ratio < 1
+                assert 0 < ratio <= 1
                 setattr(self, ratio_name, (min(self.min_ratio, area_ratio),
                                            max(self.min_ratio, area_ratio)))
             elif isinstance(ratio, tuple):
