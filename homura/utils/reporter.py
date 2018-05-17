@@ -6,8 +6,35 @@ from matplotlib.figure import Figure
 from PIL import Image
 
 import numpy as np
+import torch
+from torchvision.utils import make_grid
 from ._miscs import get_git_hash
 from ._vocabulary import *
+
+
+def _dimension(x):
+    if "numpy" in str(type(x)):
+        dim = x.ndim
+    elif "Tensor" in str(type(x)):
+        # should be torch.**Tensor
+        dim = x.dim()
+    else:
+        raise TypeError("Unknown Type!")
+
+    return dim
+
+
+def _to_numpy(x):
+    if isinstance(x, numbers.Number):
+        x = np.array([x])
+    elif "Tensor" in str(type(x)):
+        x = x.numpy()
+    elif isinstance(x, Figure):
+        x = Image.frombytes("RGB", x.canvas.get_width_height(), x.canvas.tostring_rgb())
+        x = np.asanyarray(x)
+    if not isinstance(x, np.ndarray):
+        raise TypeError(f"Unknown type: {type(x)}")
+    return x
 
 
 class Reporter(object):
@@ -59,19 +86,6 @@ class Reporter(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
-
-    @staticmethod
-    def _tensor_type_check(x):
-        if "numpy" in str(type(x)):
-            dim = x.ndim
-        elif "Tensor" in str(type(x)):
-            # should be torch.**Tensor
-            x = x.cpu()
-            dim = x.dim()
-        else:
-            raise TypeError("Unknown Type!")
-
-        return x, dim
 
 
 class ReporterList(Reporter):
@@ -174,7 +188,7 @@ class VisdomReporter(Reporter):
         self.add_scalars({name: x}, name=name, idx=idx, **kwargs)
 
     def add_scalars(self, x: dict, name, idx: int, **kwargs):
-        x = {k: self._to_numpy(v) for k, v in x.items()}
+        x = {k: _to_numpy(v) for k, v in x.items()}
         num_lines = len(x)
         is_new = self._lines.get(name) is None
         self._lines[name] = 1  # any non-None value
@@ -182,7 +196,7 @@ class VisdomReporter(Reporter):
             self._register_data(v, k, idx)
         opts = dict(title=name, legend=list(x.keys()))
         opts.update(**kwargs)
-        X = np.column_stack([self._to_numpy(idx) for _ in range(num_lines)])
+        X = np.column_stack([_to_numpy(idx) for _ in range(num_lines)])
         Y = np.column_stack([i for i in x.values()])
         if num_lines == 1:
             X, Y = X.reshape(-1), Y.reshape(-1)
@@ -197,26 +211,12 @@ class VisdomReporter(Reporter):
         self._viz.text(x)
 
     def add_image(self, x, name: str, idx: int):
-        x, dim = self._tensor_type_check(x)
-        assert dim == 3
+        assert _dimension(x) == 3
         self._viz.image(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def add_images(self, x, name: str, idx: int):
-        x, dim = self._tensor_type_check(x)
-        assert dim == 4
+        assert _dimension(x) == 4
         self._viz.images(self._normalize(x), opts=dict(title=name, caption=str(idx)))
-
-    def _to_numpy(self, x):
-        if isinstance(x, numbers.Number):
-            x = np.array([x])
-        elif "Tensor" in str(type(x)):
-            x = x.numpy()
-        elif isinstance(x, Figure):
-            x = Image.frombytes("RGB", x.canvas.get_width_height(), x.canvas.tostring_rgb())
-            x = np.asanyarray(x)
-        if not isinstance(x, np.ndarray):
-            raise TypeError(f"Unknown type: {type(x)}")
-        return x
 
     def close(self):
         super(VisdomReporter, self).close()
@@ -246,12 +246,15 @@ class TensorBoardReporter(Reporter):
         self._writer.add_scalars(name, x, idx)
 
     def add_image(self, x, name: str, idx: int):
-        x, dim = self._tensor_type_check(x)
-        assert dim == 3
+        assert _dimension(x) == 3
         self._writer.add_image(name, x, idx)
 
     def add_images(self, x, name: str, idx: int):
-        pass
+        assert _dimension(x) == 4
+        if isinstance(x, np.ndarray):
+            x = torch.from_numpy(x)
+        x = make_grid(x, normalize=True)
+        self._writer.add_image(name, x, idx)
 
     def add_text(self, x, name: str, idx: int):
         self._register_data(x, name, idx)
