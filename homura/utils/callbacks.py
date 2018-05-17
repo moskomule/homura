@@ -148,7 +148,7 @@ class AccuracyCallback(MetricCallback):
 
     @staticmethod
     def accuracy(data, k=1):
-        input, target = data[OUTPUT], data[TARGET]
+        input, target = data[DATA]
         with torch.autograd.no_grad():
             _, pred_idx = input.topk(k, dim=1)
             target = target.view(-1, 1).expand_as(pred_idx)
