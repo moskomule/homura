@@ -1,4 +1,5 @@
 from typing import Tuple
+from numbers import Number
 import random, math
 import numpy as np
 from PIL import Image
@@ -48,7 +49,7 @@ class RandomErase(object):
     def _set_ratios(self, area_ratio, aspect_ratio):
 
         def meta(ratio, ratio_name):
-            if isinstance(ratio, float):
+            if isinstance(ratio, Number):
                 assert 0 < ratio < 1
                 setattr(self, ratio_name, (min(self.min_ratio, area_ratio),
                                            max(self.min_ratio, area_ratio)))
