@@ -94,7 +94,7 @@ class LabelCorruptedImages(ImageFolder):
         self.val_size = val_size
         self.num_classes = len(self.classes)
 
-        assert 0 <= val_size <= 1
+        assert 0 <= random_rate <= 1
         if val_size > 0:
             original = range(len(self.samples))
             val_indices = random.sample(original, k=val_size)
