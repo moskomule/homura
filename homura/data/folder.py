@@ -99,7 +99,8 @@ class LabelCorruptedImages(ImageFolder):
             original = range(len(self.samples))
             val_indices = random.sample(original, k=val_size)
             self._val_samples = [self.samples[i] for i in val_indices]
-            self.samples = [self.samples[i] for i in original if i not in val_indices]
+            new_indices = list(set(original).difference(val_indices))
+            self.samples = [self.samples[i] for i in new_indices]
 
         if self.random_rate > 0:
             self._corrupt_labels()
