@@ -108,6 +108,7 @@ class Trainer(object):
 
         with torch.no_grad():
             self._callbacks.end_epoch({MODEL: self.model,
+                                       OPTIMIZER: self.optimizer,
                                        EPOCH: self._epoch,
                                        NAME: name,
                                        ITER_PER_EPOCH: len(data_loader),
