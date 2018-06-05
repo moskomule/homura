@@ -37,11 +37,12 @@ def main(batch_size):
     model = resnet20(num_classes=10)
     optimizer = optim.SGD(params=model.parameters(), lr=1e-1, momentum=0.9,
                           weight_decay=1e-4)
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(),
-                               callbacks.LossCallback(),
-                               callbacks.ParameterReporterCallback(reporter.TensorBoardReporter(), report_freq=100))
-    r = reporter.TQDMReporter(range(200))
-    with callbacks.ReporterCallback(r, c) as rep:
+    c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
+    r = reporter.TQDMReporter(range(200), callbacks=c)
+    tb = reporter.TensorboardReporter(c)
+    tb.report_parameters()
+
+    with callbacks.CallbackList(r, tb) as rep:
         trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep)
         for _ in r:
             trainer.train(train_loader)

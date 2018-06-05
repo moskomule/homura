@@ -8,8 +8,8 @@ from PIL import Image
 import numpy as np
 import torch
 from torchvision.utils import make_grid
-from ._miscs import get_git_hash
-from ._vocabulary import *
+from homura.utils._miscs import get_git_hash
+from homura.utils._vocabulary import *
 
 
 def _dimension(x):
@@ -37,11 +37,11 @@ def _to_numpy(x):
     return x
 
 
-class Reporter(object):
+class ReporterWrapper(object):
     def __init__(self, save_dir):
         """
         base class of Reporter
-        >>> with Reporter("save_dir") as r:
+        >>> with ReporterWrapper("save_dir") as r:
         >>>     r.add_scalar(1, "loss", idx=0)
         # automatically save the results
         """
@@ -88,58 +88,18 @@ class Reporter(object):
         self.close()
 
 
-class ReporterList(Reporter):
-    def __init__(self, *reporters):
-        super(ReporterList, self).__init__(None)
-        for r in reporters:
-            assert isinstance(r, Reporter)
-        self.reporters = reporters
-
-    def add_scalar(self, x, name: str, idx: int):
-        for r in self.reporters:
-            r.add_scalar(x, name, idx)
-
-    def add_scalars(self, x: dict, name, idx: int):
-        for r in self.reporters:
-            r.add_scalars(x, name, idx)
-
-    def add_histogram(self, x, name: str, idx: int):
-        for r in self.reporters:
-            r.add_histogram(x, name, idx)
-
-    def add_text(self, x, name: str, idx: int):
-        for r in self.reporters:
-            r.add_text(x, name, idx)
-
-    def add_image(self, x, name: str, idx: int):
-        for r in self.reporters:
-            r.add_image(x, name, idx)
-
-    def add_images(self, x, name: str, idx: int):
-        for r in self.reporters:
-            r.add_images(x, name, idx)
-
-    def close(self):
-        for r in self.reporters:
-            r.close()
-
-    def __iter__(self):
-        for x in self.reporters:
-            yield x
-
-
-class TQDMReporter(Reporter):
-    def __init__(self, iterable, save_dir=None):
+class TQDMWrapper(ReporterWrapper):
+    def __init__(self, iterator, save_dir=None):
         """
-        >>> with TQDMReporter(range(100)) as tqrange:
+        >>> with TQDMWrapper(range(100)) as tqrange:
         >>>     for i in tqrange:
         >>>         pass
         """
         from tqdm import tqdm
 
-        super(TQDMReporter, self).__init__(save_dir)
-        self._tqdm = tqdm(iterable, ncols=80)
-        self._size = len(iterable)
+        super(TQDMWrapper, self).__init__(save_dir)
+        self._tqdm = tqdm(iterator, ncols=80)
+        self._size = len(iterator)
 
     def __iter__(self):
         for x in self._tqdm:
@@ -171,16 +131,16 @@ class TQDMReporter(Reporter):
         pass
 
 
-class VisdomReporter(Reporter):
+class VisdomWrapper(ReporterWrapper):
     def __init__(self, port=6006, save_dir=None):
         from visdom import Visdom
 
-        super(VisdomReporter, self).__init__(save_dir)
+        super(VisdomWrapper, self).__init__(save_dir)
         self._viz = Visdom(port=port, env=NOW)
         self._lines = defaultdict()
         if not self._viz.check_connection():
             print(f"""
-        Please launch visdom.server before calling VisdomReporter.
+        Please launch visdom.server before calling VisdomWrapper.
         $python -m visdom.server -port {port}
         """)
 
@@ -219,7 +179,7 @@ class VisdomReporter(Reporter):
         self._viz.images(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def close(self):
-        super(VisdomReporter, self).close()
+        super(VisdomWrapper, self).close()
         self._viz.save([NOW])
 
     @staticmethod
@@ -229,11 +189,11 @@ class VisdomReporter(Reporter):
         return (x - _min) / (_max - _min)
 
 
-class TensorBoardReporter(Reporter):
+class TensorBoardWrapper(ReporterWrapper):
     def __init__(self, save_dir=None):
         from tensorboardX import SummaryWriter
 
-        super(TensorBoardReporter, self).__init__(save_dir)
+        super(TensorBoardWrapper, self).__init__(save_dir)
         self._writer = SummaryWriter(log_dir=save_dir)
 
     def add_scalar(self, x, name: str, idx: int):
@@ -264,5 +224,5 @@ class TensorBoardReporter(Reporter):
         self._writer.add_histogram(name, x, idx, bins="sqrt")
 
     def close(self):
-        super(TensorBoardReporter, self).close()
+        super(TensorBoardWrapper, self).close()
         self._writer.close()

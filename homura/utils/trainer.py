@@ -3,7 +3,7 @@ from pathlib import Path
 
 import torch
 from torch import nn, optim
-from .reporter import TQDMReporter
+from .reporter.wrapper import TQDMWrapper
 from .callbacks import CallbackList, Callback
 from ._vocabulary import *
 
@@ -99,7 +99,7 @@ class Trainer(object):
                                          NAME: name,
                                          TRAINER: self})
 
-        data_loader = TQDMReporter(data_loader) if self._verb else data_loader
+        data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
 
         for data in data_loader:
             self._iteration(data, is_train, name)

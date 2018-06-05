@@ -5,10 +5,9 @@ from pathlib import Path
 import torch
 
 from ._vocabulary import *
-from .reporter import Reporter
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
-           "LossCallback", "WeightSave", "ReporterCallback"]
+           "LossCallback", "WeightSave"]
 
 
 class Callback(object):
@@ -111,7 +110,7 @@ class CallbackList(Callback):
         for c in callbacks:
             if not isinstance(c, Callback):
                 raise TypeError(f"{c} is not a callback!")
-        self._callbacks = callbacks
+        self._callbacks = list(callbacks)
 
     def start_iteration(self, data: dict):
         return self._cat([c.start_iteration(data) for c in self._callbacks])
@@ -169,7 +168,7 @@ class WeightSave(Callback):
         """
         save weights after every epoch
         :param save_path: path to be saved
-        :param save_freq: frequency of saving
+        :param save_freq: frequency of saving in epoch
         """
 
         self.save_path = Path(save_path) / NOW
@@ -179,62 +178,11 @@ class WeightSave(Callback):
             self.save_path.mkdir(parents=True)
 
     def end_epoch(self, data: dict):
-        if data[EPOCH] % self.save_freq:
-            torch.save({MODEL: data[MODEL].state_dict(),
-                        OPTIMIZER: data[OPTIMIZER].state_dict(),
-                        EPOCH: data[EPOCH]},
-                       self.save_path / f"{data[EPOCH]}.pkl")
-
-
-class ReporterCallback(Callback):
-    def __init__(self, reporter: Reporter, callback: Callback, *,
-                 report_freq: int = -1):
-        """
-        reporter integrated callback
-        :param reporter:
-        :param callback:
-        :param report_freq: report frequency in step. If -1, no report during each iteration.
-        """
-        self.reporter = reporter
-        self.callback = callback
-        self.report_freq = report_freq
-
-    def end_iteration(self, data: dict):
-        results = self.callback.end_iteration(data)
-
-        if (data[STEP] % self.report_freq == 0) and self.report_freq > 0:
-            for k, v in results.items():
-                self.reporter.add_scalar(v, name=f"{STEP}_{k}", idx=data[STEP])
-
-    def end_epoch(self, data: dict):
-        results = self.callback.end_epoch(data)
-        for k, v in results.items():
-            self.reporter.add_scalar(v, name=k, idx=data[EPOCH])
-
-    def close(self):
-        self.reporter.close()
-        self.callback.close()
-
-
-class ParameterReporterCallback(Callback):
-    def __init__(self, reporter: Reporter, *, report_freq: int = -1):
-        """
-        report parameter histogram
-        :param reporter: reporter which has add_histogram
-        :param report_freq: report frequency in step. If -1, not report at each iteration but report at each epoch
-        """
-        self.reporter = reporter
-        self.report_freq = report_freq
-
-    def end_iteration(self, data: dict):
-        if (data[STEP] % self.report_freq == 0) and self.report_freq > 0:
-            for name, param in data[MODEL].named_parameters():
-                self.reporter.add_histogram(param, name, data[STEP])
-
-    def end_epoch(self, data: dict):
-        if self.report_freq == -1:
-            for name, param in data[MODEL].named_parameters():
-                self.reporter.add_histogram(param, name, data[EPOCH])
-
-    def close(self):
-        self.reporter.close()
+        if data[EPOCH] % self.save_freq == 0:
+            try:
+                torch.save({MODEL: data[MODEL].state_dict(),
+                            OPTIMIZER: data[OPTIMIZER].state_dict(),
+                            EPOCH: data[EPOCH]},
+                           self.save_path / f"{data[EPOCH]}.pkl")
+            except Exception as e:
+                raise e
