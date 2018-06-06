@@ -83,7 +83,7 @@ class ImageFolder(_DataSet):
 
 
 class LabelCorruptedImages(ImageFolder):
-    def __init__(self, root, transform, random_rate: float = 0, val_size: int = 0):
+    def __init__(self, root, transform, random_rate: float = 0, val_size: int = 0, random_seed: int = 6):
         """
         A subclass of ImageFloder whose labels are corrupted in given `random_rate`.
         >>>dataset = LabelCorruptedImages("here", random_rate=0.1, val_size=1500)
@@ -93,6 +93,7 @@ class LabelCorruptedImages(ImageFolder):
         self.random_rate = random_rate
         self.val_size = val_size
         self.num_classes = len(self.classes)
+        random.seed(random_seed)
 
         assert 0 <= random_rate <= 1
         if val_size > 0:
