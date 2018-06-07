@@ -197,7 +197,7 @@ class TensorBoardWrapper(ReporterWrapper):
         from tensorboardX import SummaryWriter
 
         super(TensorBoardWrapper, self).__init__(save_dir)
-        self._writer = SummaryWriter(log_dir=save_dir)
+        self._writer = SummaryWriter(log_dir=self._save_dir)
 
     def add_scalar(self, x, name: str, idx: int):
         self._register_data(x, name, idx)
