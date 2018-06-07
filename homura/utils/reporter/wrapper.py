@@ -11,6 +11,8 @@ from torchvision.utils import make_grid
 from homura.utils._miscs import get_git_hash
 from homura.utils._vocabulary import *
 
+DEFAULT_SAVE_DIR = "results"
+
 
 def _dimension(x):
     if "numpy" in str(type(x)):
@@ -46,8 +48,9 @@ class ReporterWrapper(object):
         # automatically save the results
         """
         self._container = defaultdict(list)
-        self._save_dir = save_dir
-        self._filename = NOW + get_git_hash() + ".json"
+        save_dir = DEFAULT_SAVE_DIR if save_dir is None else save_dir
+        self._save_dir = pathlib.Path(save_dir) / NOW
+        self._filename = get_git_hash() + ".json"
 
     def add_scalar(self, x, name: str, idx: int):
         raise NotImplementedError
