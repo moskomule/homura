@@ -52,7 +52,7 @@ class _DataSet(data.Dataset):
         return img, target
 
     def __len__(self):
-        return self.length
+        return len(self.samples)
 
     @staticmethod
     def image_loader(path):
