@@ -1,11 +1,12 @@
-from typing import Callable, Iterable
 from pathlib import Path
+from typing import Callable, Iterable
 
 import torch
 from torch import nn, optim
-from .reporter.wrapper import TQDMWrapper
-from .callbacks import CallbackList, Callback
+
 from ._vocabulary import *
+from .callbacks import CallbackList, Callback
+from .reporter.wrapper import TQDMWrapper
 
 _optimizers = {"sgd": optim.SGD,
                "adam": optim.Adam,
@@ -16,7 +17,7 @@ class Trainer(object):
 
     def __init__(self, model: nn.Module, optimizer: dict or optim.Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler=None, verb=True,
-                 use_cuda=True, use_cudnn_bnenchmark=True, **kwargs):
+                 multi_gpu=False, use_cudnn_bnenchmark=True, **kwargs):
         """
         :param model: model to be trained
         :param optimizer: optimizer for the model. If dict,  {"name": "optimizer name", **kwargs}.
@@ -24,17 +25,20 @@ class Trainer(object):
         :param callbacks: callbacks
         :param scheduler: learning rate scheduler
         :param verb:
-        :param use_cuda:
+        :param multi_gpu:
         :param use_cudnn_bnenchmark:
         :param kwargs:
         """
 
+        self._device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model = model
-        self._use_cuda = use_cuda and torch.cuda.is_available()
-        if self._use_cuda:
-            self.model.cuda()
+        if self._device == "cuda":
             if use_cudnn_bnenchmark:
                 torch.backends.cudnn.benchmark = True
+            if multi_gpu:
+                self.model = nn.DataParallel(model,
+                                             device_ids=list(range(torch.cuda.device_count())))
+            self.model.to(self._device)
 
         if isinstance(optimizer, dict):
             opt = optimizer.get("name", "").lower()
@@ -61,6 +65,12 @@ class Trainer(object):
                 raise AttributeError(f"{self} already has {k}")
             setattr(self, k, v)
 
+        self._start_iteration = {}
+        self._end_iteration = {}
+        self._start_epoch = {}
+        self._end_epoch = {}
+        self._end_all = {}
+
     def iteration(self, data: Iterable[torch.Tensor], is_train: bool) -> Iterable[torch.Tensor]:
         """
         iteration part, user can override
@@ -77,27 +87,48 @@ class Trainer(object):
             self.optimizer.step()
         return loss, output
 
+    def register_start_iteration(self, name, data):
+        self._start_iteration[name] = data
+
+    def register_end_iteration(self, name, data):
+        self._end_iteration[name] = data
+
+    def register_start_epoch(self, name, data):
+        self._start_epoch[name] = data
+
+    def register_end_epoch(self, name, data):
+        self._end_epoch[name] = data
+
+    def register_end_all(self, name, data):
+        self._end_all[name] = data
+
     def _iteration(self, data: Iterable[torch.Tensor], is_train: bool, name: str):
         with torch.no_grad():
-            self._callbacks.start_epoch({MODEL: self.model,
-                                         STEP: self._step,
-                                         NAME: name,
-                                         TRAINER: self})
+            _start_iteration = {MODEL: self.model,
+                                STEP: self._step,
+                                NAME: name,
+                                TRAINER: self}
+            _start_iteration.update(self._start_iteration)
+            self._callbacks.start_iteration(_start_iteration)
         loss, output = self.iteration(data, is_train)
         with torch.no_grad():
-            self._callbacks.end_iteration({OUTPUT: output.cpu(),
-                                           DATA: data,
-                                           MODEL: self.model,
-                                           LOSS: loss.data.item(),
-                                           STEP: self._step,
-                                           NAME: name,
-                                           TRAINER: self})
+            _end_iteration = {OUTPUT: output.cpu(),
+                              DATA: data,
+                              MODEL: self.model,
+                              LOSS: loss.data.item(),
+                              STEP: self._step,
+                              NAME: name,
+                              TRAINER: self}
+            _end_iteration.update(self._end_iteration)
+            self._callbacks.end_iteration(_end_iteration)
 
     def _loop(self, data_loader, is_train: bool, name: str):
         with torch.no_grad():
-            self._callbacks.start_epoch({MODEL: self.model,
-                                         NAME: name,
-                                         TRAINER: self})
+            _start_epoch = {MODEL: self.model,
+                            NAME: name,
+                            TRAINER: self}
+            _start_epoch.update(self._start_epoch)
+            self._callbacks.start_epoch(_start_epoch)
 
         data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
 
@@ -107,12 +138,14 @@ class Trainer(object):
                 self._step += 1
 
         with torch.no_grad():
-            self._callbacks.end_epoch({MODEL: self.model,
-                                       OPTIMIZER: self.optimizer,
-                                       EPOCH: self._epoch,
-                                       NAME: name,
-                                       ITER_PER_EPOCH: len(data_loader),
-                                       TRAINER: self})
+            _end_epoch = {MODEL: self.model,
+                          OPTIMIZER: self.optimizer,
+                          EPOCH: self._epoch,
+                          NAME: name,
+                          ITER_PER_EPOCH: len(data_loader),
+                          TRAINER: self}
+            _end_epoch.update(self._end_epoch)
+            self._callbacks.end_epoch(_end_epoch)
 
     def train(self, data_loader):
         self.model.train()
@@ -144,9 +177,11 @@ class Trainer(object):
 
     def _exit(self):
         with torch.no_grad():
-            self._callbacks.end_all({MODEL: self.model,
-                                     OPTIMIZER: self.optimizer,
-                                     TRAINER: self})
+            _end_all = {MODEL: self.model,
+                        OPTIMIZER: self.optimizer,
+                        TRAINER: self}
+            _end_all.update(self._end_all)
+            self._callbacks.end_all(_end_all)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._exit()
@@ -159,10 +194,7 @@ class Trainer(object):
         :param kwargs:
         :return:
         """
-        if self._use_cuda:
-            return (t.cuda(**kwargs) for t in data)
-        else:
-            return data
+        return (t.to(self._device, **kwargs) for t in data)
 
     def load(self, path, load_last=False):
         """
