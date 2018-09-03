@@ -1,6 +1,7 @@
 from typing import Iterable, Callable
 from collections import ChainMap
 from pathlib import Path
+from copy import deepcopy
 
 import torch
 
@@ -180,7 +181,8 @@ class WeightSave(Callback):
     def end_epoch(self, data: dict):
         if data[EPOCH] % self.save_freq == 0:
             try:
-                torch.save({MODEL: data[MODEL].state_dict(),
+                model = deepcopy(data[MODEL]).cpu()
+                torch.save({MODEL: model.state_dict(),
                             OPTIMIZER: data[OPTIMIZER].state_dict(),
                             EPOCH: data[EPOCH]},
                            self.save_path / f"{data[EPOCH]}.pkl")
