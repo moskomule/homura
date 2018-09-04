@@ -1,9 +1,10 @@
-from typing import Iterable, Callable
 from collections import ChainMap
-from pathlib import Path
 from copy import deepcopy
+from pathlib import Path
+from typing import Iterable, Callable
 
 import torch
+from torch import nn
 
 from ._vocabulary import *
 
@@ -181,7 +182,10 @@ class WeightSave(Callback):
     def end_epoch(self, data: dict):
         if data[EPOCH] % self.save_freq == 0:
             try:
-                model = deepcopy(data[MODEL]).cpu()
+                model = data[MODEL]
+                if isinstance(model, nn.DataParallel):
+                    model = model.module
+                model = deepcopy(model).cpu()
                 torch.save({MODEL: model.state_dict(),
                             OPTIMIZER: data[OPTIMIZER].state_dict(),
                             EPOCH: data[EPOCH]},
