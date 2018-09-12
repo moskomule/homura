@@ -42,3 +42,11 @@ git clone https://github.com/moskomule/homura
 git checkout old
 pip install -e .
 ```
+
+# Examples
+
+See [examples](examples).
+
+* [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
+* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet
+* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation
