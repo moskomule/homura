@@ -1,5 +1,4 @@
 from collections import ChainMap
-from copy import deepcopy
 from pathlib import Path
 from typing import Iterable, Callable
 
@@ -185,8 +184,7 @@ class WeightSave(Callback):
                 model = data[MODEL]
                 if isinstance(model, nn.DataParallel):
                     model = model.module
-                model = deepcopy(model).cpu()
-                torch.save({MODEL: model.state_dict(),
+                torch.save({MODEL: {key: param.cpu() for key, param in model.state_dict().items()},
                             OPTIMIZER: data[OPTIMIZER].state_dict(),
                             EPOCH: data[EPOCH]},
                            self.save_path / f"{data[EPOCH]}.pkl")
