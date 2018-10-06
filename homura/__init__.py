@@ -1,2 +1,2 @@
-from homura import data, modules, utils
-from homura.vision import transforms, models
+import data, modules, utils
+from .vision import transforms, models
