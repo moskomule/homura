@@ -15,8 +15,8 @@ class _Reporter(Callback):
     def add_callbacks(self, *callbacks):
         self.callback._callbacks += list(callbacks)
 
-    def end_iteration(self, data: dict):
-        results = self.callback.end_iteration(data)
+    def after_iteration(self, data: dict):
+        results = self.callback.after_iteration(data)
 
         if (data[STEP] % self.report_freq == 0) and self.report_freq > 0:
             for k, v in results.items():
@@ -25,8 +25,8 @@ class _Reporter(Callback):
             if self.report_params and (data[STEP] % self.report_params_freq == 0):
                 self._add_params(data[MODEL], data[STEP])
 
-    def end_epoch(self, data: dict):
-        results = self.callback.end_epoch(data)
+    def after_epoch(self, data: dict):
+        results = self.callback.after_epoch(data)
         for k, v in results.items():
             self.base_wrapper.add_scalar(v, name=k, idx=data[EPOCH])
 

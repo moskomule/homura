@@ -15,7 +15,6 @@ torchvision==0.2
 ```
 
 ```
-yaml
 tqdm
 ```
 

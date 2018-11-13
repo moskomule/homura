@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Iterable, Callable
 
 import torch
-from torch import nn
 
 from ._vocabulary import *
 
@@ -16,19 +15,22 @@ class Callback(object):
     Base class of Callback class
     """
 
-    def start_iteration(self, data: dict) -> dict:
+    def before_iteration(self, data: dict) -> dict:
         pass
 
-    def end_iteration(self, data: dict) -> dict:
+    def after_iteration(self, data: dict) -> dict:
         pass
 
-    def start_epoch(self, data: dict) -> dict:
+    def before_epoch(self, data: dict) -> dict:
         pass
 
-    def end_epoch(self, data: dict) -> dict:
+    def after_epoch(self, data: dict) -> dict:
         pass
 
-    def end_all(self, data: dict) -> dict:
+    def before_all(self, data: dict) -> dict:
+        pass
+
+    def after_all(self, data: dict) -> dict:
         pass
 
     def close(self):
@@ -42,58 +44,52 @@ class Callback(object):
 
 
 class MetricCallback(Callback):
-    def __init__(self, metric: Callable[[dict, int], float], top_k: int or tuple, name: str):
+    def __init__(self, metric: Callable[[dict], float], name: str):
         """
         Base class of MetricCallback class such as AccuracyCallback
-        :param metric: metric function: (data, k) -> float, where k is from top_k
-        :param top_k: top Nth metric (e.g. (1, 5) then top 1 and 5 accuracy)
+        :param metric: metric function: (data) -> float
         :param name: name of the metric
         """
-        if not isinstance(top_k, Iterable):
-            top_k = [top_k]
-        self.top_k = top_k
         if metric is not None:
             self.metric_function = metric
         self.metric_name = name
+        self._last_iter = {}
+        self._last_epoch = {}
         self._metrics_history = {}
 
-    def end_iteration(self, data: dict):
-        _iter_metrics = {}
-        name = data[NAME]
-        for k in self.top_k:
-            key = self._key(k, name)
-            metric = self.metric_function(data, k)
-            _iter_metrics[key] = metric
-            if self._metrics_history.get(key) is None:
-                # initialize
-                self._metrics_history[key] = [metric]
-            else:
-                self._metrics_history[key][-1] += metric
-        return _iter_metrics
+    def before_iteration(self, data: dict):
+        self._last_iter.clear()
 
-    def start_epoch(self, data: dict):
-        name = data[NAME]
-        for k in self.top_k:
-            key = self._key(k, name)
-            if self._metrics_history.get(key) is not None:
-                self._metrics_history[key].append(0)
+    def after_iteration(self, data: dict):
+        mode = data[MODE]
+        key = self._get_key_name(mode)
+        # if once this method is called after every iteration, self._last_iter is not None
+        if self._last_iter.get(key) is None:
+            metric = self.metric_function(data)
+            self._last_iter[key] = metric
+            self._metrics_history[key][-1] += metric
+        return self._last_iter
 
-    def end_epoch(self, data: dict):
-        _epoch_metrics = {}
-        name = data[NAME]
+    def before_epoch(self, data: dict):
+        # initialization
+        self._last_epoch.clear()
+        mode = data[MODE]
+        key = self._get_key_name(mode)
+        if self._metrics_history.get(key) is not None:
+            self._metrics_history[key].append(0)
+
+    def after_epoch(self, data: dict):
+        mode = data[MODE]
         iter_per_epoch = data[ITER_PER_EPOCH]
-        for k in self.top_k:
-            key = self._key(k, name)
+        key = self._get_key_name(mode)
+        # if once this method is called after every epoch, self._last_epoch is not None
+        if self._last_epoch.get(key) is None:
             self._metrics_history[key][-1] /= iter_per_epoch
-            _epoch_metrics[key] = self._metrics_history[key][-1]
+            self._last_epoch[key] = self._metrics_history[key][-1]
+        return self._last_epoch
 
-        return _epoch_metrics
-
-    def _key(self, k, name):
-        if len(self.top_k) == 1:
-            return f"{self.metric_name}_{name}"
-        else:
-            return f"{self.metric_name}_{name}_top{k}"
+    def _get_key_name(self, name):
+        return f"{self.metric_name}_{name}"
 
 
 class CallbackList(Callback):
@@ -113,20 +109,20 @@ class CallbackList(Callback):
                 raise TypeError(f"{c} is not a callback!")
         self._callbacks = list(callbacks)
 
-    def start_iteration(self, data: dict):
-        return self._cat([c.start_iteration(data) for c in self._callbacks])
+    def before_iteration(self, data: dict):
+        return self._cat([c.before_iteration(data) for c in self._callbacks])
 
-    def end_iteration(self, data: dict):
-        return self._cat([c.end_iteration(data) for c in self._callbacks])
+    def after_iteration(self, data: dict):
+        return self._cat([c.after_iteration(data) for c in self._callbacks])
 
-    def start_epoch(self, data: dict):
-        return self._cat([c.start_epoch(data) for c in self._callbacks])
+    def before_epoch(self, data: dict):
+        return self._cat([c.before_epoch(data) for c in self._callbacks])
 
-    def end_epoch(self, data: dict):
-        return self._cat([c.end_epoch(data) for c in self._callbacks])
+    def after_epoch(self, data: dict):
+        return self._cat([c.after_epoch(data) for c in self._callbacks])
 
-    def end_all(self, data: dict):
-        return self._cat([c.end_all(data) for c in self._callbacks])
+    def after_all(self, data: dict):
+        return self._cat([c.after_all(data) for c in self._callbacks])
 
     def close(self):
         for c in self._callbacks:
@@ -139,18 +135,18 @@ class CallbackList(Callback):
 
 
 class AccuracyCallback(MetricCallback):
-    def __init__(self, k: int or tuple = 1):
+    def __init__(self, k: int = 1):
         """
         calculate and accumulate accuracy
-        :param k: top k accuracy (e.g. (1, 5) then top 1 and 5 accuracy)
         """
-        super(AccuracyCallback, self).__init__(metric=self.accuracy, top_k=k, name="accuracy")
+        self.top_k = k
+        suffix = f"_top{self.top_k}" if self.top_k != 1 else ""
+        super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
 
-    @staticmethod
-    def accuracy(data, k=1):
-        output, target = data[OUTPUT], data[DATA][1]
+    def accuracy(self, data):
+        output, target = data[OUTPUT], data[INPUTS][1]
         with torch.autograd.no_grad():
-            _, pred_idx = output.topk(k, dim=1)
+            _, pred_idx = output.topk(self.top_k, dim=1)
             target = target.view(-1, 1).expand_as(pred_idx)
             return (pred_idx == target).float().sum(dim=1).mean().item()
 
@@ -160,8 +156,8 @@ class LossCallback(MetricCallback):
         """
         accumulate loss
         """
-        super(LossCallback, self).__init__(metric=lambda data, _: data[LOSS],
-                                           top_k=1, name="loss")
+        super(LossCallback, self).__init__(metric=lambda data: data[LOSS],
+                                           name="loss")
 
 
 class WeightSave(Callback):
@@ -178,13 +174,10 @@ class WeightSave(Callback):
         if not self.save_path.exists():
             self.save_path.mkdir(parents=True)
 
-    def end_epoch(self, data: dict):
+    def after_epoch(self, data: dict):
         if data[EPOCH] % self.save_freq == 0:
             try:
-                model = data[MODEL]
-                if isinstance(model, nn.DataParallel):
-                    model = model.module
-                torch.save({MODEL: {key: param.cpu() for key, param in model.state_dict().items()},
+                torch.save({MODEL: data[MODEL].state_dict(),
                             OPTIMIZER: data[OPTIMIZER].state_dict(),
                             EPOCH: data[EPOCH]},
                            self.save_path / f"{data[EPOCH]}.pkl")

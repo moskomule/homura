@@ -4,7 +4,7 @@ from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiSt
                                       ExponentialLR as _ExponentialLR, CosineAnnealingLR as _CosineAnnealingLR,
                                       ReduceLROnPlateau as _ReduceLROnPlateau)
 
-from .optimizer import Optimizer
+from homura.optimizer import Optimizer
 
 
 class Scheduler(metaclass=ABCMeta):
