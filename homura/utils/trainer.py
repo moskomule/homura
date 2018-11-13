@@ -51,7 +51,7 @@ class TrainerBase(metaclass=ABCMeta):
         # set optimizer(s)
         if isinstance(optimizer, Optimizer):
             optimizer.set_model(self.model)
-            self.optimizer = optimizer
+            self.optimizer = optimizer.optim
         elif isinstance(optimizer, dict):
             if not isinstance(model, dict):
                 raise TypeError(f"model is not dict but optimizer is dict!")
@@ -62,7 +62,7 @@ class TrainerBase(metaclass=ABCMeta):
                 if m is None:
                     raise KeyError(f"No such key {k} in model!")
                 opt.set_model(m)
-                _opt[k] = opt
+                _opt[k] = opt.optim
             self.optimizer = _opt
 
         # set scheduler(s)
@@ -70,7 +70,7 @@ class TrainerBase(metaclass=ABCMeta):
             self._scheduler = None
         elif isinstance(scheduler, Scheduler):
             scheduler.set_optimizer(self.optimizer)
-            self._scheduler = scheduler
+            self._scheduler = scheduler.scheduler
         elif isinstance(scheduler, dict):
             if not isinstance(optimizer, dict):
                 raise TypeError(f"optimizer is not dict but scheduler is dict!")
@@ -80,7 +80,7 @@ class TrainerBase(metaclass=ABCMeta):
                 if opt is None:
                     raise KeyError(f"No such key {k} in optimizer")
                 schdlr.set_optimizer(opt)
-                _schdlr[k] = schdlr
+                _schdlr[k] = schdlr.scheduler
             self._scheduler = _schdlr
 
         self.loss_f = loss_f
