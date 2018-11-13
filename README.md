@@ -33,16 +33,6 @@ visdom
 pip install git+https://github.com/moskomule/homura#egg=homura
 ```
 
-## For old codes
-
-For PyTorch v0.3.1,
-
-```console
-git clone https://github.com/moskomule/homura
-git checkout old
-pip install -e .
-```
-
 # Examples
 
 See [examples](examples).
