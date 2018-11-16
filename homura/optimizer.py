@@ -4,6 +4,8 @@ from torch import nn
 from torch.optim import SGD as _SGD, Adam as _Adam, RMSprop as _RMSprop, ASGD as _ASGD
 
 
+__all__ = ["Optimizer", "Adam", "SGD", "ASGD", "RMSProp"]
+
 class Optimizer(metaclass=ABCMeta):
 
     def __init__(self, optim_cls, **kwargs):

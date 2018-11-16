@@ -6,6 +6,9 @@ from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiSt
 
 from homura.optimizer import Optimizer
 
+__all__ = ["Scheduler", "StepLR", "MultiStepLR", "LambdaLR", "ExponentialLR",
+           "CosineAnnealingLR", "ReduceLROnPlateau"]
+
 
 class Scheduler(metaclass=ABCMeta):
     def __init__(self, schdlr_cls, **kwargs):
