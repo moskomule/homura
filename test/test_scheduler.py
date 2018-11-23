@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from torch import nn, optim
 
-from homura.scheduler import *
+from homura.lr_scheduler import *
 
 
 class TestSchedulers(TestCase):

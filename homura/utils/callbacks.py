@@ -93,13 +93,13 @@ class MetricCallback(Callback):
 
 
 class CallbackList(Callback):
-    def __init__(self, *callbacks: Callback):
+    def __init__(self, *callbacks: Iterable[Callback]):
         """
         collect some callbacks
         :param callbacks: callbacks
         """
         if callbacks is None:
-            callbacks = Callback()
+            raise TypeError("callbacks is expected to be Callback but None")
 
         if not isinstance(callbacks, Iterable):
             callbacks = [callbacks]

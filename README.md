@@ -43,16 +43,16 @@ See [examples](examples).
 # APIs
 
 ```python
-from homura import optimizer, scheduler
+from homura import optim, lr_scheduler
 from homura.utils import trainer, callbacks, reporter
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
 resnet = resnet50()
 # model will be registered in the trainer
-_optimizer = optimizer.SGD(lr=0.1, momentum=0.9)
+_optimizer = optim.SGD(lr=0.1, momentum=0.9)
 # optimizer will be registered in the trainer
-_scheduler = scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
+_scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 # list of callbacks
 _callbacks = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
 # reporter or list of reporters

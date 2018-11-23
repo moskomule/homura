@@ -5,8 +5,8 @@ from typing import Callable, Iterable, Dict
 import torch
 from torch import nn
 
-from optimizer import Optimizer
-from scheduler import Scheduler
+from lr_scheduler import LRScheduler
+from optim import Optimizer
 from ._vocabulary import *
 from .callbacks import CallbackList, Callback
 from .reporter.wrapper import TQDMWrapper
@@ -19,15 +19,15 @@ class TrainerBase(metaclass=ABCMeta):
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  optimizer: Optimizer or Dict[str, Optimizer],
                  loss_f: Callable or Dict[str, Callable], *,
-                 callbacks: Callback = None,
-                 scheduler: Scheduler or Dict[Scheduler] = None,
+                 callbacks: Callback or Iterable[Callable] = None,
+                 scheduler: LRScheduler or Dict[LRScheduler] = None,
                  verb=True, use_cudnn_bnenchmark=True, **kwargs):
         """
         :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
         :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
         :param loss_f: loss function or dict of loss functions
-        :param callbacks: callbacks
-        :param scheduler: homura..scheduler or
+        :param callbacks: callbacks or list of callbacks
+        :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
         :param verb:
         :param use_cudnn_bnenchmark:
         :param kwargs:
@@ -67,11 +67,13 @@ class TrainerBase(metaclass=ABCMeta):
                 opt.set_model(m.parameters())
                 _opt[k] = opt.optim
             self.optimizer = _opt
+        else:
+            raise TypeError(f"{type(optimizer)}")
 
         # set scheduler(s)
         if scheduler is None:
             self._scheduler = None
-        elif isinstance(scheduler, Scheduler):
+        elif isinstance(scheduler, LRScheduler):
             scheduler.set_optimizer(self.optimizer)
             self._scheduler = scheduler.scheduler
         elif isinstance(scheduler, dict):
@@ -85,14 +87,19 @@ class TrainerBase(metaclass=ABCMeta):
                 schdlr.set_optimizer(opt)
                 _schdlr[k] = schdlr.scheduler
             self._scheduler = _schdlr
+        else:
+            raise TypeError(f"{type(scheduler)}")
 
         self.loss_f = loss_f
 
         # set callback(s)
         if isinstance(callbacks, CallbackList):
             self._callbacks = callbacks
-        else:
+        elif isinstance(callbacks, Iterable):
             self._callbacks = CallbackList(callbacks)
+        else:
+            # if callback is not set
+            self._callbacks = Callback()
 
         self._step = 0
         self._epoch = 0
@@ -251,12 +258,13 @@ class TrainerBase(metaclass=ABCMeta):
 
 class SupervisedTrainer(TrainerBase):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
-                 callbacks: Callback = None, scheduler: Scheduler = None,
+                 callbacks: Callback = None, scheduler: LRScheduler = None,
                  verb=True, use_cudnn_bnenchmark=True, **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
                                                 verb=verb, use_cudnn_bnenchmark=use_cudnn_bnenchmark, **kwargs)
+        print(self.optimizer)
 
     def iteration(self, inputs: Iterable[torch.Tensor]):
         input, target = self.to_device(inputs)

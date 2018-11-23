@@ -1,10 +1,10 @@
 from abc import ABCMeta
 
 from torch import nn
-from torch.optim import SGD as _SGD, Adam as _Adam, RMSprop as _RMSprop, ASGD as _ASGD
-
+from torch.optim import SGD as _SGD, Adam as _Adam, RMSprop as _RMSprop, ASGD as _ASGD, Optimizer as _Optimizer
 
 __all__ = ["Optimizer", "Adam", "SGD", "ASGD", "RMSProp"]
+
 
 class Optimizer(metaclass=ABCMeta):
 
@@ -17,7 +17,7 @@ class Optimizer(metaclass=ABCMeta):
         self._optim = self._optim_cls(model, **self._args)
 
     @property
-    def optim(self):
+    def optim(self) -> _Optimizer:
         return self._optim
 
 
