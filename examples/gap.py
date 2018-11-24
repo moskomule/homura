@@ -9,8 +9,8 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.models import resnet50
 
+from homura import callbacks, reporter, optim
 from homura.data.folder import _DataSet, find_classes, make_dataset
-from homura.utils import Trainer as TrainerBase, callbacks, reporter
 
 
 class ImageFolder(_DataSet):
@@ -134,7 +134,7 @@ class Trainer(TrainerBase):
         self.mag_in = 10
         self.noise = noise
 
-    def iteration(self, data, is_train: bool):
+    def iteration(self, data):
         if self.noise is None:
             raise RuntimeError
         input, target = self.to_device(data)
@@ -144,12 +144,12 @@ class Trainer(TrainerBase):
         recons = self.clamp(input + delta, input)
         adv_output = self.pretrained(recons)
         loss = self.loss_f(adv_output, original_output.argmin(dim=1))
-        if is_train:
+        if self.is_train:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-        self.register_end_iteration("prediction", original_output.argmax(dim=1))
-        self.register_end_iteration("adv_prediction", adv_output.argmax(dim=1))
+        self.register_after_iteration("prediction", original_output.argmax(dim=1))
+        self.register_after_iteration("adv_prediction", adv_output.argmax(dim=1))
 
         return loss, original_output
 
@@ -181,10 +181,10 @@ class FoolingRate(callbacks.MetricCallback):
         calculate and accumulate accuracy
         :param k: top k accuracy (e.g. (1, 5) then top 1 and 5 accuracy)
         """
-        super(FoolingRate, self).__init__(metric=self.fool, top_k=1, name="fooling_rate")
+        super(FoolingRate, self).__init__(metric=self.fool, name="fooling_rate")
 
     @staticmethod
-    def fool(data, k=1):
+    def fool(data):
         prediction, adv_prediction, = data["prediction"], data["adv_prediction"]
         with torch.no_grad():
             return (prediction != adv_prediction).float().mean().item()
@@ -192,10 +192,10 @@ class FoolingRate(callbacks.MetricCallback):
 
 class AdvAccuracy(callbacks.MetricCallback):
     def __init__(self):
-        super(AdvAccuracy, self).__init__(metric=self.accuracy, top_k=1, name="adv_accuracy")
+        super(AdvAccuracy, self).__init__(metric=self.accuracy, name="adv_accuracy")
 
     @staticmethod
-    def accuracy(data, k=1):
+    def accuracy(data):
         adv_prediction, target = data["adv_prediction"], data["data"][1]
         with torch.no_grad():
             return (adv_prediction == target).float().mean().item()
@@ -239,7 +239,7 @@ def main():
 
     generator = ResNetGenerator(3, 3, args.num_filters)
     generator.cuda()
-    optimizer = torch.optim.Adam(generator.parameters(), lr=args.lr, betas=(args.beta1, 0.999))
+    optimizer = optim.Adam(lr=args.lr, betas=(args.beta1, 0.999))
     trainer = Trainer(generator, optimizer,
                       reporter.TensorboardReporter([FoolingRate(), AdvAccuracy(), callbacks.AccuracyCallback(),
                                                     callbacks.LossCallback()], save_dir="results"),

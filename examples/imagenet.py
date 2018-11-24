@@ -1,14 +1,14 @@
 from pathlib import Path
 
 import torch
-from torch import optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.models import densenet121
 
-from homura.utils import callbacks, reporter, Trainer
+from homura import optim, lr_scheduler
 from homura.data import ImageFolder
+from homura.utils import callbacks, reporter, Trainer
 
 
 def imagenet_loader(root, batch_size, num_workers=16):
@@ -36,12 +36,11 @@ def main(root, epochs, batch_size):
     train_loader, test_loader = imagenet_loader(root, batch_size)
     num_device = max(1, torch.cuda.device_count())  # for CPU
     model = torch.nn.DataParallel(densenet121(), device_ids=list(range(num_device)))
-    optimizer = optim.SGD(params=model.parameters(), lr=1e-1 * num_device, momentum=0.9,
+    optimizer = optim.SGD(lr=1e-1 * num_device, momentum=0.9,
                           weight_decay=1e-4)
-    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, [50, 70])
+    scheduler = lr_scheduler.MultiStepLR([50, 70])
 
-    c = [callbacks.AccuracyCallback(),
-         callbacks.LossCallback()]
+    c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
     r = reporter.TQDMReporter(range(epochs), callbacks=c)
     tb = reporter.TensorboardReporter(c)
 
