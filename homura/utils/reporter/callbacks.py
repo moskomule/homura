@@ -1,7 +1,8 @@
 from typing import Iterable
+
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
-from ..callbacks import Callback, CallbackList
 from .._vocabulary import *
+from ..callbacks import Callback, CallbackList
 
 
 class _Reporter(Callback):
@@ -15,6 +16,9 @@ class _Reporter(Callback):
     def add_callbacks(self, *callbacks):
         self.callback._callbacks += list(callbacks)
 
+    def before_iteration(self, data: dict):
+        self.callback.before_iteration(data)
+
     def after_iteration(self, data: dict):
         results = self.callback.after_iteration(data)
 
@@ -24,6 +28,9 @@ class _Reporter(Callback):
 
             if self.report_params and (data[STEP] % self.report_params_freq == 0):
                 self._add_params(data[MODEL], data[STEP])
+
+    def before_epoch(self, data: dict):
+        self.callback.before_epoch(data)
 
     def after_epoch(self, data: dict):
         results = self.callback.after_epoch(data)

@@ -75,7 +75,9 @@ class MetricCallback(Callback):
         self._last_epoch.clear()
         mode = data[MODE]
         key = self._get_key_name(mode)
-        if self._metrics_history.get(key) is not None:
+        if self._metrics_history.get(key) is None:
+            self._metrics_history[key] = []
+        else:
             self._metrics_history[key].append(0)
 
     def after_epoch(self, data: dict):

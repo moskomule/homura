@@ -5,8 +5,8 @@ from typing import Callable, Iterable, Dict
 import torch
 from torch import nn
 
-from lr_scheduler import LRScheduler
-from optim import Optimizer
+from homura.lr_scheduler import LRScheduler
+from homura.optim import Optimizer
 from ._vocabulary import *
 from .callbacks import CallbackList, Callback
 from .reporter.wrapper import TQDMWrapper
@@ -184,11 +184,11 @@ class TrainerBase(metaclass=ABCMeta):
 
     def _loop(self, data_loader, mode: str):
         with torch.no_grad():
-            _start_epoch = {MODEL: self.model,
-                            MODE: mode,
-                            TRAINER: self}
-            _start_epoch.update(self._before_epoch)
-            self._callbacks.before_epoch(_start_epoch)
+            _before_epoch = {MODEL: self.model,
+                             MODE: mode,
+                             TRAINER: self}
+            _before_epoch.update(self._before_epoch)
+            self._callbacks.before_epoch(_before_epoch)
 
         data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
 
@@ -198,14 +198,14 @@ class TrainerBase(metaclass=ABCMeta):
                 self._step += 1
 
         with torch.no_grad():
-            _end_epoch = {MODEL: self.model,
-                          OPTIMIZER: self.optimizer,
-                          EPOCH: self._epoch,
-                          MODE: mode,
-                          ITER_PER_EPOCH: len(data_loader),
-                          TRAINER: self}
-            _end_epoch.update(self._after_epoch)
-            self._callbacks.after_epoch(_end_epoch)
+            _after_epoch = {MODEL: self.model,
+                            OPTIMIZER: self.optimizer,
+                            EPOCH: self._epoch,
+                            MODE: mode,
+                            ITER_PER_EPOCH: len(data_loader),
+                            TRAINER: self}
+            _after_epoch.update(self._after_epoch)
+            self._callbacks.after_epoch(_after_epoch)
 
     def train(self, data_loader):
         self._is_train = True
@@ -264,7 +264,6 @@ class SupervisedTrainer(TrainerBase):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
                                                 verb=verb, use_cudnn_bnenchmark=use_cudnn_bnenchmark, **kwargs)
-        print(self.optimizer)
 
     def iteration(self, inputs: Iterable[torch.Tensor]):
         input, target = self.to_device(inputs)
