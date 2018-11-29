@@ -93,7 +93,7 @@ class MetricCallback(Callback):
 
 
 class CallbackList(Callback):
-    def __init__(self, *callbacks: Iterable[Callback]):
+    def __init__(self, *callbacks: Iterable[Callback] or Callback):
         """
         collect some callbacks
         :param callbacks: callbacks
@@ -107,7 +107,7 @@ class CallbackList(Callback):
         for c in callbacks:
             if not isinstance(c, Callback):
                 raise TypeError(f"{c} is not a callback!")
-        self._callbacks = list(callbacks)
+        self._callbacks: Iterable[Callback] = list(callbacks)
 
     def before_iteration(self, data: dict):
         return self._cat([c.before_iteration(data) for c in self._callbacks])
@@ -130,6 +130,7 @@ class CallbackList(Callback):
 
     @staticmethod
     def _cat(maps: list):
+        # make callbacks' return to a single map
         maps = [m for m in maps if m is not None]
         return dict(ChainMap(*maps))
 
