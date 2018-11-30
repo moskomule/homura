@@ -7,7 +7,7 @@ from torchvision import transforms
 from torchvision.models import densenet121
 
 from homura import optim, lr_scheduler
-from homura.data import ImageFolder
+from vision.data import ImageFolder
 from homura.utils import callbacks, reporter, Trainer
 
 

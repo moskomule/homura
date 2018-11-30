@@ -10,7 +10,7 @@ from torchvision import transforms
 from torchvision.models import resnet50
 
 from homura import callbacks, reporter, optim
-from homura.data.folder import _DataSet, find_classes, make_dataset
+from vision.data.folder import _DataSet, find_classes, make_dataset
 
 
 class ImageFolder(_DataSet):
