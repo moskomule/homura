@@ -1,1 +1,2 @@
 from .conditional_batchnorm import CategoricalConditionalBatchNorm
+from .straight_backprop import straight_backprop
