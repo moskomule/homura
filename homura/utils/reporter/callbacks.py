@@ -13,6 +13,9 @@ class _Reporter(Callback):
         self.report_params_freq = -1
         self.report_params = False
 
+    def add_memo(self, text: str, *, name="memo", index=0):
+        self.base_wrapper.add_text(text, name, index)
+
     def add_callbacks(self, *callbacks):
         self.callback._callbacks += list(callbacks)
 
