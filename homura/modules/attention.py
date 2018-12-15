@@ -26,7 +26,6 @@ class KeyValAttention(nn.Module):
             # see Transformer
             raw_attention = raw_attention / math.sqrt(queries.shape[-1])
         if self._dropout is not None:
-            # Using dropout but no mask
             mask = raw_attention.new_ones(raw_attention.size()) if mask is None else mask
             mask = self._dropout(mask)
             raw_attention = raw_attention.masked_fill(mask == 0, -1e9)

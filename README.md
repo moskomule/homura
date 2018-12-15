@@ -10,8 +10,8 @@
 
 ```
 Python>=3.6
-PyTorch>=0.4
-torchvision>=0.2
+PyTorch>=1.0
+torchvision>=0.2.1
 ```
 
 ```
@@ -32,15 +32,17 @@ visdom
 pip install git+https://github.com/moskomule/homura#egg=homura
 ```
 
-# Examples
+or
 
-See [examples](examples).
+```console
+git clone https://github.com/moskomule/homura
+cd homura; pip install -e .
+```
 
-* [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
-* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet
-* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation
 
 # APIs
+
+## utils
 
 ```python
 from homura import optim, lr_scheduler
@@ -85,3 +87,20 @@ _trainer = CustomTrainer({"generator": generator, "discriminator": discriminator
                          {"reconstruction": recon_loss, "generator": gen_loss},
                          **kwargs)
 ```
+
+## modules
+
+* `homura.modules` contains *attention*, *conditional batchnorm* and *linear backpropagation*.
+
+## vision
+
+* `homura.vision` contains some modules for vision.
+
+
+# Examples
+
+See [examples](examples).
+
+* [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
+* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet
+* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation (**it uses old APIs**)
