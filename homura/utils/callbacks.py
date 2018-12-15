@@ -148,7 +148,7 @@ class AccuracyCallback(MetricCallback):
 
     def accuracy(self, data):
         output, target = data[OUTPUT], data[INPUTS][1]
-        with torch.autograd.no_grad():
+        with torch.no_grad():
             _, pred_idx = output.topk(self.top_k, dim=1)
             target = target.view(-1, 1).expand_as(pred_idx)
             return (pred_idx == target).float().sum(dim=1).mean().item()
