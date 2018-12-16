@@ -1,10 +1,9 @@
-from typing import Iterable, Dict
-from pathlib import Path
 import random
-from PIL import Image
+from pathlib import Path
+from typing import Iterable, Dict
 
-import torch
 import torch.utils.data as data
+from PIL import Image
 
 
 def has_allowed_extension(file: Path, extensions: Iterable[str]):
@@ -34,7 +33,7 @@ class _DataSet(data.Dataset):
         """
 
         self.root = root
-        self.samples = samples
+        self.samples = samples  # List of (image, target)
         self.length = len(self.samples)
         self.transforms = transform
         self.on_memory = on_memory
@@ -63,19 +62,24 @@ class _DataSet(data.Dataset):
 class ImageFolder(_DataSet):
     IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']
 
-    def __init__(self, root, transform=None, on_memory: bool = False):
+    def __init__(self, root, transform=None, num_samples: int = None, on_memory: bool = False):
         """
         A generic data loader where the images are arranged in this way
             root/cat/xxx.png
             root/dog/xxx.png
         :param root:
         :param transform:
+        :param num_samples: Number of samples you want to use. If None, use all samples.
         :param on_memory: True if you want to store loaded images on the RAM for faster reloading. (False by default)
         """
         classes, class_to_idx = find_classes(root)
         samples = make_dataset(root, class_to_idx, self.IMG_EXTENSIONS)
         if len(samples) == 0:
-            raise RuntimeError(f"Found 0 image in subdirectories of {root}.")
+            raise RuntimeError(f"Found no image in subdirectories of {root}.")
+        if num_samples is not None:
+            if num_samples > len(samples):
+                raise RuntimeError(f"Required too many samples ({num_samples}) but there are {len(samples)} samples")
+            samples = random.sample(samples, k=num_samples)
         super(ImageFolder, self).__init__(root, samples, transform, on_memory)
 
         self.classes = classes
@@ -115,40 +119,3 @@ class LabelCorruptedImages(ImageFolder):
 
     def valset(self, transform=None, on_memory=False):
         return _DataSet(root=self.root, samples=self._val_samples, transform=transform, on_memory=on_memory)
-
-
-# THESE CODES ARE FROM THE PyTorch MASTER BRANCH #
-class Subset(data.Dataset):
-    """
-    Subset of a dataset at specified indices.
-
-    Arguments:
-        dataset (Dataset): The whole Dataset
-        indices (sequence): Indices in the whole set selected for subset
-    """
-
-    def __init__(self, dataset, indices):
-        self.dataset = dataset
-        self.indices = indices
-
-    def __getitem__(self, idx):
-        return self.dataset[self.indices[idx]]
-
-    def __len__(self):
-        return len(self.indices)
-
-
-def random_split(dataset, lengths):
-    """
-    Randomly split a dataset into non-overlapping new datasets of given lengths.
-
-    Arguments:
-        dataset (Dataset): Dataset to be split
-        lengths (sequence): lengths of splits to be produced
-    """
-    if sum(lengths) != len(dataset):
-        raise ValueError("Sum of input lengths does not equal the length of the input dataset!")
-
-    indices = torch.randperm(sum(lengths))
-    return [Subset(dataset, indices[offset - length:offset])
-            for offset, length in zip(torch._utils._accumulate(lengths), lengths)]
