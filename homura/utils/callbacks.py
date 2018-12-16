@@ -76,7 +76,7 @@ class MetricCallback(Callback):
         mode = data[MODE]
         key = self._get_key_name(mode)
         if self._metrics_history.get(key) is None:
-            self._metrics_history[key] = []
+            self._metrics_history[key] = [0]
         else:
             self._metrics_history[key].append(0)
 
