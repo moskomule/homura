@@ -9,7 +9,7 @@ class KeyValAttention(nn.Module):
     def __init__(self, scaling: bool = False, dropout_ratio: float = 0):
         super(KeyValAttention, self).__init__()
         self._scaling = scaling
-        self._dropout_ratio = dropout_ratio
+        self._dropout = nn.Dropout(dropout_ratio) if dropout_ratio > 0 else None
 
     def forward(self, queries: torch.Tensor, keys: torch.Tensor, values: torch.Tensor, mask=None):
         """
