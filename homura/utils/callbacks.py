@@ -163,6 +163,19 @@ class LossCallback(MetricCallback):
                                            name="loss")
 
 
+def metric_callback_decorator(name):
+    """
+    >>> @metric_callback_decorator("loss")
+    >>> def loss(data):
+    >>>     return data["loss"]
+    """
+
+    def wrapper(metric):
+        return MetricCallback(metric, name=name)
+
+    return wrapper
+
+
 class WeightSave(Callback):
     def __init__(self, save_path: str or Path, save_freq: int = 1):
         """
