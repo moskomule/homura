@@ -16,10 +16,10 @@ class _BaseLoaders(object):
     def __call__(self, batch_size, num_workers, shuffle, train_set_kwargs, test_set_kwargs):
         train = DataLoader(self._dataset(**train_set_kwargs, train=True, download=True,
                                          transform=transforms.Compose(self._da_transform + self._norm_transform)),
-                           batch_size=batch_size, num_workers=num_workers, shuffle=shuffle)
+                           batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         test = DataLoader(self._dataset(**test_set_kwargs, train=False, download=True,
                                         transform=transforms.Compose(self._norm_transform)),
-                          batch_size=batch_size, num_workers=num_workers, shuffle=shuffle)
+                          batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         return train, test
 
     @staticmethod
