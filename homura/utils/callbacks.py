@@ -163,17 +163,17 @@ class LossCallback(MetricCallback):
                                            name="loss")
 
 
-def metric_callback_decorator(name):
+def metric_callback_decorator(_metric: Callable=None, name: str=None):
     """
     >>> @metric_callback_decorator("loss")
     >>> def loss(data):
     >>>     return data["loss"]
     """
 
-    def wrapper(metric):
-        return MetricCallback(metric, name=name)
+    def wrapper(metric: Callable):
+        return MetricCallback(metric, name=metric.__name__ if name is None else name)
 
-    return wrapper
+    return wrapper if _metric is None else wrapper(_metric)
 
 
 class WeightSave(Callback):

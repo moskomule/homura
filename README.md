@@ -103,4 +103,4 @@ See [examples](examples).
 
 * [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
 * [imagenet.py](examples/imagenet.py): training a CNN on ImageNet
-* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation (**it uses old APIs**)
+* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation

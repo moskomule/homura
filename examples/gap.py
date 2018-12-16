@@ -1,5 +1,4 @@
 import math
-import random
 from pathlib import Path
 
 import torch
@@ -10,31 +9,8 @@ from torchvision import transforms
 from torchvision.models import resnet50
 
 from homura import callbacks, reporter, optim
-from vision.data.folder import _DataSet, find_classes, make_dataset
-
-
-class ImageFolder(_DataSet):
-    IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']
-
-    def __init__(self, root, transform=None, size=None, on_memory: bool = False):
-        """
-        A generic data loader where the images are arranged in this way
-            root/cat/xxx.png
-            root/dog/xxx.png
-        :param root:
-        :param transform:
-        :param on_memory: True if you want to store loaded images on the RAM for faster reloading. (False by default)
-        """
-        classes, class_to_idx = find_classes(root)
-        samples = make_dataset(root, class_to_idx, self.IMG_EXTENSIONS)
-        if len(samples) == 0:
-            raise RuntimeError(f"Found 0 image in subdirectories of {root}.")
-        if size is not None:
-            samples = random.sample(samples, k=size)
-        super(ImageFolder, self).__init__(root, samples, transform, on_memory)
-
-        self.classes = classes
-        self.class_to_index = class_to_idx
+from homura.utils.trainer import TrainerBase
+from homura.vision.data import ImageFolder
 
 
 class ResBlock(nn.Module):
@@ -85,11 +61,10 @@ class ResNetGenerator(nn.Module):
                   self.activation]
         for i in range(num_downsample):
             mul = 2 ** i
-            module += [
-                nn.Conv2d(num_filters * mul, num_filters * mul * 2,
-                          kernel_size=3, stride=2, padding=1, bias=use_bias),
-                norm_layer(num_filters * mul * 2),
-                self.activation]
+            module += [nn.Conv2d(num_filters * mul, num_filters * mul * 2,
+                                 kernel_size=3, stride=2, padding=1, bias=use_bias),
+                       norm_layer(num_filters * mul * 2),
+                       self.activation]
 
         mul = 2 ** num_downsample
         for i in range(num_blocks):
@@ -127,12 +102,13 @@ class ResNetGenerator(nn.Module):
 
 
 class Trainer(TrainerBase):
-    def __init__(self, generator: nn.Module, optimizer, callbacks, pretrained: nn.Module, noise: torch.Tensor):
+    def __init__(self, generator, optimizer, callbacks, pretrained: nn.Module, noise: torch.Tensor):
         super(Trainer, self).__init__(generator, optimizer, loss_f=lambda x, y: F.cross_entropy(x, y).log(),
                                       callbacks=callbacks)
-        self.pretrained = pretrained
+
+        self.pretrained = pretrained.to(self._device)
         self.mag_in = 10
-        self.noise = noise
+        self.noise = noise.to(self._device)
 
     def iteration(self, data):
         if self.noise is None:
@@ -175,30 +151,18 @@ class Trainer(TrainerBase):
         return delta_im
 
 
-class FoolingRate(callbacks.MetricCallback):
-    def __init__(self):
-        """
-        calculate and accumulate accuracy
-        :param k: top k accuracy (e.g. (1, 5) then top 1 and 5 accuracy)
-        """
-        super(FoolingRate, self).__init__(metric=self.fool, name="fooling_rate")
-
-    @staticmethod
-    def fool(data):
-        prediction, adv_prediction, = data["prediction"], data["adv_prediction"]
-        with torch.no_grad():
-            return (prediction != adv_prediction).float().mean().item()
+@callbacks.metric_callback_decorator
+def fooling_rate(data):
+    prediction, adv_prediction, = data["prediction"], data["adv_prediction"]
+    with torch.no_grad():
+        return (prediction != adv_prediction).float().mean().item()
 
 
-class AdvAccuracy(callbacks.MetricCallback):
-    def __init__(self):
-        super(AdvAccuracy, self).__init__(metric=self.accuracy, name="adv_accuracy")
-
-    @staticmethod
-    def accuracy(data):
-        adv_prediction, target = data["adv_prediction"], data["data"][1]
-        with torch.no_grad():
-            return (adv_prediction == target).float().mean().item()
+@callbacks.metric_callback_decorator
+def adv_accuracy(data):
+    adv_prediction, target = data["adv_prediction"], data["data"][1]
+    with torch.no_grad():
+        return (adv_prediction == target).float().mean().item()
 
 
 def data_loader(root, batch_size, train_size, test_size, num_workers=8):
@@ -213,17 +177,12 @@ def data_loader(root, batch_size, train_size, test_size, num_workers=8):
                       transforms.Normalize(*_normalize)]
     transform_test = transforms.Compose([transforms.Resize(256),
                                          transforms.CenterCrop(224)] + transform_base)
-    train_loader = DataLoader(ImageFolder(root / "train", transform=transform_test, size=train_size),
+    train_loader = DataLoader(ImageFolder(root / "train", transform=transform_test, num_samples=train_size),
                               batch_size=batch_size, num_workers=num_workers,
                               pin_memory=False, shuffle=True)
-    test_loader = DataLoader(ImageFolder(root / "val", transform=transform_test, size=test_size),
+    test_loader = DataLoader(ImageFolder(root / "val", transform=transform_test, num_samples=test_size),
                              batch_size=batch_size, num_workers=num_workers, pin_memory=False)
     return train_loader, test_loader
-
-
-def get_noise(batch_size):
-    noise = torch.rand(3, 224, 224)
-    return torch.stack([noise for _ in range(batch_size)], dim=0)
 
 
 def main():
@@ -234,16 +193,15 @@ def main():
     pretrained_model = resnet50()
     for p in pretrained_model.parameters():
         p.requires_grad = False
-    pretrained_model.cuda()
     pretrained_model.eval()
 
     generator = ResNetGenerator(3, 3, args.num_filters)
     generator.cuda()
     optimizer = optim.Adam(lr=args.lr, betas=(args.beta1, 0.999))
     trainer = Trainer(generator, optimizer,
-                      reporter.TensorboardReporter([FoolingRate(), AdvAccuracy(), callbacks.AccuracyCallback(),
+                      reporter.TensorboardReporter([adv_accuracy, fooling_rate, callbacks.AccuracyCallback(),
                                                     callbacks.LossCallback()], save_dir="results"),
-                      pretrained_model, get_noise(args.batch_size))
+                      pretrained_model, torch.randn(3, 224, 224).expand(args.batch_size, -1, -1, -1))
     for ep in range(args.epochs):
         trainer.train(train_loader)
         trainer.test(test_loader)
