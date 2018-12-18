@@ -21,7 +21,7 @@ class TrainerBase(metaclass=ABCMeta):
                  loss_f: Callable or Dict[str, Callable], *,
                  callbacks: Callback or Iterable[Callable] = None,
                  scheduler: LRScheduler or Dict[LRScheduler] = None,
-                 verb=True, use_cudnn_bnenchmark=True, **kwargs):
+                 verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, **kwargs):
         """
         :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
         :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
@@ -29,7 +29,8 @@ class TrainerBase(metaclass=ABCMeta):
         :param callbacks: callbacks or list of callbacks
         :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
         :param verb:
-        :param use_cudnn_bnenchmark:
+        :param use_cudnn_benchmark:
+        :param use_cuda_nonblocking:
         :param kwargs:
         """
 
@@ -47,9 +48,10 @@ class TrainerBase(metaclass=ABCMeta):
                             f"Dict[str, Module] but got {type(model)}")
 
         if self._device == "cuda":
-            if use_cudnn_bnenchmark:
+            if use_cudnn_benchmark:
                 torch.backends.cudnn.benchmark = True
             self.model.to(self._device)
+            self._cuda_nonblocking = use_cuda_nonblocking
 
         # set optimizer(s)
         if isinstance(optimizer, Optimizer):
@@ -253,17 +255,17 @@ class TrainerBase(metaclass=ABCMeta):
         :param kwargs:
         :return:
         """
-        return (t.to(self._device, **kwargs) for t in data)
+        return (t.to(self._device, non_blocking=self._cuda_nonblocking, **kwargs) for t in data)
 
 
 class SupervisedTrainer(TrainerBase):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler: LRScheduler = None,
-                 verb=True, use_cudnn_bnenchmark=True, **kwargs):
+                 verb=True, use_cudnn_benchmark=True, **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
-                                                verb=verb, use_cudnn_bnenchmark=use_cudnn_bnenchmark, **kwargs)
+                                                verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
 
     def iteration(self, inputs: Iterable[torch.Tensor]):
         input, target = self.to_device(inputs)

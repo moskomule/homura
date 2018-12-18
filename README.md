@@ -12,9 +12,6 @@
 Python>=3.6
 PyTorch>=1.0
 torchvision>=0.2.1
-```
-
-```
 tqdm
 ```
 
@@ -24,6 +21,7 @@ tqdm
 matplotlib
 tensorboardX
 visdom
+miniargs
 ```
 
 ## install
