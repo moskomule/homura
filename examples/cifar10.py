@@ -1,4 +1,5 @@
 import torch.nn.functional as F
+
 from homura import optim, lr_scheduler
 from homura.utils import reporter, callbacks, Trainer
 from homura.vision.data.loaders import cifar10_loaders
@@ -17,7 +18,7 @@ def main():
         r.append(reporter.TQDMReporter(range(200), callbacks=c))
     if args.use_tb:
         r.append(reporter.TensorboardReporter(c))
-        r[-1].report_parameters()
+        r[-1].report_params(model)
 
     rep = None if len(r) == 0 else callbacks.CallbackList(*r)
     trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler)

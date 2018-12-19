@@ -27,7 +27,7 @@ miniargs
 ## install
 
 ```console
-pip install git+https://github.com/moskomule/homura#egg=homura
+pip install git+https://github.com/moskomule/homura
 ```
 
 or
@@ -57,6 +57,7 @@ _scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 _callbacks = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
 # reporter or list of reporters
 _reporter = reporter.TensorboardReporter(_callbacks)
+_reporter.enable_report_images(keys=["generated", "real"])
 _trainer = trainer.SupervisedTrainer(resnet, _optimizer, loss_f=F.cross_entropy, 
                                      callbacks=_reporter, scheduler=_scheduler)
 ```
@@ -100,5 +101,5 @@ _trainer = CustomTrainer({"generator": generator, "discriminator": discriminator
 See [examples](examples).
 
 * [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
-* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet
+* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and     multi process)
 * [gap.py](examples/gap.py): better implementation of generative adversarial perturbation

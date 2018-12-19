@@ -179,7 +179,10 @@ class VisdomWrapper(ReporterWrapper):
         self._viz.image(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def add_images(self, x, name: str, idx: int):
-        assert _dimension(x) == 4
+        if isinstance(x, np.ndarray):
+            x = torch.from_numpy(x)
+        if x.dim() == 3:
+            x.unsqueeze_(0)
         self._viz.images(self._normalize(x), opts=dict(title=name, caption=str(idx)))
 
     def close(self):
@@ -214,9 +217,10 @@ class TensorBoardWrapper(ReporterWrapper):
         self._writer.add_image(name, x, idx)
 
     def add_images(self, x, name: str, idx: int):
-        assert _dimension(x) == 4
         if isinstance(x, np.ndarray):
             x = torch.from_numpy(x)
+        if x.dim() == 3:
+            x.unsqueeze_(0)
         x = make_grid(x, normalize=True)
         self._writer.add_image(name, x, idx)
 

@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from collections import ChainMap
 from pathlib import Path
 from typing import Iterable, Callable
@@ -10,7 +11,7 @@ __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave"]
 
 
-class Callback(object):
+class Callback(metaclass=ABCMeta):
     """
     Base class of Callback class
     """
@@ -163,7 +164,7 @@ class LossCallback(MetricCallback):
                                            name="loss")
 
 
-def metric_callback_decorator(_metric: Callable=None, name: str=None):
+def metric_callback_decorator(_metric: Callable = None, name: str = None):
     """
     >>> @metric_callback_decorator("loss")
     >>> def loss(data):

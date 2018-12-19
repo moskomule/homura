@@ -94,7 +94,7 @@ if __name__ == '__main__':
     args, _else = p.parse(return_unknown=True)
     num_device = torch.cuda.device_count()
 
-    if not args.distributed and num_device >= 2:
+    if not args.distributed and num_device <= 2:
         raise RuntimeError("requires multiple GPUs")
     if args.distributed and args.local_rank == -1:
         raise RuntimeError(
