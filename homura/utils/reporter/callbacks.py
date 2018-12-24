@@ -20,6 +20,7 @@ class Reporter(Callback, metaclass=ABCMeta):
         self._report_images_keys = []
         self._report_images_freq = -1
         self._iteration = 0
+        self._tt_iteration_report_done = False
 
     def add_memo(self, text: str, *, name="memo", index=0):
         self.base_wrapper.add_text(text, name, index)
@@ -30,16 +31,20 @@ class Reporter(Callback, metaclass=ABCMeta):
     def before_iteration(self, data: dict):
         self.callback.before_iteration(data)
         self._iteration += 1
+        self._tt_iteration_report_done = False
 
     def after_iteration(self, data: dict):
         results = self.callback.after_iteration(data)
         mode = data[MODE]
-        if mode in ("test", "val"):
-            return None
 
         if (data[STEP] % self._report_freq == 0) and self._report_freq > 0:
             for k, v in results.items():
                 self.base_wrapper.add_scalar(v, name=f"{STEP}_{k}", idx=data[STEP])
+
+        # to avoid repeatedly reporting when not training mode
+        if mode != "train" and not self._tt_iteration_report_done:
+            self._tt_iteration_report_done = True
+            return None
 
         if self._report_params and (data[STEP] % self._report_params_freq == 0):
             self.report_params(data[MODEL], data[STEP])
