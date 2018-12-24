@@ -19,10 +19,10 @@ class _BaseLoaders(object):
                                 transforms.Normalize(*mean_std)]
 
     def __call__(self, batch_size, num_workers, shuffle, train_set_kwargs, test_set_kwargs):
-        train = DataLoader(self._dataset(**train_set_kwargs, train=True, download=True,
+        train = DataLoader(self._dataset(**train_set_kwargs,
                                          transform=transforms.Compose(self._da_transform + self._norm_transform)),
                            batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
-        test = DataLoader(self._dataset(**test_set_kwargs, train=False, download=True,
+        test = DataLoader(self._dataset(**test_set_kwargs,
                                         transform=transforms.Compose(self._tt_transform + self._norm_transform)),
                           batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         return train, test
@@ -50,7 +50,8 @@ def cifar10_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar10", dat
 
     root = _BaseLoaders.absolute_root(root)
     train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
-                                      train_set_kwargs=dict(root=root), test_set_kwargs=dict(root=root))
+                                      train_set_kwargs=dict(root=root, train=True, download=True),
+                                      test_set_kwargs=dict(root=root, train=False, download=True))
 
     return train_loader, test_loader
 
@@ -63,7 +64,8 @@ def cifar100_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar100", d
 
     root = _BaseLoaders.absolute_root(root)
     train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
-                                      train_set_kwargs=dict(root=root), test_set_kwargs=dict(root=root))
+                                      train_set_kwargs=dict(root=root, train=True, download=True),
+                                      test_set_kwargs=dict(root=root, train=False, download=True))
 
     return train_loader, test_loader
 

@@ -1,13 +1,12 @@
 from pathlib import Path
 
 import torch
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.models import resnet50
-
 from homura import optim, lr_scheduler
 from homura.utils import callbacks, reporter, Trainer
 from homura.vision.data import ImageFolder
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.models import resnet50
 
 
 def imagenet_loader(root, batch_size, num_workers=10, is_distributed=False, debug_mode=False):
