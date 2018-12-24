@@ -68,7 +68,7 @@ class TrainerBase(metaclass=ABCMeta):
                     raise KeyError(f"No such key {k} in model!")
                 if opt is None:
                     _opt[k] = None
-                else:
+                elif isinstance(opt, Optimizer):
                     opt.set_model(m.parameters())
                     _opt[k] = opt.optim
             self.optimizer = _opt
