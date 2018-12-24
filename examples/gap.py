@@ -160,7 +160,7 @@ def fooling_rate(data):
 
 @callbacks.metric_callback_decorator
 def adv_accuracy(data):
-    adv_prediction, target = data["adv_prediction"], data["data"][1]
+    adv_prediction, target = data["adv_prediction"], data["inputs"][1]
     with torch.no_grad():
         return (adv_prediction == target).float().mean().item()
 

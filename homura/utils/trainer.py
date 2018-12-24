@@ -101,10 +101,12 @@ class TrainerBase(metaclass=ABCMeta):
         if isinstance(callbacks, CallbackList):
             self._callbacks = callbacks
         elif isinstance(callbacks, Iterable):
-            self._callbacks = CallbackList(callbacks)
-        else:
+            self._callbacks = CallbackList(*callbacks)
+        elif callbacks is None:
             # if callback is not set
             self._callbacks = Callback()
+        else:
+            raise TypeError(f"type(callbacks) should not be {type(callbacks)}!")
 
         self._step = 0
         self._epoch = 0
@@ -169,23 +171,23 @@ class TrainerBase(metaclass=ABCMeta):
 
     def _iteration(self, inputs: Iterable[torch.Tensor], mode: str):
         with torch.no_grad():
-            _start_iteration = {MODEL: self.model,
+            _before_iteration = {MODEL: self.model,
+                                 STEP: self._step,
+                                 MODE: mode,
+                                 TRAINER: self}
+            _before_iteration.update(self._before_iteration)
+            self._callbacks.before_iteration(_before_iteration)
+        loss, output = self.iteration(inputs)
+        with torch.no_grad():
+            _after_iteration = {OUTPUT: output.cpu(),
+                                INPUTS: inputs,
+                                MODEL: self.model,
+                                LOSS: loss.data.item(),
                                 STEP: self._step,
                                 MODE: mode,
                                 TRAINER: self}
-            _start_iteration.update(self._before_iteration)
-            self._callbacks.before_iteration(_start_iteration)
-        loss, output = self.iteration(inputs)
-        with torch.no_grad():
-            _end_iteration = {OUTPUT: output.cpu(),
-                              INPUTS: inputs,
-                              MODEL: self.model,
-                              LOSS: loss.data.item(),
-                              STEP: self._step,
-                              MODE: mode,
-                              TRAINER: self}
-            _end_iteration.update(self._after_iteration)
-            self._callbacks.after_iteration(_end_iteration)
+            _after_iteration.update(self._after_iteration)
+            self._callbacks.after_iteration(_after_iteration)
 
     def _loop(self, data_loader, mode: str):
         with torch.no_grad():
