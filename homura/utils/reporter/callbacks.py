@@ -43,7 +43,9 @@ class Reporter(Callback, metaclass=ABCMeta):
 
         if self._report_images and (data[STEP] % self._report_images_freq == 0):
             for key in self._report_images_keys:
-                self.report_images(data[key], key, data[STEP])
+                if data.get(key) is not None:
+                    mode = data[MODE]
+                    self.report_images(data[key], f"{key}_{mode}", data[STEP])
 
     def before_epoch(self, data: dict):
         self.callback.before_epoch(data)
@@ -59,7 +61,8 @@ class Reporter(Callback, metaclass=ABCMeta):
         if self._report_images and (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
-                    self.report_images(data[key], key, data[STEP])
+                    mode = data[MODE]
+                    self.report_images(data[key], f"{key}_{mode}", data[STEP])
 
     def close(self):
         self.base_wrapper.close()
