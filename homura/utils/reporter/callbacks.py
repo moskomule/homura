@@ -33,6 +33,9 @@ class Reporter(Callback, metaclass=ABCMeta):
 
     def after_iteration(self, data: dict):
         results = self.callback.after_iteration(data)
+        mode = data[MODE]
+        if mode in ("test", "val"):
+            return None
 
         if (data[STEP] % self._report_freq == 0) and self._report_freq > 0:
             for k, v in results.items():
@@ -44,7 +47,6 @@ class Reporter(Callback, metaclass=ABCMeta):
         if self._report_images and (data[STEP] % self._report_images_freq == 0):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
-                    mode = data[MODE]
                     self.report_images(data[key], f"{key}_{mode}", data[STEP])
 
     def before_epoch(self, data: dict):

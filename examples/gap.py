@@ -2,15 +2,14 @@ import math
 from pathlib import Path
 
 import torch
+from homura import callbacks, reporter, optim
+from homura.utils.trainer import TrainerBase
+from homura.vision.data import ImageFolder
 from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.models import resnet50
-
-from homura import callbacks, reporter, optim
-from homura.utils.trainer import TrainerBase
-from homura.vision.data import ImageFolder
 
 
 class ResBlock(nn.Module):
@@ -165,6 +164,16 @@ def adv_accuracy(data):
         return (adv_prediction == target).float().mean().item()
 
 
+@callbacks.metric_callback_decorator
+def mask_loss(data):
+    return data["mask_loss"]
+
+
+@callbacks.metric_callback_decorator
+def adv_loss(data):
+    return data["adv_loss"]
+
+
 def data_loader(root, batch_size, train_size, test_size, num_workers=8):
     root = Path(root).expanduser()
     if not root.exists():
@@ -187,10 +196,7 @@ def data_loader(root, batch_size, train_size, test_size, num_workers=8):
 
 def main():
     train_loader, test_loader = data_loader(args.root, args.batch_size, args.train_max_iter, args.test_max_iter)
-    pretrained = Path(args.pretrained1)
-    if not pretrained.exists():
-        raise FileNotFoundError
-    pretrained_model = resnet50()
+    pretrained_model = resnet50(pretrained=True)
     for p in pretrained_model.parameters():
         p.requires_grad = False
     pretrained_model.eval()
@@ -199,8 +205,9 @@ def main():
     generator.cuda()
     optimizer = optim.Adam(lr=args.lr, betas=(args.beta1, 0.999))
     trainer = Trainer(generator, optimizer,
-                      reporter.TensorboardReporter([adv_accuracy, fooling_rate, callbacks.AccuracyCallback(),
-                                                    callbacks.LossCallback()], save_dir="results"),
+                      reporter.TensorboardReporter(
+                          [adv_loss, mask_loss, adv_accuracy, fooling_rate, callbacks.AccuracyCallback(),
+                           callbacks.LossCallback()], save_dir="results"),
                       pretrained_model, torch.randn(3, 224, 224).expand(args.batch_size, -1, -1, -1))
     for ep in range(args.epochs):
         trainer.train(train_loader)
