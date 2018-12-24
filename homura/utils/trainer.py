@@ -66,8 +66,11 @@ class TrainerBase(metaclass=ABCMeta):
                 m = self.model._modules.get(k)
                 if m is None:
                     raise KeyError(f"No such key {k} in model!")
-                opt.set_model(m.parameters())
-                _opt[k] = opt.optim
+                if opt is None:
+                    _opt[k] = None
+                elif isinstance(opt, Optimizer):
+                    opt.set_model(m.parameters())
+                    _opt[k] = opt.optim
             self.optimizer = _opt
         else:
             raise TypeError(f"{type(optimizer)}")
