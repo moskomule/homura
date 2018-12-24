@@ -41,7 +41,7 @@ class TrainerBase(metaclass=ABCMeta):
             self.model = model
             self._is_single_model = True
         elif isinstance(model, dict):
-            self.model = nn.ModuleDict(dict)
+            self.model = nn.ModuleDict(model)
             self._is_single_model = False
         else:
             raise TypeError(f"Unknown type for arg. model. Expected nn.Module or "
