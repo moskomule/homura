@@ -16,8 +16,8 @@ class Reporter(Callback, metaclass=ABCMeta):
         self._report_freq = report_freq
         self._report_params = False
         self._report_params_freq = -1
-        self._report_images = []
-        self._report_images_keys = None
+        self._report_images = False
+        self._report_images_keys = []
         self._report_images_freq = -1
         self._iteration = 0
 
