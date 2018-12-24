@@ -38,12 +38,12 @@ class Reporter(Callback, metaclass=ABCMeta):
             for k, v in results.items():
                 self.base_wrapper.add_scalar(v, name=f"{STEP}_{k}", idx=data[STEP])
 
-            if self._report_params and (data[STEP] % self._report_params_freq == 0):
-                self.report_params(data[MODEL], data[STEP])
+        if self._report_params and (data[STEP] % self._report_params_freq == 0):
+            self.report_params(data[MODEL], data[STEP])
 
-            if self._report_images and (data[STEP] % self._report_images_freq == 0):
-                for key in self._report_images_keys:
-                    self.report_images(data[key], key, data[STEP])
+        if self._report_images and (data[STEP] % self._report_images_freq == 0):
+            for key in self._report_images_keys:
+                self.report_images(data[key], key, data[STEP])
 
     def before_epoch(self, data: dict):
         self.callback.before_epoch(data)
@@ -56,9 +56,10 @@ class Reporter(Callback, metaclass=ABCMeta):
         if self._report_params and (self._report_params_freq == -1):
             self.report_params(data[MODEL], data[EPOCH])
 
-        if self._report_images and (data[STEP] % self._report_images_freq == -1):
+        if self._report_images and (self._report_images_freq == -1):
             for key in self._report_images_keys:
-                self.report_images(data[key], key, data[STEP])
+                if data.get(key) is not None:
+                    self.report_images(data[key], key, data[STEP])
 
     def close(self):
         self.base_wrapper.close()
