@@ -1,16 +1,27 @@
-import torch
-from torch.autograd import Variable
-from torch import nn
-from torch.nn import functional as F
 import math
 
+import torch
+from torch import nn
+from torch.nn import functional as F
+
 __all__ = ["unet"]
+
+
+class Upsample(nn.Module):
+    def __init__(self, scale_factor, mode):
+        super(Upsample, self).__init__()
+        assert mode in ("nearest", "linear", "bilinear", "trilinear", "area")
+        self._scale_factor = scale_factor
+        self._mode = mode
+
+    def forward(self, input):
+        return F.interpolate(input, scale_factor=self._scale_factor, mode=self._mode)
 
 
 class Block(nn.Module):
     def __init__(self, in_channel, out_channel):
         """
-        >>> a = Variable(torch.randn(1, 1, 128, 128))
+        >>> a = torch.randn(1, 1, 128, 128)
         >>> encoder = Block(1, 64)
         >>> encoder(a).size()
         torch.Size([1, 64, 128, 128])
@@ -31,14 +42,14 @@ class Block(nn.Module):
 class UpsampleBlock(nn.Module):
     def __init__(self, in_channel, out_channel, upsample=True):
         """
-        >>> a = Variable(torch.randn(1, 1, 128, 128))
+        >>> a = torch.randn(1, 1, 128, 128)
         >>> encoder = Block(1, 64)
         >>> encoder(a).size()
         torch.Size([1, 64, 128, 128])
         """
         super().__init__()
         if upsample:
-            self.upsample = nn.Sequential(nn.Upsample(scale_factor=2, mode="bilinear"),
+            self.upsample = nn.Sequential(Upsample(scale_factor=2, mode="bilinear"),
                                           nn.Conv2d(in_channel, out_channel, kernel_size=3, padding=1))
         else:
             self.upsample = nn.ConvTranspose2d(in_channel, out_channel, kernel_size=2)
@@ -70,10 +81,10 @@ class UNet(nn.Module):
         :param num_classes: number of output classes
         :param input_channels: number of input channels
         >>> unet = UNet(10, 3) # number of classes = 10
-        >>> dummy = Variable(torch.randn(1, 3, 128, 128))
+        >>> dummy = torch.randn(1, 3, 128, 128)
         >>> unet(dummy).shape
         torch.Size([1, 10, 128, 128])
-        >>> dummy = Variable(torch.randn(1, 3, 427, 640))
+        >>> dummy = torch.randn(1, 3, 427, 640)
         >>> unet(dummy).shape
         torch.Size([1, 10, 427, 640])
         """
