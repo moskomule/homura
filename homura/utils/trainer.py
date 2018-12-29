@@ -221,35 +221,26 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.after_epoch(self._epoch_map)
 
     def train(self, data_loader: DataLoader):
-        try:
-            self._is_train = True
-            self.model.train()
-            with torch.enable_grad():
-                self._loop(data_loader, mode=TRAIN)
-            if isinstance(self._scheduler, dict):
-                for scheduler in self._scheduler.values():
-                    scheduler.step()
-            elif self._scheduler is not None:
-                # lr_scheduler
-                self._scheduler.step()
-            self._epoch += 1
-        except KeyboardInterrupt:
-            print("\ninterrupted")
-        finally:
-            self._callbacks.close()
-            exit()
+        self._is_train = True
+        self.model.train()
+        with torch.enable_grad():
+            self._loop(data_loader, mode=TRAIN)
+        if isinstance(self._scheduler, dict):
+            for scheduler in self._scheduler.values():
+                scheduler.step()
+        elif self._scheduler is not None:
+            # lr_scheduler
+            self._scheduler.step()
+        self._epoch += 1
+
+        # todo: try-except-finally like self.run
+        # problem: tqdm may use an Exception for something?, which occurs an error.
 
     def test(self, data_loader: DataLoader, mode: str = TEST):
-        try:
-            self._is_train = False
-            self.model.eval()
-            with torch.no_grad():
-                self._loop(data_loader, mode=mode)
-        except KeyboardInterrupt:
-            print("\ninterrupted")
-        finally:
-            self._callbacks.close()
-            exit()
+        self._is_train = False
+        self.model.eval()
+        with torch.no_grad():
+            self._loop(data_loader, mode=mode)
 
     def run(self, epochs: int, train_data: DataLoader, test_data: DataLoader):
         try:
