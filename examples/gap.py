@@ -1,16 +1,14 @@
 import math
-from pathlib import Path
 
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torch.utils.data import DataLoader
-from torchvision import transforms
 from torchvision.models import resnet50
 
 from homura import callbacks, reporter, optim
+from homura.utils.containers import Map
 from homura.utils.trainer import TrainerBase
-from homura.vision.data import ImageFolder
+from homura.vision.data import imagenet_loaders
 
 
 class ResBlock(nn.Module):
@@ -102,32 +100,35 @@ class ResNetGenerator(nn.Module):
 
 
 class Trainer(TrainerBase):
-    def __init__(self, generator, optimizer, callbacks, pretrained: nn.Module, noise: torch.Tensor):
-        super(Trainer, self).__init__(generator, optimizer, loss_f=lambda x, y: F.cross_entropy(x, y).log(),
-                                      callbacks=callbacks)
-
-        self.pretrained = pretrained.to(self._device)
+    def __init__(self, models: dict, optimizer: optim.Optimizer, callbacks: callbacks.Callback, noise, verb=True):
+        assert set(models.keys()) == {"generator", "classifier"}
+        super(Trainer, self).__init__(models, {"generator": optimizer, "classifier": None},
+                                      loss_f=F.cross_entropy,
+                                      callbacks=callbacks, verb=verb)
+        self.generator = self.model["generator"]
+        self.classifier = self.model["classifier"]
         self.mag_in = 10
         self.noise = noise.to(self._device)
 
     def iteration(self, data):
-        if self.noise is None:
-            raise RuntimeError
-        input, target = self.to_device(data)
-        original_output = self.pretrained(input)
+        input, target = data
+        results = Map()
+        original_output = self.classifier(input)
         delta = self.model(self.noise)
         delta = self.normalize_and_scale(delta, self.mag_in)
         recons = self.clamp(input + delta, input)
-        adv_output = self.pretrained(recons)
+        adv_output = self.classifier(recons)
         loss = self.loss_f(adv_output, original_output.argmin(dim=1))
         if self.is_train:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-        self.register_after_iteration("prediction", original_output.argmax(dim=1))
-        self.register_after_iteration("adv_prediction", adv_output.argmax(dim=1))
-
-        return loss, original_output
+        results.update(dict(loss=loss,
+                            output=original_output,
+                            prediction=original_output.argmax(dim=1),
+                            adv_prediction=adv_output.argmax(dim=1),
+                            adv_output=adv_output), )
+        return results
 
     @staticmethod
     def clamp(recons, image):
@@ -160,33 +161,15 @@ def fooling_rate(data):
 
 @callbacks.metric_callback_decorator
 def adv_accuracy(data):
-    adv_prediction, target = data["adv_prediction"], data["inputs"][1]
+    adv_prediction, target = data["adv_prediction"], data["data"][1]
     with torch.no_grad():
         return (adv_prediction == target).float().mean().item()
 
 
-def data_loader(root, batch_size, train_size, test_size, num_workers=8):
-    root = Path(root).expanduser()
-    if not root.exists():
-        raise FileNotFoundError
-    train_size *= batch_size
-    test_size *= batch_size
-
-    _normalize = ((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-    transform_base = [transforms.ToTensor(),
-                      transforms.Normalize(*_normalize)]
-    transform_test = transforms.Compose([transforms.Resize(256),
-                                         transforms.CenterCrop(224)] + transform_base)
-    train_loader = DataLoader(ImageFolder(root / "train", transform=transform_test, num_samples=train_size),
-                              batch_size=batch_size, num_workers=num_workers,
-                              pin_memory=False, shuffle=True)
-    test_loader = DataLoader(ImageFolder(root / "val", transform=transform_test, num_samples=test_size),
-                             batch_size=batch_size, num_workers=num_workers, pin_memory=False)
-    return train_loader, test_loader
-
-
 def main():
-    train_loader, test_loader = data_loader(args.root, args.batch_size, args.train_max_iter, args.test_max_iter)
+    train_loader, test_loader = imagenet_loaders(args.root, args.batch_size,
+                                                 num_train_samples=args.batch_size * args.train_max_iter,
+                                                 num_test_samples=args.batch_size * args.test_max_iter)
     pretrained_model = resnet50(pretrained=True)
     for p in pretrained_model.parameters():
         p.requires_grad = False
@@ -195,28 +178,28 @@ def main():
     generator = ResNetGenerator(3, 3, args.num_filters)
     generator.cuda()
     optimizer = optim.Adam(lr=args.lr, betas=(args.beta1, 0.999))
-    trainer = Trainer(generator, optimizer,
+    trainer = Trainer({"generator": generator, "classifier": pretrained_model},
+                      optimizer,
                       reporter.TensorboardReporter(
                           [adv_accuracy, fooling_rate, callbacks.AccuracyCallback(),
                            callbacks.LossCallback()], save_dir="results"),
-                      pretrained_model, torch.randn(3, 224, 224).expand(args.batch_size, -1, -1, -1))
+                      noise=torch.randn(3, 224, 224).expand(args.batch_size, -1, -1, -1))
     for ep in range(args.epochs):
         trainer.train(train_loader)
         trainer.test(test_loader)
 
 
 if __name__ == '__main__':
-    import argparse
+    import miniargs
 
-    p = argparse.ArgumentParser()
-    p.add_argument("root")
-    p.add_argument("pretrained")
-    p.add_argument("--batch_size", type=int, default=32)
-    p.add_argument("--lr", type=float, default=0.0002)
-    p.add_argument("--beta1", type=float, default=0.5)
-    p.add_argument("--train_max_iter", type=int, default=None)
-    p.add_argument("--test_max_iter", type=int, default=None)
-    p.add_argument("--epochs", type=int, default=10)
-    p.add_argument("--num_filters", type=int, default=64)
-    args = p.parse_args()
+    p = miniargs.ArgumentParser()
+    p.add_str("root")
+    p.add_int("--batch_size", default=32)
+    p.add_float("--lr", default=0.0002)
+    p.add_float("--beta1", default=0.5)
+    p.add_int("--train_max_iter", default=150)
+    p.add_int("--test_max_iter", default=150)
+    p.add_int("--epochs", default=10)
+    p.add_int("--num_filters", default=64)
+    args = p.parse()
     main()

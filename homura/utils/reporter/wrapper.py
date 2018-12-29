@@ -50,8 +50,8 @@ class ReporterWrapper(object):
         """
         self._container = defaultdict(list)
         save_dir = DEFAULT_SAVE_DIR if save_dir is None else save_dir
-        self._save_dir = pathlib.Path(save_dir) / NOW
-        self._filename = get_git_hash() + ".json"
+        self._save_dir = pathlib.Path(save_dir) / (NOW + "-" + get_git_hash())
+        self._filename = NOW + ".json"
 
     def add_scalar(self, x, name: str, idx: int):
         raise NotImplementedError

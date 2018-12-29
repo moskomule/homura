@@ -1,5 +1,5 @@
 from abc import ABCMeta
-from typing import Iterable
+from typing import Iterable, Mapping
 
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
 from .._vocabulary import *
@@ -10,7 +10,7 @@ class Reporter(Callback, metaclass=ABCMeta):
     __param_reportable = False
     __image_reportable = False
 
-    def __init__(self, wrapper, callbacks: Iterable[Callback], report_freq: int, wrapper_args: dict):
+    def __init__(self, wrapper, callbacks: Iterable[Callback], report_freq: int, wrapper_args: Mapping):
         self.base_wrapper = wrapper(**wrapper_args)
         self.callback = CallbackList(*callbacks)
         self._report_freq = report_freq
@@ -28,12 +28,12 @@ class Reporter(Callback, metaclass=ABCMeta):
     def add_callbacks(self, *callbacks):
         self.callback._callbacks += list(callbacks)
 
-    def before_iteration(self, data: dict):
+    def before_iteration(self, data: Mapping):
         self.callback.before_iteration(data)
         self._iteration += 1
         self._tt_iteration_report_done = False
 
-    def after_iteration(self, data: dict):
+    def after_iteration(self, data: Mapping):
         results = self.callback.after_iteration(data)
         mode = data[MODE]
 
@@ -54,10 +54,10 @@ class Reporter(Callback, metaclass=ABCMeta):
                 if data.get(key) is not None:
                     self.report_images(data[key], f"{key}_{mode}", data[STEP])
 
-    def before_epoch(self, data: dict):
+    def before_epoch(self, data: Mapping):
         self.callback.before_epoch(data)
 
-    def after_epoch(self, data: dict):
+    def after_epoch(self, data: Mapping):
         results = self.callback.after_epoch(data)
         for k, v in results.items():
             self.base_wrapper.add_scalar(v, name=k, idx=data[EPOCH])
@@ -117,12 +117,18 @@ class TQDMReporter(Reporter):
 
 
 class VisdomReporter(Reporter):
+    __param_reportable = False
+    __image_reportable = True
+
     def __init__(self, callbacks, port=6006, save_dir=None, report_freq=-1):
         super(VisdomReporter, self).__init__(VisdomWrapper, callbacks, report_freq,
                                              {"port": port, "save_dir": save_dir})
 
 
 class TensorboardReporter(Reporter):
+    __param_reportable = True
+    __image_reportable = True
+
     def __init__(self, callbacks, save_dir=None, report_freq=-1):
         super(TensorboardReporter, self).__init__(TensorBoardWrapper, callbacks, report_freq,
                                                   {"save_dir": save_dir})

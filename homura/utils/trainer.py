@@ -1,17 +1,19 @@
 from abc import ABCMeta, abstractmethod
 from types import MethodType
-from typing import Callable, Iterable, Dict
+from typing import Callable, Iterable, Dict, Mapping, Tuple
 
 import torch
 from torch import nn
+from torch.utils.data import DataLoader
 
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from ._vocabulary import *
 from .callbacks import CallbackList, Callback
+from .containers import TensorTuple, Map
 from .reporter.wrapper import TQDMWrapper
 
-__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer"]
+__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
 
 class TrainerBase(metaclass=ABCMeta):
@@ -21,6 +23,7 @@ class TrainerBase(metaclass=ABCMeta):
                  loss_f: Callable or Dict[str, Callable], *,
                  callbacks: Callback or Iterable[Callable] = None,
                  scheduler: LRScheduler or Dict[LRScheduler] = None,
+                 device: torch.device or str = None,
                  verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, **kwargs):
         """
         :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
@@ -34,7 +37,10 @@ class TrainerBase(metaclass=ABCMeta):
         :param kwargs:
         """
 
-        self._device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self._device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self._device = device
 
         # set model(s)
         if isinstance(model, nn.Module):
@@ -47,7 +53,7 @@ class TrainerBase(metaclass=ABCMeta):
             raise TypeError(f"Unknown type for arg. model. Expected nn.Module or "
                             f"Dict[str, Module] but got {type(model)}")
 
-        if self._device == "cuda":
+        if "cuda" in str(self._device):
             if use_cudnn_benchmark:
                 torch.backends.cudnn.benchmark = True
             self.model.to(self._device)
@@ -119,31 +125,30 @@ class TrainerBase(metaclass=ABCMeta):
                 raise AttributeError(f"{self} already has {k}")
             setattr(self, k, v)
 
-        self._before_iteration = {}
-        self._after_iteration = {}
-        self._before_epoch = {}
-        self._after_epoch = {}
-        self._before_all = {}
-        self._after_all = {}
+        _map_base = {MODEL: self.model,
+                     OPTIMIZER: self.optimizer,
+                     TRAINER: self}
+        self._iteration_map = Map(**_map_base.copy())
+        self._epoch_map = Map(**_map_base.copy())
+        self._all_map = Map(**_map_base.copy())
 
-        self._callbacks.before_all({MODEL: self.model,
-                                    OPTIMIZER: self.optimizer,
-                                    TRAINER: self})
+        self._callbacks.before_all(self._all_map)
 
     @abstractmethod
-    def iteration(self, inputs: Iterable[torch.Tensor]) -> Iterable[torch.Tensor]:
+    def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         """
         iteration part, user can override
-        :param inputs: data used during a iteration
+        :param data: data used during a iteration
         :return: loss, output
         """
 
     def override_iteration(self, new_iteration: Callable):
         """
         override iteration method
-        >>> def new_iteration(self, inputs):
+        >>> def new_iteration(trainer, inputs):
         >>>     ...
-        >>>     return loss, output
+        >>>     results.loss = loss
+        >>>     return results
         >>> trainer.update_iteration(new_iteration)
 
         :param new_iteration:
@@ -152,84 +157,101 @@ class TrainerBase(metaclass=ABCMeta):
         setattr(self, "iteration", MethodType(new_iteration, self))
 
     def register_before_iteration(self, name, data):
-        self._before_iteration[name] = data
+        self._iteration_map[name] = data
 
     def register_after_iteration(self, name, data):
-        self._after_iteration[name] = data
+        self._iteration_map[name] = data
 
     def register_before_epoch(self, name, data):
-        self._before_epoch[name] = data
+        self._epoch_map[name] = data
 
     def register_after_epoch(self, name, data):
-        self._after_epoch[name] = data
+        self._epoch_map[name] = data
 
     def register_before_all(self, name, data):
-        self._before_all[name] = data
+        self._all_map[name] = data
 
     def register_after_all(self, name, data):
-        self._after_all[name] = data
+        self._all_map[name] = data
 
-    def _iteration(self, inputs: Iterable[torch.Tensor], mode: str):
+    def _iteration(self, data: Tuple[torch.Tensor], mode: str):
+        """
+        iteration level training loop backend
+        :param data: should be TensorTuple
+        :param mode: train, test or val
+        :return:
+        """
+        self._iteration_map.update({STEP: self._step,
+                                    MODE: mode})
         with torch.no_grad():
-            _before_iteration = {MODEL: self.model,
-                                 STEP: self._step,
-                                 MODE: mode,
-                                 TRAINER: self}
-            _before_iteration.update(self._before_iteration)
-            self._callbacks.before_iteration(_before_iteration)
-        loss, output = self.iteration(inputs)
+            self._callbacks.before_iteration(self._iteration_map)
+        results = self.iteration(data)
+        # backward compatibility
+        if isinstance(results, tuple):
+            loss, output = TensorTuple(results).to(CPU)
+            results = dict(loss=loss, output=output)
+            self._iteration_map.update(**results)
+        else:
+            self._iteration_map.update(**results.to(CPU))
+        self._iteration_map[INPUTS] = data.to(CPU)
         with torch.no_grad():
-            _after_iteration = {OUTPUT: output.cpu(),
-                                INPUTS: inputs,
-                                MODEL: self.model,
-                                LOSS: loss.data.item(),
-                                STEP: self._step,
+            self._callbacks.after_iteration(self._iteration_map)
+            # clean up
+        self._iteration_map.pop(INPUTS)
+        for k in results.keys():
+            self._iteration_map.pop(k)
+
+    def _loop(self, data_loader: DataLoader, mode: str):
+        # handle epoch level training loop
+        self._epoch_map.update({EPOCH: self._epoch,
                                 MODE: mode,
-                                TRAINER: self}
-            _after_iteration.update(self._after_iteration)
-            self._callbacks.after_iteration(_after_iteration)
-
-    def _loop(self, data_loader, mode: str):
+                                ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
-            _before_epoch = {MODEL: self.model,
-                             MODE: mode,
-                             TRAINER: self}
-            _before_epoch.update(self._before_epoch)
-            self._callbacks.before_epoch(_before_epoch)
+            self._callbacks.before_epoch(self._epoch_map)
 
         data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
 
         for data in data_loader:
+            data = TensorTuple(data).to(self._device, non_blocking=self._cuda_nonblocking)
             self._iteration(data, mode)
             if self.is_train:
                 self._step += 1
 
         with torch.no_grad():
-            _after_epoch = {MODEL: self.model,
-                            OPTIMIZER: self.optimizer,
-                            EPOCH: self._epoch,
-                            MODE: mode,
-                            ITER_PER_EPOCH: len(data_loader),
-                            TRAINER: self}
-            _after_epoch.update(self._after_epoch)
-            self._callbacks.after_epoch(_after_epoch)
+            self._callbacks.after_epoch(self._epoch_map)
 
-    def train(self, data_loader):
-        self._is_train = True
-        self.model.train()
-        with torch.enable_grad():
-            self._loop(data_loader, mode=TRAIN)
-        if self._scheduler is not None:
-            self._scheduler.step()
-        self._epoch += 1
+    def train(self, data_loader: DataLoader):
+        try:
+            self._is_train = True
+            self.model.train()
+            with torch.enable_grad():
+                self._loop(data_loader, mode=TRAIN)
+            if isinstance(self._scheduler, dict):
+                for scheduler in self._scheduler.values():
+                    scheduler.step()
+            elif self._scheduler is not None:
+                # lr_scheduler
+                self._scheduler.step()
+            self._epoch += 1
+        except KeyboardInterrupt:
+            print("\ninterrupted")
+        finally:
+            self._callbacks.close()
+            exit()
 
-    def test(self, data_loader, mode=TEST):
-        self._is_train = False
-        self.model.eval()
-        with torch.no_grad():
-            self._loop(data_loader, mode=mode)
+    def test(self, data_loader: DataLoader, mode: str = TEST):
+        try:
+            self._is_train = False
+            self.model.eval()
+            with torch.no_grad():
+                self._loop(data_loader, mode=mode)
+        except KeyboardInterrupt:
+            print("\ninterrupted")
+        finally:
+            self._callbacks.close()
+            exit()
 
-    def run(self, epochs, train_data, test_data):
+    def run(self, epochs: int, train_data: DataLoader, test_data: DataLoader):
         try:
             for ep in range(1, epochs + 1):
                 self.train(train_data)
@@ -240,47 +262,66 @@ class TrainerBase(metaclass=ABCMeta):
             print("\ninterrupted")
         finally:
             self._callbacks.close()
+            exit()
 
     def _exit(self):
         with torch.no_grad():
-            _end_all = {MODEL: self.model,
-                        OPTIMIZER: self.optimizer,
-                        TRAINER: self}
-            _end_all.update(self._after_all)
-            self._callbacks.after_all(_end_all)
+            self._callbacks.after_all(self._all_map)
 
     @property
     def is_train(self):
         return self._is_train
 
-    def to_device(self, data, **kwargs):
-        """
-        Handle tuple of data
-        :param data:
-        :param kwargs:
-        :return:
-        """
-        return (t.to(self._device, non_blocking=self._cuda_nonblocking, **kwargs) for t in data)
-
 
 class SupervisedTrainer(TrainerBase):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler: LRScheduler = None,
-                 verb=True, use_cudnn_benchmark=True, **kwargs):
+                 verb=True, use_cudnn_benchmark=True, data_parallel=False, **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
                                                 verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
+        if data_parallel and not isinstance(self.model, nn.DataParallel):
+            self.model = nn.DataParallel(self.model)
+            self.model.to(self._device)
 
-    def iteration(self, inputs: Iterable[torch.Tensor]):
-        input, target = self.to_device(inputs)
+    def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+        input, target = data
         output = self.model(input)
         loss = self.loss_f(output, target)
         if self.is_train:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-        return loss, output
+        return Map(loss=loss, output=output)
+
+
+class DistributedSupervisedTrainer(SupervisedTrainer):
+    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
+                 callbacks: Callback = None, scheduler: LRScheduler = None,
+                 verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://", **kwargs):
+        import miniargs
+        from torch import distributed
+
+        p = miniargs.ArgumentParser()
+        p.add_int("--local_rank")
+        args, _ = p.parse(return_unknown=True)
+
+        if args.local_rank != 0:
+            # to avoid overwriting
+            callbacks = None
+            verb = False
+        torch.cuda.set_device(args.local_rank)
+        distributed.init_process_group(backend=backend, init_method=init_method)
+
+        super(DistributedSupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks,
+                                                           scheduler=scheduler, verb=verb,
+                                                           use_cudnn_benchmark=use_cudnn_benchmark,
+                                                           use_cuda_nonblocking=True,
+                                                           device=torch.device("cuda", args.local_rank),
+                                                           **kwargs)
+        if not isinstance(model, nn.parallel.DistributedDataParallel):
+            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[args.local_rank])
 
 
 # alias

@@ -24,6 +24,12 @@ visdom
 miniargs
 ```
 
+### test
+
+```
+pytest
+```
+
 ## install
 
 ```console
@@ -65,15 +71,19 @@ _trainer = trainer.SupervisedTrainer(resnet, _optimizer, loss_f=F.cross_entropy,
 Now `iteration` of trainer can be updated as follows,
 
 ```python
-def iteration(self: Trainer, inputs: Iterable[torch.Tensor]) -> Tuple[torch.Tensor]:
-    input, target = self.to_device(inputs)
-    output = self.model(input)
-    loss = self.loss_f(output, target)
-    if self.is_train:
-        self.optimizer.zero_grad()
+from homura.utils.containers import Map
+def iteration(trainer: Trainer, inputs: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+    input, target = trainer.to_device(inputs)
+    output = trainer.model(input)
+    loss = trainer.loss_f(output, target)
+    results = Map(loss=loss, output=output)
+    if trainer.is_train:
+        trainer.optimizer.zero_grad()
         loss.backward()
-        self.optimizer.step()
-    return loss, output
+        trainer.optimizer.step()
+    # registered values can be called in callbacks
+    results.user_value = user_value
+    return results
    
 _trainer.update_iteration(iteration) 
 ```

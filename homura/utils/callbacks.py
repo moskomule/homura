@@ -1,5 +1,6 @@
 from abc import ABCMeta
 from collections import ChainMap
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Iterable, Callable
 
@@ -16,22 +17,22 @@ class Callback(metaclass=ABCMeta):
     Base class of Callback class
     """
 
-    def before_iteration(self, data: dict) -> dict:
+    def before_iteration(self, data: Mapping) -> Mapping:
         pass
 
-    def after_iteration(self, data: dict) -> dict:
+    def after_iteration(self, data: Mapping) -> Mapping:
         pass
 
-    def before_epoch(self, data: dict) -> dict:
+    def before_epoch(self, data: Mapping) -> Mapping:
         pass
 
-    def after_epoch(self, data: dict) -> dict:
+    def after_epoch(self, data: Mapping) -> Mapping:
         pass
 
-    def before_all(self, data: dict) -> dict:
+    def before_all(self, data: Mapping) -> Mapping:
         pass
 
-    def after_all(self, data: dict) -> dict:
+    def after_all(self, data: Mapping) -> Mapping:
         pass
 
     def close(self):
@@ -45,7 +46,7 @@ class Callback(metaclass=ABCMeta):
 
 
 class MetricCallback(Callback):
-    def __init__(self, metric: Callable[[dict], float], name: str):
+    def __init__(self, metric: Callable[[Mapping], float], name: str):
         """
         Base class of MetricCallback class such as AccuracyCallback
         :param metric: metric function: (data) -> float
@@ -58,10 +59,10 @@ class MetricCallback(Callback):
         self._last_epoch = {}
         self._metrics_history = {}
 
-    def before_iteration(self, data: dict):
+    def before_iteration(self, data: Mapping):
         self._last_iter.clear()
 
-    def after_iteration(self, data: dict):
+    def after_iteration(self, data: Mapping):
         mode = data[MODE]
         key = self._get_key_name(mode)
         # if once this method is called after every iteration, self._last_iter is not None
@@ -71,7 +72,7 @@ class MetricCallback(Callback):
             self._metrics_history[key][-1] += metric
         return self._last_iter
 
-    def before_epoch(self, data: dict):
+    def before_epoch(self, data: Mapping):
         # initialization
         self._last_epoch.clear()
         mode = data[MODE]
@@ -81,11 +82,11 @@ class MetricCallback(Callback):
         else:
             self._metrics_history[key].append(0)
 
-    def after_epoch(self, data: dict):
+    def after_epoch(self, data: Mapping):
         mode = data[MODE]
         iter_per_epoch = data[ITER_PER_EPOCH]
         key = self._get_key_name(mode)
-        # if once this method is called after every epoch, self._last_epoch is not None
+        # if once this method is called, self._last_epoch is not None
         if self._last_epoch.get(key) is None:
             self._metrics_history[key][-1] /= iter_per_epoch
             self._last_epoch[key] = self._metrics_history[key][-1]
@@ -112,19 +113,19 @@ class CallbackList(Callback):
                 raise TypeError(f"{c} is not a callback!")
         self._callbacks: Iterable[Callback] = list(callbacks)
 
-    def before_iteration(self, data: dict):
+    def before_iteration(self, data: Mapping):
         return self._cat([c.before_iteration(data) for c in self._callbacks])
 
-    def after_iteration(self, data: dict):
+    def after_iteration(self, data: Mapping):
         return self._cat([c.after_iteration(data) for c in self._callbacks])
 
-    def before_epoch(self, data: dict):
+    def before_epoch(self, data: Mapping):
         return self._cat([c.before_epoch(data) for c in self._callbacks])
 
-    def after_epoch(self, data: dict):
+    def after_epoch(self, data: Mapping):
         return self._cat([c.after_epoch(data) for c in self._callbacks])
 
-    def after_all(self, data: dict):
+    def after_all(self, data: Mapping):
         return self._cat([c.after_all(data) for c in self._callbacks])
 
     def close(self):
@@ -191,7 +192,7 @@ class WeightSave(Callback):
         if not self.save_path.exists():
             self.save_path.mkdir(parents=True)
 
-    def after_epoch(self, data: dict):
+    def after_epoch(self, data: Mapping):
         if data[EPOCH] % self.save_freq == 0:
             try:
                 torch.save({MODEL: data[MODEL].state_dict(),
