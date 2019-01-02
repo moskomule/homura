@@ -1,4 +1,5 @@
 from collections.abc import MutableMapping
+from copy import deepcopy
 
 import torch
 
@@ -7,7 +8,7 @@ __all__ = ["Map", "TensorTuple"]
 
 class Map(MutableMapping):
     __default_methods = ["update", "keys", "items", "values", "clear",
-                         "copy", "get", "pop", "to"] + __import__('keyword').kwlist
+                         "copy", "get", "pop", "to", "deepcopy"] + __import__('keyword').kwlist
     __slots__ = ["_data"]
 
     def __init__(self, **kwargs):
@@ -15,7 +16,7 @@ class Map(MutableMapping):
         dict like object but: stored values can be subscribed and attributed.
         >>> m = Map(test="test")
         >>> m.test is m["test"]
-        They are valid
+        Both of them are valid
         """
         super(Map, self).__init__()
         self._data = {}
@@ -64,11 +65,16 @@ class Map(MutableMapping):
     def values(self):
         return self._data.values()
 
-    def to(self, device: str):
+    def to(self, device: str, **kwargs):
+        """move stored tensors to a given device
+        """
         for k, v in self._data.items():
             if isinstance(v, torch.Tensor):
-                self._data[k] = v.to(device)
+                self._data[k] = v.to(device, **kwargs)
         return self
+
+    def deepcopy(self):
+        return deepcopy(self)
 
 
 class TensorTuple(tuple):
