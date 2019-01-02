@@ -74,7 +74,14 @@ class Map(MutableMapping):
         return self
 
     def deepcopy(self):
-        return deepcopy(self)
+        new = Map()
+        new._data = deepcopy(self._data)
+        return new
+
+    def copy(self):
+        new = Map()
+        new._data = self._data.copy()
+        return new
 
 
 class TensorTuple(tuple):
