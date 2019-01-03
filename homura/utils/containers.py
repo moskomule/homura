@@ -75,7 +75,12 @@ class Map(MutableMapping):
 
     def deepcopy(self):
         new = Map()
-        new._data = deepcopy(self._data)
+        for k, v in self._data.items():
+            if isinstance(v, torch.Tensor):
+                # Only leave tensors support __deepcopy__
+                new[k] = v.detach()
+            else:
+                new[k] = deepcopy(v)
         return new
 
     def copy(self):
