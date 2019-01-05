@@ -1,4 +1,5 @@
 from abc import ABCMeta
+from numbers import Number
 from typing import Iterable, Mapping
 
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
@@ -23,10 +24,18 @@ class Reporter(Callback, metaclass=ABCMeta):
         self._tt_iteration_report_done = False
 
     def add_memo(self, text: str, *, name="memo", index=0):
+        if name == "memo":
+            # to avoid collision
+            name += str(hash(text))[:5]
         self.base_wrapper.add_text(text, name, index)
 
-    def add_callbacks(self, *callbacks):
-        self.callback._callbacks += list(callbacks)
+    def _report_value(self, v, name, idx):
+        if isinstance(v, Number):
+            self.base_wrapper.add_scalar(v, name=name, idx=idx)
+        elif isinstance(v, str):
+            self.base_wrapper.add_text(v, name=name, idx=idx)
+        else:
+            raise NotImplementedError
 
     def before_iteration(self, data: Mapping):
         self.callback.before_iteration(data)
@@ -39,7 +48,8 @@ class Reporter(Callback, metaclass=ABCMeta):
 
         if (data[STEP] % self._report_freq == 0) and self._report_freq > 0:
             for k, v in results.items():
-                self.base_wrapper.add_scalar(v, name=f"{STEP}_{k}", idx=data[STEP])
+                name = f"{STEP}_{k}"
+                self._report_value(v, name, data[STEP])
 
         # to avoid repeatedly reporting when not training mode
         if mode != "train" and not self._tt_iteration_report_done:
@@ -59,8 +69,10 @@ class Reporter(Callback, metaclass=ABCMeta):
 
     def after_epoch(self, data: Mapping):
         results = self.callback.after_epoch(data)
+        mode = data[MODE]
+
         for k, v in results.items():
-            self.base_wrapper.add_scalar(v, name=k, idx=data[EPOCH])
+            self._report_value(v, k, data[EPOCH])
 
         if self._report_params and (self._report_params_freq == -1):
             self.report_params(data[MODEL], data[EPOCH])
@@ -68,7 +80,6 @@ class Reporter(Callback, metaclass=ABCMeta):
         if self._report_images and (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
-                    mode = data[MODE]
                     self.report_images(data[key], f"{key}_{mode}", data[STEP])
 
     def close(self):
