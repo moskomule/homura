@@ -1,7 +1,7 @@
 from abc import ABCMeta
 from numbers import Number
 from typing import Iterable, Mapping
-
+import warnings
 import torch
 
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
@@ -47,24 +47,28 @@ class Reporter(Callback, metaclass=ABCMeta):
     def after_iteration(self, data: Mapping):
         results = self.callback.after_iteration(data)
         mode = data[MODE]
+        step = data[STEP]
 
-        if (data[STEP] % self._report_freq == 0) and self._report_freq > 0:
+        if (step % self._report_freq == 0) and self._report_freq > 0:
             for k, v in results.items():
                 name = f"{STEP}_{k}"
-                self._report_value(v, name, data[STEP])
+                self._report_value(v, name, step)
 
         # to avoid repeatedly reporting when not training mode
-        if mode != "train" and not self._tt_iteration_report_done:
-            self._tt_iteration_report_done = True
+        if mode != TRAIN and self._tt_iteration_report_done:
+            warnings.warn("Parameters and images are reported once in a testing loop!", RuntimeWarning)
             return None
 
-        if self._report_params and (data[STEP] % self._report_params_freq == 0):
-            self.report_params(data[MODEL], data[STEP])
+        if self._report_params and (step % self._report_params_freq == 0) and not (self._report_params_freq == -1):
+            self.report_params(data[MODEL], step)
 
-        if self._report_images and (data[STEP] % self._report_images_freq == 0):
+        if self._report_images and (step % self._report_images_freq == 0) and not (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
-                    self.report_images(data[key], f"{key}_{mode}", data[STEP])
+                    self.report_images(data[key], f"{key}_{mode}", step)
+
+        if mode != TRAIN:
+            self._tt_iteration_report_done = True
 
     def before_epoch(self, data: Mapping):
         self.callback.before_epoch(data)
@@ -72,17 +76,18 @@ class Reporter(Callback, metaclass=ABCMeta):
     def after_epoch(self, data: Mapping):
         results = self.callback.after_epoch(data)
         mode = data[MODE]
+        epoch = data[EPOCH]
 
         for k, v in results.items():
-            self._report_value(v, k, data[EPOCH])
+            self._report_value(v, k, epoch)
 
         if self._report_params and (self._report_params_freq == -1):
-            self.report_params(data[MODEL], data[EPOCH])
+            self.report_params(data[MODEL], epoch)
 
         if self._report_images and (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
-                    self.report_images(data[key], f"{key}_{mode}", data[STEP])
+                    self.report_images(data[key], f"{key}_{mode}", epoch)
 
     def close(self):
         self.base_wrapper.close()

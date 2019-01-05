@@ -65,7 +65,7 @@ class MetricCallback(Callback):
     def after_iteration(self, data: Mapping):
         mode = data[MODE]
         key = self._get_key_name(mode)
-        # if once this method is called after every iteration, self._last_iter is not None
+        # if once this method is called after an iteration, self._last_iter is not None
         if self._last_iter.get(key) is None:
             metric = self.metric_function(data)
             self._last_iter[key] = metric
