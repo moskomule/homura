@@ -136,7 +136,7 @@ class CallbackList(Callback):
     def _cat(maps: list):
         # make callbacks' return to a single map
         maps = [m for m in maps if m is not None]
-        return dict(ChainMap(*maps))
+        return maps[0] if len(maps) == 1 else dict(ChainMap(*maps))
 
 
 class AccuracyCallback(MetricCallback):
