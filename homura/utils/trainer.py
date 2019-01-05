@@ -78,6 +78,8 @@ class TrainerBase(metaclass=ABCMeta):
                     opt.set_model(m.parameters())
                     _opt[k] = opt.optim
             self.optimizer = _opt
+        elif optimizer is None:
+            self.optimizer = None
         else:
             raise TypeError(f"{type(optimizer)}")
 
