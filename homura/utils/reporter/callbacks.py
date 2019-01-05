@@ -1,7 +1,8 @@
+import warnings
 from abc import ABCMeta
 from numbers import Number
 from typing import Iterable, Mapping
-import warnings
+
 import torch
 
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
@@ -56,18 +57,18 @@ class Reporter(Callback, metaclass=ABCMeta):
 
         # to avoid repeatedly reporting when not training mode
         if mode != TRAIN and self._tt_iteration_report_done:
-            warnings.warn("Parameters and images are reported once in a testing loop!", RuntimeWarning)
+            warnings.warn("Images are reported once in a testing loop!", RuntimeWarning)
             return None
-
-        if self._report_params and (step % self._report_params_freq == 0) and not (self._report_params_freq == -1):
-            self.report_params(data[MODEL], step)
 
         if self._report_images and (step % self._report_images_freq == 0) and not (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
                     self.report_images(data[key], f"{key}_{mode}", step)
 
-        if mode != TRAIN:
+        if mode == TRAIN:
+            if self._report_params and (step % self._report_params_freq == 0) and not (self._report_params_freq == -1):
+                self.report_params(data[MODEL], step)
+        else:
             self._tt_iteration_report_done = True
 
     def before_epoch(self, data: Mapping):
@@ -81,13 +82,14 @@ class Reporter(Callback, metaclass=ABCMeta):
         for k, v in results.items():
             self._report_value(v, k, epoch)
 
-        if self._report_params and (self._report_params_freq == -1):
-            self.report_params(data[MODEL], epoch)
-
         if self._report_images and (self._report_images_freq == -1):
             for key in self._report_images_keys:
                 if data.get(key) is not None:
                     self.report_images(data[key], f"{key}_{mode}", epoch)
+
+        if mode == TRAIN:
+            if self._report_params and (self._report_params_freq == -1):
+                self.report_params(data[MODEL], epoch)
 
     def close(self):
         self.base_wrapper.close()
