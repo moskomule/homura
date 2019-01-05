@@ -2,6 +2,8 @@ from abc import ABCMeta
 from numbers import Number
 from typing import Iterable, Mapping
 
+import torch
+
 from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
 from .._vocabulary import *
 from ..callbacks import Callback, CallbackList
@@ -30,12 +32,12 @@ class Reporter(Callback, metaclass=ABCMeta):
         self.base_wrapper.add_text(text, name, index)
 
     def _report_value(self, v, name, idx):
-        if isinstance(v, Number):
+        if isinstance(v, Number) or isinstance(v, torch.Tensor):
             self.base_wrapper.add_scalar(v, name=name, idx=idx)
         elif isinstance(v, str):
             self.base_wrapper.add_text(v, name=name, idx=idx)
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f"Cannot report type :{type(v)}")
 
     def before_iteration(self, data: Mapping):
         self.callback.before_iteration(data)
