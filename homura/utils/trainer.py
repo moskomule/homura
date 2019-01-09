@@ -229,7 +229,8 @@ class TrainerBase(metaclass=ABCMeta):
             self._loop(data_loader, mode=TRAIN)
         if isinstance(self._scheduler, dict):
             for scheduler in self._scheduler.values():
-                scheduler.step()
+                if scheduler is not None:
+                    scheduler.step()
         elif self._scheduler is not None:
             # lr_scheduler
             self._scheduler.step()
