@@ -111,7 +111,7 @@ class StepDict(dict):
         d = {}
         for k, v in self.items():
             if v is not None:
-                d[k] = v.stated_dict()
+                d[k] = v.state_dict()
         return d
 
     def load_state_dict(self, state_dict: dict):
