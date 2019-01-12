@@ -15,6 +15,7 @@ class Optimizer(metaclass=ABCMeta):
 
     def set_model(self, model: nn.Module):
         self._optim = self._optim_cls(model, **self._args)
+        return self.optim
 
     @property
     def optim(self) -> _Optimizer:

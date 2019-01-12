@@ -10,7 +10,7 @@ from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from ._vocabulary import *
 from .callbacks import CallbackList, Callback
-from .containers import TensorTuple, Map
+from .containers import TensorTuple, Map, StepDict
 from .reporter.wrapper import TQDMWrapper
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
@@ -66,18 +66,16 @@ class TrainerBase(metaclass=ABCMeta):
         elif isinstance(optimizer, dict):
             if not isinstance(model, dict):
                 raise TypeError(f"model is not dict but optimizer is dict!")
-            _opt = {}
+            self.optimizer = StepDict(torch.optim.Optimizer)
             # self.model is nn.ModuleDict
             for k, opt in optimizer.items():
                 m = self.model._modules.get(k)
                 if m is None:
                     raise KeyError(f"No such key {k} in model!")
                 if opt is None:
-                    _opt[k] = None
+                    self.optimizer[k] = None
                 elif isinstance(opt, Optimizer):
-                    opt.set_model(m.parameters())
-                    _opt[k] = opt.optim
-            self.optimizer = _opt
+                    self.optimizer[k] = opt.set_model(m.parameters())
         elif optimizer is None:
             self.optimizer = None
         else:
@@ -85,21 +83,19 @@ class TrainerBase(metaclass=ABCMeta):
 
         # set scheduler(s)
         if scheduler is None:
-            self._scheduler = None
+            self.scheduler = None
         elif isinstance(scheduler, LRScheduler):
             scheduler.set_optimizer(self.optimizer)
-            self._scheduler = scheduler.scheduler
+            self.scheduler = scheduler.scheduler
         elif isinstance(scheduler, dict):
             if not isinstance(optimizer, dict):
                 raise TypeError(f"optimizer is not dict but scheduler is dict!")
-            _schdlr = {}
+            self.scheduler = StepDict(torch.optim.lr_scheduler._LRScheduler)
             for k, schdlr in scheduler.items():
                 opt = self.optimizer.get(k)
-                if opt is None:
-                    raise KeyError(f"No such key {k} in optimizer")
-                schdlr.set_optimizer(opt)
-                _schdlr[k] = schdlr.scheduler
-            self._scheduler = _schdlr
+                if schdlr is None:
+                    self.scheduler[k] = None
+                self.scheduler[k] = schdlr.set_optimizer(opt)
         else:
             raise TypeError(f"{type(scheduler)}")
 
@@ -227,13 +223,13 @@ class TrainerBase(metaclass=ABCMeta):
         self.model.train()
         with torch.enable_grad():
             self._loop(data_loader, mode=TRAIN)
-        if isinstance(self._scheduler, dict):
-            for scheduler in self._scheduler.values():
+        if isinstance(self.scheduler, dict):
+            for scheduler in self.scheduler.values():
                 if scheduler is not None:
                     scheduler.step()
-        elif self._scheduler is not None:
+        elif self.scheduler is not None:
             # lr_scheduler
-            self._scheduler.step()
+            self.scheduler.step()
         self._epoch += 1
 
         # todo: try-except-finally like self.run

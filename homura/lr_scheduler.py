@@ -18,6 +18,7 @@ class LRScheduler(metaclass=ABCMeta):
 
     def set_optimizer(self, optimizer: Optimizer):
         self._schdlr = self._schdlr_cls(optimizer, **self._kwargs)
+        return self.scheduler
 
     @property
     def scheduler(self) -> _LRScheduler:

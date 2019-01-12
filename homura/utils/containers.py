@@ -93,3 +93,29 @@ class TensorTuple(tuple):
 
     def to(self, *args, **kwargs):
         return TensorTuple((t.to(*args, **kwargs) for t in self))
+
+
+class StepDict(dict):
+    def __init__(self, _type, **kwargs):
+        super(StepDict, self).__init__(**kwargs)
+        for k, v in self.items():
+            if not (v is None and isinstance(v, _type)):
+                raise RuntimeError(f"Expected Optimizer as values but got {type(v)} with key ({k})")
+
+    def step(self):
+        for v in self.values():
+            if v is not None:
+                v.step()
+
+    def state_dict(self):
+        d = {}
+        for k, v in self.items():
+            if v is not None:
+                d[k] = v.stated_dict()
+        return d
+
+    def load_state_dict(self, state_dict: dict):
+        for k, v in state_dict.items():
+            if v is not None:
+                self[k].load_state_dict(v)
+
