@@ -292,13 +292,13 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://", **kwargs):
         from torch import distributed
 
+        distributed.init_process_group(backend=backend, init_method=init_method)
         rank = distributed.get_rank()
         if rank != 0:
             # to avoid overwriting
             callbacks = None
             verb = False
         torch.cuda.set_device(rank)
-        distributed.init_process_group(backend=backend, init_method=init_method)
 
         super(DistributedSupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks,
                                                            scheduler=scheduler, verb=verb,
