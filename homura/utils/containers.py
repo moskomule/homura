@@ -99,8 +99,8 @@ class StepDict(dict):
     def __init__(self, _type, **kwargs):
         super(StepDict, self).__init__(**kwargs)
         for k, v in self.items():
-            if not (v is None and isinstance(v, _type)):
-                raise RuntimeError(f"Expected Optimizer as values but got {type(v)} with key ({k})")
+            if not (v is None or isinstance(v, _type)):
+                raise RuntimeError(f"Expected {_type} as values but got {type(v)} with key ({k})")
 
     def step(self):
         for v in self.values():
