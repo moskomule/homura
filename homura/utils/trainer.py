@@ -290,28 +290,23 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler: LRScheduler = None,
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://", **kwargs):
-        import miniargs
         from torch import distributed
 
-        p = miniargs.ArgumentParser()
-        p.add_int("--local_rank")
-        args, _ = p.parse(return_unknown=True)
-
-        if args.local_rank != 0:
+        rank = distributed.get_rank()
+        if rank != 0:
             # to avoid overwriting
             callbacks = None
             verb = False
-        torch.cuda.set_device(args.local_rank)
+        torch.cuda.set_device(rank)
         distributed.init_process_group(backend=backend, init_method=init_method)
 
         super(DistributedSupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks,
                                                            scheduler=scheduler, verb=verb,
                                                            use_cudnn_benchmark=use_cudnn_benchmark,
                                                            use_cuda_nonblocking=True,
-                                                           device=torch.device("cuda", args.local_rank),
-                                                           **kwargs)
+                                                           device=torch.device("cuda", rank), **kwargs)
         if not isinstance(model, nn.parallel.DistributedDataParallel):
-            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[args.local_rank])
+            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
 
 
 # alias
