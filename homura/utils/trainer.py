@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from pathlib import Path
 from types import MethodType
 from typing import Callable, Iterable, Dict, Mapping, Tuple
 
@@ -8,15 +9,17 @@ from torch.utils.data import DataLoader
 
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
+from ._miscs import check_path
 from ._vocabulary import *
-from .callbacks import CallbackList, Callback
+from .callbacks import Callback
 from .containers import TensorTuple, Map, StepDict
 from .reporter.wrapper import TQDMWrapper
+from .runner import Runner
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
 
-class TrainerBase(metaclass=ABCMeta):
+class TrainerBase(Runner, metaclass=ABCMeta):
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  optimizer: Optimizer or Dict[str, Optimizer],
@@ -26,6 +29,7 @@ class TrainerBase(metaclass=ABCMeta):
                  device: torch.device or str = None,
                  verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, **kwargs):
         """
+        Runner for training and evaluating
         :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
         :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
         :param loss_f: loss function or dict of loss functions
@@ -36,28 +40,7 @@ class TrainerBase(metaclass=ABCMeta):
         :param use_cuda_nonblocking:
         :param kwargs:
         """
-
-        if device is None:
-            self._device = "cuda" if torch.cuda.is_available() else "cpu"
-        else:
-            self._device = device
-
-        # set model(s)
-        if isinstance(model, nn.Module):
-            self.model = model
-            self._is_single_model = True
-        elif isinstance(model, dict):
-            self.model = nn.ModuleDict(model)
-            self._is_single_model = False
-        else:
-            raise TypeError(f"Unknown type for arg. model. Expected nn.Module or "
-                            f"Dict[str, Module] but got {type(model)}")
-
-        if "cuda" in str(self._device):
-            if use_cudnn_benchmark:
-                torch.backends.cudnn.benchmark = True
-            self.model.to(self._device)
-            self._cuda_nonblocking = use_cuda_nonblocking
+        super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, **kwargs)
 
         # set optimizer(s)
         if isinstance(optimizer, Optimizer):
@@ -100,28 +83,10 @@ class TrainerBase(metaclass=ABCMeta):
             raise TypeError(f"{type(scheduler)}")
 
         self.loss_f = loss_f
-
-        # set callback(s)
-        if isinstance(callbacks, CallbackList):
-            self._callbacks = callbacks
-        elif isinstance(callbacks, Iterable):
-            self._callbacks = CallbackList(*callbacks)
-        elif callbacks is None:
-            # if callback is not set
-            self._callbacks = Callback()
-        else:
-            raise TypeError(f"type(callbacks) should not be {type(callbacks)}!")
-
         self._step = 0
         self._epoch = 0
         self._verb = verb
         self._is_train = True
-
-        # set kwargs
-        for k, v in kwargs.items():
-            if hasattr(self, k):
-                raise AttributeError(f"{self} already has {k}")
-            setattr(self, k, v)
 
         _map_base = {MODEL: self.model,
                      OPTIMIZER: self.optimizer,
@@ -202,6 +167,7 @@ class TrainerBase(metaclass=ABCMeta):
     def _loop(self, data_loader: DataLoader, mode: str):
         # handle epoch level training loop
         self._epoch_map.update({EPOCH: self._epoch,
+                                STEP: self._step,
                                 MODE: mode,
                                 ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
@@ -210,7 +176,7 @@ class TrainerBase(metaclass=ABCMeta):
         data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
 
         for data in data_loader:
-            data = TensorTuple(data).to(self._device, non_blocking=self._cuda_nonblocking)
+            data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             self._iteration(data, mode)
             if self.is_train:
                 self._step += 1
@@ -262,6 +228,16 @@ class TrainerBase(metaclass=ABCMeta):
     def is_train(self):
         return self._is_train
 
+    def resume(self, path: str or Path):
+        path = check_path(path)
+        with path.open() as f:
+            loaded = torch.load(f)
+
+        self.model.load_state_dict(loaded[MODEL])
+        self.optimizer.load_state_dict(loaded[OPTIMIZER])
+        self._step = loaded[STEP]
+        self._epoch = loaded[EPOCH]
+
 
 class SupervisedTrainer(TrainerBase):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
@@ -273,7 +249,7 @@ class SupervisedTrainer(TrainerBase):
                                                 verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
         if data_parallel and not isinstance(self.model, nn.DataParallel):
             self.model = nn.DataParallel(self.model)
-            self.model.to(self._device)
+            self.model.to(self.device)
 
     def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
@@ -304,7 +280,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                                                            scheduler=scheduler, verb=verb,
                                                            use_cudnn_benchmark=use_cudnn_benchmark,
                                                            use_cuda_nonblocking=True,
-                                                           device=torch.device("cuda", rank), **kwargs)
+                                                           device=torch.device(GPU, rank), **kwargs)
         if not isinstance(model, nn.parallel.DistributedDataParallel):
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
 

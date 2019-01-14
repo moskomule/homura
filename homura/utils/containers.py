@@ -90,6 +90,9 @@ class Map(MutableMapping):
 
 
 class TensorTuple(tuple):
+    """
+    tuple for tensors
+    """
 
     def to(self, *args, **kwargs):
         return TensorTuple((t.to(*args, **kwargs) for t in self))
@@ -97,6 +100,11 @@ class TensorTuple(tuple):
 
 class StepDict(dict):
     def __init__(self, _type, **kwargs):
+        """dictionary with step, state_dict, load_state_dict.
+        intended to be for Optimizer, lr_scheduler
+        :param _type:
+        :param kwargs:
+        """
         super(StepDict, self).__init__(**kwargs)
         for k, v in self.items():
             if not (v is None or isinstance(v, _type)):
@@ -110,12 +118,11 @@ class StepDict(dict):
     def state_dict(self):
         d = {}
         for k, v in self.items():
-            if v is not None:
+            if hasattr(v, "state_dict"):
                 d[k] = v.state_dict()
         return d
 
-    def load_state_dict(self, state_dict: dict):
-        for k, v in state_dict.items():
-            if v is not None:
+    def load_state_dict(self, state_dicts: dict):
+        for k, v in state_dicts.items():
+            if isinstance(v, dict):
                 self[k].load_state_dict(v)
-

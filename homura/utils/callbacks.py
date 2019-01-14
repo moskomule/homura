@@ -7,6 +7,7 @@ from typing import Iterable, Callable
 import torch
 
 from ._vocabulary import *
+from ._miscs import get_git_hash
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave"]
@@ -186,7 +187,7 @@ class WeightSave(Callback):
         :param save_freq: frequency of saving in epoch
         """
 
-        self.save_path = Path(save_path) / NOW
+        self.save_path = Path(save_path) / (NOW + "-" + get_git_hash())
         self.save_freq = save_freq
 
         if not self.save_path.exists():
@@ -197,7 +198,8 @@ class WeightSave(Callback):
             try:
                 torch.save({MODEL: data[MODEL].state_dict(),
                             OPTIMIZER: data[OPTIMIZER].state_dict(),
-                            EPOCH: data[EPOCH]},
+                            EPOCH: data[EPOCH],
+                            STEP: data[STEP]},
                            self.save_path / f"{data[EPOCH]}.pkl")
             except Exception as e:
                 raise e

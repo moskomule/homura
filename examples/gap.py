@@ -108,7 +108,7 @@ class Trainer(TrainerBase):
         self.generator = self.model["generator"]
         self.classifier = self.model["classifier"]
         self.mag_in = 10
-        self.noise = noise.to(self._device)
+        self.noise = noise.to(self.device)
 
     def iteration(self, data):
         input, target = data
