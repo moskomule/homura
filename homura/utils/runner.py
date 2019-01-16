@@ -4,7 +4,7 @@ from typing import Callable, Iterable, Dict
 import torch
 from torch import nn
 
-from utils.reporter.callbacks import CallbackList, Callback
+from .reporter.callbacks import CallbackList, Callback
 from ._vocabulary import *
 
 
