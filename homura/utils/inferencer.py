@@ -11,6 +11,7 @@ from ._vocabulary import *
 from .callbacks import Callback
 from .containers import Map
 from .runner import Runner
+from tqdm import tqdm
 
 
 class Inferencer(Runner):
@@ -34,21 +35,22 @@ class Inferencer(Runner):
         self.model.eval()
         self._verb = verb
         self._model_is_loaded = False
+        # to be compatible with iteration in Trainer
         self.is_train = False
         self.loss_f = lambda *x: 0
 
-    def __call__(self, input: torch.Tensor) -> Map:
+    def _iteration(self, data: Tuple[torch.Tensor]) -> Map:
         if not self._model_is_loaded:
             raise RuntimeError("model is not loaded yet")
         with torch.no_grad():
-            output = self.iteration(input)
+            output = self.iteration(data)
             if not isinstance(output, dict):
                 output = Map(output=output)
             return output
 
     def load(self, path: str or Path):
         path = check_path(path)
-        with path.open() as f:
+        with path.open('rb') as f:
             loaded = torch.load(f)
         self.model.load_state_dict(loaded[MODEL])
         self._model_is_loaded = True
@@ -60,21 +62,19 @@ class Inferencer(Runner):
     def override_iteration(self, new_iteration: Callable):
         setattr(self, "iteration", MethodType(new_iteration, self))
 
-    def update_lossf(self, loss_f: Callable):
+    def update_loss_f(self, loss_f: Callable):
         self.loss_f = loss_f
 
     def run(self, data_loader: Iterable[torch.Tensor]):
         self._callbacks.before_all(dict(mode=self.mode))
         cycle_map = {ITER_PER_EPOCH: 0, MODE: self.mode}
         self._callbacks.before_epoch(cycle_map)
+        if self._verb:
+            data_loader = tqdm(data_loader, ncols=80)
         for step, data in enumerate(data_loader):
             iter_map = Map(mode=self.mode, step=step)
             self._callbacks.before_iteration(iter_map)
-            if torch.is_tensor(data):
-                input = data
-            else:
-                input, target = data
-            output_map = self(input)
+            output_map = self._iteration(input)
             output_map[INPUTS] = data
             output_map.update(iter_map)
             self._callbacks.after_iteration(output_map)
@@ -83,4 +83,5 @@ class Inferencer(Runner):
         self._callbacks.after_all(dict(mode=self.mode))
 
     def test(self, data_loader: DataLoader):
+        # compatible with Trainer
         self.run(data_loader)

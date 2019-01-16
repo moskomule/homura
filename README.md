@@ -24,6 +24,12 @@ visdom
 miniargs
 ```
 
+For Distributed training using Synced BN and FP 16, install apex.
+
+```
+pip install -U git+https://github.com/NVIDIA/apex.git --install-option="--cuda_ext" --install-option="--cpp_ext"
+```
+
 ### test
 
 ```

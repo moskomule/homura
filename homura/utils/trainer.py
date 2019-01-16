@@ -7,6 +7,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
+import homura
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from ._miscs import check_path
@@ -230,7 +231,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
     def resume(self, path: str or Path):
         path = check_path(path)
-        with path.open() as f:
+        with path.open('rb') as f:
             loaded = torch.load(f)
 
         self.model.load_state_dict(loaded[MODEL])
@@ -262,10 +263,41 @@ class SupervisedTrainer(TrainerBase):
         return Map(loss=loss, output=output)
 
 
+class FP16Trainer(TrainerBase):
+    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
+                 callbacks: Callback = None, scheduler: LRScheduler = None,
+                 verb=True, use_cudnn_benchmark=True, static_loss_scale=None, **kwargs):
+        if torch.cuda.is_available():
+            raise RuntimeError("FP16Trainer requires CUDA backend!")
+        if not homura.is_apex_available:
+            raise RuntimeError("FP16Trainer requires apex!")
+        if isinstance(model, dict):
+            raise TypeError(f"{type(self)} does not support dict model")
+        super(FP16Trainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
+                                          verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
+        self.model.half()
+        dynamic_loss_scale = (static_loss_scale is None)
+        from apex.fp16_utils import FP16_Optimizer
+
+        self.optimizer = FP16_Optimizer(self.optimizer, dynamic_loss_scale=dynamic_loss_scale,
+                                        static_loss_scale=static_loss_scale)
+
+    def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+        input, target = data
+        output = self.model(input)
+        loss = self.loss_f(output, target)
+        if self.is_train:
+            self.optimizer.zero_grad()
+            self.optimizer.backward(loss)
+            self.optimizer.step()
+        return Map(loss=loss, output=output)
+
+
 class DistributedSupervisedTrainer(SupervisedTrainer):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler: LRScheduler = None,
-                 verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://", **kwargs):
+                 verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
+                 use_apex_ddp: bool = False, use_sync_bn: bool = False, **kwargs):
         from torch import distributed
 
         distributed.init_process_group(backend=backend, init_method=init_method)
@@ -281,7 +313,16 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                                                            use_cudnn_benchmark=use_cudnn_benchmark,
                                                            use_cuda_nonblocking=True,
                                                            device=torch.device(GPU, rank), **kwargs)
-        if not isinstance(model, nn.parallel.DistributedDataParallel):
+        if use_apex_ddp:
+            if not homura.is_apex_available:
+                raise RuntimeError("arg. use_apex_ddp requires apex!")
+            else:
+                import apex.parallel
+
+                self.model = apex.parallel.DistributedDataParallel(self.model)
+                if use_sync_bn:
+                    apex.parallel.convert_syncbn_model(self.model)
+        else:
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
 
 
