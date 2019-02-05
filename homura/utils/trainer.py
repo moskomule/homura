@@ -27,6 +27,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                  loss_f: Optional[Callable or Dict[str, Callable]], *,
                  callbacks: Optional[Callback or Iterable[Callable]] = None,
                  scheduler: Optional[LRScheduler or Dict[LRScheduler]] = None,
+                 update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
                  verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs):
         """
@@ -89,6 +90,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         else:
             raise TypeError(f"{type(scheduler)}")
         self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
+        self._update_scheduler_by_epoch = update_scheduler_by_epoch
 
         self.loss_f = loss_f
         self._step = 0
@@ -203,8 +205,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             for scheduler in self.scheduler.values():
                 if scheduler is not None:
                     scheduler.step()
-        elif self.scheduler is not None:
-            # lr_scheduler
+        elif self.scheduler is not None and self._update_scheduler_by_epoch:
             self.scheduler.step()
         self._epoch += 1
 
