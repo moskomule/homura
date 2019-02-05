@@ -1,22 +1,24 @@
 from abc import ABCMeta
-from typing import Callable, Iterable, Dict
+from logging import Logger
+from typing import Callable, Iterable, Dict, Optional
 
 import torch
 from torch import nn
 
-from .reporter.callbacks import CallbackList, Callback
+from homura.liblog import get_logger
 from ._vocabulary import *
+from .reporter.callbacks import CallbackList, Callback
 
 
 class Runner(metaclass=ABCMeta):
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
-                 callbacks: Callback or Iterable[Callable] = None,
+                 callbacks: Optional[Callback or Iterable[Callable]] = None,
                  device: torch.device or str = None,
-                 use_cudnn_benchmark=True, use_cuda_nonblocking=False, **kwargs):
+                 use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger: Optional[Logger] = None, **kwargs):
         """Meta-class for Trainer and Inferencer
         """
-
+        self.logger = get_logger(__name__) if logger is None else logger
         if device is None:
             self.device = GPU if torch.cuda.is_available() else CPU
         else:
@@ -38,17 +40,21 @@ class Runner(metaclass=ABCMeta):
                 torch.backends.cudnn.benchmark = True
             self.model.to(self.device)
             self._cuda_nonblocking = use_cuda_nonblocking
+            self.logger.debug(
+                f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, nonblocking: {use_cuda_nonblocking}")
 
         # set callback(s)
         if isinstance(callbacks, CallbackList):
             self._callbacks = callbacks
         elif isinstance(callbacks, Callback):
             self._callbacks = callbacks
+            self.logger.debug(f"registered callback {callbacks.__class__.__name__}")
         elif isinstance(callbacks, Iterable):
             self._callbacks = CallbackList(*callbacks)
         elif callbacks is None:
             # if callback is not set
             self._callbacks = Callback()
+            self.logger.debug(f"No callback registered")
         else:
             raise TypeError(f"type(callbacks) should not be {type(callbacks)}!")
 

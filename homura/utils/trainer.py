@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from types import MethodType
-from typing import Callable, Iterable, Dict, Mapping, Tuple
+from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional
 
 import torch
 from torch import nn
@@ -23,12 +23,12 @@ __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervised
 class TrainerBase(Runner, metaclass=ABCMeta):
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
-                 optimizer: Optimizer or Dict[str, Optimizer],
-                 loss_f: Callable or Dict[str, Callable], *,
-                 callbacks: Callback or Iterable[Callable] = None,
-                 scheduler: LRScheduler or Dict[LRScheduler] = None,
-                 device: torch.device or str = None,
-                 verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, **kwargs):
+                 optimizer: Optional[Optimizer or Dict[str, Optimizer] or torch.optim.Optimizer],
+                 loss_f: Optional[Callable or Dict[str, Callable]], *,
+                 callbacks: Optional[Callback or Iterable[Callable]] = None,
+                 scheduler: Optional[LRScheduler or Dict[LRScheduler]] = None,
+                 device: Optional[torch.device or str] = None,
+                 verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs):
         """
         Runner for training and evaluating
         :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
@@ -41,12 +41,17 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :param use_cuda_nonblocking:
         :param kwargs:
         """
-        super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, **kwargs)
+        super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, logger,
+                                          **kwargs)
 
         # set optimizer(s)
-        if isinstance(optimizer, Optimizer):
+        if optimizer is None:
+            self.optimizer = None
+        elif isinstance(optimizer, Optimizer):
             optimizer.set_model(self.model.parameters())
             self.optimizer = optimizer.optim
+        elif isinstance(optimizer, torch.optim.Optimizer):
+            self.optimizer = optimizer
         elif isinstance(optimizer, dict):
             if not isinstance(model, dict):
                 raise TypeError(f"model is not dict but optimizer is dict!")
@@ -60,10 +65,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                     self.optimizer[k] = None
                 elif isinstance(opt, Optimizer):
                     self.optimizer[k] = opt.set_model(m.parameters())
-        elif optimizer is None:
-            self.optimizer = None
         else:
             raise TypeError(f"{type(optimizer)}")
+        self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
 
         # set scheduler(s)
         if scheduler is None:
@@ -71,6 +75,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         elif isinstance(scheduler, LRScheduler):
             scheduler.set_optimizer(self.optimizer)
             self.scheduler = scheduler.scheduler
+        elif isinstance(scheduler, torch.optim.lr_scheduler._LRScheduler):
+            self.scheduler = scheduler
         elif isinstance(scheduler, dict):
             if not isinstance(optimizer, dict):
                 raise TypeError(f"optimizer is not dict but scheduler is dict!")
@@ -82,6 +88,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                 self.scheduler[k] = schdlr.set_optimizer(opt)
         else:
             raise TypeError(f"{type(scheduler)}")
+        self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
 
         self.loss_f = loss_f
         self._step = 0
@@ -119,6 +126,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :return:
         """
         setattr(self, "iteration", MethodType(new_iteration, self))
+        self.logger.debug("Override iteration")
 
     def register_before_iteration(self, name, data):
         self._iteration_map[name] = data
@@ -145,8 +153,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :param mode: train, test or val
         :return:
         """
-        self._iteration_map.update({STEP: self._step,
-                                    MODE: mode})
+        self._iteration_map.update({STEP: self._step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
         results = self.iteration(data)
@@ -160,7 +167,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._iteration_map[INPUTS] = data.to(CPU)
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
-            # clean up
+        self.logger.debug(f"iteration {self._step} finished")
+        # clean up
         self._iteration_map.pop(INPUTS)
         for k in results.keys():
             self._iteration_map.pop(k)
@@ -184,6 +192,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         with torch.no_grad():
             self._callbacks.after_epoch(self._epoch_map)
+        self.logger.debug(f"epoch {self._epoch} finished")
 
     def train(self, data_loader: DataLoader):
         self._is_train = True
@@ -238,6 +247,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.optimizer.load_state_dict(loaded[OPTIMIZER])
         self._step = loaded[STEP]
         self._epoch = loaded[EPOCH]
+        self.logger.info(f"Resume training from {self._epoch}th epoch")
 
 
 class SupervisedTrainer(TrainerBase):
