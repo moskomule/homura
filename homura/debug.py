@@ -1,3 +1,5 @@
+from collections import Counter
+from functools import partial
 from typing import Optional, Callable, Tuple
 
 import torch
@@ -5,38 +7,49 @@ from torch import nn
 
 from homura.liblog import get_logger, set_verb_level
 
+__all__ = ["module_debugger"]
+
 logger = get_logger(__name__)
 set_verb_level("debug")
+_counter = Counter()
 
 
-def _format(tt: Tuple[torch.Tensor]):
-    s = ""
-    for t in tt:
-        if torch.is_tensor(t):
-            s += f"Tensor(shape={tuple(t.size())}), "
-        else:
-            s += f"{type(t)}, "
-    return s.strip(", ")
+def _extend_apply(self: nn.Module, fn: Callable):
+    """
+    extend nn.Module.apply
+    """
+    if not hasattr(self, "debug_depth"):
+        self.debug_depth = 0
+    self.debug_id = _counter[self.__class__.__name__]
+    _counter[self.__class__.__name__] += 1
+
+    for module in self.children():
+        module.debug_depth = self.debug_depth + 1
+        module.extend_apply(fn)
+    fn(self)
+    return self
 
 
-def _forward_log(m: nn.Module, input: Tuple[torch.Tensor], output: Tuple[torch.Tensor]) -> None:
-    logger.debug(f">>forward: name={m.__class__.__name__} input={_format(input)} output={_format(output)}")
+def _log(message: str, m: nn.Module, *_) -> None:
+    logger.debug(f"{message}>{'  ' * m.debug_depth} name={m.__class__.__name__}({m.debug_id})")
 
 
-def _backward_log(m: nn.Module, input: Tuple[torch.Tensor], output: Tuple[torch.Tensor]) -> None:
-    logger.debug(f">>backward: name={m.__class__.__name__} input={_format(input)} output={_format(output)}")
-
-
-def simple_debugger(model: nn.Module, input: torch.Tensor,
-                    target: Optional[torch.Tensor] = None, loss: Optional[Callable] = None) -> None:
+def module_debugger(model: nn.Module, input: Tuple[torch.Tensor] or torch.Tensor,
+                    target: Optional[Tuple[torch.Tensor]] = None, loss: Optional[Callable] = None) -> None:
+    """
+    log all modules connected with forward and backward calculation
+    """
+    nn.Module.extend_apply = _extend_apply
     if target is not None and loss is None:
         raise TypeError(f"argument loss should be Callable but got None")
     if isinstance(model, nn.DataParallel) or isinstance(model, nn.parallel.DistributedDataParallel):
         logger.warning(f"Debugger may not be able to work with {type(model)}")
-    model.apply(lambda m: m.register_forward_hook(_forward_log))
-    model.apply(lambda m: m.register_backward_hook(_backward_log))
+    model.extend_apply(lambda m: m.register_forward_pre_hook(partial(_log, "forward")))
+    model.extend_apply(lambda m: m.register_backward_hook(backward_log=partial(_log, "backward")))
     logger.debug("Start forward calculation")
-    output = model(input)
+    if torch.is_tensor(input):
+        input = (input,)
+    output = model(*input)
     if loss is not None:
         output = loss(output, target)
     else:
