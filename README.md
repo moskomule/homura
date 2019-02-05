@@ -114,6 +114,11 @@ _trainer = CustomTrainer({"generator": generator, "discriminator": discriminator
 * `homura.vision` contains some modules for vision.
 
 
+## else
+
+* `homura.liblog`: logger
+* `homura.debug`: debug tools
+
 # Examples
 
 See [examples](examples).
