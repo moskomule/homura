@@ -1,2 +1,1 @@
-__all__ = ["callbacks", "reporter", "Trainer", "inferencer"]
-from .trainer import Trainer  # historical
+__all__ = ["callbacks", "reporter", "trainer", "inferencer", "containers", "metrics"]

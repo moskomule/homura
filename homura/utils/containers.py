@@ -6,7 +6,8 @@ import torch
 __all__ = ["Map", "TensorTuple"]
 
 
-class Map(MutableMapping):
+class Map(MutableMapping, dict):
+    # inherit `dict` to avoid problem with `backward_hook`s
     __default_methods = ["update", "keys", "items", "values", "clear",
                          "copy", "get", "pop", "to", "deepcopy"] + __import__('keyword').kwlist
     __slots__ = ["_data"]
