@@ -135,6 +135,37 @@ class TQDMWrapper(ReporterWrapper):
         pass
 
 
+class LoggerWrapper(ReporterWrapper):
+    def __init__(self, logger=None, save_dir=None):
+        super(LoggerWrapper, self).__init__(save_dir)
+        from homura.liblog import get_logger, set_verb_level
+
+        self.logger = get_logger(self.__class__.__name__) if logger is None else logger
+        set_verb_level("info")
+
+    def add_scalar(self, x, name: str, idx: int):
+        self._register_data(x, name, idx)
+        self.logger.info(f"[{idx:>10}]{name}={x}")
+
+    def add_scalars(self, x: dict, name, idx: int):
+        assert isinstance(x, dict)
+        for k, v in x.items():
+            self._register_data(v, k, idx)
+            self.logger.info(f"[{idx:>10}]{k}={v}")
+
+    def add_text(self, x, name: str, idx: int):
+        self.logger.info(f"[{idx:>10}]{name}={x}")
+
+    def add_histogram(self, x, name: str, idx: int):
+        pass
+
+    def add_image(self, x, name: str, idx: int):
+        pass
+
+    def add_images(self, x, name: str, idx: int):
+        pass
+
+
 class VisdomWrapper(ReporterWrapper):
     def __init__(self, port=6006, save_dir=None):
         from visdom import Visdom

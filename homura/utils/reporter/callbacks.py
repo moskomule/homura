@@ -5,7 +5,7 @@ from typing import Iterable, Mapping
 
 import torch
 
-from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper
+from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper, LoggerWrapper
 from .._vocabulary import *
 from ..callbacks import Callback, CallbackList
 
@@ -134,6 +134,11 @@ class TQDMReporter(Reporter):
 
     def __len__(self):
         return len(self.base_wrapper)
+
+
+class LoggerReporter(Reporter):
+    def __init__(self, callbacks, save_dir=None, report_freq=-1, ):
+        super(LoggerReporter, self).__init__(LoggerWrapper, callbacks, report_freq, {"save_dir": save_dir})
 
 
 class VisdomReporter(Reporter):
