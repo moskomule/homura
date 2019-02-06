@@ -12,7 +12,7 @@
 Python>=3.6
 PyTorch>=1.0
 torchvision>=0.2.1
-tqdm
+tqdm # automatically installed
 ```
 
 ### optional
@@ -22,6 +22,7 @@ matplotlib
 tensorboardX
 visdom
 miniargs
+colorlog
 ```
 
 To enable distributed training using Synced BN and FP 16, install apex.

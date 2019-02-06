@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from torch.utils.data import DataLoader, DistributedSampler
+from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import datasets, transforms
 
 from .folder import ImageFolder
@@ -10,7 +10,7 @@ class _BaseLoaders(object):
     def __init__(self, dataset, mean_std: tuple,
                  data_augmentation_transforms: list,
                  test_time_transforms: list = None,
-                 distributed: bool = False):
+                 replacement: bool = False, distributed: bool = False):
         self._dataset = dataset
 
         self._da_transform = [] if data_augmentation_transforms is None else data_augmentation_transforms
@@ -18,6 +18,7 @@ class _BaseLoaders(object):
         self._norm_transform = [transforms.ToTensor(),
                                 transforms.Normalize(*mean_std)]
         self._distributed = distributed
+        self._replacement = replacement
 
     def __call__(self, batch_size: int, num_workers: int, shuffle: bool, train_set_kwargs: dict, test_set_kwargs: dict):
         shuffle = (not self._distributed) and shuffle
@@ -25,8 +26,12 @@ class _BaseLoaders(object):
                                   transform=transforms.Compose(self._da_transform + self._norm_transform))
         test_set = self._dataset(**test_set_kwargs,
                                  transform=transforms.Compose(self._tt_transform + self._norm_transform))
-        train_sampler = DistributedSampler(train_set) if self._distributed else None
-        test_sampler = DistributedSampler(test_set) if self._distributed else None
+        train_sampler, test_sampler = None, None
+        if self._distributed:
+            train_sampler = DistributedSampler(train_set)
+            test_sampler = DistributedSampler(test_set)
+        elif self._replacement:
+            train_sampler = RandomSampler(train_set, replacement=True, num_samples=len(train_set) // batch_size)
         train = DataLoader(train_set, sampler=train_sampler,
                            batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         test = DataLoader(test_set, sampler=test_sampler,

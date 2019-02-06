@@ -246,8 +246,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         self.model.load_state_dict(loaded[MODEL])
         self.optimizer.load_state_dict(loaded[OPTIMIZER])
-        self._step = loaded[STEP]
-        self._epoch = loaded[EPOCH]
+        self._step = loaded.get(STEP, 0)
+        self._epoch = loaded.get(EPOCH, 0)
         self.logger.info(f"Resume training from {self._epoch}th epoch")
 
 

@@ -60,7 +60,7 @@ class MetricCallback(Callback):
         self._last_iter = {}
         self._last_epoch = {}
         self._metrics_history = {}
-        self._logger = get_logger(self.__class__.__name__) if logger is None else logger
+        self._logger = get_logger(__name__) if logger is None else logger
         self._warning_flag = True
 
     def before_iteration(self, data: Mapping):
