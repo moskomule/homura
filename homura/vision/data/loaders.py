@@ -43,7 +43,7 @@ class _BaseLoaders(object):
         root = Path(root).expanduser()
         if not root.exists():
             root.mkdir(parents=True)
-        return str(root)
+        return root
 
     @staticmethod
     def check_root_exists(root):
@@ -53,31 +53,51 @@ class _BaseLoaders(object):
         return root
 
 
-def cifar10_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar10", data_augmentation=None):
+def mnist_loaders(batch_size, num_workers=1, root="~/.torch/data/mnist", data_augmentation=None, replacement=False,
+                  force_download=False):
     if data_augmentation is None:
-        data_augmentation = [transforms.RandomCrop(32, padding=4),
-                             transforms.RandomHorizontalFlip()]
-    _base = _BaseLoaders(datasets.CIFAR10, ((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)), data_augmentation)
-
+        data_augmentation = [transforms.RandomHorizontalFlip()]
+    _base = _BaseLoaders(datasets.MNIST, ((0.1307,), (0.3081,)), data_augmentation, replacement=replacement)
     root = _BaseLoaders.absolute_root(root)
-    train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
-                                      train_set_kwargs=dict(root=root, train=True, download=True),
-                                      test_set_kwargs=dict(root=root, train=False, download=True))
-
+    train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+                                      train_set_kwargs=dict(root=root, train=True,
+                                                            download=not root.exists() or force_download),
+                                      test_set_kwargs=dict(root=root, train=False,
+                                                           download=not root.exists() or force_download))
     return train_loader, test_loader
 
 
-def cifar100_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar100", data_augmentation=None):
+def cifar10_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar10", data_augmentation=None, replacement=False,
+                    force_download=False):
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
                              transforms.RandomHorizontalFlip()]
-    _base = _BaseLoaders(datasets.CIFAR10, ((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)), data_augmentation)
+    _base = _BaseLoaders(datasets.CIFAR10, ((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)), data_augmentation,
+                         replacement=replacement)
 
     root = _BaseLoaders.absolute_root(root)
-    train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
-                                      train_set_kwargs=dict(root=root, train=True, download=True),
-                                      test_set_kwargs=dict(root=root, train=False, download=True))
+    train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+                                      train_set_kwargs=dict(root=root, train=True,
+                                                            download=not root.exists() or force_download),
+                                      test_set_kwargs=dict(root=root, train=False,
+                                                           download=not root.exists() or force_download))
+    return train_loader, test_loader
 
+
+def cifar100_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar100", data_augmentation=None,
+                     replacement=False, force_download=False):
+    if data_augmentation is None:
+        data_augmentation = [transforms.RandomCrop(32, padding=4),
+                             transforms.RandomHorizontalFlip()]
+    _base = _BaseLoaders(datasets.CIFAR10, ((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)), data_augmentation,
+                         replacement=replacement)
+
+    root = _BaseLoaders.absolute_root(root)
+    train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+                                      train_set_kwargs=dict(root=root, train=True,
+                                                            download=not root.exists() or force_download),
+                                      test_set_kwargs=dict(root=root, train=False,
+                                                           download=not root.exists() or force_download))
     return train_loader, test_loader
 
 
