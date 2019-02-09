@@ -1,6 +1,6 @@
-from torch import Tensor, nn
-from torch.nn.modules.batchnorm import _BatchNorm
+from torch import nn
 from torch.nn import functional as F
+from torch.nn.modules.batchnorm import _BatchNorm
 
 
 class CategoricalConditionalBatchNorm(_BatchNorm):

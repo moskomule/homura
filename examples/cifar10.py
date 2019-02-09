@@ -1,7 +1,7 @@
 import torch.nn.functional as F
 
 from homura import optim, lr_scheduler
-from homura.utils import reporter, callbacks, Trainer
+from homura.utils import reporter, callbacks, SupervisedTrainer
 from homura.vision.data.loaders import cifar10_loaders
 from homura.vision.models.cifar import resnet20
 
@@ -21,7 +21,7 @@ def main():
         r[-1].report_params(model)
 
     rep = None if len(r) == 0 else callbacks.CallbackList(*r)
-    trainer = Trainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler)
+    trainer = SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler)
     it = range(200) if not args.use_tqdm else r[0]
     for _ in it:
         trainer.train(train_loader)
