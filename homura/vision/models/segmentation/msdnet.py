@@ -2,25 +2,17 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from .intialization import init_parameters
+
 __all__ = ["msdnet25", "msdnet50"]
 
 
 class MSDBase(nn.Module):
     def __init__(self, in_channels, dilation):
-        """
-        >>> a = torch.autograd.Variable(torch.randn(4,1,120,120))
-        >>> m = MSDBase(1, 2)
-        >>> m(a).shape
-        torch.Size([4, 1, 120, 120])
-        >>> a = torch.autograd.Variable(torch.randn(4,1,119,119))
-        >>> m = MSDBase(1, 3)
-        >>> m(a).shape
-        torch.Size([4, 1, 119, 119])
-        """
         super(MSDBase, self).__init__()
         self.dilation = dilation
         self.conv = nn.Conv2d(
-                in_channels, out_channels=1, kernel_size=3, dilation=self.dilation)
+            in_channels, out_channels=1, kernel_size=3, dilation=self.dilation)
 
     def forward(self, input):
         pad = (self.dilation,) * 4
@@ -46,9 +38,10 @@ class MSDNet(nn.Module):
     def __init__(self, input_channels, out_channels, depth, width):
         super(MSDNet, self).__init__()
         self.layers = nn.ModuleList(
-                [MSDLayer(input_channels, i, width) for i in range(depth)])
+            [MSDLayer(input_channels, i, width) for i in range(depth)])
         self.conv = nn.Conv2d(
-                width * depth + input_channels, out_channels, kernel_size=1)
+            width * depth + input_channels, out_channels, kernel_size=1)
+        init_parameters(self)
 
     def forward(self, input):
         for m in self.layers:
@@ -63,9 +56,3 @@ def msdnet25(num_classes, input_channels=3):
 
 def msdnet50(num_classes, input_channels=3):
     return MSDNet(input_channels, num_classes, 50, 1)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

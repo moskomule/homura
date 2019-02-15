@@ -4,7 +4,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-__all__ = ["unet"]
+from .intialization import init_parameters
+
+__all__ = ["unet", "CustomUNet"]
 
 
 class Upsample(nn.Module):
@@ -15,7 +17,7 @@ class Upsample(nn.Module):
         self._mode = mode
 
     def forward(self, input):
-        return F.interpolate(input, scale_factor=self._scale_factor, mode=self._mode)
+        return F.interpolate(input, scale_factor=self._scale_factor, mode=self._mode, align_corners=False)
 
 
 class Block(nn.Module):
@@ -80,13 +82,6 @@ class UNet(nn.Module):
         UNet, proposed in Ronneberger et al. (2015)
         :param num_classes: number of output classes
         :param input_channels: number of input channels
-        >>> unet = UNet(10, 3) # number of classes = 10
-        >>> dummy = torch.randn(1, 3, 128, 128)
-        >>> unet(dummy).shape
-        torch.Size([1, 10, 128, 128])
-        >>> dummy = torch.randn(1, 3, 427, 640)
-        >>> unet(dummy).shape
-        torch.Size([1, 10, 427, 640])
         """
         super(UNet, self).__init__()
         encoder_config, decoder_config = config
@@ -101,11 +96,26 @@ class UNet(nn.Module):
         self.encoders = nn.ModuleList([Block(*encoder_config[0])] +
                                       [DownsampleBlock(i, j) for i, j in encoder_config[1:]])
         self.decoders = nn.ModuleList([UpsampleBlock(i, j) for i, j in decoder_config])
-        self.down_conv1 = nn.Conv2d(64, num_classes, kernel_size=1)
-        self.init_parameters()
+        self.channel_conv = nn.Conv2d(64, num_classes, kernel_size=1)
+        init_parameters(self)
 
     def forward(self, input):
+        down1 = self.encoders[0](input)
+        down2 = self.encoders[1](down1)
+        down3 = self.encoders[2](down2)
+        down4 = self.encoders[3](down3)
+        down5 = self.encoders[4](down4)
 
+        up1 = self.decoders[0](down5, down4)
+        up2 = self.decoders[1](up1, down3)
+        up3 = self.decoders[2](up2, down2)
+        up4 = self.decoders[3](up3, down1)
+
+        return self.channel_conv(up4)
+
+
+class CustomUNet(UNet):
+    def forward(self, input):
         x = [input]
         for enc in self.encoders:
             # [input, enc1(input), enc2(input), enc3(input)]
@@ -116,22 +126,8 @@ class UNet(nn.Module):
             # x = dec(enc3(input), enc2(input))
             x = dec(x, _x)
 
-        return self.down_conv1(x)
-
-    def init_parameters(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight)
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
+        return self.channel_conv(x)
 
 
 def unet(num_classes, input_channels=3):
     return UNet(num_classes, input_channels)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
