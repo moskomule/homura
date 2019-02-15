@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import torch
 
-from homura.utils.metrics.confusion_matrix import ConfusionMatrix
+from homura.metrics.confusion_matrix import ConfusionMatrix
 
 
 class CMTest(TestCase):
