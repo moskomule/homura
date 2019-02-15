@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from kotonoha.modules.attention import KeyValAttention
+from homura.modules.attention import KeyValAttention
 
 
 @pytest.mark.parametrize("B", [4, 8])
