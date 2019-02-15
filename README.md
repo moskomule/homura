@@ -1,4 +1,4 @@
-# Homura
+# Homura [![CircleCI](https://circleci.com/gh/moskomule/homura/tree/master.svg?style=svg)](https://circleci.com/gh/moskomule/homura/tree/master)
 
 *Homura* is a support tool for research experiments.
 
