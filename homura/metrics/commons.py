@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import torch
 
 from homura.liblog import get_logger
@@ -23,37 +25,36 @@ def accuracy(input: torch.Tensor, target: torch.Tensor, reduction="mean") -> tor
                       reduction=reduction)
 
 
+def _base(input: torch.Tensor, target: torch.Tensor) -> Tuple[torch.Tensor]:
+    # to handle 2D case
+    classes = torch.arange(input.size(1))
+    pred = input.argmax(dim=1).view(-1, 1)
+    target = target.view(1, -1).view(-1, 1)
+    return pred, target, classes
+
+
 def true_positive(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    pred = input.argmax(dim=-1)
-    out = torch.zeros(input.size(-1))
-    # todo: remove for loop
-    for i in range(input.size(-1)):
-        out[i] = ((pred == i) & (target == i)).sum()
-    return out
+    pred, target, classes = _base(input, target)
+    out = (pred == classes) & (target == classes)
+    return out.sum(dim=0).float()
 
 
 def true_negative(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    pred = input.argmax(dim=-1)
-    out = torch.zeros(input.size(-1))
-    for i in range(input.size(-1)):
-        out[i] = ((pred != i) & (target != i)).sum()
-    return out
+    pred, target, classes = _base(input, target)
+    out = ((pred != classes) & (target != classes))
+    return out.sum(dim=0).float()
 
 
 def false_positive(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    pred = input.argmax(dim=-1)
-    out = torch.zeros(input.size(-1))
-    for i in range(input.size(-1)):
-        out[i] = ((pred == i) & (target != i)).sum()
-    return out
+    pred, target, classes = _base(input, target)
+    out = ((pred == classes) & (target != classes))
+    return out.sum(dim=0).float()
 
 
 def false_negative(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    pred = input.argmax(dim=-1)
-    out = torch.zeros(input.size(-1))
-    for i in range(input.size(-1)):
-        out[i] = ((pred != i) & (target == i)).sum()
-    return out
+    pred, target, classes = _base(input, target)
+    out = ((pred != classes) & (target == classes))
+    return out.sum(dim=0).float()
 
 
 def precision(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:

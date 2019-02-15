@@ -53,3 +53,33 @@ def test_recall():
 
 def test_specificity():
     assert all(commons.specificity(input, target) == torch.tensor([2 / 2, 3 / 3, 1 / 3]))
+
+
+def test_true_positive_2d():
+    # torch.randn(2, 3, 2, 2)
+    input = torch.tensor([[[[0.0146, 0.8026],
+                            [0.5576, -2.3168]],
+
+                           [[-1.1490, 0.6365],
+                            [-1.1506, -0.6319]],
+
+                           [[-0.4976, 0.8760],
+                            [0.6989, -1.1562]]],
+
+                          [[[-0.0541, -0.0892],
+                            [-0.9677, 1.3331]],
+
+                           [[1.7848, 1.0078],
+                            [0.7506, -1.5101]],
+
+                           [[-0.6134, 1.9541],
+                            [1.1825, -0.5879]]]])
+
+    # argmax(dim=1)
+    target = torch.tensor([[[0, 2],
+                            [2, 1]],
+
+                           [[1, 2],
+                            [2, 0]]])
+
+    assert all(commons.true_positive(input, target) == torch.tensor([2, 2, 4]).float())
