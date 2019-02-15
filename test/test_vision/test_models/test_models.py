@@ -7,21 +7,21 @@ def test_resnet20():
     input = torch.randn(2, 3, 32, 32)
     model = resnet20(num_classes=10)
     output = model(input)
-    assert output.size(0) == 10
+    assert output.size(1) == 10
 
 
 def test_paresnet20():
     input = torch.randn(2, 3, 32, 32)
     model = preact_resnet20(num_classes=10)
     output = model(input)
-    assert output.size(0) == 10
+    assert output.size(1) == 10
 
 
 def test_densenet():
     input = torch.randn(2, 3, 32, 32)
     model = cifar_densenet100(num_classes=10)
     output = model(input)
-    assert output.size(0) == 10
+    assert output.size(1) == 10
 
 
 def test_unet():
