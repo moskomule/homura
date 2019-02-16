@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.utils.reporter.callbacks &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.html">homura package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>homura.utils.reporter.callbacks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for homura.utils.reporter.callbacks</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.wrapper</span> <span class="k">import</span> <span class="n">TQDMWrapper</span><span class="p">,</span> <span class="n">VisdomWrapper</span><span class="p">,</span> <span class="n">TensorBoardWrapper</span><span class="p">,</span> <span class="n">LoggerWrapper</span>
+<span class="kn">from</span> <span class="nn">.._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..callbacks</span> <span class="k">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">CallbackList</span>
+
+
+<div class="viewcode-block" id="Reporter"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter">[docs]</a><span class="k">class</span> <span class="nc">Reporter</span><span class="p">(</span><span class="n">Callback</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="n">__param_reportable</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">__image_reportable</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">],</span> <span class="n">report_freq</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wrapper_args</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">wrapper_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">CallbackList</span><span class="p">(</span><span class="o">*</span><span class="n">callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="o">=</span> <span class="n">report_freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_params_freq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_freq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tt_iteration_report_done</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Reporter.add_memo"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.add_memo">[docs]</a>    <span class="k">def</span> <span class="nf">add_memo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;memo&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;memo&quot;</span><span class="p">:</span>
+            <span class="c1"># to avoid collision</span>
+            <span class="n">name</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="n">text</span><span class="p">))[:</span><span class="mi">5</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_report_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot report type :{type(v)}&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Reporter.before_iteration"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">before_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tt_iteration_report_done</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Reporter.after_iteration"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">STEP</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{STEP}</span><span class="s2">_</span><span class="si">{k}</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="c1"># to avoid repeatedly reporting when not training mode</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="n">TRAIN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tt_iteration_report_done</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Images are reported once in a testing loop!&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_report_images_freq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{key}</span><span class="s2">_</span><span class="si">{mode}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_params_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_report_params_freq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">step</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tt_iteration_report_done</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Reporter.before_epoch"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Reporter.after_epoch"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_report_images_freq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{key}</span><span class="s2">_</span><span class="si">{mode}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_report_params_freq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">epoch</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Reporter.close"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Reporter.enable_report_params"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.enable_report_params">[docs]</a>    <span class="k">def</span> <span class="nf">enable_report_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_params_freq</span> <span class="o">=</span> <span class="n">report_freq</span></div>
+
+<div class="viewcode-block" id="Reporter.disable_report_params"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.disable_report_params">[docs]</a>    <span class="k">def</span> <span class="nf">disable_report_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Reporter.report_params"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.report_params">[docs]</a>    <span class="k">def</span> <span class="nf">report_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_histogram</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Reporter.enable_report_images"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.enable_report_images">[docs]</a>    <span class="k">def</span> <span class="nf">enable_report_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_keys</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images_freq</span> <span class="o">=</span> <span class="n">report_freq</span></div>
+
+<div class="viewcode-block" id="Reporter.disable_report_images"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.disable_report_images">[docs]</a>    <span class="k">def</span> <span class="nf">disable_report_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Reporter.report_images"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.Reporter.report_images">[docs]</a>    <span class="k">def</span> <span class="nf">report_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_tensor</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_images</span><span class="p">(</span><span class="n">image_tensor</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TQDMReporter"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.TQDMReporter">[docs]</a><span class="k">class</span> <span class="nc">TQDMReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterator</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TQDMReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">TQDMWrapper</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">report_freq</span><span class="p">,</span>
+                                           <span class="p">{</span><span class="s2">&quot;iterator&quot;</span><span class="p">:</span> <span class="n">iterator</span><span class="p">,</span> <span class="s2">&quot;save_dir&quot;</span><span class="p">:</span> <span class="n">save_dir</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LoggerReporter"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.LoggerReporter">[docs]</a><span class="k">class</span> <span class="nc">LoggerReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LoggerReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">LoggerWrapper</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">report_freq</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;save_dir&quot;</span><span class="p">:</span> <span class="n">save_dir</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="VisdomReporter"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.VisdomReporter">[docs]</a><span class="k">class</span> <span class="nc">VisdomReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
+    <span class="n">__param_reportable</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">__image_reportable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6006</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VisdomReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">VisdomWrapper</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">report_freq</span><span class="p">,</span>
+                                             <span class="p">{</span><span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span> <span class="s2">&quot;save_dir&quot;</span><span class="p">:</span> <span class="n">save_dir</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="TensorboardReporter"><a class="viewcode-back" href="../../../../homura.utils.reporter.html#homura.utils.reporter.callbacks.TensorboardReporter">[docs]</a><span class="k">class</span> <span class="nc">TensorboardReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
+    <span class="n">__param_reportable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">__image_reportable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">report_freq</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TensorboardReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">TensorBoardWrapper</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">report_freq</span><span class="p">,</span>
+                                                  <span class="p">{</span><span class="s2">&quot;save_dir&quot;</span><span class="p">:</span> <span class="n">save_dir</span><span class="p">})</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

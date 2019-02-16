@@ -8,6 +8,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 import homura
+from homura.liblog import get_logger
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from ._miscs import check_path
@@ -42,6 +43,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :param use_cuda_nonblocking:
         :param kwargs:
         """
+        if logger is None:
+            logger = get_logger(__name__)
         super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, logger,
                                           **kwargs)
 

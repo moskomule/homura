@@ -1,0 +1,22 @@
+homura.vision.transforms package
+================================
+
+Submodules
+----------
+
+homura.vision.transforms.erase module
+-------------------------------------
+
+.. automodule:: homura.vision.transforms.erase
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: homura.vision.transforms
+    :members:
+    :undoc-members:
+    :show-inheritance:

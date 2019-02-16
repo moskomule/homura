@@ -1,0 +1,38 @@
+homura.modules package
+======================
+
+Submodules
+----------
+
+homura.modules.attention module
+-------------------------------
+
+.. automodule:: homura.modules.attention
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+homura.modules.conditional\_batchnorm module
+--------------------------------------------
+
+.. automodule:: homura.modules.conditional_batchnorm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+homura.modules.straight\_backprop module
+----------------------------------------
+
+.. automodule:: homura.modules.straight_backprop
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: homura.modules
+    :members:
+    :undoc-members:
+    :show-inheritance:
