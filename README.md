@@ -1,5 +1,7 @@
 # Homura [![CircleCI](https://circleci.com/gh/moskomule/homura/tree/master.svg?style=svg)](https://circleci.com/gh/moskomule/homura/tree/master)
 
+[document](https://moskomule.github.io/homura)
+
 *Homura* is a support tool for research experiments.
 
 *Homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
