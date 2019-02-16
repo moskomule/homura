@@ -4,8 +4,6 @@ import torch
 
 from homura.liblog import get_logger
 
-EPS = 1e-8
-
 logger = get_logger(__name__)
 
 

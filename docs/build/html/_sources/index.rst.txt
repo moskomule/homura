@@ -17,7 +17,7 @@ homura is a library for DL research.
    homura.metrics
    homura.modules
    homura.utils
-   homuta.vision
+   homura.vision
 
 
 Indices and tables
