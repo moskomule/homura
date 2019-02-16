@@ -2,6 +2,7 @@ import torch
 
 from homura.metrics import commons
 
+# pred: [2, 0, 2, 2]
 input = torch.tensor([[0, 0, 1],
                       [1, 0, 0],
                       [0, 0, 1],
@@ -9,9 +10,18 @@ input = torch.tensor([[0, 0, 1],
 target = torch.tensor([2, 0, 0, 1], dtype=torch.long)
 
 
+def test_confusion_matrix():
+    cm = commons.confusion_matrix(input, target)
+    expected = torch.zeros(3, 3, dtype=torch.long)
+    expected[2, 2] = 1
+    expected[0, 0] = 1
+    expected[2, 0] = 1
+    expected[2, 1] = 1
+    assert all(cm.view(-1) == expected.view(-1))
+
+
 def test_accuracy():
-    assert commons.accuracy(input, target) == 2 / 4
-    assert commons.accuracy(input, target, "sum") == 2
+    assert all(commons.classwise_accuracy(input, target) == torch.tensor([3 / 4, 3 / 4, 2 / 4]))
 
 
 def test_true_positive():
