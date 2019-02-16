@@ -1,3 +1,5 @@
+# lr_schedulers for homura's trainer
+
 from abc import ABCMeta
 
 from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiStepLR, LambdaLR as _LambdaLR,

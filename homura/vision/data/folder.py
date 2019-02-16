@@ -63,8 +63,7 @@ class ImageFolder(_DataSet):
     IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']
 
     def __init__(self, root, transform=None, num_samples: int = None, on_memory: bool = False):
-        """
-        A generic data loader where the images are arranged in this way
+        """A generic data loader where the images are arranged in this way
             root/cat/xxx.png
             root/dog/xxx.png
         :param root:
@@ -90,6 +89,7 @@ class LabelCorruptedImages(ImageFolder):
     def __init__(self, root, transform, random_rate: float = 0, val_size: int = 0, random_seed: int = 6):
         """
         A subclass of ImageFloder whose labels are corrupted in given `random_rate`.
+
         >>>dataset = LabelCorruptedImages("here", random_rate=0.1, val_size=1500)
         >>>valset = dataset.valset()
         """

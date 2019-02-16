@@ -1,3 +1,5 @@
+# optimizers for homura's trainer
+
 from abc import ABCMeta
 
 from torch import nn
