@@ -190,7 +190,7 @@ class LoggerWrapper(_WrapperBase):
 
 
 class TensorBoardWrapper(_WrapperBase):
-    def __init__(self, save_dir=None, save_image=False):
+    def __init__(self, save_dir=None, save_images=False):
         if homura.is_tensorboard_available:
             from tensorboardX import SummaryWriter
         else:
@@ -198,7 +198,7 @@ class TensorBoardWrapper(_WrapperBase):
 
         super(TensorBoardWrapper, self).__init__(save_dir)
         self._writer = SummaryWriter(log_dir=str(self._save_dir))
-        self._save_image = save_image
+        self._save_image = save_images
 
     def add_scalar(self, x: Vector, name: str, idx: int):
         self._register_data(x, name, idx)
