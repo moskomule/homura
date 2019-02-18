@@ -87,11 +87,10 @@ class Reporter(Callback, metaclass=ABCMeta):
             if k in self.image_keys:
                 continue
             # train_accuracy
-            name = f"{mode}_{k}"
             if _num_elements(v) == 1:
-                self.base_wrapper.add_scalar(v, name, idx)
+                self.base_wrapper.add_scalar(v, k, idx)
             else:
-                self.base_wrapper.add_scalars(v, name, idx)
+                self.base_wrapper.add_scalars(v, k, idx)
 
     def _report_params(self, model: nn.Module, idx: int):
         for name, param in model.named_parameters():
@@ -160,7 +159,7 @@ class TQDMReporter(Reporter):
         return len(self.base_wrapper)
 
     def _report(self, results: Mapping, mode: str, idx: int):
-        results = {f"{mode}_{k}": float(v) for k, v in results.items() if _num_elements(v) == 1}
+        results = {k: float(v) for k, v in results.items() if _num_elements(v) == 1}
         self.base_wrapper.add_scalars(results, None, idx)
 
 

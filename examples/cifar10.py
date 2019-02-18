@@ -15,7 +15,8 @@ def main():
 
     with reporter.TQDMReporter(range(200), callbacks=c) as tq, reporter.TensorboardReporter(c) as tb:
         tb.enable_report_params()
-        trainer = _trainer.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=[tq, tb], scheduler=scheduler)
+        trainer = _trainer.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=[tq, tb],
+                                             scheduler=scheduler)
         for _ in tq:
             trainer.train(train_loader)
             trainer.test(test_loader)
