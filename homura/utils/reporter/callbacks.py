@@ -1,6 +1,5 @@
 from abc import ABCMeta
 from logging import Logger
-from numbers import Number
 from typing import Iterable, Mapping, Optional, Union
 
 import torch
@@ -161,7 +160,7 @@ class TQDMReporter(Reporter):
         return len(self.base_wrapper)
 
     def _report(self, results: Mapping, mode: str, idx: int):
-        results = {f"{mode}_{k}": v for k, v in results.items() if isinstance(v, Number)}
+        results = {f"{mode}_{k}": float(v) for k, v in results.items() if _num_elements(v) == 1}
         self.base_wrapper.add_scalars(results, None, idx)
 
 

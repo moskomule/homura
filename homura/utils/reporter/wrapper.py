@@ -191,7 +191,7 @@ class LoggerWrapper(_WrapperBase):
 
 class TensorBoardWrapper(_WrapperBase):
     def __init__(self, save_dir=None, save_images=False):
-        if homura.is_tensorboard_available:
+        if homura.is_tensorboardX_available:
             from tensorboardX import SummaryWriter
         else:
             raise ImportError("To use TensorboardWrapper, tensorboardX is needed!")
