@@ -2,8 +2,7 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler
-from homura.utils import callbacks, reporter
+from homura import optim, lr_scheduler, callbacks, reporter
 from homura.utils.trainer import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
 
@@ -39,6 +38,7 @@ def main():
     for _ in r:
         trainer.train(train_loader)
         trainer.test(test_loader)
+    rep.close()
 
 
 if __name__ == '__main__':

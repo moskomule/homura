@@ -256,7 +256,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
 class SupervisedTrainer(TrainerBase):
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
-                 callbacks: Callback = None, scheduler: LRScheduler = None,
+                 callbacks: Optional[Callback or Iterable[Callable]] = None, scheduler: Optional[LRScheduler] = None,
                  verb=True, use_cudnn_benchmark=True, data_parallel=False, **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")

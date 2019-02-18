@@ -102,7 +102,7 @@ class _WrapperBase(metaclass=ABCMeta):
         self._container[name].append((idx, x))
 
     def save(self):
-        if self._save_dir is not None:
+        if self._save_dir is not None and not (self._save_dir / self._filename).exists():
             p = make_dir(self._save_dir)
             with (p / self._filename).open("w") as f:
                 json.dump(self._container, f)
