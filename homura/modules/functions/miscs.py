@@ -1,5 +1,7 @@
 from torch.autograd import Function
 
+__all__ = ["straight_backprop"]
+
 
 def straight_backprop(function):
     """

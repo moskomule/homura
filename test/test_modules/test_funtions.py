@@ -1,0 +1,42 @@
+import torch
+from pytest import approx
+
+from homura.modules import functions
+
+
+def test_straight_backprop():
+    a = torch.randn(4, 4, requires_grad=True)
+    relu = functions.straight_backprop(torch.relu)
+    relu(a).sum().backward()
+    assert (a.grad == a.new_ones(a.size())).all()
+
+
+def test_gumbel_softmax():
+    a = torch.tensor([10, 0.3, 0.3])
+    samples = sum([functions.gumbel_softmax(a, 0, 0.1) for _ in range(200)]) / 200
+    assert samples.tolist() == approx([1, 0, 0])
+
+
+def test_gumbel_sigmoid():
+    a = torch.tensor([10.0, -10.0])
+    samples = sum([functions.gumbel_sigmoid(a, 0.05) for _ in range(200)]) / 200
+    assert samples.tolist() == approx([1, 0])
+
+
+def test_ste():
+    input = torch.randn(3, requires_grad=True)
+    dummy = input.clone().detach().requires_grad_(True)
+    functions.straight_through_estimator(input).sum().backward()
+    dummy.sum().backward()
+    assert all(input.grad == dummy.grad)
+
+
+def test_semantic_hashing():
+    from homura.modules.functions.discretization import _saturated_sigmoid
+
+    for _ in range(10):
+        input = torch.randn(3, requires_grad=True)
+        dummy = input.clone().detach().requires_grad_(True)
+        functions.semantic_hashing(input, is_training=True).sum().backward()
+        _saturated_sigmoid(dummy).sum().backward()
+        assert all(input.grad == dummy.grad)
