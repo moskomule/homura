@@ -1,12 +1,13 @@
-from homura import callbacks
 import torch
 
-@callbacks.metric_callback_decorator
-def f(data):
-    return data["test"]
+from homura import callbacks
 
 
 def test_metrics_single_value():
+    @callbacks.metric_callback_decorator
+    def f(data):
+        return data["test"]
+
     metric = f
     num_iter = 4
     metric.before_all({})
@@ -26,6 +27,10 @@ def test_metrics_single_value():
 
 
 def test_metrics_multiple_values():
+    @callbacks.metric_callback_decorator
+    def f(data):
+        return data["test"]
+
     metric = f
     num_iter = 4
     metric.before_all({})

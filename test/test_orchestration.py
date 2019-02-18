@@ -1,3 +1,5 @@
+from tempfile import gettempdir
+
 import pytest
 import torch
 from torch import nn
@@ -8,7 +10,7 @@ from homura import reporter, callbacks, trainer, optim, is_tensorboardX_availabl
 
 @pytest.mark.parametrize("rep", ["tqdm", "logger", "tensorboard"])
 def test(rep):
-    tmpdir = ""
+    tmpdir = str(gettempdir())
     if rep == "tensorboard" and not is_tensorboardX_available:
         pytest.skip("tensorboardX is not available")
 
