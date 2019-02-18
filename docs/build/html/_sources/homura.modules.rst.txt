@@ -1,0 +1,37 @@
+homura.modules package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    homura.modules.functions
+
+Submodules
+----------
+
+homura.modules.attention module
+-------------------------------
+
+.. automodule:: homura.modules.attention
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+homura.modules.conditional\_batchnorm module
+--------------------------------------------
+
+.. automodule:: homura.modules.conditional_batchnorm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: homura.modules
+    :members:
+    :undoc-members:
+    :show-inheritance:
