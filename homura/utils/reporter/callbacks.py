@@ -1,30 +1,35 @@
-import warnings
 from abc import ABCMeta
 from numbers import Number
-from typing import Iterable, Mapping
+from typing import Iterable, Mapping, Optional, Union
 
 import torch
+from torch import nn
 
-from .wrapper import TQDMWrapper, VisdomWrapper, TensorBoardWrapper, LoggerWrapper
+from .wrapper import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements
 from .._vocabulary import *
 from ..callbacks import Callback, CallbackList
 
 
 class Reporter(Callback, metaclass=ABCMeta):
-    __param_reportable = False
-    __image_reportable = False
 
-    def __init__(self, wrapper, callbacks: Iterable[Callback], report_freq: int, wrapper_args: Mapping):
-        self.base_wrapper = wrapper(**wrapper_args)
-        self.callback = CallbackList(*callbacks)
-        self._report_freq = report_freq
-        self._report_params = False
-        self._report_params_freq = -1
-        self._report_images = False
-        self._report_images_keys = []
-        self._report_images_freq = -1
-        self._iteration = 0
-        self._tt_iteration_report_done = False
+    def __init__(self, base_wrapper, wrapper_args: Mapping, callbacks: Iterable[Callback],
+                 report_freq: int = -1,
+                 report_param_freq: int = 0,
+                 report_image_freq: int = 0,
+                 image_keys: Optional[Iterable[str]] = None):
+        """Base class for Reporters
+        :param base_wrapper:
+        :param callbacks:
+        :param report_freq: report frequency of values by iteration. If -1, report every epoch and if 0, does not report.
+        :param report_param_freq: frequency of parameters by iteration
+        :param report_image_freq: frequency of images by iteration
+        """
+        self.base_wrapper = base_wrapper(**wrapper_args)
+        self.callbacks = callbacks if isinstance(callbacks, CallbackList) else CallbackList(*callbacks)
+        self.report_freq = report_freq
+        self.report_param_freq = report_param_freq
+        self.report_image_freq = report_image_freq
+        self.image_keys = [] if image_keys is None else image_keys
 
     def add_memo(self, text: str, *, name="memo", index=0):
         if name == "memo":
@@ -32,101 +37,110 @@ class Reporter(Callback, metaclass=ABCMeta):
             name += str(hash(text))[:5]
         self.base_wrapper.add_text(text, name, index)
 
-    def _report_value(self, v, name, idx):
-        if isinstance(v, Number) or isinstance(v, torch.Tensor):
-            self.base_wrapper.add_scalar(v, name=name, idx=idx)
-        elif isinstance(v, str):
-            self.base_wrapper.add_text(v, name=name, idx=idx)
-        else:
-            raise NotImplementedError(f"Cannot report type :{type(v)}")
+    def before_all(self, data: Mapping):
+        self.callbacks.before_all(data)
+
+    def after_all(self, data: Mapping):
+        self.callbacks.after_all(data)
 
     def before_iteration(self, data: Mapping):
-        self.callback.before_iteration(data)
-        self._iteration += 1
-        self._tt_iteration_report_done = False
+        self.callbacks.before_iteration(data)
 
     def after_iteration(self, data: Mapping):
-        results = self.callback.after_iteration(data)
+        f"""
+        :param data: Mapping. Requires to have at least {MODE}, {STEP}, {MODEL} as its key
+        """
+        results = self.callbacks.after_iteration(data)
         mode = data[MODE]
         step = data[STEP]
 
-        if (step % self._report_freq == 0) and self._report_freq > 0:
-            for k, v in results.items():
-                name = f"{STEP}_{k}"
-                self._report_value(v, name, step)
+        if self.report_freq > 0 and (step % self.report_freq == 0):
+            self._report(results, mode, step)
 
-        # to avoid repeatedly reporting when not training mode
-        if mode != TRAIN and self._tt_iteration_report_done:
-            warnings.warn("Images are reported once in a testing loop!", RuntimeWarning)
-            return None
+        if self.report_image_freq > 0 and (step % self.report_image_freq == 0):
+            for k in self.image_keys:
+                if data.get(k) is not None:
+                    self._report_images(data[k], f"{mode}_{k}", step)
 
-        if self._report_images and (step % self._report_images_freq == 0) and not (self._report_images_freq == -1):
-            for key in self._report_images_keys:
-                if data.get(key) is not None:
-                    self.report_images(data[key], f"{key}_{mode}", step)
-
-        if mode == TRAIN:
-            if self._report_params and (step % self._report_params_freq == 0) and not (self._report_params_freq == -1):
-                self.report_params(data[MODEL], step)
-        else:
-            self._tt_iteration_report_done = True
+        if mode == TRAIN and self.report_param_freq > 0 and (step % self.report_param_freq == 0):
+            self._report_params(data[MODEL], step)
 
     def before_epoch(self, data: Mapping):
-        self.callback.before_epoch(data)
+        self.callbacks.before_epoch(data)
 
     def after_epoch(self, data: Mapping):
-        results = self.callback.after_epoch(data)
+        f"""
+        :param data: Mapping. Requires to have at least {MODE}, {EPOCH}, {MODEL} as its key
+        """
+
+        results = self.callbacks.after_epoch(data)
         mode = data[MODE]
         epoch = data[EPOCH]
 
+        self._report(results, mode, epoch)
+
+        if self.report_image_freq < 0:
+            for k in self.image_keys:
+                if data.get(k) is not None:
+                    self._report_images(data[k], f"{mode}_{k}", epoch)
+
+        if mode == TRAIN and self.report_param_freq < 0:
+            self._report_params(data[MODEL], epoch)
+
+    def _report(self, results: Mapping, mode: str, idx: int):
         for k, v in results.items():
-            self._report_value(v, k, epoch)
+            # images are processed by self._report_images
+            if k in self.image_keys:
+                continue
+            # train_accuracy
+            name = f"{mode}_{k}"
+            if _num_elements(v) == 1:
+                self.base_wrapper.add_scalar(v, name, idx)
+            else:
+                self.base_wrapper.add_scalars(v, name, idx)
 
-        if self._report_images and (self._report_images_freq == -1):
-            for key in self._report_images_keys:
-                if data.get(key) is not None:
-                    self.report_images(data[key], f"{key}_{mode}", epoch)
-
-        if mode == TRAIN:
-            if self._report_params and (self._report_params_freq == -1):
-                self.report_params(data[MODEL], epoch)
-
-    def close(self):
-        self.base_wrapper.close()
-        self.callback.close()
-
-    def enable_report_params(self, report_freq=-1):
-        self._report_params = True
-        self._report_params_freq = report_freq
-
-    def disable_report_params(self):
-        self._report_params = False
-
-    def report_params(self, model, idx=None):
-        idx = self._iteration if idx is None else idx
+    def _report_params(self, model: nn.Module, idx: int):
         for name, param in model.named_parameters():
             self.base_wrapper.add_histogram(param, name, idx)
 
-    def enable_report_images(self, keys, report_freq=-1):
-        self._report_images_keys += list(keys)
-        self._report_images = True
-        self._report_images_freq = report_freq
+    def _report_images(self, image: torch.Tensor, name: str, idx: int):
+        self.base_wrapper.add_images(image, name, idx)
 
-    def disable_report_images(self, keys=None):
-        if keys is None:
-            self._report_images = False
+    def close(self):
+        self.callbacks.close()
+        self.base_wrapper.close()
+
+    def enable_report_images(self, report_freq: int = -1, image_keys: Union[str, list] = None):
+        if image_keys is not None:
+            if isinstance(image_keys, str):
+                image_keys = [image_keys]
+            self.report_param_freq = report_freq
+            self.image_keys += list(image_keys)
         else:
-            raise NotImplementedError
+            raise ValueError("Argument image_keys should be specified!")
 
-    def report_images(self, image_tensor, name, idx=None):
-        idx = self._iteration if idx is None else idx
-        self.base_wrapper.add_images(image_tensor, name, idx)
+    def enable_report_params(self, report_freq: int = -1):
+        self.report_param_freq = report_freq
+
+    def disable_report_images(self, image_keys: Optional[Union[str, list]] = None):
+        if image_keys is None:
+            image_keys = self.image_keys
+        elif isinstance(image_keys, str):
+            image_keys = [image_keys]
+        for k in image_keys:
+            self.image_keys.pop(k)
+        if len(self.image_keys) == 0:
+            self.report_image_freq = 0
+
+    def disable_report_params(self):
+        pass
 
 
 class TQDMReporter(Reporter):
-    def __init__(self, iterator, callbacks, save_dir=None, report_freq=-1):
-        super(TQDMReporter, self).__init__(TQDMWrapper, callbacks, report_freq,
-                                           {"iterator": iterator, "save_dir": save_dir})
+    def __init__(self, iterator, callbacks, save_dir=None, report_freq=-1, save_image_freq=0, image_keys=None):
+        super(TQDMReporter, self).__init__(TQDMWrapper, {"iterator": iterator, "save_dir": save_dir}, callbacks,
+                                           report_freq=report_freq, report_image_freq=save_image_freq,
+                                           image_keys=image_keys)
 
     def __iter__(self):
         for x in self.base_wrapper:
@@ -135,25 +149,26 @@ class TQDMReporter(Reporter):
     def __len__(self):
         return len(self.base_wrapper)
 
+    def _report(self, results: Mapping, mode: str, idx: int):
+        results = {f"{mode}_{k}": v for k, v in results.items() if isinstance(v, Number)}
+        self.base_wrapper.add_scalars(results, None, idx)
+
 
 class LoggerReporter(Reporter):
-    def __init__(self, callbacks, save_dir=None, report_freq=-1, ):
-        super(LoggerReporter, self).__init__(LoggerWrapper, callbacks, report_freq, {"save_dir": save_dir})
-
-
-class VisdomReporter(Reporter):
-    __param_reportable = False
-    __image_reportable = True
-
-    def __init__(self, callbacks, port=6006, save_dir=None, report_freq=-1):
-        super(VisdomReporter, self).__init__(VisdomWrapper, callbacks, report_freq,
-                                             {"port": port, "save_dir": save_dir})
+    def __init__(self, callbacks, save_dir=None, report_freq=-1, save_image_freq=0, image_keys=None):
+        super(LoggerReporter, self).__init__(LoggerWrapper, {"save_dir": save_dir}, callbacks, report_freq,
+                                             report_image_freq=save_image_freq, image_keys=image_keys)
 
 
 class TensorboardReporter(Reporter):
-    __param_reportable = True
-    __image_reportable = True
+    def __init__(self, callbacks, save_dir=None, report_freq: int = -1, report_params_freq: int = 0,
+                 report_images_freq: int = 0, image_keys: Optional[Iterable[str]] = None):
+        super(TensorboardReporter, self).__init__(TensorBoardWrapper, {"save_dir": save_dir}, callbacks, report_freq,
+                                                  report_param_freq=report_params_freq,
+                                                  report_image_freq=report_images_freq, image_keys=image_keys)
 
-    def __init__(self, callbacks, save_dir=None, report_freq=-1):
-        super(TensorboardReporter, self).__init__(TensorBoardWrapper, callbacks, report_freq,
-                                                  {"save_dir": save_dir})
+
+class VisdomReporter(object):
+
+    def __init__(self, **kwargs):
+        raise DeprecationWarning("VisdomReporter is no longer supported!")
