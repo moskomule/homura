@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from homura import reporter, callbacks, trainer, optim, is_tensorboardX_available
+from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available
 
 
 @pytest.mark.parametrize("rep", ["tqdm", "logger", "tensorboard"])
@@ -28,8 +28,8 @@ def test(rep):
           "logger": lambda: reporter.LoggerReporter(c, tmpdir),
           "tensorboard": lambda: reporter.TensorboardReporter(c, tmpdir)
           }[rep]() as _rep:
-        tr = trainer.SupervisedTrainer(model, optimizer, F.cross_entropy,
-                                       callbacks=_rep, verb=False)
+        tr = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy,
+                                        callbacks=_rep, verb=False)
         if rep == "tqdm":
             epoch = _rep
         for _ in epoch:

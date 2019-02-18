@@ -1,6 +1,6 @@
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, reporter, callbacks, trainer as _trainer
+from homura import optim, lr_scheduler, reporter, callbacks, trainers
 from homura.vision.data.loaders import cifar10_loaders
 from homura.vision.models.cifar import resnet20
 
@@ -14,7 +14,7 @@ def main():
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
 
     with reporter.TQDMReporter(range(200), callbacks=c) as tq, reporter.TensorboardReporter(c) as tb:
-        trainer = _trainer.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=[tq, tb],
+        trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=[tq, tb],
                                              scheduler=scheduler)
         for _ in tq:
             trainer.train(train_loader)
