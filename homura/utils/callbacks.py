@@ -69,7 +69,8 @@ class MetricCallback(Callback):
     def after_iteration(self, data: Mapping):
         mode = data[MODE]
         key = self._get_key_name(mode)
-        # if once this method is called after an iteration, self._last_iter is not None
+        # To avoid calculate same metric multiple times.
+        # If once this method is called after an iteration, self._last_iter is not None
         if self._last_iter.get(key) is None:
             metric = self.metric_function(data)
             self._last_iter[key] = metric
@@ -103,6 +104,10 @@ class MetricCallback(Callback):
 
     def _get_key_name(self, name):
         return f"{self.metric_name}_{name}"
+
+    @property
+    def history(self) -> dict:
+        return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
 
 
 class CallbackList(Callback):
@@ -159,10 +164,9 @@ class AccuracyCallback(MetricCallback):
 
     def accuracy(self, data):
         output, target = data[OUTPUT], data[INPUTS][1]
-        with torch.no_grad():
-            _, pred_idx = output.topk(self.top_k, dim=1)
-            target = target.view(-1, 1).expand_as(pred_idx)
-            return (pred_idx == target).float().sum(dim=1).mean().item()
+        _, pred_idx = output.topk(self.top_k, dim=1)
+        target = target.view(-1, 1).expand_as(pred_idx)
+        return (pred_idx == target).float().sum(dim=1).mean().item()
 
 
 class LossCallback(MetricCallback):
