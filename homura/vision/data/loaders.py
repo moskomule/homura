@@ -53,7 +53,7 @@ class _BaseLoaders(object):
         return root
 
 
-def mnist_loaders(batch_size, num_workers=1, root="~/.torch/data/mnist", data_augmentation=None, replacement=False,
+def mnist_loaders(batch_size, num_workers=2, root="~/.torch/data/mnist", data_augmentation=None, replacement=False,
                   force_download=False):
     if data_augmentation is None:
         data_augmentation = [transforms.RandomHorizontalFlip()]
@@ -67,7 +67,7 @@ def mnist_loaders(batch_size, num_workers=1, root="~/.torch/data/mnist", data_au
     return train_loader, test_loader
 
 
-def cifar10_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar10", data_augmentation=None, replacement=False,
+def cifar10_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar10", data_augmentation=None, replacement=False,
                     force_download=False):
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
@@ -84,7 +84,7 @@ def cifar10_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar10", dat
     return train_loader, test_loader
 
 
-def cifar100_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar100", data_augmentation=None,
+def cifar100_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar100", data_augmentation=None,
                      replacement=False, force_download=False):
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
