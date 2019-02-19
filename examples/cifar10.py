@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     p = miniargs.ArgumentParser()
     p.add_int("--batch_size", default=128)
-    p.add_int("--model", ["resnet20", "wrn28_10"])
+    p.add_str("--model", choices=["resnet20", "wrn28_10"])
 
     args = p.parse()
     main()
