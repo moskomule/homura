@@ -35,7 +35,7 @@ class _BaseLoaders(object):
         train = DataLoader(train_set, sampler=train_sampler,
                            batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         test = DataLoader(test_set, sampler=test_sampler,
-                          batch_size=batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
+                          batch_size=2 * batch_size, num_workers=num_workers, shuffle=shuffle, pin_memory=True)
         return train, test
 
     @staticmethod
