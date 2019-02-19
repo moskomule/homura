@@ -7,6 +7,7 @@ def straight_backprop(function):
     """
     >>> straight_backprop_relu = straight_backprop(F.relu)
     >>> straight_backprop_relu(tensor)
+
     :param function: original function
     :return: modified function
     """
