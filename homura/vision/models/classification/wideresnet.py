@@ -95,6 +95,6 @@ class WideResNet(nn.Module):
         return x
 
 
-def wrn28_10(num_classes=10):
-    model = WideResNet(depth=28, widen_factor=1, dropout_rate=0.3, num_classes=num_classes)
+def wrn28_10(num_classes=10, dropout_rate=0):
+    model = WideResNet(depth=28, widen_factor=10, dropout_rate=dropout_rate, num_classes=num_classes)
     return model
