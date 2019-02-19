@@ -239,23 +239,104 @@
 <span id="homura-vision-data-loaders-module"></span><h2>homura.vision.data.loaders module<a class="headerlink" href="#module-homura.vision.data.loaders" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar100_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=1</em>, <em>root='~/.torch/data/cifar100'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=4</em>, <em>root='~/.torch/data/cifar100'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple data loader for CIFAR-100</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>batch_size</strong> – </li>
+<li><strong>num_workers</strong> – </li>
+<li><strong>root</strong> – </li>
+<li><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</li>
+<li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>force_download</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of train and test loaders</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar10_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=1</em>, <em>root='~/.torch/data/cifar10'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=4</em>, <em>root='~/.torch/data/cifar10'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple data loader for CIFAR-10</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>batch_size</strong> – </li>
+<li><strong>num_workers</strong> – </li>
+<li><strong>root</strong> – </li>
+<li><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</li>
+<li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>force_download</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of train and test loaders</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.imagenet_loaders">
 <code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root</em>, <em>batch_size</em>, <em>num_workers=8</em>, <em>data_augmentation=None</em>, <em>num_train_samples=None</em>, <em>num_test_samples=None</em>, <em>distributed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A simple data loader for ILSVRC classification data set</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> – </li>
+<li><strong>batch_size</strong> – </li>
+<li><strong>num_workers</strong> – </li>
+<li><strong>data_augmentation</strong> – </li>
+<li><strong>num_train_samples</strong> – </li>
+<li><strong>num_test_samples</strong> – </li>
+<li><strong>distributed</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of train and test loaders</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=1</em>, <em>root='~/.torch/data/mnist'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=2</em>, <em>root='~/.torch/data/mnist'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple data loader for MNIST.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>batch_size</strong> – </li>
+<li><strong>num_workers</strong> – </li>
+<li><strong>root</strong> – </li>
+<li><strong>data_augmentation</strong> – default transformation is RandomHorizontalFlip()</li>
+<li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>force_download</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of train and test loaders</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-homura.vision.data.statistics">

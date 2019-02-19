@@ -55,6 +55,16 @@ class _BaseLoaders(object):
 
 def mnist_loaders(batch_size, num_workers=2, root="~/.torch/data/mnist", data_augmentation=None, replacement=False,
                   force_download=False):
+    """ A simple data loader for MNIST.
+
+    :param batch_size:
+    :param num_workers:
+    :param root:
+    :param data_augmentation: default transformation is RandomHorizontalFlip()
+    :param replacement: sampling with replacement
+    :param force_download:
+    :return: tuple of train and test loaders
+    """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomHorizontalFlip()]
     _base = _BaseLoaders(datasets.MNIST, ((0.1307,), (0.3081,)), data_augmentation, replacement=replacement)
@@ -69,6 +79,16 @@ def mnist_loaders(batch_size, num_workers=2, root="~/.torch/data/mnist", data_au
 
 def cifar10_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar10", data_augmentation=None, replacement=False,
                     force_download=False):
+    """ A simple data loader for CIFAR-10
+
+    :param batch_size:
+    :param num_workers:
+    :param root:
+    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()
+    :param replacement: sampling with replacement
+    :param force_download:
+    :return: tuple of train and test loaders
+    """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
                              transforms.RandomHorizontalFlip()]
@@ -86,6 +106,16 @@ def cifar10_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar10", dat
 
 def cifar100_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar100", data_augmentation=None,
                      replacement=False, force_download=False):
+    """ A simple data loader for CIFAR-100
+
+    :param batch_size:
+    :param num_workers:
+    :param root:
+    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()
+    :param replacement: sampling with replacement
+    :param force_download:
+    :return: tuple of train and test loaders
+    """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
                              transforms.RandomHorizontalFlip()]
@@ -103,6 +133,17 @@ def cifar100_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar100", d
 
 def imagenet_loaders(root, batch_size, num_workers=8, data_augmentation=None, num_train_samples=None,
                      num_test_samples=None, distributed=False):
+    """ A simple data loader for ILSVRC classification data set
+
+    :param root:
+    :param batch_size:
+    :param num_workers:
+    :param data_augmentation:
+    :param num_train_samples:
+    :param num_test_samples:
+    :param distributed:
+    :return: tuple of train and test loaders
+    """
     import torch
 
     if distributed:

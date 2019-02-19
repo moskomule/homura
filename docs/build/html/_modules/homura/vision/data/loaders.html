@@ -202,8 +202,18 @@
         <span class="k">return</span> <span class="n">root</span>
 
 
-<div class="viewcode-block" id="mnist_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.mnist_loaders">[docs]</a><span class="k">def</span> <span class="nf">mnist_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/mnist&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="mnist_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.mnist_loaders">[docs]</a><span class="k">def</span> <span class="nf">mnist_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/mnist&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                   <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple data loader for MNIST.</span>
+
+<span class="sd">    :param batch_size:</span>
+<span class="sd">    :param num_workers:</span>
+<span class="sd">    :param root:</span>
+<span class="sd">    :param data_augmentation: default transformation is RandomHorizontalFlip()</span>
+<span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param force_download:</span>
+<span class="sd">    :return: tuple of train and test loaders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
     <span class="n">_base</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.1307</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.3081</span><span class="p">,)),</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">)</span>
@@ -216,8 +226,18 @@
     <span class="k">return</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span></div>
 
 
-<div class="viewcode-block" id="cifar10_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar10_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar10_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="cifar10_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar10_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar10_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple data loader for CIFAR-10</span>
+
+<span class="sd">    :param batch_size:</span>
+<span class="sd">    :param num_workers:</span>
+<span class="sd">    :param root:</span>
+<span class="sd">    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</span>
+<span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param force_download:</span>
+<span class="sd">    :return: tuple of train and test loaders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
                              <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
@@ -233,8 +253,18 @@
     <span class="k">return</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span></div>
 
 
-<div class="viewcode-block" id="cifar100_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar100_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar100_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/cifar100&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="cifar100_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar100_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar100_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s2">&quot;~/.torch/data/cifar100&quot;</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple data loader for CIFAR-100</span>
+
+<span class="sd">    :param batch_size:</span>
+<span class="sd">    :param num_workers:</span>
+<span class="sd">    :param root:</span>
+<span class="sd">    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</span>
+<span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param force_download:</span>
+<span class="sd">    :return: tuple of train and test loaders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
                              <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
@@ -252,6 +282,17 @@
 
 <div class="viewcode-block" id="imagenet_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.imagenet_loaders">[docs]</a><span class="k">def</span> <span class="nf">imagenet_loaders</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_train_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">num_test_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distributed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple data loader for ILSVRC classification data set</span>
+
+<span class="sd">    :param root:</span>
+<span class="sd">    :param batch_size:</span>
+<span class="sd">    :param num_workers:</span>
+<span class="sd">    :param data_augmentation:</span>
+<span class="sd">    :param num_train_samples:</span>
+<span class="sd">    :param num_test_samples:</span>
+<span class="sd">    :param distributed:</span>
+<span class="sd">    :return: tuple of train and test loaders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">torch</span>
 
     <span class="k">if</span> <span class="n">distributed</span><span class="p">:</span>
