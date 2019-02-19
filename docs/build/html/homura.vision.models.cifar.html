@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.vision.models.cifar package &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="homura.vision.models.segmentation package" href="homura.vision.models.segmentation.html" />
+    <link rel="prev" title="homura.vision.models package" href="homura.vision.models.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="homura.vision.html">homura.vision package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.environment">homura.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="homura.vision.html">homura.vision package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.vision.data.html">homura.vision.data package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="homura.vision.models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="homura.vision.transforms.html">homura.vision.transforms package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="homura.html">homura package</a> &raquo;</li>
+        
+          <li><a href="homura.vision.html">homura.vision package</a> &raquo;</li>
+        
+          <li><a href="homura.vision.models.html">homura.vision.models package</a> &raquo;</li>
+        
+      <li>homura.vision.models.cifar package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/homura.vision.models.cifar.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="homura-vision-models-cifar-package">
+<h1>homura.vision.models.cifar package<a class="headerlink" href="#homura-vision-models-cifar-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-homura.vision.models.cifar.densenet">
+<span id="homura-vision-models-cifar-densenet-module"></span><h2>homura.vision.models.cifar.densenet module<a class="headerlink" href="#module-homura.vision.models.cifar.densenet" title="Permalink to this headline">¶</a></h2>
+<p>DenseNet for CIFAR dataset proposed in Gao et al. 2016
+<a class="reference external" href="https://github.com/liuzhuang13/DenseNet">https://github.com/liuzhuang13/DenseNet</a></p>
+<dl class="function">
+<dt id="homura.vision.models.cifar.densenet.cifar_densenet100">
+<code class="descclassname">homura.vision.models.cifar.densenet.</code><code class="descname">cifar_densenet100</code><span class="sig-paren">(</span><em>num_classes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/densenet.html#cifar_densenet100"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.densenet.cifar_densenet100" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="homura.vision.models.cifar.densenet.CIFARDenseNet">
+<em class="property">class </em><code class="descclassname">homura.vision.models.cifar.densenet.</code><code class="descname">CIFARDenseNet</code><span class="sig-paren">(</span><em>num_classes</em>, <em>init_channels</em>, <em>num_layers</em>, <em>growth_rate</em>, <em>dropout_rate=0</em>, <em>bn_size=4</em>, <em>reduction=2</em>, <em>padding='reflect'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/densenet.html#CIFARDenseNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.densenet.CIFARDenseNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="homura.vision.models.cifar.densenet.CIFARDenseNet.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/densenet.html#CIFARDenseNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.densenet.CIFARDenseNet.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="homura.vision.models.cifar.densenet.CIFARDenseNet.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/densenet.html#CIFARDenseNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.densenet.CIFARDenseNet.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.vision.models.cifar.resnet">
+<span id="homura-vision-models-cifar-resnet-module"></span><h2>homura.vision.models.cifar.resnet module<a class="headerlink" href="#module-homura.vision.models.cifar.resnet" title="Permalink to this headline">¶</a></h2>
+<p>ResNet for CIFAR dataset proposed in He+15, p 7. and
+<a class="reference external" href="https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua">https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua</a></p>
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.resnet20">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">resnet20</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.resnet20" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.resnet32">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">resnet32</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.resnet32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.resnet56">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">resnet56</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.resnet56" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.resnet110">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">resnet110</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.resnet110" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.preact_resnet20">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">preact_resnet20</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#preact_resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.preact_resnet20" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.preact_resnet32">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">preact_resnet32</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#preact_resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.preact_resnet32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.preact_resnet56">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">preact_resnet56</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#preact_resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.preact_resnet56" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.models.cifar.resnet.preact_resnet110">
+<code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">preact_resnet110</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#preact_resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.preact_resnet110" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="homura.vision.models.cifar.resnet.ResNet">
+<em class="property">class </em><code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">ResNet</code><span class="sig-paren">(</span><em>block</em>, <em>n_size</em>, <em>num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#ResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.ResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="method">
+<dt id="homura.vision.models.cifar.resnet.ResNet.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#ResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.ResNet.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="homura.vision.models.cifar.resnet.ResNet.initialize">
+<code class="descname">initialize</code><span class="sig-paren">(</span><em>zero_init_residual=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#ResNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.ResNet.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.vision.models.cifar.resnet.PreActResNet">
+<em class="property">class </em><code class="descclassname">homura.vision.models.cifar.resnet.</code><code class="descname">PreActResNet</code><span class="sig-paren">(</span><em>block</em>, <em>n_size</em>, <em>num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#PreActResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.PreActResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.models.cifar.resnet.ResNet" title="homura.vision.models.cifar.resnet.ResNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.models.cifar.resnet.ResNet</span></code></a></p>
+<dl class="method">
+<dt id="homura.vision.models.cifar.resnet.PreActResNet.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/cifar/resnet.html#PreActResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.cifar.resnet.PreActResNet.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.vision.models.cifar.wide_resnet">
+<span id="homura-vision-models-cifar-wide-resnet-module"></span><h2>homura.vision.models.cifar.wide_resnet module<a class="headerlink" href="#module-homura.vision.models.cifar.wide_resnet" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-homura.vision.models.cifar">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.vision.models.cifar" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="homura.vision.models.segmentation.html" class="btn btn-neutral float-right" title="homura.vision.models.segmentation package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="homura.vision.models.html" class="btn btn-neutral" title="homura.vision.models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

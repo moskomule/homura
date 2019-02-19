@@ -1,13 +1,6 @@
 homura.utils package
 ====================
 
-Subpackages
------------
-
-.. toctree::
-
-    homura.utils.reporter
-
 Submodules
 ----------
 
@@ -39,6 +32,14 @@ homura.utils.inferencer module
 ------------------------------
 
 .. automodule:: homura.utils.inferencer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+homura.utils.reporters module
+-----------------------------
+
+.. automodule:: homura.utils.reporters
     :members:
     :undoc-members:
     :show-inheritance:

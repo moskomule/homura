@@ -130,23 +130,24 @@ class Reporter(Callback, metaclass=ABCMeta):
 
 
 class TQDMReporter(Reporter):
+    """ Use like ::
+
+        with TQDMReporter(range(100), callbacks) as tq:
+            trainer = ...
+            for _ in tq:
+                ...
+
+    :param iterator:
+    :param callbacks:
+    :param save_dir:
+    :param report_freq:
+    :param save_image_freq: If n>0, saves images every n iteration. if n==-1, every epoch.
+        This may need large storage space.
+    :param image_keys: keys for images.
+    """
+
     def __init__(self, iterator: Iterable, callbacks: Iterable[Callback], save_dir: Optional[str] = None,
                  report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None):
-        """ Use like ::
-
-            with TQDMReporter(range(100), callbacks) as tq:
-                trainer = ...
-                for _ in tq:
-                    ...
-
-        :param iterator:
-        :param callbacks:
-        :param save_dir:
-        :param report_freq:
-        :param save_image_freq: If n>0, saves images every n iteration. if n==-1, every epoch.
-        This may need large storage space.
-        :param image_keys: keys for images.
-        """
         super(TQDMReporter, self).__init__(TQDMWrapper(iterator=iterator, save_dir=save_dir), callbacks,
                                            report_freq=report_freq, report_image_freq=save_image_freq,
                                            image_keys=image_keys)
@@ -164,45 +165,48 @@ class TQDMReporter(Reporter):
 
 
 class LoggerReporter(Reporter):
-    def __init__(self, callbacks: Iterable[Callback], save_dir: Optional[str] = None, logger: Optional[Logger] = None,
-                 report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None):
-        """ Something like this ::
+    """ Something like this ::
 
-            with LoggerReporter(...) as lr:
-                trainer = ...
-                for _ in range(100):
-                    ...
+        with LoggerReporter(...) as lr:
+            trainer = ...
+            for _ in range(100):
+                ...
 
-        :param callbacks:
-        :param save_dir:
-        :param report_freq:
-        :param save_image_freq: If n>0, saves images every n iteration. if n==-1, every epoch.
+    :param callbacks:
+    :param save_dir:
+    :param report_freq:
+    :param save_image_freq: If n>0, saves images every n iteration. if n==-1, every epoch.
         This may need large storage space.
-        :param image_keys: keys for images.
-        """
+    :param image_keys: keys for images.
+    """
 
-        super(LoggerReporter, self).__init__(LoggerWrapper(save_dir=save_dir, logger=logger), callbacks, report_freq,
+    def __init__(self, callbacks: Iterable[Callback], save_dir: Optional[str] = None, logger: Optional[Logger] = None,
+                 report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None,
+                 save_log: bool = False):
+        super(LoggerReporter, self).__init__(LoggerWrapper(save_dir=save_dir, logger=logger, save_log=save_log),
+                                             callbacks, report_freq,
                                              report_image_freq=save_image_freq, image_keys=image_keys)
 
 
 class TensorboardReporter(Reporter):
+    """ Something like this ::
+
+        with TensorboardReporter(...) as tb:
+            trainer = ...
+            for _ in range(100):
+                ...
+
+    :param callbacks:
+    :param save_dir:
+    :param report_freq:
+    :param report_params_freq: If n>0, reports parameter histograms every n iteration. if n==-1, every epoch.
+    :param report_images_freq: If n>0, reports images every n iteration. if n==-1, every epoch.
+    :param image_keys: keys for images.
+    :param save_images: If True, saving images in addition to reporting
+    """
+
     def __init__(self, callbacks, save_dir=None, report_freq: int = -1, report_params_freq: int = 0,
                  report_images_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_images: bool = False):
-        """ Something like this ::
-
-            with TensorboardReporter(...) as tb:
-                trainer = ...
-                for _ in range(100):
-                    ...
-
-        :param callbacks:
-        :param save_dir:
-        :param report_freq:
-        :param report_params_freq: If n>0, reports parameter histograms every n iteration. if n==-1, every epoch.
-        :param report_images_freq: If n>0, reports images every n iteration. if n==-1, every epoch.
-        :param image_keys: keys for images.
-        :param save_images: If True, saving images in addition to reporting
-        """
         super(TensorboardReporter, self).__init__(TensorBoardWrapper(save_dir=save_dir, save_images=save_images),
                                                   callbacks, report_freq,
                                                   report_param_freq=report_params_freq,
@@ -210,7 +214,9 @@ class TensorboardReporter(Reporter):
 
 
 class VisdomReporter(object):
-    # deprecated! Use TensorboardReporter instead!
+    """
+    Deprecated. Use TensorboardReporter instead.
+    """
 
     def __init__(self, **kwargs):
         raise DeprecationWarning("VisdomReporter is no longer supported!")

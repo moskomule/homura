@@ -4,7 +4,7 @@ from abc import ABCMeta
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
-from typing import Union, Dict
+from typing import Union, Dict, Mapping, List
 
 import numpy as np
 import torch
@@ -17,7 +17,7 @@ from homura.utils._miscs import get_git_hash
 from homura.utils._vocabulary import *
 
 DEFAULT_SAVE_DIR = "results"
-Vector = Union[Number, torch.Tensor, np.ndarray]
+Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
 
 
 def _dimension(x: Vector):
@@ -25,6 +25,8 @@ def _dimension(x: Vector):
         dim = x.ndim
     elif torch.is_tensor(x):
         dim = x.dim()
+    elif isinstance(x, List) and isinstance(x[0], Number):
+        dim = 1
     elif isinstance(x, Number):
         dim = 0
     else:
@@ -72,11 +74,23 @@ def save_image(path: Path, x: torch.Tensor, name: str, idx: int) -> None:
         _save_image(x, filename)
 
 
+def vector_to_dict(x: Union[Dict, Vector]):
+    if not isinstance(x, Mapping):
+        if _dimension(x) == 1:
+            x = {str(i): v for i, v in enumerate(x)}
+        else:
+            raise TypeError(f"Unknown type! {type(x)}: {x}")
+    return x
+
+
 class _WrapperBase(metaclass=ABCMeta):
     def __init__(self, save_dir):
         self._container = defaultdict(list)
         save_dir = DEFAULT_SAVE_DIR if save_dir is None else save_dir
-        self._save_dir = pathlib.Path(save_dir) / (NOW + "-" + get_git_hash())
+        postfix = ""
+        if len(get_git_hash()) > 0:
+            postfix = "-" + get_git_hash()
+        self._save_dir = pathlib.Path(save_dir) / (NOW + postfix)
         self._filename = NOW + ".json"
 
     def add_scalar(self, x: Vector, name: str, idx: int):
@@ -138,7 +152,7 @@ class TQDMWrapper(_WrapperBase):
         self.tqdm.set_postfix({name: x})
 
     def add_scalars(self, x: dict, name: str, idx: int):
-        assert isinstance(x, dict)
+        x = vector_to_dict(x)
         for k, v in x.items():
             self._register_data(v, k, idx)
         self.tqdm.set_postfix(x)
@@ -158,26 +172,29 @@ class TQDMWrapper(_WrapperBase):
 
 
 class LoggerWrapper(_WrapperBase):
-    def __init__(self, logger=None, save_dir=None):
+    def __init__(self, logger=None, save_dir=None, save_log: bool = False):
         super(LoggerWrapper, self).__init__(save_dir)
-        from homura.liblog import get_logger, set_verb_level
+        from homura.liblog import get_logger, set_file_handler
 
-        self.logger = get_logger(self.__class__.__name__) if logger is None else logger
-        set_verb_level("info")
+        self.logger = get_logger("homura.reporter") if logger is None else logger
+        if save_log:
+            set_file_handler(self._save_dir / "log.txt")
 
     def add_scalar(self, x, name: str, idx: int):
         self._register_data(x, name, idx)
-        self.logger.info(f"[{idx:>10}]{name}={x}")
+        self.logger.info(f"[{idx:>7}] {name:>30} {x:.4f}")
 
-    def add_scalars(self, x: dict, name, idx: int):
-        assert isinstance(x, dict)
+    def add_scalars(self, x: Union[Dict, Vector], name, idx: int):
+        x = vector_to_dict(x)
+        name = name or ""  # if name is None, then ""
         for k, v in x.items():
+            k = name + k
             self._register_data(v, k, idx)
-            self.logger.info(f"[{idx:>10}]{k}={v}")
+            self.logger.info(f"[{idx:>7}] {k:>30} {v:.4f}")
 
     def add_text(self, x: str, name: str, idx: int):
         self._register_data(x, name, idx)
-        self.logger.info(f"[{idx:>10}]{name}={x}")
+        self.logger.info(f"[{idx:>7}] {name:>30} {x}")
 
     def add_histogram(self, x, name: str, idx: int):
         self.logger.warning(f"{self.__class__.__name__} cannot report histogram!")
@@ -204,7 +221,8 @@ class TensorBoardWrapper(_WrapperBase):
         self._register_data(x, name, idx)
         self._writer.add_scalar(name, x, idx)
 
-    def add_scalars(self, x: Dict[str, Vector], name: str, idx: int):
+    def add_scalars(self, x: Union[Dict, Vector], name: str, idx: int):
+        x = vector_to_dict(x)
         for k, v in x.items():
             self._register_data(v, k, idx)
         self._writer.add_scalars(name, x, idx)

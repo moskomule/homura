@@ -12,16 +12,27 @@ from homura.liblog import get_logger
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from ._miscs import check_path
+from ._reporter_backends import TQDMWrapper
 from ._vocabulary import *
 from .callbacks import Callback
 from .containers import TensorTuple, Map, StepDict
-from ._reporter_backends import TQDMWrapper
 from .runner import Runner
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
 
 class TrainerBase(Runner, metaclass=ABCMeta):
+    """
+    :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
+    :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
+    :param loss_f: loss function or dict of loss functions
+    :param callbacks: callbacks or list of callbacks
+    :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
+    :param verb:
+    :param use_cudnn_benchmark:
+    :param use_cuda_nonblocking:
+    :param kwargs:
+    """
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  optimizer: Optional[Optimizer or Dict[str, Optimizer] or torch.optim.Optimizer],
@@ -31,18 +42,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                  update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
                  verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs):
-        """
-        Runner for training and evaluating
-        :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
-        :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
-        :param loss_f: loss function or dict of loss functions
-        :param callbacks: callbacks or list of callbacks
-        :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
-        :param verb:
-        :param use_cudnn_benchmark:
-        :param use_cuda_nonblocking:
-        :param kwargs:
-        """
+
         if logger is None:
             logger = get_logger(__name__)
         super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, logger,
@@ -113,14 +113,15 @@ class TrainerBase(Runner, metaclass=ABCMeta):
     @abstractmethod
     def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         """
-        iteration part, user can override
+        iteration part, user can override via duck typing or override_iteration
+
         :param data: data used during a iteration
         :return: loss, output
         """
 
     def override_iteration(self, new_iteration: Callable):
-        """
-        override iteration method
+        """ override iteration method
+
         >>> def new_iteration(trainer, inputs):
         >>>     ...
         >>>     results.loss = loss
@@ -152,12 +153,13 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._all_map[name] = data
 
     def _iteration(self, data: Tuple[torch.Tensor], mode: str):
-        """
-        iteration level training loop backend
+        """ iteration level training loop for backend
+
         :param data: should be TensorTuple
         :param mode: train, test or val
         :return:
         """
+
         self._iteration_map.update({STEP: self._step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)

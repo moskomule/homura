@@ -1,0 +1,6 @@
+.DS_Store
+.pytest_cache
+*.egg_info
+docs/build/html/.doctrees
+docs/build/doctrees
+docs/source
