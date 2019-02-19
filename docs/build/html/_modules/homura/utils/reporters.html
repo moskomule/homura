@@ -279,12 +279,16 @@
 
 
 <div class="viewcode-block" id="TQDMReporter"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.reporters.TQDMReporter">[docs]</a><span class="k">class</span> <span class="nc">TQDMReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Use like ::</span>
+    <span class="sd">&quot;&quot;&quot; Reporter using tqdm. Use like ::</span>
 
 <span class="sd">        with TQDMReporter(range(100), callbacks) as tq:</span>
 <span class="sd">            trainer = ...</span>
 <span class="sd">            for _ in tq:</span>
 <span class="sd">                ...</span>
+
+<span class="sd">    The output is like ::</span>
+
+<span class="sd">        100%|█| 200/200 [1:01:10&lt;00:00, 18.44s/it, loss_test=0.358, accuracy_test=0.919]</span>
 
 <span class="sd">    :param iterator:</span>
 <span class="sd">    :param callbacks:</span>
@@ -321,6 +325,11 @@
 <span class="sd">            for _ in range(100):</span>
 <span class="sd">                ...</span>
 
+<span class="sd">    Reports like this ::</span>
+
+<span class="sd">        [homura.reporter|2019-02-30 27:31:20|INFO] [      1]                      loss_test 0.4413</span>
+<span class="sd">        [homura.reporter|2019-02-30 27:31:20|INFO] [      1]                  accuracy_test 0.8631</span>
+
 <span class="sd">    :param callbacks:</span>
 <span class="sd">    :param save_dir:</span>
 <span class="sd">    :param report_freq:</span>
@@ -338,7 +347,7 @@
 
 
 <div class="viewcode-block" id="TensorboardReporter"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.reporters.TensorboardReporter">[docs]</a><span class="k">class</span> <span class="nc">TensorboardReporter</span><span class="p">(</span><span class="n">Reporter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Something like this ::</span>
+    <span class="sd">&quot;&quot;&quot; Reporter using Tensorboard. ::</span>
 
 <span class="sd">        with TensorboardReporter(...) as tb:</span>
 <span class="sd">            trainer = ...</span>

@@ -20,14 +20,6 @@ homura.utils.containers module
     :undoc-members:
     :show-inheritance:
 
-homura.utils.exceptions module
-------------------------------
-
-.. automodule:: homura.utils.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 homura.utils.inferencer module
 ------------------------------
 
@@ -40,14 +32,6 @@ homura.utils.reporters module
 -----------------------------
 
 .. automodule:: homura.utils.reporters
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-homura.utils.runner module
---------------------------
-
-.. automodule:: homura.utils.runner
     :members:
     :undoc-members:
     :show-inheritance:

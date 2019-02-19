@@ -130,12 +130,16 @@ class Reporter(Callback, metaclass=ABCMeta):
 
 
 class TQDMReporter(Reporter):
-    """ Use like ::
+    """ Reporter using tqdm. Use like ::
 
         with TQDMReporter(range(100), callbacks) as tq:
             trainer = ...
             for _ in tq:
                 ...
+
+    The output is like ::
+
+        100%|█| 200/200 [1:01:10<00:00, 18.44s/it, loss_test=0.358, accuracy_test=0.919]
 
     :param iterator:
     :param callbacks:
@@ -172,6 +176,11 @@ class LoggerReporter(Reporter):
             for _ in range(100):
                 ...
 
+    Reports like this ::
+
+        [homura.reporter|2019-02-30 27:31:20|INFO] [      1]                      loss_test 0.4413
+        [homura.reporter|2019-02-30 27:31:20|INFO] [      1]                  accuracy_test 0.8631
+
     :param callbacks:
     :param save_dir:
     :param report_freq:
@@ -189,7 +198,7 @@ class LoggerReporter(Reporter):
 
 
 class TensorboardReporter(Reporter):
-    """ Something like this ::
+    """ Reporter using Tensorboard. ::
 
         with TensorboardReporter(...) as tb:
             trainer = ...

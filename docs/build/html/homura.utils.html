@@ -88,10 +88,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.callbacks">homura.utils.callbacks module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.exceptions">homura.utils.exceptions module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.inferencer">homura.utils.inferencer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.reporters">homura.utils.reporters module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.runner">homura.utils.runner module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.trainers">homura.utils.trainers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
 </ul>
@@ -115,10 +113,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.callbacks">homura.utils.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.exceptions">homura.utils.exceptions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.inferencer">homura.utils.inferencer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reporters">homura.utils.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.runner">homura.utils.runner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.trainers">homura.utils.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
 </ul>
@@ -382,21 +378,12 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.utils.exceptions">
-<span id="homura-utils-exceptions-module"></span><h2>homura.utils.exceptions module<a class="headerlink" href="#module-homura.utils.exceptions" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
-<dt id="homura.utils.exceptions.ShapeError">
-<em class="property">exception </em><code class="descclassname">homura.utils.exceptions.</code><code class="descname">ShapeError</code><a class="reference internal" href="_modules/homura/utils/exceptions.html#ShapeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.exceptions.ShapeError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-</div>
 <div class="section" id="module-homura.utils.inferencer">
 <span id="homura-utils-inferencer-module"></span><h2>homura.utils.inferencer module<a class="headerlink" href="#module-homura.utils.inferencer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.inferencer.Inferencer">
 <em class="property">class </em><code class="descclassname">homura.utils.inferencer.</code><code class="descname">Inferencer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: homura.utils.callbacks.Callback = None</em>, <em>device: torch.device = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.utils.runner.Runner" title="homura.utils.runner.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.runner.Runner</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils._runner.Runner</span></code></p>
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.iteration">
 <code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; homura.utils.containers.Map<a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.iteration" title="Permalink to this definition">¶</a></dt>
@@ -446,6 +433,11 @@
     <span class="n">trainer</span> <span class="o">=</span> <span class="o">...</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
         <span class="o">...</span>
+</pre></div>
+</div>
+<p>Reports like this</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">homura</span><span class="o">.</span><span class="n">reporter</span><span class="o">|</span><span class="mi">2019</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">30</span> <span class="mi">27</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">20</span><span class="o">|</span><span class="n">INFO</span><span class="p">]</span> <span class="p">[</span>      <span class="mi">1</span><span class="p">]</span>                      <span class="n">loss_test</span> <span class="mf">0.4413</span>
+<span class="p">[</span><span class="n">homura</span><span class="o">.</span><span class="n">reporter</span><span class="o">|</span><span class="mi">2019</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">30</span> <span class="mi">27</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">20</span><span class="o">|</span><span class="n">INFO</span><span class="p">]</span> <span class="p">[</span>      <span class="mi">1</span><span class="p">]</span>                  <span class="n">accuracy_test</span> <span class="mf">0.8631</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -536,11 +528,15 @@ This may need large storage space.</li>
 <dt id="homura.utils.reporters.TQDMReporter">
 <em class="property">class </em><code class="descclassname">homura.utils.reporters.</code><code class="descname">TQDMReporter</code><span class="sig-paren">(</span><em>iterator: Iterable[T_co], callbacks: Iterable[homura.utils.callbacks.Callback], save_dir: Optional[str] = None, report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporters.html#TQDMReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.utils.reporters.Reporter" title="homura.utils.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.reporters.Reporter</span></code></a></p>
-<p>Use like</p>
+<p>Reporter using tqdm. Use like</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TQDMReporter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">callbacks</span><span class="p">)</span> <span class="k">as</span> <span class="n">tq</span><span class="p">:</span>
     <span class="n">trainer</span> <span class="o">=</span> <span class="o">...</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tq</span><span class="p">:</span>
         <span class="o">...</span>
+</pre></div>
+</div>
+<p>The output is like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|█| 200/200 [1:01:10&lt;00:00, 18.44s/it, loss_test=0.358, accuracy_test=0.919]
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -566,7 +562,7 @@ This may need large storage space.</li>
 <dt id="homura.utils.reporters.TensorboardReporter">
 <em class="property">class </em><code class="descclassname">homura.utils.reporters.</code><code class="descname">TensorboardReporter</code><span class="sig-paren">(</span><em>callbacks</em>, <em>save_dir=None</em>, <em>report_freq: int = -1</em>, <em>report_params_freq: int = 0</em>, <em>report_images_freq: int = 0</em>, <em>image_keys: Optional[Iterable[str]] = None</em>, <em>save_images: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporters.html#TensorboardReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.utils.reporters.Reporter" title="homura.utils.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.reporters.Reporter</span></code></a></p>
-<p>Something like this</p>
+<p>Reporter using Tensorboard.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TensorboardReporter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
     <span class="n">trainer</span> <span class="o">=</span> <span class="o">...</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
@@ -600,21 +596,12 @@ This may need large storage space.</li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.utils.runner">
-<span id="homura-utils-runner-module"></span><h2>homura.utils.runner module<a class="headerlink" href="#module-homura.utils.runner" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.utils.runner.Runner">
-<em class="property">class </em><code class="descclassname">homura.utils.runner.</code><code class="descname">Runner</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: Optional[homura.utils.callbacks.Callback] = None</em>, <em>device: torch.device = None</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>logger: Optional[logging.Logger] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/runner.html#Runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.runner.Runner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-</div>
 <div class="section" id="module-homura.utils.trainers">
 <span id="homura-utils-trainers-module"></span><h2>homura.utils.trainers module<a class="headerlink" href="#module-homura.utils.trainers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.trainers.TrainerBase">
 <em class="property">class </em><code class="descclassname">homura.utils.trainers.</code><code class="descname">TrainerBase</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module, optimizer: Optional[homura.optim.Optimizer], loss_f: Optional[Callable], *, callbacks: Optional[homura.utils.callbacks.Callback] = None, scheduler: Optional[homura.lr_scheduler.LRScheduler] = None, update_scheduler_by_epoch: bool = True, device: Optional[torch.device] = None, verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.utils.runner.Runner" title="homura.utils.runner.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.runner.Runner</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils._runner.Runner</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

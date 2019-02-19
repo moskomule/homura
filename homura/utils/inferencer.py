@@ -10,7 +10,7 @@ from ._miscs import check_path
 from ._vocabulary import *
 from .callbacks import Callback
 from .containers import Map
-from .runner import Runner
+from ._runner import Runner
 from tqdm import tqdm
 
 
