@@ -15,6 +15,6 @@ TRAIN = "train"
 TRAINER = "trainer"
 STEP = "step"
 NOW = datetime.now().strftime("%b%d-%H-%M-%S")
-INPUTS = "data"
+DATA = "data"
 GPU = "cuda"
 CPU = "cpu"

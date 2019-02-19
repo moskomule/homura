@@ -3,10 +3,10 @@ from tempfile import gettempdir
 
 import pytest
 import torch
+from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available
+from homura.utils.inferencer import Inferencer
 from torch import nn
 from torch.nn import functional as F
-
-from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available
 
 
 @pytest.mark.parametrize("rep", ["tqdm", "logger", "tensorboard"])
@@ -39,3 +39,12 @@ def test(rep):
 
     save_file = list(Path(tmpdir).glob("*/*.pkl"))[0]
     tr.resume(save_file)
+
+    c = callbacks.AccuracyCallback()
+    with {"tqdm": lambda: reporter.TQDMReporter(epoch, c, tmpdir),
+          "logger": lambda: reporter.LoggerReporter(c, tmpdir),
+          "tensorboard": lambda: reporter.TensorboardReporter(c, tmpdir)
+          }[rep]() as _rep:
+        inferencer = Inferencer(model, _rep)
+        inferencer.load(save_file)
+        inferencer.run(loader)

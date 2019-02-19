@@ -163,7 +163,7 @@ class AccuracyCallback(MetricCallback):
         super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
 
     def accuracy(self, data):
-        output, target = data[OUTPUT], data[INPUTS][1]
+        output, target = data[OUTPUT], data[DATA][1]
         _, pred_idx = output.topk(self.top_k, dim=1)
         target = target.view(-1, 1).expand_as(pred_idx)
         return (pred_idx == target).float().sum(dim=1).mean().item()

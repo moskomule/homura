@@ -12,14 +12,15 @@ from .callbacks import Callback, CallbackList
 
 class Reporter(Callback, metaclass=ABCMeta):
 
-    def __init__(self, base_wrapper: _WrapperBase, callbacks: Iterable[Callback],
+    def __init__(self, base_wrapper: _WrapperBase,
+                 callbacks: Union[Iterable[Callback], Callback],
                  report_freq: int = -1,
                  report_param_freq: int = 0,
                  report_image_freq: int = 0,
                  image_keys: Optional[Iterable[str]] = None):
 
         self.base_wrapper = base_wrapper
-        self.callbacks = callbacks if isinstance(callbacks, CallbackList) else CallbackList(*callbacks)
+        self.callbacks = callbacks if isinstance(callbacks, Callback) else CallbackList(*callbacks)
         self.report_freq = report_freq
         self.report_param_freq = report_param_freq
         self.report_image_freq = report_image_freq
@@ -150,8 +151,12 @@ class TQDMReporter(Reporter):
     :param image_keys: keys for images.
     """
 
-    def __init__(self, iterator: Iterable, callbacks: Iterable[Callback], save_dir: Optional[str] = None,
-                 report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None):
+    def __init__(self, iterator: Iterable,
+                 callbacks: Union[Iterable[Callback], Callback],
+                 save_dir: Optional[str] = None,
+                 report_freq: int = -1,
+                 save_image_freq: int = 0,
+                 image_keys: Optional[Iterable[str]] = None):
         super(TQDMReporter, self).__init__(TQDMWrapper(iterator=iterator, save_dir=save_dir), callbacks,
                                            report_freq=report_freq, report_image_freq=save_image_freq,
                                            image_keys=image_keys)
@@ -189,8 +194,12 @@ class LoggerReporter(Reporter):
     :param image_keys: keys for images.
     """
 
-    def __init__(self, callbacks: Iterable[Callback], save_dir: Optional[str] = None, logger: Optional[Logger] = None,
-                 report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None,
+    def __init__(self, callbacks: Union[Iterable[Callback], Callback],
+                 save_dir: Optional[str] = None,
+                 logger: Optional[Logger] = None,
+                 report_freq: int = -1,
+                 save_image_freq: int = 0,
+                 image_keys: Optional[Iterable[str]] = None,
                  save_log: bool = False):
         super(LoggerReporter, self).__init__(LoggerWrapper(save_dir=save_dir, logger=logger, save_log=save_log),
                                              callbacks, report_freq,
@@ -214,8 +223,13 @@ class TensorboardReporter(Reporter):
     :param save_images: If True, saving images in addition to reporting
     """
 
-    def __init__(self, callbacks, save_dir=None, report_freq: int = -1, report_params_freq: int = 0,
-                 report_images_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_images: bool = False):
+    def __init__(self, callbacks: Union[Iterable[Callback], Callback],
+                 save_dir=None,
+                 report_freq: int = -1,
+                 report_params_freq: int = 0,
+                 report_images_freq: int = 0,
+                 image_keys: Optional[Iterable[str]] = None,
+                 save_images: bool = False):
         super(TensorboardReporter, self).__init__(TensorBoardWrapper(save_dir=save_dir, save_images=save_images),
                                                   callbacks, report_freq,
                                                   report_param_freq=report_params_freq,
