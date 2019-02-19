@@ -198,9 +198,40 @@
 <div class="section" id="module-homura.vision.data.folder">
 <span id="homura-vision-data-folder-module"></span><h2>homura.vision.data.folder module<a class="headerlink" href="#module-homura.vision.data.folder" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="homura.vision.data.folder.FolderABC">
+<em class="property">class </em><code class="descclassname">homura.vision.data.folder.</code><code class="descname">FolderABC</code><span class="sig-paren">(</span><em>root</em>, <em>samples</em>, <em>transform=None</em>, <em>on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
+<p>Abstract class for ImageFolder and LabelCorruptedImages</p>
+<dl class="staticmethod">
+<dt id="homura.vision.data.folder.FolderABC.image_loader">
+<em class="property">static </em><code class="descname">image_loader</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC.image_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC.image_loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="homura.vision.data.folder.ImageFolder">
 <em class="property">class </em><code class="descclassname">homura.vision.data.folder.</code><code class="descname">ImageFolder</code><span class="sig-paren">(</span><em>root</em>, <em>transform=None</em>, <em>num_samples: int = None</em>, <em>on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#ImageFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.ImageFolder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.data.folder._DataSet</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.data.folder.FolderABC" title="homura.vision.data.folder.FolderABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.data.folder.FolderABC</span></code></a></p>
+<p>A generic data loader where the images are arranged in this way</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">/</span><span class="n">cat</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">png</span>
+<span class="n">root</span><span class="o">/</span><span class="n">dog</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">png</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>root</strong> – </li>
+<li><strong>transform</strong> – </li>
+<li><strong>num_samples</strong> – Number of samples you want to use. If None, use all samples.</li>
+<li><strong>on_memory</strong> – True if you want to store loaded images on the RAM for faster reloading. (False by default)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="homura.vision.data.folder.ImageFolder.IMG_EXTENSIONS">
 <code class="descname">IMG_EXTENSIONS</code><em class="property"> = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']</em><a class="headerlink" href="#homura.vision.data.folder.ImageFolder.IMG_EXTENSIONS" title="Permalink to this definition">¶</a></dt>
@@ -208,38 +239,12 @@
 
 </dd></dl>
 
-<dl class="class">
-<dt id="homura.vision.data.folder.LabelCorruptedImages">
-<em class="property">class </em><code class="descclassname">homura.vision.data.folder.</code><code class="descname">LabelCorruptedImages</code><span class="sig-paren">(</span><em>root</em>, <em>transform</em>, <em>random_rate: float = 0</em>, <em>val_size: int = 0</em>, <em>random_seed: int = 6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#LabelCorruptedImages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.LabelCorruptedImages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.vision.data.folder.ImageFolder" title="homura.vision.data.folder.ImageFolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.data.folder.ImageFolder</span></code></a></p>
-<dl class="method">
-<dt id="homura.vision.data.folder.LabelCorruptedImages.valset">
-<code class="descname">valset</code><span class="sig-paren">(</span><em>transform=None</em>, <em>on_memory=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#LabelCorruptedImages.valset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.LabelCorruptedImages.valset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.vision.data.folder.find_classes">
-<code class="descclassname">homura.vision.data.folder.</code><code class="descname">find_classes</code><span class="sig-paren">(</span><em>root: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#find_classes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.find_classes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.vision.data.folder.has_allowed_extension">
-<code class="descclassname">homura.vision.data.folder.</code><code class="descname">has_allowed_extension</code><span class="sig-paren">(</span><em>file: pathlib.Path, extensions: Iterable[str]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#has_allowed_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.has_allowed_extension" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.vision.data.folder.make_dataset">
-<code class="descclassname">homura.vision.data.folder.</code><code class="descname">make_dataset</code><span class="sig-paren">(</span><em>root: pathlib.Path, class_to_idx: Dict[str, int], extensions: Iterable[str]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#make_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.make_dataset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-homura.vision.data.loaders">
 <span id="homura-vision-data-loaders-module"></span><h2>homura.vision.data.loaders module<a class="headerlink" href="#module-homura.vision.data.loaders" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar100_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=4</em>, <em>root='~/.torch/data/cifar100'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar100'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-100</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -264,7 +269,7 @@
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar10_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=4</em>, <em>root='~/.torch/data/cifar10'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar10'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-10</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -289,7 +294,7 @@
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.imagenet_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root</em>, <em>batch_size</em>, <em>num_workers=8</em>, <em>data_augmentation=None</em>, <em>num_train_samples=None</em>, <em>num_test_samples=None</em>, <em>distributed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root: Union[pathlib.Path, str], batch_size: int, num_workers: int = 8, data_augmentation: Iterable[T_co] = None, num_train_samples: Iterable[T_co] = None, num_test_samples: Iterable[T_co] = None, distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for ILSVRC classification data set</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -315,7 +320,7 @@
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size</em>, <em>num_workers=2</em>, <em>root='~/.torch/data/mnist'</em>, <em>data_augmentation=None</em>, <em>replacement=False</em>, <em>force_download=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/mnist'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for MNIST.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

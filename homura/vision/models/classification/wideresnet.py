@@ -1,3 +1,5 @@
+# WideResNet proposed in http://arxiv.org/abs/1605.07146
+
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -15,8 +17,6 @@ def conv1x1(in_planes, out_planes, stride=1):
 
 
 class WideBasicModule(nn.Module):
-    """ WideResNet http://arxiv.org/abs/1605.07146
-    """
 
     def __init__(self, in_planes, planes, dropout_rate, stride=1):
         super(WideBasicModule, self).__init__()
@@ -42,6 +42,8 @@ class WideBasicModule(nn.Module):
 
 
 class WideResNet(nn.Module):
+    """WideResNet for CIFAR data.
+    """
 
     def __init__(self, num_classes, depth, widen_factor, dropout_rate, base=16):
         super(WideResNet, self).__init__()

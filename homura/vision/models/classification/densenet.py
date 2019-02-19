@@ -60,18 +60,21 @@ class _Transition(nn.Module):
 
 
 class CIFARDenseNet(nn.Module):
+    """
+    DenseNet-BC (bottleneck and compactness) for CIFAR dataset. For ImageNet classification, use `torchvision`'s.
+
+    :param num_classes: (int) number of output classes
+    :param init_channels: (int) output channels which is performed on the input. 16 or 2 * growth_rate
+    :param num_layers: (int) number of layers of each dense block
+    :param growth_rate: (int) growth rate, which is referred as k in the paper
+    :param dropout_rate: (float=0) dropout rate
+    :param bn_size: (int=4) multiplicative factor in bottleneck
+    :param reduction: (int=2) divisional factor in transition
+    """
+
     def __init__(self, num_classes, init_channels, num_layers, growth_rate, dropout_rate=0, bn_size=4, reduction=2,
                  padding="reflect"):
-        """
-        DenseNet-BC (bottleneck and compactness) for CIFAR dataset
-        :param num_classes: (int) number of output classes
-        :param init_channels: (int) output channels which is performed on the input. 16 or 2 * growth_rate
-        :param num_layers: (int) number of layers of each dense block
-        :param growth_rate: (int) growth rate, which is referred as k in the paper
-        :param dropout_rate: (float=0) dropout rate
-        :param bn_size: (int=4) multiplicative factor in bottleneck
-        :param reduction: (int=2) divisional factor in transition
-        """
+
         super(CIFARDenseNet, self).__init__()
         # initial conv.
         num_channels = init_channels

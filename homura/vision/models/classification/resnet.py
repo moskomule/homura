@@ -84,6 +84,8 @@ class PreActBasicBlock(BasicBlock):
 
 
 class ResNet(nn.Module):
+    """ResNet for CIFAR data. For ImageNet classification, use `torchvision`'s.
+    """
     def __init__(self, block, n_size, num_classes=10):
         super(ResNet, self).__init__()
         self.inplane = 16

@@ -2,7 +2,7 @@ import torch.nn.functional as F
 
 from homura import optim, lr_scheduler, reporters, callbacks, trainers
 from homura.vision.data.loaders import cifar10_loaders
-from homura.vision.models.cifar import resnet20, wrn28_10
+from homura.vision.models.classification import resnet20, wrn28_10
 
 
 def main():
