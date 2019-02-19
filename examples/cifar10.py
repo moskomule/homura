@@ -6,12 +6,15 @@ from homura.vision.models.classification import resnet20, wrn28_10
 
 
 def main():
-    train_loader, test_loader = cifar10_loaders(args.batch_size)
-
     model = {"resnet20": resnet20,
              "wrn28_10": wrn28_10}[args.model](num_classes=10)
-    optimizer = optim.SGD(lr=1e-1, momentum=0.9, weight_decay=1e-4)
-    scheduler = lr_scheduler.MultiStepLR([100, 150])
+    weight_decay = {"resnet20": 1e-4,
+                    "wrn28_10": 5e-4}[args.model]
+    lr_decay = {"resnet20": 0.1,
+                "wrn_28_10": 0.2}[args.model]
+    train_loader, test_loader = cifar10_loaders(args.batch_size)
+    optimizer = optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
+    scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
 
     with reporters.TQDMReporter(range(200), callbacks=c) as tq, reporters.TensorboardReporter(c) as tb:
