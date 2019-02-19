@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from vision.models._intialization import init_parameters
+from .._intialization import init_parameters
 
 __all__ = ["unet", "CustomUNet"]
 
