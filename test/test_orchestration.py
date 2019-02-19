@@ -1,3 +1,4 @@
+from pathlib import Path
 from tempfile import gettempdir
 
 import pytest
@@ -21,7 +22,7 @@ def test(rep):
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
 
-    c = [callbacks.AccuracyCallback(), loss]
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(), loss, callbacks.WeightSave(tmpdir))
     epoch = range(1)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     with {"tqdm": lambda: reporter.TQDMReporter(epoch, c, tmpdir),
@@ -35,3 +36,6 @@ def test(rep):
         for _ in epoch:
             tr.train(loader)
             tr.test(loader)
+
+    save_file = list(Path(tmpdir).glob("*/*.pkl"))[0]
+    tr.resume(save_file)

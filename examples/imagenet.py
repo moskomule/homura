@@ -2,7 +2,7 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, callbacks, reporter
+from homura import optim, lr_scheduler, callbacks, reporters
 from homura.utils.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
 
@@ -15,8 +15,8 @@ def main():
     scheduler = lr_scheduler.MultiStepLR([50, 70])
 
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
-    r = reporter.TQDMReporter(range(args.epochs), callbacks=c)
-    tb = reporter.TensorboardReporter(c)
+    r = reporters.TQDMReporter(range(args.epochs), callbacks=c)
+    tb = reporters.TensorboardReporter(c)
     rep = callbacks.CallbackList(r, tb, callbacks.WeightSave("checkpoints"))
 
     if args.distributed:

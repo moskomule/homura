@@ -1,5 +1,6 @@
-from . import utils, modules, vision, lr_scheduler, optim, liblog, metrics
-from .utils import trainers, reporter, callbacks
-from .environment import is_apex_available, is_tensorboardX_available
-# for backward compatibility
+from . import *
+from .utils import *
+from .environment import *
+# for backward compatibilities
 trainer = trainers
+reporter = reporters

@@ -15,7 +15,7 @@ from ._miscs import check_path
 from ._vocabulary import *
 from .callbacks import Callback
 from .containers import TensorTuple, Map, StepDict
-from .reporter.wrapper import TQDMWrapper
+from ._reporter_backends import TQDMWrapper
 from .runner import Runner
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]

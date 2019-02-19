@@ -7,7 +7,7 @@ from torch import nn
 
 from homura.liblog import get_logger
 from ._vocabulary import *
-from .reporter.callbacks import CallbackList, Callback
+from .reporters import CallbackList, Callback
 
 
 class Runner(metaclass=ABCMeta):
