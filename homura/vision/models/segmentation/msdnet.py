@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .intialization import init_parameters
+from vision.models._intialization import init_parameters
 
 __all__ = ["msdnet25", "msdnet50"]
 

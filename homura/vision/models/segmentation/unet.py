@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .intialization import init_parameters
+from vision.models._intialization import init_parameters
 
 __all__ = ["unet", "CustomUNet"]
 
@@ -12,7 +12,7 @@ __all__ = ["unet", "CustomUNet"]
 class Upsample(nn.Module):
     def __init__(self, scale_factor, mode):
         super(Upsample, self).__init__()
-        assert mode in ("nearest", "linear", "bilinear", "trilinear", "area")
+        assert mode in ("nearest", "fc", "bilinear", "trilinear", "area")
         self._scale_factor = scale_factor
         self._mode = mode
 

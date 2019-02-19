@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Iterable, Union
 
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import datasets, transforms
@@ -7,10 +8,12 @@ from .folder import ImageFolder
 
 
 class _BaseLoaders(object):
-    def __init__(self, dataset, mean_std: tuple,
+    def __init__(self, dataset,
+                 mean_std: tuple,
                  data_augmentation_transforms: list,
                  test_time_transforms: list = None,
-                 replacement: bool = False, distributed: bool = False):
+                 replacement: bool = False,
+                 distributed: bool = False):
         self._dataset = dataset
 
         self._da_transform = [] if data_augmentation_transforms is None else data_augmentation_transforms
@@ -20,7 +23,11 @@ class _BaseLoaders(object):
         self._distributed = distributed
         self._replacement = replacement
 
-    def __call__(self, batch_size: int, num_workers: int, shuffle: bool, train_set_kwargs: dict, test_set_kwargs: dict):
+    def __call__(self, batch_size: int,
+                 num_workers: int,
+                 shuffle: bool,
+                 train_set_kwargs: dict,
+                 test_set_kwargs: dict):
         shuffle = (not self._distributed) and shuffle
         train_set = self._dataset(**train_set_kwargs,
                                   transform=transforms.Compose(self._da_transform + self._norm_transform))
@@ -53,8 +60,12 @@ class _BaseLoaders(object):
         return root
 
 
-def mnist_loaders(batch_size, num_workers=2, root="~/.torch/data/mnist", data_augmentation=None, replacement=False,
-                  force_download=False):
+def mnist_loaders(batch_size: int,
+                  num_workers: int = 2,
+                  root: str = "~/.torch/data/mnist",
+                  data_augmentation: Iterable = None,
+                  replacement: bool = False,
+                  force_download: bool = False):
     """ A simple data loader for MNIST.
 
     :param batch_size:
@@ -77,8 +88,12 @@ def mnist_loaders(batch_size, num_workers=2, root="~/.torch/data/mnist", data_au
     return train_loader, test_loader
 
 
-def cifar10_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar10", data_augmentation=None, replacement=False,
-                    force_download=False):
+def cifar10_loaders(batch_size: int,
+                    num_workers: int = 4,
+                    root: str = "~/.torch/data/cifar10",
+                    data_augmentation: Iterable = None,
+                    replacement: bool = False,
+                    force_download: bool = False):
     """ A simple data loader for CIFAR-10
 
     :param batch_size:
@@ -104,8 +119,12 @@ def cifar10_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar10", dat
     return train_loader, test_loader
 
 
-def cifar100_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar100", data_augmentation=None,
-                     replacement=False, force_download=False):
+def cifar100_loaders(batch_size: int,
+                     num_workers: int = 4,
+                     root: str = "~/.torch/data/cifar100",
+                     data_augmentation: Iterable = None,
+                     replacement: bool = False,
+                     force_download: bool = False):
     """ A simple data loader for CIFAR-100
 
     :param batch_size:
@@ -131,8 +150,13 @@ def cifar100_loaders(batch_size, num_workers=4, root="~/.torch/data/cifar100", d
     return train_loader, test_loader
 
 
-def imagenet_loaders(root, batch_size, num_workers=8, data_augmentation=None, num_train_samples=None,
-                     num_test_samples=None, distributed=False):
+def imagenet_loaders(root: Union[Path, str],
+                     batch_size: int,
+                     num_workers: int = 8,
+                     data_augmentation: Iterable = None,
+                     num_train_samples: Iterable = None,
+                     num_test_samples: Iterable = None,
+                     distributed: bool = False):
     """ A simple data loader for ILSVRC classification data set
 
     :param root:
