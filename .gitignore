@@ -1,6 +1,5 @@
 .DS_Store
-.pytest_cache
-*.egg_info
+.idea
 docs/build/html/.doctrees
 docs/build/doctrees
 docs/source
