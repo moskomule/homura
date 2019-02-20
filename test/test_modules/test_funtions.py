@@ -13,14 +13,14 @@ def test_straight_backprop():
 
 def test_gumbel_softmax():
     a = torch.tensor([10, 0.3, 0.3])
-    samples = sum([functions.gumbel_softmax(a, 0, 0.1) for _ in range(400)]) / 400
-    assert samples.tolist() == approx([1, 0, 0], abs=1e-3)
+    samples = sum([functions.gumbel_softmax(a, 0, 0.01) for _ in range(400)]) / 400
+    assert samples.tolist() == approx([1, 0, 0], abs=1e-2)
 
 
 def test_gumbel_sigmoid():
     a = torch.tensor([10.0, -10.0])
-    samples = sum([functions.gumbel_sigmoid(a, 0.05) for _ in range(400)]) / 400
-    assert samples.tolist() == approx([1, 0], abs=1e-3)
+    samples = sum([functions.gumbel_sigmoid(a, 0.01) for _ in range(400)]) / 400
+    assert samples.tolist() == approx([1, 0], abs=1e-2)
 
 
 def test_ste():
