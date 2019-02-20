@@ -12,11 +12,11 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 from .callbacks import Callback
+from .utils.containers import TensorTuple, Map, StepDict
 from .utils.miscs import check_path
 from .utils.reporter_backends import TQDMWrapper
 from .utils.runner import Runner
 from .utils.vocabulary import *
-from .utils.containers import TensorTuple, Map, StepDict
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
@@ -28,9 +28,13 @@ class TrainerBase(Runner, metaclass=ABCMeta):
     :param loss_f: loss function or dict of loss functions
     :param callbacks: callbacks or list of callbacks
     :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
+    :param update_scheduler_by_epoch: If True, update scheduler every epoch. If False and scheduler is given, scheduler
+        is need to be update by user.
+    :param device:
     :param verb:
     :param use_cudnn_benchmark:
     :param use_cuda_nonblocking:
+    :param logger:
     :param kwargs:
     """
 
@@ -96,9 +100,11 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._update_scheduler_by_epoch = update_scheduler_by_epoch
 
         self.loss_f = loss_f
+        self._verb = verb
+
+        # called via property
         self._step = 0
         self._epoch = 0
-        self._verb = verb
         self._is_train = True
 
         _map_base = {MODEL: self.model,
@@ -109,6 +115,18 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._all_map = Map(**_map_base.copy())
 
         self._callbacks.before_all(self._all_map)
+
+    @property
+    def step(self):
+        return self._step
+
+    @property
+    def epoch(self):
+        return self._epoch
+
+    @property
+    def is_train(self):
+        return self._is_train
 
     @abstractmethod
     def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
@@ -160,7 +178,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :return:
         """
 
-        self._iteration_map.update({STEP: self._step, MODE: mode})
+        self._iteration_map.update({STEP: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
         results = self.iteration(data)
@@ -174,7 +192,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._iteration_map[DATA] = data.to(CPU)
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
-        self.logger.debug(f"iteration {self._step} finished")
+        self.logger.debug(f"iteration {self.step} finished")
         # clean up
         self._iteration_map.pop(DATA)
         for k in results.keys():
@@ -182,8 +200,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
     def _loop(self, data_loader: DataLoader, mode: str):
         # handle epoch level training loop
-        self._epoch_map.update({EPOCH: self._epoch,
-                                STEP: self._step,
+        self._epoch_map.update({EPOCH: self.epoch,
+                                STEP: self.step,
                                 MODE: mode,
                                 ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
@@ -199,18 +217,15 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         with torch.no_grad():
             self._callbacks.after_epoch(self._epoch_map)
-        self.logger.debug(f"epoch {self._epoch} finished")
+        self.logger.debug(f"epoch {self.epoch} finished")
 
     def train(self, data_loader: DataLoader):
         self._is_train = True
         self.model.train()
         with torch.enable_grad():
             self._loop(data_loader, mode=TRAIN)
-        if isinstance(self.scheduler, dict):
-            for scheduler in self.scheduler.values():
-                if scheduler is not None:
-                    scheduler.step()
-        elif self.scheduler is not None and self._update_scheduler_by_epoch:
+
+        if self.scheduler is not None and self._update_scheduler_by_epoch:
             self.scheduler.step()
         self._epoch += 1
 
@@ -240,10 +255,6 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.after_all(self._all_map)
 
-    @property
-    def is_train(self):
-        return self._is_train
-
     def resume(self, path: str or Path):
         path = check_path(path)
         with path.open('rb') as f:
@@ -253,7 +264,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.optimizer.load_state_dict(loaded[OPTIMIZER])
         self._step = loaded.get(STEP, 0)
         self._epoch = loaded.get(EPOCH, 0)
-        self.logger.info(f"Resume training from {self._epoch}th epoch")
+        self.logger.info(f"Resume training from {self.epoch}th epoch")
 
 
 class SupervisedTrainer(TrainerBase):

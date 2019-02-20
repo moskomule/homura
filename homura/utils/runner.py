@@ -3,11 +3,11 @@ from logging import Logger
 from typing import Callable, Iterable, Dict, Optional
 
 import torch
+from homura.callbacks import CallbackList, Callback
+from homura.liblog import get_logger
 from torch import nn
 
-from homura.liblog import get_logger
 from .vocabulary import *
-from homura.callbacks import CallbackList, Callback
 
 
 class Runner(metaclass=ABCMeta):
@@ -65,4 +65,6 @@ class Runner(metaclass=ABCMeta):
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
+            if torch.is_tensor(v):
+                v.to(self.device)
             setattr(self, k, v)
