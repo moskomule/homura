@@ -88,13 +88,14 @@ def _mnists_loaders(cls,
                     num_workers: int = 2,
                     root: str = "~/.torch/data/mnist",
                     data_augmentation: Iterable = None,
+                    val_size: int = 0,
                     replacement: bool = False,
                     force_download: bool = False):
     if data_augmentation is None:
         data_augmentation = [transforms.RandomHorizontalFlip()]
     _base = _BaseLoaders(cls, ((0.1307,), (0.3081,)), data_augmentation, replacement=replacement)
     root = _BaseLoaders.absolute_root(root)
-    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement, val_size=val_size,
                  train_set_kwargs=dict(root=root, train=True,
                                        download=not root.exists() or force_download),
                  test_set_kwargs=dict(root=root, train=False,
@@ -105,6 +106,7 @@ def mnist_loaders(batch_size: int,
                   num_workers: int = 2,
                   root: str = "~/.torch/data/mnist",
                   data_augmentation: Iterable = None,
+                  val_size: int = 0,
                   replacement: bool = False,
                   force_download: bool = False):
     """ A simple data loader for MNIST.
@@ -113,12 +115,13 @@ def mnist_loaders(batch_size: int,
     :param num_workers:
     :param root:
     :param data_augmentation: default transformation is RandomHorizontalFlip()
+    :param val_size:
     :param replacement: sampling with replacement
     :param force_download:
-    :return: tuple of train and test loaders
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
     """
 
-    return _mnists_loaders(datasets.MNIST, batch_size, num_workers, root, data_augmentation, replacement,
+    return _mnists_loaders(datasets.MNIST, batch_size, num_workers, root, data_augmentation, val_size, replacement,
                            force_download)
 
 
@@ -126,16 +129,18 @@ def fashion_mnist_loaders(batch_size: int,
                           num_workers: int = 2,
                           root: str = "~/.torch/data/fmnist",
                           data_augmentation: Iterable = None,
+                          val_size: int = 0,
                           replacement: bool = False,
                           force_download: bool = False):
-    return _mnists_loaders(datasets.FashionMNIST, batch_size, num_workers, root, data_augmentation, replacement,
-                           force_download)
+    return _mnists_loaders(datasets.FashionMNIST, batch_size, num_workers, root, data_augmentation, val_size,
+                           replacement, force_download)
 
 
 def cifar10_loaders(batch_size: int,
                     num_workers: int = 4,
                     root: str = "~/.torch/data/cifar10",
                     data_augmentation: Iterable = None,
+                    val_size: int = 0,
                     replacement: bool = False,
                     force_download: bool = False):
     """ A simple data loader for CIFAR-10
@@ -144,9 +149,10 @@ def cifar10_loaders(batch_size: int,
     :param num_workers:
     :param root:
     :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()
+    :param val_size:
     :param replacement: sampling with replacement
     :param force_download:
-    :return: tuple of train and test loaders
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
     """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
@@ -155,7 +161,7 @@ def cifar10_loaders(batch_size: int,
                          replacement=replacement)
 
     root = _BaseLoaders.absolute_root(root)
-    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement, val_size=val_size,
                  train_set_kwargs=dict(root=root, train=True,
                                        download=not root.exists() or force_download),
                  test_set_kwargs=dict(root=root, train=False,
@@ -166,6 +172,7 @@ def cifar100_loaders(batch_size: int,
                      num_workers: int = 4,
                      root: str = "~/.torch/data/cifar100",
                      data_augmentation: Iterable = None,
+                     val_size: int = 0,
                      replacement: bool = False,
                      force_download: bool = False):
     """ A simple data loader for CIFAR-100
@@ -174,9 +181,10 @@ def cifar100_loaders(batch_size: int,
     :param num_workers:
     :param root:
     :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()
+    :param val_size:
     :param replacement: sampling with replacement
     :param force_download:
-    :return: tuple of train and test loaders
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
     """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
@@ -185,7 +193,7 @@ def cifar100_loaders(batch_size: int,
                          replacement=replacement)
 
     root = _BaseLoaders.absolute_root(root)
-    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement,
+    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=not replacement, val_size=val_size,
                  train_set_kwargs=dict(root=root, train=True,
                                        download=not root.exists() or force_download),
                  test_set_kwargs=dict(root=root, train=False,
@@ -196,8 +204,9 @@ def imagenet_loaders(root: Union[Path, str],
                      batch_size: int,
                      num_workers: int = 8,
                      data_augmentation: Iterable = None,
-                     num_train_samples: Iterable = None,
-                     num_test_samples: Iterable = None,
+                     val_size: int = 0,
+                     num_train_samples: int = None,
+                     num_test_samples: int = None,
                      distributed: bool = False):
     """ A simple data loader for ILSVRC classification data set
 
@@ -205,6 +214,7 @@ def imagenet_loaders(root: Union[Path, str],
     :param batch_size:
     :param num_workers:
     :param data_augmentation:
+    :param val_size:
     :param num_train_samples:
     :param num_test_samples:
     :param distributed:
@@ -220,6 +230,6 @@ def imagenet_loaders(root: Union[Path, str],
     _base = _BaseLoaders(ImageFolder, ((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)), data_augmentation, tt_transform,
                          distributed=distributed)
     root = _BaseLoaders.check_root_exists(root)
-    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
+    return _base(batch_size=batch_size, num_workers=num_workers, shuffle=True, val_size=val_size,
                  train_set_kwargs=dict(root=(root / "train"), num_samples=num_train_samples),
                  test_set_kwargs=dict(root=(root / "val"), num_samples=num_test_samples))
