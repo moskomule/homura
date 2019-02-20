@@ -82,7 +82,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.modules.functions.html">homura.modules.functions package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -147,7 +146,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.vision.models.classification.wideresnet</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span></span><span class="c1"># WideResNet proposed in http://arxiv.org/abs/1605.07146</span>
+
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
 <span class="kn">from</span> <span class="nn">.._intialization</span> <span class="k">import</span> <span class="n">init_parameters</span>
@@ -164,8 +165,6 @@
 
 
 <div class="viewcode-block" id="WideBasicModule"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.WideBasicModule">[docs]</a><span class="k">class</span> <span class="nc">WideBasicModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; WideResNet http://arxiv.org/abs/1605.07146</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_planes</span><span class="p">,</span> <span class="n">planes</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">WideBasicModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -244,8 +243,8 @@
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="wrn28_10"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_10">[docs]</a><span class="k">def</span> <span class="nf">wrn28_10</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">WideResNet</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">widen_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
+<div class="viewcode-block" id="wrn28_10"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_10">[docs]</a><span class="k">def</span> <span class="nf">wrn28_10</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">WideResNet</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">widen_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">model</span></div>
 </pre></div>
 

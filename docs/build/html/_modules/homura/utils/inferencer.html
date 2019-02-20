@@ -82,7 +82,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functions.html">homura.modules.functions package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -152,15 +151,15 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">homura.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">._miscs</span> <span class="k">import</span> <span class="n">check_path</span>
-<span class="kn">from</span> <span class="nn">._runner</span> <span class="k">import</span> <span class="n">Runner</span>
-<span class="kn">from</span> <span class="nn">._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">.containers</span> <span class="k">import</span> <span class="n">Map</span>
+<span class="kn">from</span> <span class="nn">.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
+<span class="kn">from</span> <span class="nn">.runner</span> <span class="k">import</span> <span class="n">Runner</span>
+<span class="kn">from</span> <span class="nn">.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="Inferencer"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.inferencer.Inferencer">[docs]</a><span class="k">class</span> <span class="nc">Inferencer</span><span class="p">(</span><span class="n">Runner</span><span class="p">):</span>

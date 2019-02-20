@@ -93,18 +93,19 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.environment">homura.environment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="homura.vision.html">homura.vision package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.data.html">homura.vision.data package</a></li>
@@ -370,7 +371,6 @@ registered hooks while the latter silently ignores them.</p>
 <dt id="homura.vision.models.classification.wideresnet.WideBasicModule">
 <em class="property">class </em><code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">WideBasicModule</code><span class="sig-paren">(</span><em>in_planes</em>, <em>planes</em>, <em>dropout_rate</em>, <em>stride=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>WideResNet <a class="reference external" href="http://arxiv.org/abs/1605.07146">http://arxiv.org/abs/1605.07146</a></p>
 <dl class="method">
 <dt id="homura.vision.models.classification.wideresnet.WideBasicModule.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule.forward" title="Permalink to this definition">¶</a></dt>
@@ -389,7 +389,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.wideresnet.wrn28_10">
-<code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">wrn28_10</code><span class="sig-paren">(</span><em>num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_10" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">wrn28_10</code><span class="sig-paren">(</span><em>num_classes=10</em>, <em>dropout_rate=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_10" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

@@ -2,5 +2,5 @@ from . import *
 from .containers import Map, TensorTuple
 
 # backward compatibility
-reporter = reporters
-trainer = trainers
+from homura import reporters as reporter
+from homura import trainers as trainer

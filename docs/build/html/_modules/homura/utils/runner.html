@@ -82,7 +82,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functions.html">homura.modules.functions package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -155,8 +154,8 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
-<span class="kn">from</span> <span class="nn">._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.reporters</span> <span class="k">import</span> <span class="n">CallbackList</span><span class="p">,</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">homura.callbacks</span> <span class="k">import</span> <span class="n">CallbackList</span><span class="p">,</span> <span class="n">Callback</span>
 
 
 <div class="viewcode-block" id="Runner"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.runner.Runner">[docs]</a><span class="k">class</span> <span class="nc">Runner</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
