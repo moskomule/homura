@@ -20,11 +20,10 @@ tqdm # automatically installed
 ### optional
 
 ```
-matplotlib
 tensorboardX
-visdom
 miniargs
 colorlog
+optuna
 ```
 
 To enable distributed training using Synced BN and FP 16, install apex.
