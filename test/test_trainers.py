@@ -5,7 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 
-@pytest.mark.skipif(not (torch.cuda.is_available() and is_apex_available))
+@pytest.mark.skipif(not (torch.cuda.is_available() and is_apex_available), reason="GPU and apex is unavailable")
 def test():
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
