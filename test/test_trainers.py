@@ -1,7 +1,6 @@
 import pytest
 import torch
-from homura import optim, is_apex_available
-import trainers
+from homura import optim, is_apex_available, trainers
 from torch import nn
 from torch.nn import functional as F
 
