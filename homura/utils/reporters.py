@@ -87,8 +87,7 @@ class Reporter(Callback, metaclass=ABCMeta):
             # images are processed by self._report_images
             if k in self.image_keys:
                 continue
-            # train_accuracy
-            if _num_elements(v) == 1:
+            if not isinstance(v, Mapping) and _num_elements(v) == 1:
                 self.base_wrapper.add_scalar(v, k, idx)
             else:
                 self.base_wrapper.add_scalars(v, k, idx)
@@ -169,7 +168,7 @@ class TQDMReporter(Reporter):
         return len(self.base_wrapper)
 
     def _report(self, results: Mapping, mode: str, idx: int):
-        results = {k: float(v) for k, v in results.items() if _num_elements(v) == 1}
+        results = {k: float(v) for k, v in results.items() if not isinstance(v, Mapping) and _num_elements(v) == 1}
         self.base_wrapper.add_scalars(results, None, idx)
 
 

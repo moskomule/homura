@@ -3,20 +3,20 @@ from pathlib import Path
 from types import MethodType
 from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional
 
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
-
 import homura
+import torch
 from homura.liblog import get_logger
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
+from torch import nn
+from torch.utils.data import DataLoader
+
 from ._miscs import check_path
 from ._reporter_backends import TQDMWrapper
+from ._runner import Runner
 from ._vocabulary import *
 from .callbacks import Callback
 from .containers import TensorTuple, Map, StepDict
-from ._runner import Runner
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
@@ -297,6 +297,7 @@ class FP16Trainer(TrainerBase):
 
         self.optimizer = FP16_Optimizer(self.optimizer, dynamic_loss_scale=dynamic_loss_scale,
                                         static_loss_scale=static_loss_scale)
+        self.logger.info("Training with FP16")
 
     def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
@@ -310,11 +311,35 @@ class FP16Trainer(TrainerBase):
 
 
 class DistributedSupervisedTrainer(SupervisedTrainer):
+    """ Trainer with distributed functions
+
+    :param model:
+    :param optimizer:
+    :param loss_f:
+    :param callbacks:
+    :param scheduler:
+    :param verb:
+    :param use_cudnn_benchmark:
+    :param backend: "nccl" or "gloo"
+    :param init_method:
+    :param use_apex_ddp: use nvidia's `apex`.
+    :param use_sync_bn:
+    :param kwargs:
+    """
+
     def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
                  callbacks: Callback = None, scheduler: LRScheduler = None,
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
                  use_apex_ddp: bool = False, use_sync_bn: bool = False, **kwargs):
+        import sys as python_sys
         from torch import distributed
+
+        # should be used with torch.distributed.launch
+        if "--local_rank" not in python_sys.argv:
+            args = " ".join(python_sys.argv)
+            raise RuntimeError(
+                f"For distributed training, use python -m torch.distributed.launch "
+                f"--nproc_per_node={torch.cuda.num_devices()} {args} ...")
 
         distributed.init_process_group(backend=backend, init_method=init_method)
         rank = distributed.get_rank()

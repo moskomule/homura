@@ -3,7 +3,7 @@ from tempfile import gettempdir
 
 import pytest
 import torch
-from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available
+from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available, metrics
 from homura.utils.inferencer import Inferencer
 from torch import nn
 from torch.nn import functional as F
@@ -16,13 +16,14 @@ def test(rep):
         pytest.skip("tensorboardX is not available")
 
     @callbacks.metric_callback_decorator
-    def loss(data):
-        return data["loss"]
+    def ca(data):
+        output, target = data["output"], data["data"][1]
+        return {i: v for i, v in enumerate(metrics.classwise_accuracy(output, target))}
 
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
 
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(), loss, callbacks.WeightSave(tmpdir))
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(tmpdir))
     epoch = range(1)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     with {"tqdm": lambda: reporter.TQDMReporter(epoch, c, tmpdir),

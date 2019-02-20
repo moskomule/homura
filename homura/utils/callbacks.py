@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Iterable, Callable
 
 import torch
-
 from homura.liblog import get_logger
+
 from ._miscs import get_git_hash
 from ._vocabulary import *
 
@@ -79,7 +79,14 @@ class MetricCallback(Callback):
                 if self._warning_flag:
                     self._logger.warning(f"{self.metric_function.__name__} get None and convert it to 0")
                     self._warning_flag = False
-            self._metrics_history[key][-1] += metric
+            if isinstance(metric, Mapping):
+                if self._metrics_history[key][-1] == 0:
+                    self._metrics_history[key][-1] = metric
+                else:
+                    self._metrics_history[key][-1] = {k: v + metric[k]
+                                                      for k, v in self._metrics_history[key][-1].items()}
+            else:
+                self._metrics_history[key][-1] += metric
         return self._last_iter
 
     def before_epoch(self, data: Mapping):
@@ -98,7 +105,11 @@ class MetricCallback(Callback):
         key = self._get_key_name(mode)
         # if once this method is called, self._last_epoch is not None
         if self._last_epoch.get(key) is None:
-            self._metrics_history[key][-1] /= iter_per_epoch
+            if isinstance(self._metrics_history[key][-1], Mapping):
+                self._metrics_history[key][-1] = {k: v / iter_per_epoch
+                                                  for k, v in self._metrics_history[key][-1].items()}
+            else:
+                self._metrics_history[key][-1] /= iter_per_epoch
             self._last_epoch[key] = self._metrics_history[key][-1]
         return self._last_epoch
 

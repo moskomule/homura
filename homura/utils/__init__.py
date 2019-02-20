@@ -6,3 +6,4 @@ from .trainers import SupervisedTrainer, DistributedSupervisedTrainer, FP16Train
 
 # backward compatibility
 reporter = reporters
+trainer = trainers

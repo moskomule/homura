@@ -1,20 +1,18 @@
 import json
 import pathlib
+import sys as python_sys
 from abc import ABCMeta
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
 from typing import Union, Dict, Mapping, List
 
+import homura
 import numpy as np
 import torch
-from PIL import Image
-from matplotlib.figure import Figure
-from torchvision.utils import make_grid, save_image as _save_image
-
-import homura
 from homura.utils._miscs import get_git_hash
 from homura.utils._vocabulary import *
+from torchvision.utils import make_grid, save_image as _save_image
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
@@ -52,9 +50,6 @@ def _to_numpy(x):
         x = np.array([x])
     elif "Tensor" in str(type(x)):
         x = x.numpy()
-    elif isinstance(x, Figure):
-        x = Image.frombytes("RGB", x.canvas.get_width_height(), x.canvas.tostring_rgb())
-        x = np.asanyarray(x)
     if not isinstance(x, np.ndarray):
         raise TypeError(f"Unknown type: {type(x)}")
     return x
@@ -86,6 +81,8 @@ def vector_to_dict(x: Union[Dict, Vector]):
 class _WrapperBase(metaclass=ABCMeta):
     def __init__(self, save_dir):
         self._container = defaultdict(list)
+        self._container["args"] = " ".join(python_sys.argv)
+
         save_dir = DEFAULT_SAVE_DIR if save_dir is None else save_dir
         postfix = ""
         if len(get_git_hash()) > 0:
@@ -188,7 +185,7 @@ class LoggerWrapper(_WrapperBase):
         x = vector_to_dict(x)
         name = name or ""  # if name is None, then ""
         for k, v in x.items():
-            k = name + k
+            k = name + str(k)
             self._register_data(v, k, idx)
             self.logger.info(f"[{idx:>7}] {k:>30} {v:.4f}")
 

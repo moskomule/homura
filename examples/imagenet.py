@@ -1,10 +1,9 @@
 import torch
-from torch.nn import functional as F
-from torchvision.models import resnet50
-
 from homura import optim, lr_scheduler, callbacks, reporters
 from homura.utils.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
+from torch.nn import functional as F
+from torchvision.models import resnet50
 
 
 def main():
@@ -60,8 +59,4 @@ if __name__ == '__main__':
     num_device = torch.cuda.device_count()
 
     print(args)
-    if args.distributed and args.local_rank == -1:
-        raise RuntimeError(
-            f"For distributed training, use python -m torch.distributed.launch "
-            f"--nproc_per_node={num_device} {__file__} {args.root} ...")
     main()
