@@ -160,11 +160,11 @@
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
 
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
 <span class="kn">from</span> <span class="nn">.utils.reporter_backends</span> <span class="k">import</span> <span class="n">TQDMWrapper</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
 <span class="kn">from</span> <span class="nn">.utils.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Trainer&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;DistributedSupervisedTrainer&quot;</span><span class="p">]</span>
 
@@ -176,9 +176,13 @@
 <span class="sd">    :param loss_f: loss function or dict of loss functions</span>
 <span class="sd">    :param callbacks: callbacks or list of callbacks</span>
 <span class="sd">    :param scheduler: homura.scheduler.LRScheduler or dict like {&quot;generator&quot;: StepLR(10)}</span>
+<span class="sd">    :param update_scheduler_by_epoch: If True, update scheduler every epoch. If False and scheduler is given, scheduler</span>
+<span class="sd">        is need to be update by user.</span>
+<span class="sd">    :param device:</span>
 <span class="sd">    :param verb:</span>
 <span class="sd">    :param use_cudnn_benchmark:</span>
 <span class="sd">    :param use_cuda_nonblocking:</span>
+<span class="sd">    :param logger:</span>
 <span class="sd">    :param kwargs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -244,9 +248,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_scheduler_by_epoch</span> <span class="o">=</span> <span class="n">update_scheduler_by_epoch</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span> <span class="o">=</span> <span class="n">loss_f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span> <span class="o">=</span> <span class="n">verb</span>
+
+        <span class="c1"># called via property</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span> <span class="o">=</span> <span class="n">verb</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">_map_base</span> <span class="o">=</span> <span class="p">{</span><span class="n">MODEL</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
@@ -258,6 +264,18 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span>
+
 <div class="viewcode-block" id="TrainerBase.iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.iteration">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -268,13 +286,13 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="TrainerBase.override_iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.override_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">override_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_iteration</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; override iteration method</span>
+        <span class="sd">&quot;&quot;&quot; Override iteration method ::</span>
 
-<span class="sd">        &gt;&gt;&gt; def new_iteration(trainer, inputs):</span>
-<span class="sd">        &gt;&gt;&gt;     ...</span>
-<span class="sd">        &gt;&gt;&gt;     results.loss = loss</span>
-<span class="sd">        &gt;&gt;&gt;     return results</span>
-<span class="sd">        &gt;&gt;&gt; trainer.update_iteration(new_iteration)</span>
+<span class="sd">            def new_iteration(trainer, inputs):</span>
+<span class="sd">                ...</span>
+<span class="sd">                results.loss = loss</span>
+<span class="sd">                return results</span>
+<span class="sd">            trainer.update_iteration(new_iteration)</span>
 
 <span class="sd">        :param new_iteration:</span>
 <span class="sd">        :return:</span>
@@ -308,7 +326,7 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">STEP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="n">MODE</span><span class="p">:</span> <span class="n">mode</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">STEP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">MODE</span><span class="p">:</span> <span class="n">mode</span><span class="p">})</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -322,7 +340,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;iteration </span><span class="si">{self._step}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;iteration </span><span class="si">{self.step}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
         <span class="c1"># clean up</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -330,8 +348,8 @@
 
     <span class="k">def</span> <span class="nf">_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># handle epoch level training loop</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">EPOCH</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span><span class="p">,</span>
-                                <span class="n">STEP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">EPOCH</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span>
+                                <span class="n">STEP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
                                 <span class="n">MODE</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
                                 <span class="n">ITER_PER_EPOCH</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_loader</span><span class="p">)})</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
@@ -347,18 +365,15 @@
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;epoch </span><span class="si">{self._epoch}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;epoch </span><span class="si">{self.epoch}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TrainerBase.train"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">TRAIN</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">scheduler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_scheduler_by_epoch</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_scheduler_by_epoch</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
@@ -388,10 +403,6 @@
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span>
-
 <div class="viewcode-block" id="TrainerBase.resume"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">check_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -401,7 +412,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">OPTIMIZER</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">STEP</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCH</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Resume training from </span><span class="si">{self._epoch}</span><span class="s2">th epoch&quot;</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Resume training from </span><span class="si">{self.epoch}</span><span class="s2">th epoch&quot;</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../homura.html#homura.trainers.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="n">TrainerBase</span><span class="p">):</span>

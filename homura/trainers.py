@@ -138,13 +138,13 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         """
 
     def override_iteration(self, new_iteration: Callable):
-        """ override iteration method
+        """ Override iteration method ::
 
-        >>> def new_iteration(trainer, inputs):
-        >>>     ...
-        >>>     results.loss = loss
-        >>>     return results
-        >>> trainer.update_iteration(new_iteration)
+            def new_iteration(trainer, inputs):
+                ...
+                results.loss = loss
+                return results
+            trainer.update_iteration(new_iteration)
 
         :param new_iteration:
         :return:

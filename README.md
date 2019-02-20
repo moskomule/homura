@@ -57,14 +57,14 @@ cd homura; pip install -e .
 
 # APIs
 
-## utils
+## basics
 
 * Device Agnostic
 * Useful features
 
 ```python
 from homura import optim, lr_scheduler
-from homura.utils import trainers, callbacks, reporters
+from homura import trainers, callbacks, reporters
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
@@ -123,7 +123,7 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 
 ## vision
 
-`homura.vision` contains modules specific to CV.
+`homura.vision` contains modules specific to CV tasks.
 
 
 ## else

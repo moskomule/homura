@@ -212,6 +212,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.data.html">homura.vision.data package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.data.html#module-homura.vision.data.custom_dataset">homura.vision.data.custom_dataset module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.data.html#module-homura.vision.data.folder">homura.vision.data.folder module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.data.html#module-homura.vision.data.loaders">homura.vision.data.loaders module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.data.html#module-homura.vision.data.statistics">homura.vision.data.statistics module</a></li>
@@ -727,15 +728,24 @@ This may need large storage space.</li>
 <li><strong>loss_f</strong> – loss function or dict of loss functions</li>
 <li><strong>callbacks</strong> – callbacks or list of callbacks</li>
 <li><strong>scheduler</strong> – homura.scheduler.LRScheduler or dict like {“generator”: StepLR(10)}</li>
+<li><strong>update_scheduler_by_epoch</strong> – If True, update scheduler every epoch. If False and scheduler is given, scheduler
+is need to be update by user.</li>
+<li><strong>device</strong> – </li>
 <li><strong>verb</strong> – </li>
 <li><strong>use_cudnn_benchmark</strong> – </li>
 <li><strong>use_cuda_nonblocking</strong> – </li>
+<li><strong>logger</strong> – </li>
 <li><strong>kwargs</strong> – </li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="homura.trainers.TrainerBase.epoch">
+<code class="descname">epoch</code><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="homura.trainers.TrainerBase.is_train">
 <code class="descname">is_train</code><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
@@ -760,12 +770,12 @@ This may need large storage space.</li>
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.override_iteration">
 <code class="descname">override_iteration</code><span class="sig-paren">(</span><em>new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.override_iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>override iteration method</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">new_iteration</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">results</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">results</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trainer</span><span class="o">.</span><span class="n">update_iteration</span><span class="p">(</span><span class="n">new_iteration</span><span class="p">)</span>
+<dd><p>Override iteration method</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_iteration</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+    <span class="k">return</span> <span class="n">results</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">update_iteration</span><span class="p">(</span><span class="n">new_iteration</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -818,6 +828,11 @@ This may need large storage space.</li>
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>epochs: int</em>, <em>train_data: torch.utils.data.dataloader.DataLoader</em>, <em>test_data: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="homura.trainers.TrainerBase.step">
+<code class="descname">step</code><a class="headerlink" href="#homura.trainers.TrainerBase.step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
