@@ -1,6 +1,8 @@
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, reporters, callbacks, trainers
+from homura import optim, lr_scheduler, callbacks
+import reporters
+import trainers
 from homura.vision.data.loaders import cifar10_loaders
 from homura.vision.models.classification import resnet20, wrn28_10
 

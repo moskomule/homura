@@ -7,7 +7,7 @@ from torchvision.models import resnet50
 
 from homura import callbacks, reporter, optim
 from homura.utils.containers import Map
-from homura.utils.trainers import TrainerBase
+from trainers import TrainerBase
 from homura.vision.data import imagenet_loaders
 
 

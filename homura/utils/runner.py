@@ -6,8 +6,8 @@ import torch
 from torch import nn
 
 from homura.liblog import get_logger
-from ._vocabulary import *
-from .reporters import CallbackList, Callback
+from .vocabulary import *
+from homura.callbacks import CallbackList, Callback
 
 
 class Runner(metaclass=ABCMeta):

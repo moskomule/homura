@@ -10,9 +10,10 @@ from typing import Union, Dict, Mapping, List
 import homura
 import numpy as np
 import torch
-from homura.utils._miscs import get_git_hash
-from homura.utils._vocabulary import *
 from torchvision.utils import make_grid, save_image as _save_image
+
+from .miscs import get_git_hash
+from .vocabulary import *
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]

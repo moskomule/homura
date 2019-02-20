@@ -3,15 +3,15 @@ from types import MethodType
 from typing import Dict, Iterable, Tuple, Callable
 
 import torch
+from homura.callbacks import Callback
 from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from ._miscs import check_path
-from ._runner import Runner
-from ._vocabulary import *
-from .callbacks import Callback
 from .containers import Map
+from .miscs import check_path
+from .runner import Runner
+from .vocabulary import *
 
 
 class Inferencer(Runner):

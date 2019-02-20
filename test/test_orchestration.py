@@ -3,7 +3,8 @@ from tempfile import gettempdir
 
 import pytest
 import torch
-from homura import reporter, callbacks, trainers, optim, is_tensorboardX_available, metrics
+from homura import reporter, callbacks, optim, is_tensorboardX_available, metrics
+import trainers
 from homura.utils.inferencer import Inferencer
 from torch import nn
 from torch.nn import functional as F

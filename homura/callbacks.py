@@ -7,8 +7,8 @@ from typing import Iterable, Callable
 import torch
 from homura.liblog import get_logger
 
-from ._miscs import get_git_hash
-from ._vocabulary import *
+from .utils.miscs import get_git_hash
+from .utils.vocabulary import *
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave"]

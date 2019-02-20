@@ -11,12 +11,12 @@ from homura.optim import Optimizer
 from torch import nn
 from torch.utils.data import DataLoader
 
-from ._miscs import check_path
-from ._reporter_backends import TQDMWrapper
-from ._runner import Runner
-from ._vocabulary import *
 from .callbacks import Callback
-from .containers import TensorTuple, Map, StepDict
+from .utils.miscs import check_path
+from .utils.reporter_backends import TQDMWrapper
+from .utils.runner import Runner
+from .utils.vocabulary import *
+from .utils.containers import TensorTuple, Map, StepDict
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 

@@ -5,9 +5,9 @@ from typing import Iterable, Mapping, Optional, Union
 import torch
 from torch import nn
 
-from ._reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase
-from ._vocabulary import *
 from .callbacks import Callback, CallbackList
+from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase
+from .utils.vocabulary import *
 
 
 class Reporter(Callback, metaclass=ABCMeta):

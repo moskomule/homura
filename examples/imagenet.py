@@ -1,6 +1,7 @@
 import torch
-from homura import optim, lr_scheduler, callbacks, reporters
-from homura.utils.trainers import SupervisedTrainer, DistributedSupervisedTrainer
+from homura import optim, lr_scheduler, callbacks
+import reporters
+from trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
 from torch.nn import functional as F
 from torchvision.models import resnet50
