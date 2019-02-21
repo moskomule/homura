@@ -7,11 +7,11 @@ from numbers import Number
 from pathlib import Path
 from typing import Union, Dict, Mapping, List
 
-import homura
 import numpy as np
 import torch
 from torchvision.utils import make_grid, save_image as _save_image
 
+import homura
 from .miscs import get_git_hash
 from .vocabulary import *
 
@@ -90,6 +90,7 @@ class _WrapperBase(metaclass=ABCMeta):
             postfix = "-" + get_git_hash()
         self._save_dir = pathlib.Path(save_dir) / (NOW + postfix)
         self._filename = NOW + ".json"
+        self.logger = homura.liblog.get_logger(__name__)
 
     def add_scalar(self, x: Vector, name: str, idx: int):
         raise NotImplementedError
@@ -136,7 +137,6 @@ class TQDMWrapper(_WrapperBase):
         super(TQDMWrapper, self).__init__(save_dir)
         self.tqdm = tqdm(iterator, ncols=80)
         self._size = len(iterator)
-        self.logger = homura.liblog.get_logger(__name__)
 
     def __iter__(self):
         for x in self.tqdm:

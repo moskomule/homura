@@ -3,10 +3,10 @@ from logging import Logger
 from typing import Callable, Iterable, Dict, Optional
 
 import torch
-from homura.callbacks import CallbackList, Callback
-from homura.liblog import get_logger
 from torch import nn
 
+from homura.callbacks import CallbackList, Callback
+from homura.liblog import get_logger
 from .vocabulary import *
 
 

@@ -95,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.optim">homura.optim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.reproductivity">homura.reproductivity module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura">Module contents</a></li>
 </ul>
@@ -710,6 +711,21 @@ This may need large storage space.</li>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Deprecated. Use TensorboardReporter instead.</p>
 </dd></dl>
+
+</div>
+<div class="section" id="module-homura.reproductivity">
+<span id="homura-reproductivity-module"></span><h2>homura.reproductivity module<a class="headerlink" href="#module-homura.reproductivity" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.reproductivity.set_deterministic">
+<code class="descclassname">homura.reproductivity.</code><code class="descname">set_deterministic</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reproductivity.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reproductivity.set_deterministic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to 0 for making it deterministic. Because of CUDA’s limitation, this
+does not make everything deterministic, however.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.reproductivity.unset_deterministic">
+<code class="descclassname">homura.reproductivity.</code><code class="descname">unset_deterministic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reproductivity.html#unset_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reproductivity.unset_deterministic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-homura.trainers">

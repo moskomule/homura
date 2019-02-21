@@ -11,7 +11,7 @@
 ### minimal requirements
 
 ```
-Python>=3.6
+Python>=3.7
 PyTorch>=1.0
 torchvision>=0.2.1
 tqdm # automatically installed
@@ -67,15 +67,15 @@ from homura import trainers, callbacks, reporters
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
-resnet = resnet50()
 # model will be registered in the trainer
+resnet = resnet50()
+# optimizer and scheduler will be registered in the trainer, too
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
-# optimizer will be registered in the trainer
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
-# list of callbacks
+
+# list of callbacks or reporters can be registered in the trainer
 with reporters.TensorboardReporter([callbacks.AccuracyCallback(), 
                                     callbacks.LossCallback()]) as reporter:
-    reporter.enable_report_images(image_keys=["generated", "real"])
     trainer = trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
                                          callbacks=reporter, scheduler=scheduler)
 ```
@@ -112,22 +112,13 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-## metrics
-
-`homura.metrics` contains domain unspecific metrics such as `recall`.
-
-## modules
-
-`homura.modules` contains domain unspecific modules and functions such as `KeyValAttention`.
-
-## vision
-
-`homura.vision` contains modules specific to CV tasks.
+## reproductivity
 
 
-## else
-
-* `homura.debug`: debug tools
+```python
+from homura.reproductivity import set_deterministic
+set_deterministic(1)
+```
 
 # Examples
 
