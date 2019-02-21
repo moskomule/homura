@@ -4,14 +4,14 @@
 
 *Homura* is a support tool for research experiments.
 
-*Homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
+🔥🔥🔥🔥 *Homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
 ## Requirements
 
 ### minimal requirements
 
 ```
-Python>=3.6
+Python>=3.7
 PyTorch>=1.0
 torchvision>=0.2.1
 tqdm # automatically installed
@@ -20,11 +20,10 @@ tqdm # automatically installed
 ### optional
 
 ```
-matplotlib
 tensorboardX
-visdom
 miniargs
 colorlog
+optuna
 ```
 
 To enable distributed training using Synced BN and FP 16, install apex.
@@ -38,7 +37,7 @@ python setup.py install --cuda_ext --cpp_ext
 ### test
 
 ```
-pytest
+pytest .
 ```
 
 ## install
@@ -57,32 +56,35 @@ cd homura; pip install -e .
 
 # APIs
 
-## utils
+## basics
+
+* Device Agnostic
+* Useful features
 
 ```python
 from homura import optim, lr_scheduler
-from homura.utils import trainer, callbacks, reporter
+from homura import trainers, callbacks, reporters
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
-resnet = resnet50()
 # model will be registered in the trainer
-_optimizer = optim.SGD(lr=0.1, momentum=0.9)
-# optimizer will be registered in the trainer
-_scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
-# list of callbacks
-_callbacks = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
-# reporter or list of reporters
-_reporter = reporter.TensorboardReporter(_callbacks)
-_reporter.enable_report_images(keys=["generated", "real"])
-_trainer = trainer.SupervisedTrainer(resnet, _optimizer, loss_f=F.cross_entropy, 
-                                     callbacks=_reporter, scheduler=_scheduler)
+resnet = resnet50()
+# optimizer and scheduler will be registered in the trainer, too
+optimizer = optim.SGD(lr=0.1, momentum=0.9)
+scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
+
+# list of callbacks or reporters can be registered in the trainer
+with reporters.TensorboardReporter([callbacks.AccuracyCallback(), 
+                                    callbacks.LossCallback()]) as reporter:
+    trainer = trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
+                                         callbacks=reporter, scheduler=scheduler)
 ```
 
 Now `iteration` of trainer can be updated as follows,
 
 ```python
 from homura.utils.containers import Map
+
 def iteration(trainer: Trainer, inputs: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
     input, target = trainer.to_device(inputs)
     output = trainer.model(input)
@@ -95,37 +97,33 @@ def iteration(trainer: Trainer, inputs: Tuple[torch.Tensor]) -> Mapping[torch.Te
     # registered values can be called in callbacks
     results.user_value = user_value
     return results
-   
-_trainer.update_iteration(iteration) 
+
+SupervisedTrainer.iteration = iteration
+# or   
+trainer.update_iteration(iteration) 
 ```
 
 Also, `dict` of models, optimizers, loss functions are supported.
 
 ```python
-_trainer = CustomTrainer({"generator": generator, "discriminator": discriminator},
-                         {"generator": gen_opt, "discriminator": dis_opt},
-                         {"reconstruction": recon_loss, "generator": gen_loss},
-                         **kwargs)
+trainer = CustomTrainer({"generator": generator, "discriminator": discriminator},
+                        {"generator": gen_opt, "discriminator": dis_opt},
+                        {"reconstruction": recon_loss, "generator": gen_loss},
+                        **kwargs)
 ```
 
-## modules
-
-* `homura.modules` contains *attention*, *conditional batchnorm* and *linear backpropagation*.
-
-## vision
-
-* `homura.vision` contains some modules for vision.
+## reproductivity
 
 
-## else
-
-* `homura.liblog`: logger
-* `homura.debug`: debug tools
+```python
+from homura.reproductivity import set_deterministic
+set_deterministic(1)
+```
 
 # Examples
 
 See [examples](examples).
 
-* [cifar10.py](examples/cifar10.py): training a CNN with random crop on CIFAR10
+* [cifar10.py](examples/cifar10.py): training ResNet-20 or WideResNet-28-10 with random crop on CIFAR10
 * [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and     multi process)
 * [gap.py](examples/gap.py): better implementation of generative adversarial perturbation

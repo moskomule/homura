@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+docs/build/html/.doctrees
+docs/build/html/_sources
+docs/build/doctrees
+docs/source

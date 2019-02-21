@@ -5,9 +5,9 @@ from typing import Callable, Iterable, Dict, Optional
 import torch
 from torch import nn
 
+from homura.callbacks import CallbackList, Callback
 from homura.liblog import get_logger
-from ._vocabulary import *
-from .reporter.callbacks import CallbackList, Callback
+from .vocabulary import *
 
 
 class Runner(metaclass=ABCMeta):
@@ -42,6 +42,9 @@ class Runner(metaclass=ABCMeta):
             self._cuda_nonblocking = use_cuda_nonblocking
             self.logger.debug(
                 f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, nonblocking: {use_cuda_nonblocking}")
+        else:
+            self._cuda_nonblocking = False
+            self.logger.info("Training on CPU!")
 
         # set callback(s)
         if isinstance(callbacks, CallbackList):
@@ -62,4 +65,6 @@ class Runner(metaclass=ABCMeta):
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
+            if torch.is_tensor(v):
+                v.to(self.device)
             setattr(self, k, v)

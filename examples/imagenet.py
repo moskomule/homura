@@ -1,11 +1,10 @@
 import torch
+from homura import optim, lr_scheduler, callbacks
+import reporters
+from trainers import SupervisedTrainer, DistributedSupervisedTrainer
+from homura.vision.data import imagenet_loaders
 from torch.nn import functional as F
 from torchvision.models import resnet50
-
-from homura import optim, lr_scheduler
-from homura.utils import callbacks, reporter
-from homura.utils.trainer import SupervisedTrainer, DistributedSupervisedTrainer
-from homura.vision.data import imagenet_loaders
 
 
 def main():
@@ -16,8 +15,8 @@ def main():
     scheduler = lr_scheduler.MultiStepLR([50, 70])
 
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
-    r = reporter.TQDMReporter(range(args.epochs), callbacks=c)
-    tb = reporter.TensorboardReporter(c)
+    r = reporters.TQDMReporter(range(args.epochs), callbacks=c)
+    tb = reporters.TensorboardReporter(c)
     rep = callbacks.CallbackList(r, tb, callbacks.WeightSave("checkpoints"))
 
     if args.distributed:
@@ -39,6 +38,7 @@ def main():
     for _ in r:
         trainer.train(train_loader)
         trainer.test(test_loader)
+    rep.close()
 
 
 if __name__ == '__main__':
@@ -60,8 +60,4 @@ if __name__ == '__main__':
     num_device = torch.cuda.device_count()
 
     print(args)
-    if args.distributed and args.local_rank == -1:
-        raise RuntimeError(
-            f"For distributed training, use python -m torch.distributed.launch "
-            f"--nproc_per_node={num_device} {__file__} {args.root} ...")
     main()

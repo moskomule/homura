@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="homura.utils package" href="homura.utils.html" />
+    <link rel="next" title="homura.modules.functions package" href="homura.modules.functions.html" />
     <link rel="prev" title="homura.metrics package" href="homura.metrics.html" /> 
 
   
@@ -84,10 +84,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.modules package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.straight_backprop">homura.modules.straight_backprop module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -96,14 +96,31 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.environment">homura.environment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reproductivity">homura.reproductivity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">homura.modules package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
             
@@ -172,6 +189,20 @@
             
   <div class="section" id="homura-modules-package">
 <h1>homura.modules package<a class="headerlink" href="#homura-modules-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -185,12 +216,24 @@
 <dt id="homura.modules.attention.KeyValAttention.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>queries: torch.Tensor</em>, <em>keys: torch.Tensor</em>, <em>values: torch.Tensor</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>dim of X &gt;= 0,
-dim of Y &gt;= 1
-:param queries: B x X x L
-:param keys: B x Y x L
-:param values: B x Y x L
-:param mask: B x Y x L or None
-:return:</p>
+dim of Y &gt;= 1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>queries</strong> – B x X x L</li>
+<li><strong>keys</strong> – B x Y x L</li>
+<li><strong>values</strong> – B x Y x L</li>
+<li><strong>mask</strong> – B x Y x L or None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -202,6 +245,25 @@ dim of Y &gt;= 1
 <dt id="homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm">
 <em class="property">class </em><code class="descclassname">homura.modules.conditional_batchnorm.</code><code class="descname">CategoricalConditionalBatchNorm</code><span class="sig-paren">(</span><em>num_features</em>, <em>num_classes</em>, <em>eps=1e-05</em>, <em>momentum=0.1</em>, <em>affine=True</em>, <em>track_running_stats=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.batchnorm._BatchNorm</span></code></p>
+<p>(Categorical) conditional batch normalization, proposed in
+V. Dumoulin, J. Shlens, and M. Kudlur, “A learned representation for artistic style”,
+<a class="reference external" href="https://arxiv.org/abs/1610.07629">https://arxiv.org/abs/1610.07629</a> (In this paper, conditional <em>instance</em> normalization is used)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_features</strong> – </li>
+<li><strong>num_classes</strong> – </li>
+<li><strong>eps</strong> – </li>
+<li><strong>momentum</strong> – </li>
+<li><strong>affine</strong> – </li>
+<li><strong>track_running_stats</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>categories</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward" title="Permalink to this definition">¶</a></dt>
@@ -219,20 +281,6 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.modules.straight_backprop">
-<span id="homura-modules-straight-backprop-module"></span><h2>homura.modules.straight_backprop module<a class="headerlink" href="#module-homura.modules.straight_backprop" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.modules.straight_backprop.straight_backprop">
-<code class="descclassname">homura.modules.straight_backprop.</code><code class="descname">straight_backprop</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/straight_backprop.html#straight_backprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.straight_backprop.straight_backprop" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span> <span class="o">=</span> <span class="n">straight_backprop</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-<span class="go">:param function: original function</span>
-<span class="go">:return: modified function</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</div>
 <div class="section" id="module-homura.modules">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -246,7 +294,7 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="homura.utils.html" class="btn btn-neutral float-right" title="homura.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="homura.modules.functions.html" class="btn btn-neutral float-right" title="homura.modules.functions package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="homura.metrics.html" class="btn btn-neutral" title="homura.metrics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

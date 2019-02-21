@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.modules.functions.html">homura.modules.functions package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -152,18 +152,20 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="k">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unet&quot;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">.._intialization</span> <span class="k">import</span> <span class="n">init_parameters</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unet&quot;</span><span class="p">,</span> <span class="s2">&quot;CustomUNet&quot;</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Upsample</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Upsample</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;bilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;trilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;area&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="s2">&quot;fc&quot;</span><span class="p">,</span> <span class="s2">&quot;bilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;trilinear&quot;</span><span class="p">,</span> <span class="s2">&quot;area&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span> <span class="o">=</span> <span class="n">scale_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_factor</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">,</span> <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -228,13 +230,6 @@
 <span class="sd">        UNet, proposed in Ronneberger et al. (2015)</span>
 <span class="sd">        :param num_classes: number of output classes</span>
 <span class="sd">        :param input_channels: number of input channels</span>
-<span class="sd">        &gt;&gt;&gt; unet = UNet(10, 3) # number of classes = 10</span>
-<span class="sd">        &gt;&gt;&gt; dummy = torch.randn(1, 3, 128, 128)</span>
-<span class="sd">        &gt;&gt;&gt; unet(dummy).shape</span>
-<span class="sd">        torch.Size([1, 10, 128, 128])</span>
-<span class="sd">        &gt;&gt;&gt; dummy = torch.randn(1, 3, 427, 640)</span>
-<span class="sd">        &gt;&gt;&gt; unet(dummy).shape</span>
-<span class="sd">        torch.Size([1, 10, 427, 640])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">UNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">encoder_config</span><span class="p">,</span> <span class="n">decoder_config</span> <span class="o">=</span> <span class="n">config</span>
@@ -249,11 +244,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">Block</span><span class="p">(</span><span class="o">*</span><span class="n">encoder_config</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+</span>
                                       <span class="p">[</span><span class="n">DownsampleBlock</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">encoder_config</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoders</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">UpsampleBlock</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">decoder_config</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">down_conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_parameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">init_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="n">down1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">down2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">down1</span><span class="p">)</span>
+        <span class="n">down3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span><span class="n">down2</span><span class="p">)</span>
+        <span class="n">down4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="mi">3</span><span class="p">](</span><span class="n">down3</span><span class="p">)</span>
+        <span class="n">down5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="mi">4</span><span class="p">](</span><span class="n">down4</span><span class="p">)</span>
 
+        <span class="n">up1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">down5</span><span class="p">,</span> <span class="n">down4</span><span class="p">)</span>
+        <span class="n">up2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">up1</span><span class="p">,</span> <span class="n">down3</span><span class="p">)</span>
+        <span class="n">up3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span><span class="n">up2</span><span class="p">,</span> <span class="n">down2</span><span class="p">)</span>
+        <span class="n">up4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoders</span><span class="p">[</span><span class="mi">3</span><span class="p">](</span><span class="n">up3</span><span class="p">,</span> <span class="n">down1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_conv</span><span class="p">(</span><span class="n">up4</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CustomUNet"><a class="viewcode-back" href="../../../../../homura.vision.models.segmentation.html#homura.vision.models.segmentation.unet.CustomUNet">[docs]</a><span class="k">class</span> <span class="nc">CustomUNet</span><span class="p">(</span><span class="n">UNet</span><span class="p">):</span>
+<div class="viewcode-block" id="CustomUNet.forward"><a class="viewcode-back" href="../../../../../homura.vision.models.segmentation.html#homura.vision.models.segmentation.unet.CustomUNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="nb">input</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">enc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">:</span>
             <span class="c1"># [input, enc1(input), enc2(input), enc3(input)]</span>
@@ -264,25 +274,11 @@
             <span class="c1"># x = dec(enc3(input), enc2(input))</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_x</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">down_conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">init_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
-                <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="unet"><a class="viewcode-back" href="../../../../../homura.vision.models.segmentation.html#homura.vision.models.segmentation.unet.unet">[docs]</a><span class="k">def</span> <span class="nf">unet</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">input_channels</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">UNet</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">)</span></div>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">doctest</span>
-
-    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </pre></div>
 
            </div>

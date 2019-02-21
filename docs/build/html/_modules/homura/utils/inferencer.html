@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functions.html">homura.modules.functions package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -151,18 +151,21 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">homura.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
-
-<span class="kn">from</span> <span class="nn">._miscs</span> <span class="k">import</span> <span class="n">check_path</span>
-<span class="kn">from</span> <span class="nn">._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
-<span class="kn">from</span> <span class="nn">.containers</span> <span class="k">import</span> <span class="n">Map</span>
-<span class="kn">from</span> <span class="nn">.runner</span> <span class="k">import</span> <span class="n">Runner</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.containers</span> <span class="k">import</span> <span class="n">Map</span>
+<span class="kn">from</span> <span class="nn">.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
+<span class="kn">from</span> <span class="nn">.runner</span> <span class="k">import</span> <span class="n">Runner</span>
+<span class="kn">from</span> <span class="nn">.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="Inferencer"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.inferencer.Inferencer">[docs]</a><span class="k">class</span> <span class="nc">Inferencer</span><span class="p">(</span><span class="n">Runner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Runner for inference only.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;inference&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="ow">or</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
@@ -182,13 +185,13 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Inferencer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="p">,</span> <span class="n">use_cuda_nonblocking</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span> <span class="o">=</span> <span class="n">verb</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model_is_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_loaded</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># to be compatible with iteration in Trainer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Map</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_is_loaded</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_loaded</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;model is not loaded yet&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -201,7 +204,7 @@
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">loaded</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">MODEL</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model_is_loaded</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_loaded</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Inferencer.iteration"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.inferencer.Inferencer.iteration">[docs]</a>    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Map</span><span class="p">:</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
@@ -215,15 +218,15 @@
 
 <div class="viewcode-block" id="Inferencer.run"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.inferencer.Inferencer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_all</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
-        <span class="n">cycle_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">ITER_PER_EPOCH</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MODE</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">}</span>
+        <span class="n">cycle_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">ITER_PER_EPOCH</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">EPOCH</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MODE</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="n">cycle_map</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span><span class="p">:</span>
             <span class="n">data_loader</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_loader</span><span class="p">):</span>
             <span class="n">iter_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_iteration</span><span class="p">(</span><span class="n">iter_map</span><span class="p">)</span>
-            <span class="n">output_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-            <span class="n">output_map</span><span class="p">[</span><span class="n">INPUTS</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="n">output_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">output_map</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
             <span class="n">output_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">iter_map</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">output_map</span><span class="p">)</span>
             <span class="n">cycle_map</span><span class="p">[</span><span class="n">ITER_PER_EPOCH</span><span class="p">]</span> <span class="o">=</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>

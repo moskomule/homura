@@ -27,6 +27,7 @@ def _base(input: torch.Tensor, target: torch.Tensor) -> Tuple[torch.Tensor]:
 
 def true_positive(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate true positive
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: true positive in float tensor of C
@@ -38,6 +39,7 @@ def true_positive(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def true_negative(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate true negative
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: true negative in float tensor of C
@@ -49,6 +51,7 @@ def true_negative(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def false_positive(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate false positive
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: false positive in float tensor of C
@@ -71,6 +74,7 @@ def false_negative(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def classwise_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate class wise accuracy
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: class wise accuracy in float tensor of C
@@ -87,6 +91,7 @@ def classwise_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tenso
 
 def precision(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate precision
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: precision in float tensor of C
@@ -101,6 +106,7 @@ def precision(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def recall(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate recall
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: recall in float tensor of C
@@ -115,6 +121,7 @@ def recall(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def specificity(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate specificity
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: specificity in float tensor of C
@@ -129,6 +136,7 @@ def specificity(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def f1_score(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate f1 score
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: f1 score in float tensor of C
@@ -140,6 +148,7 @@ def f1_score(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 def confusion_matrix(input: torch.Tensor, target: torch.Tensor):
     """Calculate confusion matrix
+
     :param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
     :param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
     :return: confusion matrix in long tensor of CxC

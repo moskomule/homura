@@ -127,3 +127,8 @@ class StepDict(dict):
         for k, v in state_dicts.items():
             if isinstance(v, dict):
                 self[k].load_state_dict(v)
+
+    def zero_grad(self):
+        for v in self.items():
+            if hasattr(v, "zero_grad"):
+                v.zero_grad()

@@ -1,6 +1,6 @@
 import torch
 
-from homura.vision.models import resnet20, preact_resnet20, cifar_densenet100, unet, msdnet25
+from homura.vision.models import resnet20, preact_resnet20, cifar_densenet100, unet, msdnet25, wrn28_10
 
 
 def test_resnet20():
@@ -20,6 +20,13 @@ def test_paresnet20():
 def test_densenet():
     input = torch.randn(2, 3, 32, 32)
     model = cifar_densenet100(num_classes=10)
+    output = model(input)
+    assert output.size(1) == 10
+
+
+def test_wrn():
+    input = torch.randn(2, 3, 32, 32)
+    model = wrn28_10(num_classes=10)
     output = model(input)
     assert output.size(1) == 10
 

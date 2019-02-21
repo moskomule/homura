@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functions.html">homura.modules.functions package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -152,19 +152,21 @@
 
 
 <div class="viewcode-block" id="CategoricalConditionalBatchNorm"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm">[docs]</a><span class="k">class</span> <span class="nc">CategoricalConditionalBatchNorm</span><span class="p">(</span><span class="n">_BatchNorm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Categorical) conditional batch normalization, proposed in</span>
+<span class="sd">    V. Dumoulin, J. Shlens, and M. Kudlur, &quot;A learned representation for artistic style&quot;,</span>
+<span class="sd">    https://arxiv.org/abs/1610.07629 (In this paper, conditional *instance* normalization is used)</span>
+
+<span class="sd">    :param num_features:</span>
+<span class="sd">    :param num_classes:</span>
+<span class="sd">    :param eps:</span>
+<span class="sd">    :param momentum:</span>
+<span class="sd">    :param affine:</span>
+<span class="sd">    :param track_running_stats:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_features</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">track_running_stats</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        (Categorical) conditional batch normalization, proposed in</span>
-<span class="sd">        V. Dumoulin, J. Shlens, and M. Kudlur, &quot;A learned representation for artistic style&quot;,</span>
-<span class="sd">        https://arxiv.org/abs/1610.07629 (In this paper, conditional *instance* normalization is used)</span>
-<span class="sd">        :param num_features:</span>
-<span class="sd">        :param num_classes:</span>
-<span class="sd">        :param eps:</span>
-<span class="sd">        :param momentum:</span>
-<span class="sd">        :param affine:</span>
-<span class="sd">        :param track_running_stats:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CategoricalConditionalBatchNorm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">momentum</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span>
                                                               <span class="n">track_running_stats</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="n">num_features</span><span class="p">)</span>
