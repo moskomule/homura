@@ -192,7 +192,6 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._iteration_map[DATA] = data.to(CPU)
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
-        self.logger.debug(f"iteration {self.step} finished")
         # clean up
         self._iteration_map.pop(DATA)
         for k in results.keys():
