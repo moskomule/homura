@@ -206,7 +206,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.before_epoch(self._epoch_map)
 
-        data_loader = tqdm(data_loader, ncols=80, dynamic_ncols=True) if self._verb else data_loader
+        data_loader = tqdm(data_loader, ncols=80) if self._verb else data_loader
 
         for data in data_loader:
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
