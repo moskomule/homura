@@ -136,7 +136,7 @@ class TQDMWrapper(_WrapperBase):
         from tqdm import tqdm
 
         super(TQDMWrapper, self).__init__(save_dir)
-        self.tqdm = tqdm(iterator, ncols=80)
+        self.tqdm = tqdm(iterator, ncols=80, dynamic_ncols=True)
         self._size = len(iterator)
         set_tqdm_handler()
 
