@@ -22,7 +22,7 @@ class TransformableSubset(data.Subset):
         if self.transforms is not None:
             img = self.transforms(img)
         if self.target_transform is not None:
-            self.target_transform(img)
+            self.target_transform(target)
         return img, target
 
 

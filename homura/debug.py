@@ -10,7 +10,6 @@ from homura.liblog import get_logger, set_verb_level
 __all__ = ["module_debugger"]
 
 logger = get_logger(__name__)
-set_verb_level("debug")
 _counter = Counter()
 
 
@@ -39,6 +38,7 @@ def module_debugger(model: nn.Module, input: Tuple[torch.Tensor] or torch.Tensor
     """
     log all modules connected with forward and backward calculation
     """
+    set_verb_level("debug")
     nn.Module.extend_apply = _extend_apply
     if target is not None and loss is None:
         raise TypeError(f"argument loss should be Callable but got None")
