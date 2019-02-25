@@ -156,15 +156,14 @@
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">get_git_hash</span>
-<span class="kn">from</span> <span class="nn">.utils.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Callback&quot;</span><span class="p">,</span> <span class="s2">&quot;MetricCallback&quot;</span><span class="p">,</span> <span class="s2">&quot;CallbackList&quot;</span><span class="p">,</span> <span class="s2">&quot;AccuracyCallback&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;LossCallback&quot;</span><span class="p">,</span> <span class="s2">&quot;WeightSave&quot;</span><span class="p">]</span>
+           <span class="s2">&quot;LossCallback&quot;</span><span class="p">,</span> <span class="s2">&quot;WeightSave&quot;</span><span class="p">,</span> <span class="s2">&quot;metric_callback_decorator&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Callback"><a class="viewcode-back" href="../../homura.html#homura.callbacks.Callback">[docs]</a><span class="k">class</span> <span class="nc">Callback</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class of Callback class</span>
+    <span class="sd">&quot;&quot;&quot; Base class of Callback class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Callback.before_iteration"><a class="viewcode-back" href="../../homura.html#homura.callbacks.Callback.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
@@ -196,12 +195,13 @@
 
 
 <div class="viewcode-block" id="MetricCallback"><a class="viewcode-back" href="../../homura.html#homura.callbacks.MetricCallback">[docs]</a><span class="k">class</span> <span class="nc">MetricCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class of MetricCallback class such as AccuracyCallback</span>
+
+<span class="sd">    :param metric: metric function: (data) -&gt; float</span>
+<span class="sd">    :param name: name of the metric</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Base class of MetricCallback class such as AccuracyCallback</span>
-<span class="sd">        :param metric: metric function: (data) -&gt; float</span>
-<span class="sd">        :param name: name of the metric</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metric_function</span> <span class="o">=</span> <span class="n">metric</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -266,15 +266,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; History of metric.</span>
+
+<span class="sd">        :return: dict of histories in {mode: [history]}</span>
+
+<span class="sd">        Using this property, history of metrics can be used after a training loop ::</span>
+
+<span class="sd">            &gt;&gt;&gt; metric = ...</span>
+<span class="sd">            &gt;&gt;&gt; # training loop</span>
+<span class="sd">            &gt;&gt;&gt; final_result = metric.history[&quot;val&quot;][-1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
 
 <div class="viewcode-block" id="CallbackList"><a class="viewcode-back" href="../../homura.html#homura.callbacks.CallbackList">[docs]</a><span class="k">class</span> <span class="nc">CallbackList</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Combine some callbacks</span>
+
+<span class="sd">    :param callbacks: callbacks</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span> <span class="ow">or</span> <span class="n">Callback</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        collect some callbacks</span>
-<span class="sd">        :param callbacks: callbacks</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">callbacks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;callbacks is expected to be Callback but None&quot;</span><span class="p">)</span>
 
@@ -313,10 +326,12 @@
 
 
 <div class="viewcode-block" id="AccuracyCallback"><a class="viewcode-back" href="../../homura.html#homura.callbacks.AccuracyCallback">[docs]</a><span class="k">class</span> <span class="nc">AccuracyCallback</span><span class="p">(</span><span class="n">MetricCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Callback for accuracy</span>
+
+<span class="sd">    :param k: report top-k accuracy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        calculate and accumulate accuracy</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;_top</span><span class="si">{self.top_k}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AccuracyCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;accuracy</span><span class="si">{suffix}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -329,34 +344,36 @@
 
 
 <div class="viewcode-block" id="LossCallback"><a class="viewcode-back" href="../../homura.html#homura.callbacks.LossCallback">[docs]</a><span class="k">class</span> <span class="nc">LossCallback</span><span class="p">(</span><span class="n">MetricCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Callback for loss function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        accumulate loss</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LossCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">LOSS</span><span class="p">],</span>
                                            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">metric_callback_decorator</span><span class="p">(</span><span class="n">_metric</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    &gt;&gt;&gt; @metric_callback_decorator(&quot;loss&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; def loss(data):</span>
-<span class="sd">    &gt;&gt;&gt;     return data[&quot;loss&quot;]</span>
+<div class="viewcode-block" id="metric_callback_decorator"><a class="viewcode-back" href="../../homura.html#homura.callbacks.metric_callback_decorator">[docs]</a><span class="k">def</span> <span class="nf">metric_callback_decorator</span><span class="p">(</span><span class="n">_metric</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Decorator to create a metrics callback</span>
+
+<span class="sd">        &gt;&gt;&gt; @metric_callback_decorator(&quot;loss&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; def loss(data):</span>
+<span class="sd">        &gt;&gt;&gt;     return data[&quot;loss&quot;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">MetricCallback</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">wrapper</span> <span class="k">if</span> <span class="n">_metric</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">_metric</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span> <span class="k">if</span> <span class="n">_metric</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">_metric</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WeightSave"><a class="viewcode-back" href="../../homura.html#homura.callbacks.WeightSave">[docs]</a><span class="k">class</span> <span class="nc">WeightSave</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Save weights after every epoch</span>
+
+<span class="sd">    :param save_path: path to be saved</span>
+<span class="sd">    :param save_freq: frequency of saving in epoch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span> <span class="n">save_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        save weights after every epoch</span>
-<span class="sd">        :param save_path: path to be saved</span>
-<span class="sd">        :param save_freq: frequency of saving in epoch</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">NOW</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">get_git_hash</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">=</span> <span class="n">save_freq</span>

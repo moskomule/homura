@@ -3,20 +3,20 @@ from pathlib import Path
 from types import MethodType
 from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional
 
-import homura
 import torch
+from torch import nn
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+import homura
 from homura.liblog import get_logger
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
-from torch import nn
-from torch.utils.data import DataLoader
-
 from .callbacks import Callback
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.miscs import check_path
-from .utils.reporter_backends import TQDMWrapper
 from .utils.runner import Runner
-from .utils.vocabulary import *
+from .utils._vocabulary import *
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
@@ -192,7 +192,6 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._iteration_map[DATA] = data.to(CPU)
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
-        self.logger.debug(f"iteration {self.step} finished")
         # clean up
         self._iteration_map.pop(DATA)
         for k in results.keys():
@@ -207,7 +206,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.before_epoch(self._epoch_map)
 
-        data_loader = TQDMWrapper(data_loader) if self._verb else data_loader
+        data_loader = tqdm(data_loader, ncols=80) if self._verb else data_loader
 
         for data in data_loader:
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)

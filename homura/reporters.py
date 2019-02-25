@@ -7,7 +7,7 @@ from torch import nn
 
 from .callbacks import Callback, CallbackList
 from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase
-from .utils.vocabulary import *
+from .utils._vocabulary import *
 
 
 class Reporter(Callback, metaclass=ABCMeta):

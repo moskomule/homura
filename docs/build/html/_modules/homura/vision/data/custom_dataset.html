@@ -158,16 +158,20 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TransformableSubset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_transform</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TransformableSubset.update_transforms"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.custom_dataset.TransformableSubset.update_transforms">[docs]</a>    <span class="k">def</span> <span class="nf">update_transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transforms</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span></div>
+<div class="viewcode-block" id="TransformableSubset.update_transforms"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.custom_dataset.TransformableSubset.update_transforms">[docs]</a>    <span class="k">def</span> <span class="nf">update_transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transforms</span><span class="p">,</span> <span class="n">target_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_transform</span> <span class="o">=</span> <span class="n">target_transform</span></div>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">item</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">item</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> <span class="n">label</span></div>
+        <span class="n">img</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_transform</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">target</span></div>
 
 
 <div class="viewcode-block" id="transformable_random_split"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.custom_dataset.transformable_random_split">[docs]</a><span class="k">def</span> <span class="nf">transformable_random_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">lengths</span><span class="p">):</span>

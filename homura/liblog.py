@@ -105,3 +105,26 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
         formatter = _create_default_formatter()
     fh.setFormatter(formatter)
     _get_root_logger().addHandler(fh)
+
+
+def set_tqdm_handler(level: str or int = logging.INFO,
+                     formatter: Optional[logging.Formatter] = None) -> None:
+    from tqdm import tqdm
+
+    class TQDMHandler(logging.StreamHandler):
+        def __init__(self):
+            logging.StreamHandler.__init__(self)
+
+        def emit(self, record):
+            msg = self.format(record)
+            tqdm.write(msg)
+
+    _configure_root_logger()
+    th = TQDMHandler()
+    if isinstance(level, str):
+        level = _LOG_LEVEL[level]
+    th.setLevel(level)
+    if formatter is None:
+        formatter = _create_default_formatter()
+    th.setFormatter(formatter)
+    _get_root_logger().addHandler(th)

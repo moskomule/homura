@@ -10,16 +10,20 @@ class TransformableSubset(data.Subset):
     def __init__(self, dataset, indices):
         super(TransformableSubset, self).__init__(dataset, indices)
         self.transforms = None
+        self.target_transform = None
 
-    def update_transforms(self, transforms):
+    def update_transforms(self, transforms, target_transform=None):
         self.transforms = transforms
+        self.target_transform = target_transform
 
     def __getitem__(self, idx):
         item = self.dataset[self.indices[idx]]
-        if self.transforms is None:
-            return item
-        img, label = item
-        return self.transforms(img), label
+        img, target = item
+        if self.transforms is not None:
+            img = self.transforms(img)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        return img, target
 
 
 def transformable_random_split(dataset, lengths):

@@ -151,20 +151,20 @@
 <span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">MethodType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">homura</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+
+<span class="kn">import</span> <span class="nn">homura</span>
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">homura.lr_scheduler</span> <span class="k">import</span> <span class="n">LRScheduler</span>
 <span class="kn">from</span> <span class="nn">homura.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
-
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
-<span class="kn">from</span> <span class="nn">.utils.reporter_backends</span> <span class="k">import</span> <span class="n">TQDMWrapper</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
-<span class="kn">from</span> <span class="nn">.utils.vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Trainer&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;DistributedSupervisedTrainer&quot;</span><span class="p">]</span>
 
@@ -340,7 +340,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;iteration </span><span class="si">{self.step}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
         <span class="c1"># clean up</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -355,7 +354,7 @@
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span><span class="p">)</span>
 
-        <span class="n">data_loader</span> <span class="o">=</span> <span class="n">TQDMWrapper</span><span class="p">(</span><span class="n">data_loader</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span> <span class="k">else</span> <span class="n">data_loader</span>
+        <span class="n">data_loader</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span> <span class="k">else</span> <span class="n">data_loader</span>
 
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">TensorTuple</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cuda_nonblocking</span><span class="p">)</span>

@@ -85,8 +85,8 @@ Now `iteration` of trainer can be updated as follows,
 ```python
 from homura.utils.containers import Map
 
-def iteration(trainer: Trainer, inputs: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
-    input, target = trainer.to_device(inputs)
+def iteration(trainer: Trainer, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+    input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
     results = Map(loss=loss, output=output)
@@ -118,6 +118,23 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 ```python
 from homura.reproductivity import set_deterministic
 set_deterministic(1)
+```
+
+## debugger
+
+```python
+>>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
+                                        nn.Linear(5, 1)), 
+                          torch.randn(4, 10))
+[homura.debug|2019-02-25 17:57:06|DEBUG] Start forward calculation
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward> name=Sequential(1)
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(2)
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(3)
+[homura.debug|2019-02-25 17:57:06|DEBUG] Start backward calculation
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(3)
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward> name=Sequential(1)
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(2)
+[homura.debug|2019-02-25 17:57:06|INFO] Finish debugging mode
 ```
 
 # Examples

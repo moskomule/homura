@@ -8,15 +8,14 @@ import torch
 from homura.liblog import get_logger
 
 from .utils.miscs import get_git_hash
-from .utils.vocabulary import *
+from .utils._vocabulary import *
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
-           "LossCallback", "WeightSave"]
+           "LossCallback", "WeightSave", "metric_callback_decorator"]
 
 
 class Callback(metaclass=ABCMeta):
-    """
-    Base class of Callback class
+    """ Base class of Callback class
     """
 
     def before_iteration(self, data: Mapping) -> Mapping:
@@ -48,12 +47,13 @@ class Callback(metaclass=ABCMeta):
 
 
 class MetricCallback(Callback):
+    """ Base class of MetricCallback class such as AccuracyCallback
+
+    :param metric: metric function: (data) -> float
+    :param name: name of the metric
+    """
+
     def __init__(self, metric: Callable[[Mapping], float], name: str, logger=None):
-        """
-        Base class of MetricCallback class such as AccuracyCallback
-        :param metric: metric function: (data) -> float
-        :param name: name of the metric
-        """
         if metric is not None:
             self.metric_function = metric
         self.metric_name = name
@@ -118,15 +118,28 @@ class MetricCallback(Callback):
 
     @property
     def history(self) -> dict:
+        """ History of metric.
+
+        :return: dict of histories in {mode: [history]}
+
+        Using this property, history of metrics can be used after a training loop ::
+
+            >>> metric = ...
+            >>> # training loop
+            >>> final_result = metric.history["val"][-1]
+
+        """
+
         return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
 
 
 class CallbackList(Callback):
+    """ Combine some callbacks
+
+    :param callbacks: callbacks
+    """
+
     def __init__(self, *callbacks: Iterable[Callback] or Callback):
-        """
-        collect some callbacks
-        :param callbacks: callbacks
-        """
         if callbacks is None:
             raise TypeError("callbacks is expected to be Callback but None")
 
@@ -165,10 +178,12 @@ class CallbackList(Callback):
 
 
 class AccuracyCallback(MetricCallback):
+    """ Callback for accuracy
+
+    :param k: report top-k accuracy
+    """
+
     def __init__(self, k: int = 1):
-        """
-        calculate and accumulate accuracy
-        """
         self.top_k = k
         suffix = f"_top{self.top_k}" if self.top_k != 1 else ""
         super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
@@ -181,19 +196,20 @@ class AccuracyCallback(MetricCallback):
 
 
 class LossCallback(MetricCallback):
+    """ Callback for loss function
+    """
+
     def __init__(self):
-        """
-        accumulate loss
-        """
         super(LossCallback, self).__init__(metric=lambda data: data[LOSS],
                                            name="loss")
 
 
 def metric_callback_decorator(_metric: Callable = None, name: str = None):
-    """
-    >>> @metric_callback_decorator("loss")
-    >>> def loss(data):
-    >>>     return data["loss"]
+    """ Decorator to create a metrics callback
+
+        >>> @metric_callback_decorator("loss")
+        >>> def loss(data):
+        >>>     return data["loss"]
     """
 
     def wrapper(metric: Callable):
@@ -203,12 +219,13 @@ def metric_callback_decorator(_metric: Callable = None, name: str = None):
 
 
 class WeightSave(Callback):
+    """ Save weights after every epoch
+
+    :param save_path: path to be saved
+    :param save_freq: frequency of saving in epoch
+    """
+
     def __init__(self, save_path: str or Path, save_freq: int = 1):
-        """
-        save weights after every epoch
-        :param save_path: path to be saved
-        :param save_freq: frequency of saving in epoch
-        """
 
         self.save_path = Path(save_path) / (NOW + "-" + get_git_hash())
         self.save_freq = save_freq
