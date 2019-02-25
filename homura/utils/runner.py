@@ -11,13 +11,14 @@ from ._vocabulary import *
 
 
 class Runner(metaclass=ABCMeta):
+    """Meta-class for Trainer and Inferencer
+    """
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  callbacks: Optional[Callback or Iterable[Callable]] = None,
                  device: torch.device or str = None,
                  use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger: Optional[Logger] = None, **kwargs):
-        """Meta-class for Trainer and Inferencer
-        """
+
         self.logger = get_logger(__name__) if logger is None else logger
         if device is None:
             self.device = GPU if torch.cuda.is_available() else CPU

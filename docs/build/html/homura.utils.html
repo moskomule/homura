@@ -191,6 +191,11 @@
 <dt id="homura.utils.containers.Map">
 <em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>dict like object but: stored values can be subscribed and attributed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="homura.utils.containers.Map.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.copy" title="Permalink to this definition">¶</a></dt>
@@ -209,7 +214,7 @@
 <dl class="method">
 <dt id="homura.utils.containers.Map.to">
 <code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.to" title="Permalink to this definition">¶</a></dt>
-<dd><p>move stored tensors to a given device</p>
+<dd><p>Move stored tensors to a given device</p>
 </dd></dl>
 
 <dl class="method">
@@ -223,7 +228,7 @@
 <dt id="homura.utils.containers.TensorTuple">
 <em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>tuple for tensors</p>
+<p>Tuple for tensors.</p>
 <dl class="method">
 <dt id="homura.utils.containers.TensorTuple.to">
 <code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
@@ -430,6 +435,7 @@
 <dt id="homura.utils.runner.Runner">
 <em class="property">class </em><code class="descclassname">homura.utils.runner.</code><code class="descname">Runner</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: Optional[homura.callbacks.Callback] = None</em>, <em>device: torch.device = None</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>logger: Optional[logging.Logger] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/runner.html#Runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.runner.Runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta-class for Trainer and Inferencer</p>
 </dd></dl>
 
 </div>
