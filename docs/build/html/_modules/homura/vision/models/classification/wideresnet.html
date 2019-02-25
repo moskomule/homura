@@ -153,7 +153,7 @@
 
 <span class="kn">from</span> <span class="nn">.._intialization</span> <span class="k">import</span> <span class="n">init_parameters</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WideResNet&quot;</span><span class="p">,</span> <span class="s2">&quot;WideBasicModule&quot;</span><span class="p">,</span> <span class="s2">&quot;wrn28_10&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WideResNet&quot;</span><span class="p">,</span> <span class="s2">&quot;WideBasicModule&quot;</span><span class="p">,</span> <span class="s2">&quot;wrn28_10&quot;</span><span class="p">,</span> <span class="s2">&quot;wrn28_2&quot;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">conv3x3</span><span class="p">(</span><span class="n">in_planes</span><span class="p">,</span> <span class="n">out_planes</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -243,8 +243,13 @@
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="wrn28_10"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_10">[docs]</a><span class="k">def</span> <span class="nf">wrn28_10</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="wrn28_10"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_10">[docs]</a><span class="k">def</span> <span class="nf">wrn28_10</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WideResNet</span><span class="p">:</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">WideResNet</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">widen_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="wrn28_2"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_2">[docs]</a><span class="k">def</span> <span class="nf">wrn28_2</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WideResNet</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">WideResNet</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">widen_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">model</span></div>
 </pre></div>
 

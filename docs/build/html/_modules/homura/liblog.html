@@ -253,6 +253,29 @@
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">_create_default_formatter</span><span class="p">()</span>
     <span class="n">fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">_get_root_logger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_tqdm_handler"><a class="viewcode-back" href="../../homura.html#homura.liblog.set_tqdm_handler">[docs]</a><span class="k">def</span> <span class="nf">set_tqdm_handler</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                     <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+
+    <span class="k">class</span> <span class="nc">TQDMHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+            <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">_configure_root_logger</span><span class="p">()</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">TQDMHandler</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">_LOG_LEVEL</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+    <span class="n">th</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">formatter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">_create_default_formatter</span><span class="p">()</span>
+    <span class="n">th</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">_get_root_logger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">th</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

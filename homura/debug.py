@@ -36,13 +36,13 @@ def module_debugger(model: nn.Module,
                     input: Tuple[torch.Tensor] or torch.Tensor,
                     target: Optional[Tuple[torch.Tensor]] = None,
                     loss: Optional[Callable] = None) -> None:
-    """log all modules connected with forward and backward calculation
+    """ log all modules connected with forward and backward calculation
     """
     original_verb = get_verb_level()
     set_verb_level("debug")
     nn.Module.extend_apply = _extend_apply
     if target is not None and loss is None:
-        raise TypeError(f"argument loss should be Callable but got None")
+        raise TypeError(f"Argument loss should be Callable but got None")
     if isinstance(model, nn.DataParallel) or isinstance(model, nn.parallel.DistributedDataParallel):
         logger.warning(f"Debugger may not be able to work with {type(model)}")
     model.extend_apply(lambda m: m.register_forward_pre_hook(partial(_log, "forward")))

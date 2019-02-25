@@ -307,6 +307,19 @@
 <dt id="homura.callbacks.MetricCallback">
 <em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], float], name: str, logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
+<p>Base class of MetricCallback class such as AccuracyCallback</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>metric</strong> – metric function: (data) -&gt; float</li>
+<li><strong>name</strong> – name of the metric</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="homura.callbacks.MetricCallback.after_epoch">
 <code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
@@ -330,7 +343,22 @@
 <dl class="attribute">
 <dt id="homura.callbacks.MetricCallback.history">
 <code class="descname">history</code><a class="headerlink" href="#homura.callbacks.MetricCallback.history" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>History of metric.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict of histories in {mode: [history]}</td>
+</tr>
+</tbody>
+</table>
+<p>Using this property, history of metrics can be used after a training loop</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># training loop</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_result</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 </dd></dl>
 
@@ -338,6 +366,15 @@
 <dt id="homura.callbacks.CallbackList">
 <em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">CallbackList</code><span class="sig-paren">(</span><em>*callbacks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
+<p>Combine some callbacks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>callbacks</strong> – callbacks</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="homura.callbacks.CallbackList.after_all">
 <code class="descname">after_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.after_all" title="Permalink to this definition">¶</a></dt>
@@ -374,6 +411,15 @@
 <dt id="homura.callbacks.AccuracyCallback">
 <em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">AccuracyCallback</code><span class="sig-paren">(</span><em>k: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.MetricCallback" title="homura.callbacks.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.MetricCallback</span></code></a></p>
+<p>Callback for accuracy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>k</strong> – report top-k accuracy</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="homura.callbacks.AccuracyCallback.accuracy">
 <code class="descname">accuracy</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#AccuracyCallback.accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.AccuracyCallback.accuracy" title="Permalink to this definition">¶</a></dt>
@@ -385,17 +431,42 @@
 <dt id="homura.callbacks.LossCallback">
 <em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">LossCallback</code><a class="reference internal" href="_modules/homura/callbacks.html#LossCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.LossCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.MetricCallback" title="homura.callbacks.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.MetricCallback</span></code></a></p>
+<p>Callback for loss function</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.callbacks.WeightSave">
 <em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">WeightSave</code><span class="sig-paren">(</span><em>save_path: str</em>, <em>save_freq: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
+<p>Save weights after every epoch</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>save_path</strong> – path to be saved</li>
+<li><strong>save_freq</strong> – frequency of saving in epoch</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="homura.callbacks.WeightSave.after_epoch">
 <code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.after_epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.callbacks.metric_callback_decorator">
+<code class="descclassname">homura.callbacks.</code><code class="descname">metric_callback_decorator</code><span class="sig-paren">(</span><em>_metric: Callable = None</em>, <em>name: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#metric_callback_decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metric_callback_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to create a metrics callback</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@metric_callback_decorator</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -433,6 +504,11 @@
 <dl class="function">
 <dt id="homura.liblog.set_file_handler">
 <code class="descclassname">homura.liblog.</code><code class="descname">set_file_handler</code><span class="sig-paren">(</span><em>log_file: str</em>, <em>level: str = 10</em>, <em>formatter: Optional[logging.Formatter] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_file_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.liblog.set_tqdm_handler">
+<code class="descclassname">homura.liblog.</code><code class="descname">set_tqdm_handler</code><span class="sig-paren">(</span><em>level: str = 20</em>, <em>formatter: Optional[logging.Formatter] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_tqdm_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_tqdm_handler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
