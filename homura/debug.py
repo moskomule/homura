@@ -48,7 +48,7 @@ def module_debugger(model: nn.Module,
         logger.warning(f"Debugger may not be able to work with {type(model)}")
     model.extend_apply(lambda m: m.register_forward_pre_hook(partial(_log, "forward")))
     model.extend_apply(lambda m: m.register_backward_hook(partial(_log, "backward")))
-    logger.debug("Start forward calculation")
+    logger.info("Start forward calculation")
     if torch.is_tensor(input):
         input = (input,)
     output = model(*input)

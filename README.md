@@ -120,6 +120,23 @@ from homura.reproductivity import set_deterministic
 set_deterministic(1)
 ```
 
+## debugger
+
+```python
+>>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
+                                        nn.Linear(5, 1)), 
+                          torch.randn(4, 10))
+[homura.debug|2019-02-25 17:57:06|DEBUG] Start forward calculation
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward> name=Sequential(1)
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(2)
+[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(3)
+[homura.debug|2019-02-25 17:57:06|DEBUG] Start backward calculation
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(3)
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward> name=Sequential(1)
+[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(2)
+[homura.debug|2019-02-25 17:57:06|INFO] Finish debugging mode
+```
+
 # Examples
 
 See [examples](examples).
