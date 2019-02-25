@@ -126,7 +126,5 @@ def set_tqdm_handler(level: str or int = logging.INFO,
     th.setLevel(level)
     if formatter is None:
         formatter = _create_default_formatter()
-    if _default_handler is not None:
-        _get_root_logger().removeHandler(_default_handler)
     th.setFormatter(formatter)
     _get_root_logger().addHandler(th)

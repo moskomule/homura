@@ -14,9 +14,9 @@ def set_deterministic(seed: int = 0):
     """
     random.seed(0)
     torch.manual_seed(0)
+    numpy.random.seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    numpy.random.seed(seed)
     logger.info("Set to be deterministic. But some GPU computations is still deterministic. Also, this may affect "
                 "the performance.")
 
@@ -28,4 +28,5 @@ def unset_deterministic():
     new_seed = random.randrange(2 ** 32 - 1)
     numpy.random.seed(new_seed)
     torch.backends.cudnn.deterministic = False
+    torch.backends.cudnn.benchmark = True
     logger.info("Set to be non-deterministic.")
