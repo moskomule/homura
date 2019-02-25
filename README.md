@@ -85,8 +85,8 @@ Now `iteration` of trainer can be updated as follows,
 ```python
 from homura.utils.containers import Map
 
-def iteration(trainer: Trainer, inputs: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
-    input, target = trainer.to_device(inputs)
+def iteration(trainer: Trainer, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+    input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
     results = Map(loss=loss, output=output)

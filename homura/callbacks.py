@@ -8,7 +8,7 @@ import torch
 from homura.liblog import get_logger
 
 from .utils.miscs import get_git_hash
-from .utils.vocabulary import *
+from .utils._vocabulary import *
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "metric_callback_decorator"]

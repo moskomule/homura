@@ -11,7 +11,7 @@ from tqdm import tqdm
 from .containers import Map
 from .miscs import check_path
 from .runner import Runner
-from .vocabulary import *
+from ._vocabulary import *
 
 
 class Inferencer(Runner):

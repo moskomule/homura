@@ -3,8 +3,9 @@ from functools import partial
 from typing import Optional, Callable, Tuple
 
 import torch
-from homura.liblog import get_logger, set_verb_level, get_verb_level
 from torch import nn
+
+from homura.liblog import get_logger, set_verb_level, get_verb_level
 
 __all__ = ["module_debugger"]
 
@@ -46,7 +47,7 @@ def module_debugger(model: nn.Module,
     if isinstance(model, nn.DataParallel) or isinstance(model, nn.parallel.DistributedDataParallel):
         logger.warning(f"Debugger may not be able to work with {type(model)}")
     model.extend_apply(lambda m: m.register_forward_pre_hook(partial(_log, "forward")))
-    model.extend_apply(lambda m: m.register_backward_hook(backward_log=partial(_log, "backward")))
+    model.extend_apply(lambda m: m.register_backward_hook(partial(_log, "backward")))
     logger.debug("Start forward calculation")
     if torch.is_tensor(input):
         input = (input,)

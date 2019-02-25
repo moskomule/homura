@@ -16,7 +16,7 @@ from .callbacks import Callback
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.miscs import check_path
 from .utils.runner import Runner
-from .utils.vocabulary import *
+from .utils._vocabulary import *
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
