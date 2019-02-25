@@ -12,7 +12,7 @@ import torch
 from torchvision.utils import make_grid, save_image as _save_image
 
 import homura
-from homura.liblog import set_tqdm_handler
+from homura.liblog import _set_tqdm_handler
 from .miscs import get_git_hash
 from ._vocabulary import *
 
@@ -138,7 +138,7 @@ class TQDMWrapper(_WrapperBase):
         super(TQDMWrapper, self).__init__(save_dir)
         self.tqdm = tqdm(iterator, ncols=80)
         self._size = len(iterator)
-        set_tqdm_handler()
+        _set_tqdm_handler()
 
     def __iter__(self):
         for x in self.tqdm:

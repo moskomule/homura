@@ -107,8 +107,10 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
     _get_root_logger().addHandler(fh)
 
 
-def set_tqdm_handler(level: str or int = logging.INFO,
-                     formatter: Optional[logging.Formatter] = None) -> None:
+def _set_tqdm_handler(level: str or int = logging.INFO,
+                      formatter: Optional[logging.Formatter] = None) -> None:
+    """ An alternative handler to avoid disturbing tqdm
+    """
     from tqdm import tqdm
 
     class TQDMHandler(logging.StreamHandler):
@@ -124,6 +126,9 @@ def set_tqdm_handler(level: str or int = logging.INFO,
     if isinstance(level, str):
         level = _LOG_LEVEL[level]
     th.setLevel(level)
+    if _default_handler is not None:
+        # to avoid multiple logs!
+        _get_root_logger().removeHandler(_default_handler)
     if formatter is None:
         formatter = _create_default_formatter()
     th.setFormatter(formatter)
