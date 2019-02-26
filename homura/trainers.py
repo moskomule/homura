@@ -13,16 +13,17 @@ from homura.liblog import get_logger
 from homura.lr_scheduler import LRScheduler
 from homura.optim import Optimizer
 from .callbacks import Callback
+from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.miscs import check_path
 from .utils.runner import Runner
-from .utils._vocabulary import *
 
 __all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
 
 class TrainerBase(Runner, metaclass=ABCMeta):
     """
+
     :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
     :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
     :param loss_f: loss function or dict of loss functions
@@ -130,8 +131,17 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
     @abstractmethod
     def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
-        """
-        iteration part, user can override via duck typing or override_iteration
+        """ Iteration part, user can override via duck typing or override_iteration ::
+
+            def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+                input, target = data
+                output = self.model(input)
+                loss = self.loss_f(output, target)
+                if self.is_train:
+                    self.optimizer.zero_grad()
+                    loss.backward()
+                    self.optimizer.step()
+                return Map(loss=loss, output=output)
 
         :param data: data used during a iteration
         :return: loss, output
@@ -140,7 +150,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
     def override_iteration(self, new_iteration: Callable):
         """ Override iteration method ::
 
-            def new_iteration(trainer, inputs):
+            def new_iteration(trainer, data):
+                input, target = data
                 ...
                 results.loss = loss
                 return results
@@ -171,7 +182,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._all_map[name] = data
 
     def _iteration(self, data: Tuple[torch.Tensor], mode: str):
-        """ iteration level training loop for backend
+        """ Iteration level training loop for backend
 
         :param data: should be TensorTuple
         :param mode: train, test or val
@@ -218,20 +229,30 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._callbacks.after_epoch(self._epoch_map)
         self.logger.debug(f"epoch {self.epoch} finished")
 
-    def train(self, data_loader: DataLoader):
+    def train(self, data_loader: DataLoader, mode: str = TRAIN):
+        """ Training loop.
+
+        :param data_loader:
+        :param mode: Name of this loop. Default is `train`. Passed to callbacks.
+        """
+
         self._is_train = True
         self.model.train()
         with torch.enable_grad():
-            self._loop(data_loader, mode=TRAIN)
+            self._loop(data_loader, mode=mode)
 
         if self.scheduler is not None and self._update_scheduler_by_epoch:
             self.scheduler.step()
         self._epoch += 1
 
-        # todo: try-except-finally like self.run
-        # problem: tqdm may use an Exception for something?, which occurs an error.
-
     def test(self, data_loader: DataLoader, mode: str = TEST):
+        """ Non-training loop.
+
+        :param data_loader:
+        :param mode: Name of this loop. Default is `test`. Passed to callbacks.
+        :return:
+        """
+
         self._is_train = False
         self.model.eval()
         with torch.no_grad():
@@ -255,6 +276,12 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._callbacks.after_all(self._all_map)
 
     def resume(self, path: str or Path):
+        """ Resume training from saved states by `homura.callbacks.WeightSave`.
+
+        :param path:
+        :return:
+        """
+
         path = check_path(path)
         with path.open('rb') as f:
             loaded = torch.load(f)

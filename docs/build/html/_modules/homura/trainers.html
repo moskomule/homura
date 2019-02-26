@@ -161,16 +161,17 @@
 <span class="kn">from</span> <span class="nn">homura.lr_scheduler</span> <span class="k">import</span> <span class="n">LRScheduler</span>
 <span class="kn">from</span> <span class="nn">homura.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
-<span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Trainer&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;DistributedSupervisedTrainer&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="TrainerBase"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase">[docs]</a><span class="k">class</span> <span class="nc">TrainerBase</span><span class="p">(</span><span class="n">Runner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">    :param model: nn.Module or dict like {&quot;generator&quot;: gen, &quot;discriminator&quot;: dis}</span>
 <span class="sd">    :param optimizer: homura.optimizer.Optimizer or dict like {&quot;generator&quot;: Adam(lr=3e-4)}</span>
 <span class="sd">    :param loss_f: loss function or dict of loss functions</span>
@@ -278,8 +279,17 @@
 
 <div class="viewcode-block" id="TrainerBase.iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.iteration">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        iteration part, user can override via duck typing or override_iteration</span>
+        <span class="sd">&quot;&quot;&quot; Iteration part, user can override via duck typing or override_iteration ::</span>
+
+<span class="sd">            def iteration(self, data: Tuple[torch.Tensor]) -&gt; Mapping[str, torch.Tensor]:</span>
+<span class="sd">                input, target = data</span>
+<span class="sd">                output = self.model(input)</span>
+<span class="sd">                loss = self.loss_f(output, target)</span>
+<span class="sd">                if self.is_train:</span>
+<span class="sd">                    self.optimizer.zero_grad()</span>
+<span class="sd">                    loss.backward()</span>
+<span class="sd">                    self.optimizer.step()</span>
+<span class="sd">                return Map(loss=loss, output=output)</span>
 
 <span class="sd">        :param data: data used during a iteration</span>
 <span class="sd">        :return: loss, output</span>
@@ -288,7 +298,8 @@
 <div class="viewcode-block" id="TrainerBase.override_iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.override_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">override_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_iteration</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Override iteration method ::</span>
 
-<span class="sd">            def new_iteration(trainer, inputs):</span>
+<span class="sd">            def new_iteration(trainer, data):</span>
+<span class="sd">                input, target = data</span>
 <span class="sd">                ...</span>
 <span class="sd">                results.loss = loss</span>
 <span class="sd">                return results</span>
@@ -319,7 +330,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span></div>
 
     <span class="k">def</span> <span class="nf">_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; iteration level training loop for backend</span>
+        <span class="sd">&quot;&quot;&quot; Iteration level training loop for backend</span>
 
 <span class="sd">        :param data: should be TensorTuple</span>
 <span class="sd">        :param mode: train, test or val</span>
@@ -366,20 +377,30 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;epoch </span><span class="si">{self.epoch}</span><span class="s2"> finished&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TrainerBase.train"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">):</span>
+<div class="viewcode-block" id="TrainerBase.train"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">TRAIN</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Training loop.</span>
+
+<span class="sd">        :param data_loader:</span>
+<span class="sd">        :param mode: Name of this loop. Default is `train`. Passed to callbacks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">TRAIN</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_scheduler_by_epoch</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-        <span class="c1"># todo: try-except-finally like self.run</span>
-        <span class="c1"># problem: tqdm may use an Exception for something?, which occurs an error.</span>
-
 <div class="viewcode-block" id="TrainerBase.test"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">TEST</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Non-training loop.</span>
+
+<span class="sd">        :param data_loader:</span>
+<span class="sd">        :param mode: Name of this loop. Default is `test`. Passed to callbacks.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_train</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
@@ -403,6 +424,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TrainerBase.resume"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Resume training from saved states by `homura.callbacks.WeightSave`.</span>
+
+<span class="sd">        :param path:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">path</span> <span class="o">=</span> <span class="n">check_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">loaded</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
