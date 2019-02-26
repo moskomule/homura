@@ -238,6 +238,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         self._is_train = True
         self.model.train()
+        if hasattr(self.loss_f, "train"):
+            self.loss_f.train()
         with torch.enable_grad():
             self._loop(data_loader, mode=mode)
 
@@ -255,6 +257,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         self._is_train = False
         self.model.eval()
+        if hasattr(self.loss_f, "eval"):
+            self.loss_f.eval()
         with torch.no_grad():
             self._loop(data_loader, mode=mode)
 
