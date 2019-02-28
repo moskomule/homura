@@ -104,8 +104,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._verb = verb
 
         # called via property
-        self._step = 0
-        self._epoch = 0
+        # _step and _epoch are set to -1 because they are incremented before each iteration and epoch!
+        self._step = -1
+        self._epoch = -1
         self._is_train = True
 
         _map_base = {MODEL: self.model,
@@ -221,9 +222,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         for data in data_loader:
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
-            self._iteration(data, mode)
             if self.is_train:
                 self._step += 1
+            self._iteration(data, mode)
 
         with torch.no_grad():
             self._callbacks.after_epoch(self._epoch_map)
@@ -237,6 +238,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         """
 
         self._is_train = True
+        self._epoch += 1
         self.model.train()
         if hasattr(self.loss_f, "train"):
             self.loss_f.train()
@@ -245,7 +247,6 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         if self.scheduler is not None and self._update_scheduler_by_epoch:
             self.scheduler.step()
-        self._epoch += 1
 
     def test(self, data_loader: DataLoader, mode: str = TEST):
         """ Non-training loop.
