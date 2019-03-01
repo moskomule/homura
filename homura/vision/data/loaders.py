@@ -71,8 +71,6 @@ class _BaseLoaders(object):
     @staticmethod
     def absolute_root(root):
         root = Path(root).expanduser()
-        if not root.exists():
-            root.mkdir(parents=True)
         return root
 
     @staticmethod
