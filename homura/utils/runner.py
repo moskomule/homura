@@ -45,7 +45,7 @@ class Runner(metaclass=ABCMeta):
                 f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, nonblocking: {use_cuda_nonblocking}")
         else:
             self._cuda_nonblocking = False
-            self.logger.info("Training on CPU!")
+            self.logger.info("Running on CPU!")
 
         # set callback(s)
         if isinstance(callbacks, CallbackList):
