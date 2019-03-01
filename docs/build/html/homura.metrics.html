@@ -188,9 +188,9 @@
 <div class="section" id="module-homura.metrics.commons">
 <span id="homura-metrics-commons-module"></span><h2>homura.metrics.commons module<a class="headerlink" href="#module-homura.metrics.commons" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="homura.metrics.commons.classwise_accuracy">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">classwise_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#classwise_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.classwise_accuracy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate class wise accuracy</p>
+<dt id="homura.metrics.commons.true_positive">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate true positive</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -201,7 +201,7 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">class wise accuracy in float tensor of <cite>C</cite></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true positive in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
@@ -209,9 +209,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.metrics.commons.confusion_matrix">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate confusion matrix</p>
+<dt id="homura.metrics.commons.true_negative">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate true negative</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -222,41 +222,11 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">confusion matrix in long tensor of <cite>CxC</cite></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true negative in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.f1_score">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">f1_score</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.f1_score" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate f1 score</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
-<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f1 score in float tensor of <cite>C</cite></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.false_negative">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_negative" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate false negative
-:param input: output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite>
-:param target: target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite>
-:return: false negative in float tensor of <cite>C</cite></p>
 </dd></dl>
 
 <dl class="function">
@@ -274,6 +244,36 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">false positive in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.false_negative">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate false negative
+:param input: output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite>
+:param target: target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite>
+:return: false negative in float tensor of <cite>C</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.classwise_accuracy">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">classwise_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#classwise_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.classwise_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate class wise accuracy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">class wise accuracy in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
@@ -344,9 +344,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.metrics.commons.true_negative">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_negative" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate true negative</p>
+<dt id="homura.metrics.commons.f1_score">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">f1_score</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.f1_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate f1 score</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -357,7 +357,7 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true negative in float tensor of <cite>C</cite></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f1 score in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
@@ -365,9 +365,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.metrics.commons.true_positive">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_positive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate true positive</p>
+<dt id="homura.metrics.commons.confusion_matrix">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate confusion matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -378,7 +378,7 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true positive in float tensor of <cite>C</cite></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">confusion matrix in long tensor of <cite>CxC</cite></p>
 </td>
 </tr>
 </tbody>
