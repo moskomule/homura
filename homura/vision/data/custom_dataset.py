@@ -2,6 +2,8 @@ import torch.utils.data as data
 from torch import randperm
 from torch._utils import _accumulate
 
+__all__ = ["TransformableSubset", "transformable_random_split"]
+
 
 class TransformableSubset(data.Subset):
     """ Subset with transform
