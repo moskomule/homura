@@ -4,17 +4,19 @@ import torch
 
 from homura.modules import to_onehot
 
-__all__ = ["binary_to_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"]
+__all__ = ["binary_as_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"]
 
 
-def binary_to_multiclass(input: torch.Tensor, threshold: float):
-    """ Convert `BxHxW` outputs to `BxCxHxW`.
+def binary_as_multiclass(input: torch.Tensor, threshold: float):
+    """ Convert `Bx1xHxW` outputs to `BxCxHxW`.
 
     :param input:
     :param threshold:
     :return:
     """
-    return torch.stack([input.clone().fill_(threshold), input], dim=1)
+    if input.size(1) != 1:
+        raise RuntimeError(f"Channel dimension is expected to be 1, but got {input.size(1)}")
+    return torch.cat([input.clone().fill_(threshold), input], dim=1)
 
 
 def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:

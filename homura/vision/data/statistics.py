@@ -51,9 +51,9 @@ class PerChannelStatistics(object):
             # *.jpg ...
             # in `root`
             image_paths += list(root.glob(f"*.{ext}"))
+            # in subdirectories
             image_paths += list(root.glob(f"**/*.{ext}"))
             # *.JPG ...
-            # in subdirectories
             image_paths += list(root.glob(f"*.{ext.capitalize()}"))
             image_paths += list(root.glob(f"**/*.{ext.capitalize()}"))
 
@@ -62,7 +62,7 @@ class PerChannelStatistics(object):
 
         image_paths = random.sample(image_paths, k=self._num_samples)
         for path in image_paths:
-            with path.open() as f:
+            with path.open("rb") as f:
                 img = Image.open(f).convert("RGB")
                 self._calc(to_tensor(img))
             if self._sample_count == self._num_samples:

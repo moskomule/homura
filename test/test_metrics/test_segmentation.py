@@ -3,8 +3,8 @@ import torch
 
 from homura.metrics import segmentation
 
-binary_input = torch.zeros(1, 3, 3)
-binary_input[0, :, 0:2] = 1
+binary_input = torch.zeros(1, 1, 3, 3)
+binary_input[0, :, :, 0:2] = 1
 # tensor([[[1., 1., 0.],
 #          [1., 1., 0.],
 #          [1., 1., 0.]]])
@@ -26,8 +26,7 @@ multi_target[1, :, 1:3] = 1  # important!
 
 
 def test_pixel_accuracy():
-    input = segmentation.binary_to_multiclass(binary_input, 1 / 2)
-    assert (input.argmax(1).equal(binary_input.long()))
+    input = segmentation.binary_as_multiclass(binary_input, 1 / 2)
     assert segmentation.pixel_accuracy(input, binary_target).item() == pytest.approx(3 / 9)
     assert segmentation.pixel_accuracy(multi_input, multi_target).item() == pytest.approx(3 / 9)
 
