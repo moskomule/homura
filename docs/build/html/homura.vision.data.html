@@ -213,36 +213,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.vision.data.custom_dataset.randperm">
-<code class="descclassname">homura.vision.data.custom_dataset.</code><code class="descname">randperm</code><span class="sig-paren">(</span><em>n</em>, <em>out=None</em>, <em>dtype=torch.int64</em>, <em>layout=torch.strided</em>, <em>device=None</em>, <em>requires_grad=False</em><span class="sig-paren">)</span> &#x2192; LongTensor<a class="headerlink" href="#homura.vision.data.custom_dataset.randperm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a random permutation of integers from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">-</span> <span class="pre">1</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">n (int): the upper bound (exclusive)
-out (Tensor, optional): the output tensor
-dtype (<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.dtype</span></code>, optional): the desired data type of returned tensor.</p>
-<blockquote>
-<div>Default: <code class="docutils literal notranslate"><span class="pre">torch.int64</span></code>.</div></blockquote>
-<dl class="last docutils">
-<dt>layout (<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.layout</span></code>, optional): the desired layout of returned Tensor.</dt>
-<dd>Default: <code class="docutils literal notranslate"><span class="pre">torch.strided</span></code>.</dd>
-<dt>device (<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.device</span></code>, optional): the desired device of returned tensor.</dt>
-<dd>Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the current device for the default tensor type
-(see <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.set_default_tensor_type()</span></code>). <code class="xref py py-attr docutils literal notranslate"><span class="pre">device</span></code> will be the CPU
-for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
-<dt>requires_grad (bool, optional): If autograd should record operations on the</dt>
-<dd>returned tensor. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</dd>
-</dl>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="go">tensor([2, 1, 0, 3])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
 <dt id="homura.vision.data.custom_dataset.transformable_random_split">
 <code class="descclassname">homura.vision.data.custom_dataset.</code><code class="descname">transformable_random_split</code><span class="sig-paren">(</span><em>dataset</em>, <em>lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#transformable_random_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.transformable_random_split" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -295,9 +265,43 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 </div>
 <div class="section" id="module-homura.vision.data.loaders">
 <span id="homura-vision-data-loaders-module"></span><h2>homura.vision.data.loaders module<a class="headerlink" href="#module-homura.vision.data.loaders" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.vision.data.loaders.BaseLoaders">
+<em class="property">class </em><code class="descclassname">homura.vision.data.loaders.</code><code class="descname">BaseLoaders</code><span class="sig-paren">(</span><em>dataset</em>, <em>mean_std: tuple</em>, <em>data_augmentation_transforms: list</em>, <em>test_time_transforms: list = None</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A base class for simple data-loaders</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset</strong> – </li>
+<li><strong>mean_std</strong> – </li>
+<li><strong>data_augmentation_transforms</strong> – </li>
+<li><strong>test_time_transforms</strong> – </li>
+<li><strong>replacement</strong> – </li>
+<li><strong>num_train_samples</strong> – </li>
+<li><strong>distributed</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="homura.vision.data.loaders.BaseLoaders.absolute_root">
+<em class="property">static </em><code class="descname">absolute_root</code><span class="sig-paren">(</span><em>root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.absolute_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.absolute_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="homura.vision.data.loaders.BaseLoaders.check_root_exists">
+<em class="property">static </em><code class="descname">check_root_exists</code><span class="sig-paren">(</span><em>root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.check_root_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.check_root_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar100_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar100'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar100'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-100</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -307,9 +311,10 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 <li><strong>batch_size</strong> – </li>
 <li><strong>num_workers</strong> – </li>
 <li><strong>root</strong> – </li>
-<li><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</li>
+<li><strong>data_augmentation</strong> – default transformation is <cite>RandomCrop(32, padding=4)</cite> and <cite>RandomHorizontalFlip()</cite></li>
 <li><strong>val_size</strong> – </li>
 <li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
 <li><strong>force_download</strong> – </li>
 </ul>
 </td>
@@ -323,7 +328,7 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar10_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar10'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar10'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-10</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -336,6 +341,7 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 <li><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</li>
 <li><strong>val_size</strong> – </li>
 <li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
 <li><strong>force_download</strong> – </li>
 </ul>
 </td>
@@ -349,12 +355,12 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.fashion_mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">fashion_mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/fmnist'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#fashion_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.fashion_mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">fashion_mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/fmnist'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#fashion_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.fashion_mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.imagenet_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root: Union[pathlib.Path, str], batch_size: int, num_workers: int = 8, data_augmentation: Iterable[T_co] = None, val_size: int = 0, num_train_samples: int = None, num_test_samples: int = None, distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root: Union[pathlib.Path, str], batch_size: int, num_workers: int = 8, data_augmentation: Optional[Iterable[T_co]] = None, val_size: int = 0, num_train_samples: Optional[int] = None, num_test_samples: Optional[int] = None, distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for ILSVRC classification data set</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -362,7 +368,7 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>root</strong> – </li>
-<li><strong>batch_size</strong> – </li>
+<li><strong>batch_size</strong> – Total batch size</li>
 <li><strong>num_workers</strong> – </li>
 <li><strong>data_augmentation</strong> – </li>
 <li><strong>val_size</strong> – </li>
@@ -380,8 +386,13 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 </dd></dl>
 
 <dl class="function">
+<dt id="homura.vision.data.loaders.kuzushiji_mnist_loaders">
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">kuzushiji_mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/kmnist'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#kuzushiji_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.kuzushiji_mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="homura.vision.data.loaders.mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/mnist'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/mnist'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for MNIST.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -394,6 +405,7 @@ for CPU tensor types and the current CUDA device for CUDA tensor types.</dd>
 <li><strong>data_augmentation</strong> – default transformation is RandomHorizontalFlip()</li>
 <li><strong>val_size</strong> – </li>
 <li><strong>replacement</strong> – sampling with replacement</li>
+<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
 <li><strong>force_download</strong> – </li>
 </ul>
 </td>

@@ -82,6 +82,10 @@ class BaseLoaders(object):
                 val_sampler = DistributedSampler(val_set)
 
         elif self._replacement:
+            if self._num_train_samples > len(train_set):
+                raise RuntimeWarning(f"Required number of train samples {self._num_train_samples} is "
+                                     f"larger than the size of train set {len(train_set)}."
+                                     f"It works but may cause problem!")
             train_sampler = RandomSampler(train_set, replacement=True, num_samples=self._num_train_samples)
 
         train = DataLoader(train_set, sampler=train_sampler,

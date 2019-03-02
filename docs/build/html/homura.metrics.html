@@ -85,6 +85,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.metrics package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics.commons">homura.metrics.commons module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics">Module contents</a></li>
 </ul>
 </li>
@@ -108,6 +109,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.metrics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics.commons">homura.metrics.commons module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics">Module contents</a></li>
 </ul>
 </li>
@@ -379,6 +381,93 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">confusion matrix in long tensor of <cite>CxC</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.metrics.segmentation">
+<span id="homura-metrics-segmentation-module"></span><h2>homura.metrics.segmentation module<a class="headerlink" href="#module-homura.metrics.segmentation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.metrics.segmentation.binary_to_multiclass">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_to_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_to_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_to_multiclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <cite>BxHxW</cite> outputs to <cite>BxCxHxW</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – </li>
+<li><strong>threshold</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.pixel_accuracy">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">pixel_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#pixel_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.pixel_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pixel accuracy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.mean_iou">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">mean_iou</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#mean_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.mean_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean IoU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – </li>
+<li><strong>target</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.classwise_iou">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">classwise_iou</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#classwise_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.classwise_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class-wise IoU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – </li>
+<li><strong>target</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>

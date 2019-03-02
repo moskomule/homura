@@ -18,7 +18,7 @@ from .utils.containers import TensorTuple, Map, StepDict
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
-__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
+__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer", "FP16Trainer"]
 
 
 class TrainerBase(Runner, metaclass=ABCMeta):

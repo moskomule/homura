@@ -1,5 +1,6 @@
 import torch
 from pytest import approx
+from torch.nn import functional as F
 
 from homura.modules import functions
 
@@ -40,3 +41,13 @@ def test_semantic_hashing():
         functions.semantic_hashing(input, is_training=True).sum().backward()
         _saturated_sigmoid(dummy).sum().backward()
         assert all(input.grad == dummy.grad)
+
+
+def test_cross_entropy():
+    input = torch.randn(1, 10)
+    target = torch.tensor([4]).long()
+    onetho_target = torch.zeros(1, 10)
+    onetho_target[0, 4] = 1
+    output = functions.cross_entropy_with_softlabels(input, onetho_target)
+    expected = F.cross_entropy(input, target)
+    assert output.item() == approx(expected.item())

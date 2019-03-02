@@ -177,6 +177,7 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics">Module contents</a></li>
 </ul>
 </li>
@@ -186,6 +187,7 @@
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions">Module contents</a></li>
 </ul>
@@ -1052,6 +1054,39 @@ is need to be update by user.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.trainers.FP16Trainer">
+<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">FP16Trainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>static_loss_scale=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#FP16Trainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.FP16Trainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.trainers.TrainerBase" title="homura.trainers.TrainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.TrainerBase</span></code></a></p>
+<dl class="method">
+<dt id="homura.trainers.FP16Trainer.iteration">
+<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#FP16Trainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.FP16Trainer.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteration part, user can override via duck typing or override_iteration</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – data used during a iteration</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">loss, output</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>

@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions">Module contents</a></li>
 </ul>
@@ -130,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions">Module contents</a></li>
 </ul>
@@ -274,6 +276,32 @@
 <span class="go">        [0., 1., 1.]])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functions.loss">
+<span id="homura-modules-functions-loss-module"></span><h2>homura.modules.functions.loss module<a class="headerlink" href="#module-homura.modules.functions.loss" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.modules.functions.loss.cross_entropy_with_softlabels">
+<code class="descclassname">homura.modules.functions.loss.</code><code class="descname">cross_entropy_with_softlabels</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em>, <em>reduction: str = 'mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functions/loss.html#cross_entropy_with_softlabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functions.loss.cross_entropy_with_softlabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross entropy with soft labels. Unlike <cite>torch.nn.functional.cross_entropy</cite>, <cite>target</cite> is expected to be
+one-hot or soft labelj.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – Tensor of <cite>BxCx(optional dimensions)</cite></li>
+<li><strong>target</strong> – Tensor of <cite>BxCx(optional dimensions)</cite></li>
+<li><strong>reduction</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

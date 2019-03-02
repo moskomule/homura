@@ -8,18 +8,17 @@ __all__ = ["binary_to_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"
 
 
 def binary_to_multiclass(input: torch.Tensor, threshold: float):
-    """ Convert `BxHxW' outputs to `BxCxHxW`
+    """ Convert `BxHxW` outputs to `BxCxHxW`.
 
     :param input:
     :param threshold:
     :return:
     """
-    return torch.stack([input.clone().fill_(threshold),
-                        input], dim=1)
+    return torch.stack([input.clone().fill_(threshold), input], dim=1)
 
 
 def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    """
+    """ Pixel accuracy
 
     :param input: logits (`BxCxHxW`)
     :param target: target in LongTensor (`BxHxW`)
@@ -33,7 +32,7 @@ def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 
 def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    """
+    """ Class-wise IoU
 
     :param input:
     :param target:
@@ -49,4 +48,10 @@ def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 
 def mean_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """ Mean IoU
+
+    :param input:
+    :param target:
+    :return:
+    """
     return classwise_iou(input, target).mean()
