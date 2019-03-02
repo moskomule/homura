@@ -152,17 +152,19 @@
 
 <span class="kn">from</span> <span class="nn">homura.modules</span> <span class="k">import</span> <span class="n">to_onehot</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;binary_to_multiclass&quot;</span><span class="p">,</span> <span class="s2">&quot;pixel_accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_iou&quot;</span><span class="p">,</span> <span class="s2">&quot;classwise_iou&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;binary_as_multiclass&quot;</span><span class="p">,</span> <span class="s2">&quot;pixel_accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_iou&quot;</span><span class="p">,</span> <span class="s2">&quot;classwise_iou&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="binary_to_multiclass"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.binary_to_multiclass">[docs]</a><span class="k">def</span> <span class="nf">binary_to_multiclass</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Convert `BxHxW` outputs to `BxCxHxW`.</span>
+<div class="viewcode-block" id="binary_as_multiclass"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.binary_as_multiclass">[docs]</a><span class="k">def</span> <span class="nf">binary_as_multiclass</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert `Bx1xHxW` outputs to `BxCxHxW`.</span>
 
 <span class="sd">    :param input:</span>
 <span class="sd">    :param threshold:</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="nb">input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">threshold</span><span class="p">),</span> <span class="nb">input</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Channel dimension is expected to be 1, but got {input.size(1)}&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="nb">input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">threshold</span><span class="p">),</span> <span class="nb">input</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pixel_accuracy"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.pixel_accuracy">[docs]</a><span class="k">def</span> <span class="nf">pixel_accuracy</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -172,6 +174,11 @@
 <span class="sd">    :param target: target in LongTensor (`BxHxW`)</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of input is expected to be 4, but got {input.dim()}&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of target is expected to be 3, but got {target.dim()}&quot;</span><span class="p">)</span>
+
     <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
     <span class="n">gt</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
@@ -182,10 +189,15 @@
 <div class="viewcode-block" id="classwise_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.classwise_iou">[docs]</a><span class="k">def</span> <span class="nf">classwise_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Class-wise IoU</span>
 
-<span class="sd">    :param input:</span>
-<span class="sd">    :param target:</span>
+<span class="sd">    :param input: logits (`BxCxHxW`)</span>
+<span class="sd">    :param target: target in LongTensor (`BxHxW`)</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of input is expected to be 4, but got {input.dim()}&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of target is expected to be 3, but got {target.dim()}&quot;</span><span class="p">)</span>
+
     <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
     <span class="n">gt</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
@@ -198,8 +210,8 @@
 <div class="viewcode-block" id="mean_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.mean_iou">[docs]</a><span class="k">def</span> <span class="nf">mean_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Mean IoU</span>
 
-<span class="sd">    :param input:</span>
-<span class="sd">    :param target:</span>
+<span class="sd">    :param input: logits (`BxCxHxW`)</span>
+<span class="sd">    :param target: target in LongTensor (`BxHxW`)</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">classwise_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>

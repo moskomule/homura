@@ -391,9 +391,9 @@
 <div class="section" id="module-homura.metrics.segmentation">
 <span id="homura-metrics-segmentation-module"></span><h2>homura.metrics.segmentation module<a class="headerlink" href="#module-homura.metrics.segmentation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="homura.metrics.segmentation.binary_to_multiclass">
-<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_to_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_to_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_to_multiclass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert <cite>BxHxW</cite> outputs to <cite>BxCxHxW</cite>.</p>
+<dt id="homura.metrics.segmentation.binary_as_multiclass">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_as_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_as_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_as_multiclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <cite>Bx1xHxW</cite> outputs to <cite>BxCxHxW</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -441,8 +441,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – </li>
-<li><strong>target</strong> – </li>
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
 </ul>
 </td>
 </tr>
@@ -462,8 +462,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – </li>
-<li><strong>target</strong> – </li>
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
 </ul>
 </td>
 </tr>

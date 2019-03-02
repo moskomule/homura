@@ -88,6 +88,8 @@
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -115,7 +117,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functions">Module contents</a></li>
 </ul>
 </li>
@@ -124,6 +125,8 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -132,7 +135,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions.miscs">homura.modules.functions.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functions">Module contents</a></li>
 </ul>
 </li>
@@ -299,28 +301,6 @@ one-hot or soft labelj.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.functions.miscs">
-<span id="homura-modules-functions-miscs-module"></span><h2>homura.modules.functions.miscs module<a class="headerlink" href="#module-homura.modules.functions.miscs" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.modules.functions.miscs.straight_backprop">
-<code class="descclassname">homura.modules.functions.miscs.</code><code class="descname">straight_backprop</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functions/miscs.html#straight_backprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functions.miscs.straight_backprop" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span> <span class="o">=</span> <span class="n">straight_backprop</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>function</strong> – original function</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">modified function</td>
 </tr>
 </tbody>
 </table>

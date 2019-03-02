@@ -303,7 +303,7 @@
         <li><a href="homura.html#homura.reporters.Reporter.before_iteration">(homura.reporters.Reporter method)</a>
 </li>
       </ul></li>
-      <li><a href="homura.metrics.html#homura.metrics.segmentation.binary_to_multiclass">binary_to_multiclass() (in module homura.metrics.segmentation)</a>
+      <li><a href="homura.metrics.html#homura.metrics.segmentation.binary_as_multiclass">binary_as_multiclass() (in module homura.metrics.segmentation)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -426,6 +426,14 @@
       <ul>
         <li><a href="homura.modules.html#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward">(homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm method)</a>
 </li>
+        <li><a href="homura.modules.html#homura.modules.discretization.GumbelSigmoid.forward">(homura.modules.discretization.GumbelSigmoid method)</a>
+</li>
+        <li><a href="homura.modules.html#homura.modules.discretization.GumbelSoftmax.forward">(homura.modules.discretization.GumbelSoftmax method)</a>
+</li>
+        <li><a href="homura.modules.html#homura.modules.discretization.SemanticHashing.forward">(homura.modules.discretization.SemanticHashing method)</a>
+</li>
+        <li><a href="homura.modules.html#homura.modules.discretization.StraightThroughEstimator.forward">(homura.modules.discretization.StraightThroughEstimator method)</a>
+</li>
         <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.forward">(homura.vision.models.classification.densenet.CIFARDenseNet method)</a>
 </li>
         <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.PreActResNet.forward">(homura.vision.models.classification.resnet.PreActResNet method)</a>
@@ -457,13 +465,17 @@
 </li>
       <li><a href="homura.html#homura.liblog.get_logger">get_logger() (in module homura.liblog)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#homura.liblog.get_verb_level">get_verb_level() (in module homura.liblog)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.modules.functions.html#homura.modules.functions.discretization.gumbel_sigmoid">gumbel_sigmoid() (in module homura.modules.functions.discretization)</a>
 </li>
       <li><a href="homura.modules.functions.html#homura.modules.functions.discretization.gumbel_softmax">gumbel_softmax() (in module homura.modules.functions.discretization)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.discretization.GumbelSigmoid">GumbelSigmoid (class in homura.modules.discretization)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.discretization.GumbelSoftmax">GumbelSoftmax (class in homura.modules.discretization)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -495,6 +507,8 @@
 </li>
       <li><a href="homura.modules.html#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm (module)</a>
 </li>
+      <li><a href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization (module)</a>
+</li>
       <li><a href="homura.modules.functions.html#module-homura.modules.functions">homura.modules.functions (module)</a>
 </li>
       <li><a href="homura.modules.functions.html#module-homura.modules.functions.convert">homura.modules.functions.convert (module)</a>
@@ -503,7 +517,7 @@
 </li>
       <li><a href="homura.modules.functions.html#module-homura.modules.functions.loss">homura.modules.functions.loss (module)</a>
 </li>
-      <li><a href="homura.modules.functions.html#module-homura.modules.functions.miscs">homura.modules.functions.miscs (module)</a>
+      <li><a href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs (module)</a>
 </li>
       <li><a href="homura.html#module-homura.optim">homura.optim (module)</a>
 </li>
@@ -513,10 +527,10 @@
 </li>
       <li><a href="homura.html#module-homura.trainers">homura.trainers (module)</a>
 </li>
-      <li><a href="homura.utils.html#module-homura.utils">homura.utils (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.utils.html#module-homura.utils">homura.utils (module)</a>
+</li>
       <li><a href="homura.utils.html#module-homura.utils.containers">homura.utils.containers (module)</a>
 </li>
       <li><a href="homura.utils.html#module-homura.utils.environment">homura.utils.environment (module)</a>
@@ -783,6 +797,8 @@
 </li>
       <li><a href="homura.modules.functions.html#homura.modules.functions.discretization.semantic_hashing">semantic_hashing() (in module homura.modules.functions.discretization)</a>
 </li>
+      <li><a href="homura.modules.html#homura.modules.discretization.SemanticHashing">SemanticHashing (class in homura.modules.discretization)</a>
+</li>
       <li><a href="homura.html#homura.reproductivity.set_deterministic">set_deterministic() (in module homura.reproductivity)</a>
 </li>
       <li><a href="homura.html#homura.liblog.set_file_handler">set_file_handler() (in module homura.liblog)</a>
@@ -805,9 +821,11 @@
 </li>
       <li><a href="homura.html#homura.lr_scheduler.StepLR">StepLR (class in homura.lr_scheduler)</a>
 </li>
-      <li><a href="homura.modules.functions.html#homura.modules.functions.miscs.straight_backprop">straight_backprop() (in module homura.modules.functions.miscs)</a>
+      <li><a href="homura.modules.html#homura.modules.miscs.straight_backprop">straight_backprop() (in module homura.modules.miscs)</a>
 </li>
       <li><a href="homura.modules.functions.html#homura.modules.functions.discretization.straight_through_estimator">straight_through_estimator() (in module homura.modules.functions.discretization)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.discretization.StraightThroughEstimator">StraightThroughEstimator (class in homura.modules.discretization)</a>
 </li>
       <li><a href="homura.html#homura.trainers.SupervisedTrainer">SupervisedTrainer (class in homura.trainers)</a>
 </li>

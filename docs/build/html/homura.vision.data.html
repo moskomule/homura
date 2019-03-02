@@ -424,6 +424,13 @@
 <dt id="homura.vision.data.statistics.PerChannelStatistics">
 <em class="property">class </em><code class="descclassname">homura.vision.data.statistics.</code><code class="descname">PerChannelStatistics</code><span class="sig-paren">(</span><em>num_samples: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>estimates per channel image dataset statistics (mean, stdev)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span> <span class="o">=</span> <span class="n">PerChannelStatistics</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span><span class="s2">&quot;data/images&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">from_batch</span><span class="p">(</span><span class="n">img_tensor</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">estimated</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.estimated">
 <code class="descname">estimated</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.estimated" title="Permalink to this definition">¶</a></dt>

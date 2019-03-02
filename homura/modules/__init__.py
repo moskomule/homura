@@ -1,3 +1,4 @@
 from .attention import KeyValAttention
 from .conditional_batchnorm import CategoricalConditionalBatchNorm
-from .functions import *
+from .discretization import *
+from .functions import to_onehot
