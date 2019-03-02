@@ -26,6 +26,11 @@ def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     :param target: target in LongTensor (`BxHxW`)
     :return:
     """
+    if input.dim() != 4:
+        raise RuntimeError(f"Dimension of input is expected to be 4, but got {input.dim()}")
+    if target.dim() != 3:
+        raise RuntimeError(f"Dimension of target is expected to be 3, but got {target.dim()}")
+
     b, c, h, w = input.size()
     pred = to_onehot(input.argmax(dim=1), num_classes=c)
     gt = to_onehot(target, num_classes=c)
@@ -36,10 +41,15 @@ def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """ Class-wise IoU
 
-    :param input:
-    :param target:
+    :param input: logits (`BxCxHxW`)
+    :param target: target in LongTensor (`BxHxW`)
     :return:
     """
+    if input.dim() != 4:
+        raise RuntimeError(f"Dimension of input is expected to be 4, but got {input.dim()}")
+    if target.dim() != 3:
+        raise RuntimeError(f"Dimension of target is expected to be 3, but got {target.dim()}")
+
     b, c, h, w = input.size()
     pred = to_onehot(input.argmax(dim=1), num_classes=c)
     gt = to_onehot(target, num_classes=c)
@@ -52,8 +62,8 @@ def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 def mean_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """ Mean IoU
 
-    :param input:
-    :param target:
+    :param input: logits (`BxCxHxW`)
+    :param target: target in LongTensor (`BxHxW`)
     :return:
     """
     return classwise_iou(input, target).mean()
