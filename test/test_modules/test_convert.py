@@ -1,6 +1,6 @@
 import torch
 
-from homura.modules.functions import convert
+from homura.modules.functional import convert
 
 
 def test_onehot():

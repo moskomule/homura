@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 
-from .functions import (gumbel_sigmoid, straight_through_estimator,
-                        semantic_hashing, gumbel_softmax, to_onehot)
+from .functional import (gumbel_sigmoid, straight_through_estimator,
+                         semantic_hashing, gumbel_softmax, to_onehot)
 
 __all__ = ["GumbelSigmoid", "GumbelSoftmax", "StraightThroughEstimator", "SemanticHashing"]
 
