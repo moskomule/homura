@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="homura.modules.functions package" href="homura.modules.functions.html" />
+    <link rel="next" title="homura.modules.functional package" href="homura.modules.functional.html" />
     <link rel="prev" title="homura.metrics package" href="homura.metrics.html" /> 
 
   
@@ -112,7 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.modules package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -123,7 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -197,12 +197,12 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -292,6 +292,7 @@ registered hooks while the latter silently ignores them.</p>
 <dt id="homura.modules.discretization.GumbelSigmoid">
 <em class="property">class </em><code class="descclassname">homura.modules.discretization.</code><code class="descname">GumbelSigmoid</code><span class="sig-paren">(</span><em>temp: float = 0.1</em>, <em>threshold: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>This module outputs <cite>gumbel_sigmoid</cite> while training and <cite>input.sigmoid() &gt;= threshold</cite> while evaluation</p>
 <dl class="method">
 <dt id="homura.modules.discretization.GumbelSigmoid.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.forward" title="Permalink to this definition">¶</a></dt>
@@ -312,6 +313,7 @@ registered hooks while the latter silently ignores them.</p>
 <dt id="homura.modules.discretization.GumbelSoftmax">
 <em class="property">class </em><code class="descclassname">homura.modules.discretization.</code><code class="descname">GumbelSoftmax</code><span class="sig-paren">(</span><em>dim: int</em>, <em>temp: float = 0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>This module outputs <cite>gumbel_softmax</cite> while training and argmax in onehot fashion while evaluation</p>
 <dl class="method">
 <dt id="homura.modules.discretization.GumbelSoftmax.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax.forward" title="Permalink to this definition">¶</a></dt>
@@ -405,7 +407,7 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="homura.modules.functions.html" class="btn btn-neutral float-right" title="homura.modules.functions package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="homura.modules.functional.html" class="btn btn-neutral float-right" title="homura.modules.functional package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="homura.metrics.html" class="btn btn-neutral" title="homura.metrics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

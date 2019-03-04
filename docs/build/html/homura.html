@@ -102,7 +102,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -183,12 +183,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.convert">homura.modules.functions.convert module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.discretization">homura.modules.functions.discretization module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions.loss">homura.modules.functions.loss module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.functions.html#module-homura.modules.functions">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -609,6 +609,12 @@
 <dl class="class">
 <dt id="homura.optim.RMSProp">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">RMSProp</code><span class="sig-paren">(</span><em>lr=0.01</em>, <em>alpha=0.99</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>momentum=0</em>, <em>centered=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#RMSProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.RMSProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.optim.AdaBound">
+<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">AdaBound</code><span class="sig-paren">(</span><em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>final_lr=0.1</em>, <em>gamma=0.001</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>amsbound=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#AdaBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.AdaBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 </dd></dl>
 

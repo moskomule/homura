@@ -8,6 +8,9 @@ __all__ = ["GumbelSigmoid", "GumbelSoftmax", "StraightThroughEstimator", "Semant
 
 
 class GumbelSigmoid(nn.Module):
+    """ This module outputs `gumbel_sigmoid` while training and `input.sigmoid() >= threshold` while evaluation
+    """
+
     def __init__(self,
                  temp: float = 0.1,
                  threshold: float = 0.5):
@@ -19,7 +22,7 @@ class GumbelSigmoid(nn.Module):
         if self.training:
             return gumbel_sigmoid(input, self.temp)
         else:
-            return (input >= self.threshold).float()
+            return (input.sigmoid() >= self.threshold).float()
 
 
 class StraightThroughEstimator(nn.Module):
@@ -39,6 +42,9 @@ class SemanticHashing(nn.Module):
 
 
 class GumbelSoftmax(nn.Module):
+    """ This module outputs `gumbel_softmax` while training and argmax in onehot fashion while evaluation
+    """
+
     def __init__(self,
                  dim: int,
                  temp: float = 0.1):
