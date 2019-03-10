@@ -34,7 +34,7 @@ def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     b, c, h, w = input.size()
     pred = to_onehot(input.argmax(dim=1), num_classes=c)
     gt = to_onehot(target, num_classes=c)
-    acc = (pred * gt).view(b, -1).sum(-1) / (w * h)
+    acc = (pred * gt).sum(dim=(1, 2, 3)) / (w * h)
     return acc.mean()
 
 
@@ -53,9 +53,9 @@ def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     b, c, h, w = input.size()
     pred = to_onehot(input.argmax(dim=1), num_classes=c)
     gt = to_onehot(target, num_classes=c)
-    tp = (pred * gt).view(b, c, -1).sum(-1)
-    ps = pred.view(b, c, -1).sum(-1)
-    tr = gt.view(b, c, -1).sum(-1)
+    tp = (pred * gt).sum(dim=(-1, -2))
+    ps = pred.sum(dim=(-1, -2))
+    tr = gt.sum(dim=(-1, -2))
     return (tp / (ps + tr - tp + 1e-8)).mean(0)
 
 
