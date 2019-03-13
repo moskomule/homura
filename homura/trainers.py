@@ -74,8 +74,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                     self.optimizer[k] = None
                 elif isinstance(opt, Optimizer):
                     self.optimizer[k] = opt.set_model(m.parameters())
+                else:
+                    raise TypeError(f"Unknown type: {type(opt)}")
         else:
-            raise TypeError(f"{type(optimizer)}")
+            raise TypeError(f"Unknown type: {type(optimizer)}")
         self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
 
         # set scheduler(s)
@@ -94,9 +96,12 @@ class TrainerBase(Runner, metaclass=ABCMeta):
                 opt = self.optimizer.get(k)
                 if schdlr is None:
                     self.scheduler[k] = None
-                self.scheduler[k] = schdlr.set_optimizer(opt)
+                elif isinstance(schdlr, LRScheduler):
+                    self.scheduler[k] = schdlr.set_optimizer(opt)
+                else:
+                    raise TypeError(f"Unknown type: {type(schdlr)}")
         else:
-            raise TypeError(f"{type(scheduler)}")
+            raise TypeError(f"Unknown type: {type(scheduler)}")
         self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
         self._update_scheduler_by_epoch = update_scheduler_by_epoch
 
