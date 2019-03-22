@@ -1,8 +1,10 @@
 # optimizers for homura's trainer
 
 from abc import ABCMeta
+from typing import Iterable
 
-from torch import nn, optim as torch_optim
+import torch
+from torch import optim as torch_optim
 from torch.optim import Optimizer as _Optimizer
 
 from .utils import _optimizers
@@ -17,8 +19,8 @@ class Optimizer(metaclass=ABCMeta):
         self._args = kwargs
         self._optim = None
 
-    def set_model(self, model: nn.Module):
-        self._optim = self._optim_cls(model, **self._args)
+    def set_model(self, params: Iterable[torch.Tensor]):
+        self._optim = self._optim_cls(params, **self._args)
         return self.optim
 
     @property

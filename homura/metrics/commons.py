@@ -8,18 +8,7 @@ logger = get_logger(__name__)
 
 __all__ = ["true_positive", "true_negative", "false_positive", "false_negative",
            "classwise_accuracy", "precision", "recall", "specificity", "f1_score",
-           "confusion_matrix",]
-
-
-def _reduction(input: torch.Tensor, reduction: str):
-    if reduction == "mean":
-        return input.mean()
-    elif reduction == "sum":
-        return input.sum()
-    elif reduction == "none" or reduction is None:
-        return input
-    else:
-        raise NotImplementedError(f"Wrong reduction: {reduction}")
+           "confusion_matrix", ]
 
 
 def _base(input: torch.Tensor, target: torch.Tensor) -> Tuple[torch.Tensor]:
