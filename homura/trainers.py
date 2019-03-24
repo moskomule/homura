@@ -386,7 +386,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
             from apex.parallel import DistributedDataParallel
 
             self.model, self.optimizer = amp.initialize(model, optimizer,
-                                                        opt_level="02",
+                                                        opt_level="O2",
                                                         )
             self.model = DistributedDataParallel(self.model, delay_allreduce=True)
             self.loss_scaler = amp.scale_loss
