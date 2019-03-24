@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="homura.metrics package" href="homura.metrics.html" />
     <link rel="prev" title="Indices and tables" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -175,6 +177,15 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="homura.metrics.generative.html">homura.metrics.generative package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative.utils">homura.metrics.generative.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
@@ -583,7 +594,7 @@
 
 <dl class="method">
 <dt id="homura.optim.Optimizer.set_model">
-<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer.set_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_model</code><span class="sig-paren">(</span><em>params: Iterable[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer.set_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1036,7 +1047,7 @@ is need to be update by user.</li>
 
 <dl class="class">
 <dt id="homura.trainers.DistributedSupervisedTrainer">
-<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">DistributedSupervisedTrainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>backend='nccl'</em>, <em>init_method='env://'</em>, <em>use_apex_ddp: bool = False</em>, <em>use_sync_bn: bool = False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">DistributedSupervisedTrainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>backend='nccl'</em>, <em>init_method='env://'</em>, <em>use_sync_bn: bool = False</em>, <em>enable_amp=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.trainers.SupervisedTrainer" title="homura.trainers.SupervisedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.SupervisedTrainer</span></code></a></p>
 <p>Trainer with distributed functions</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1053,7 +1064,6 @@ is need to be update by user.</li>
 <li><strong>use_cudnn_benchmark</strong> – </li>
 <li><strong>backend</strong> – “nccl” or “gloo”</li>
 <li><strong>init_method</strong> – </li>
-<li><strong>use_apex_ddp</strong> – use nvidia’s <cite>apex</cite>.</li>
 <li><strong>use_sync_bn</strong> – </li>
 <li><strong>kwargs</strong> – </li>
 </ul>
@@ -1061,15 +1071,9 @@ is need to be update by user.</li>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.trainers.FP16Trainer">
-<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">FP16Trainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>static_loss_scale=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#FP16Trainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.FP16Trainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.trainers.TrainerBase" title="homura.trainers.TrainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.TrainerBase</span></code></a></p>
 <dl class="method">
-<dt id="homura.trainers.FP16Trainer.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#FP16Trainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.FP16Trainer.iteration" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.trainers.DistributedSupervisedTrainer.iteration">
+<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iteration part, user can override via duck typing or override_iteration</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
@@ -1162,7 +1166,7 @@ is need to be update by user.</li>
         <a href="homura.metrics.html" class="btn btn-neutral float-right" title="homura.metrics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1188,26 +1192,16 @@ is need to be update by user.</li>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

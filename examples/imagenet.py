@@ -1,9 +1,10 @@
 import torch
+from torch.nn import functional as F
+from torchvision.models import resnet50
+
 from homura import optim, lr_scheduler, callbacks, reporters
 from homura.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
-from torch.nn import functional as F
-from torchvision.models import resnet50
 
 
 def main():
@@ -23,7 +24,8 @@ def main():
         if args.local_rank == 0:
             print("\nuse DistributedDataParallel")
         trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler,
-                                               init_method=args.init_method, backend=args.backend)
+                                               init_method=args.init_method, backend=args.backend,
+                                               enable_amp=args.use_amp)
     else:
         multi_gpus = torch.cuda.device_count() > 1
         if multi_gpus:
@@ -54,6 +56,7 @@ if __name__ == '__main__':
     p.add_int("--local_rank", default=-1)
     p.add_str("--init_method", default="env://")
     p.add_str("--backend", default="nccl")
+    p.add_true("--use_amp")
     p.add_true("--debug", help="Use less images and less epochs")
     args, _else = p.parse(return_unknown=True)
     num_device = torch.cuda.device_count()

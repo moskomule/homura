@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -156,7 +158,6 @@
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
 
-<span class="kn">import</span> <span class="nn">homura</span>
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">homura.lr_scheduler</span> <span class="k">import</span> <span class="n">LRScheduler</span>
 <span class="kn">from</span> <span class="nn">homura.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
@@ -166,7 +167,7 @@
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Trainer&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;DistributedSupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;FP16Trainer&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Trainer&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;DistributedSupervisedTrainer&quot;</span><span class="p">,</span> <span class="s2">&quot;AMPTrainer&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="TrainerBase"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase">[docs]</a><span class="k">class</span> <span class="nc">TrainerBase</span><span class="p">(</span><span class="n">Runner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
@@ -222,8 +223,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type: {type(opt)}&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{type(optimizer)}&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type: {type(optimizer)}&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use optimizer: </span><span class="si">{self.optimizer.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># set scheduler(s)</span>
@@ -242,9 +245,12 @@
                 <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">schdlr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">schdlr</span><span class="o">.</span><span class="n">set_optimizer</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schdlr</span><span class="p">,</span> <span class="n">LRScheduler</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">schdlr</span><span class="o">.</span><span class="n">set_optimizer</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type: {type(schdlr)}&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{type(scheduler)}&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unknown type: {type(scheduler)}&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use scheduler: </span><span class="si">{self.scheduler.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_scheduler_by_epoch</span> <span class="o">=</span> <span class="n">update_scheduler_by_epoch</span>
 
@@ -469,37 +475,6 @@
         <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="FP16Trainer"><a class="viewcode-back" href="../../homura.html#homura.trainers.FP16Trainer">[docs]</a><span class="k">class</span> <span class="nc">FP16Trainer</span><span class="p">(</span><span class="n">TrainerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-                 <span class="n">callbacks</span><span class="p">:</span> <span class="n">Callback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">LRScheduler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">verb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">static_loss_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;FP16Trainer requires CUDA backend!&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">homura</span><span class="o">.</span><span class="n">is_apex_available</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;FP16Trainer requires apex!&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{type(self)} does not support dict model&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">FP16Trainer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
-                                          <span class="n">verb</span><span class="o">=</span><span class="n">verb</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="n">use_cudnn_benchmark</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>
-        <span class="n">dynamic_loss_scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">static_loss_scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">apex.fp16_utils</span> <span class="k">import</span> <span class="n">FP16_Optimizer</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">FP16_Optimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">dynamic_loss_scale</span><span class="o">=</span><span class="n">dynamic_loss_scale</span><span class="p">,</span>
-                                        <span class="n">static_loss_scale</span><span class="o">=</span><span class="n">static_loss_scale</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Training with FP16&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FP16Trainer.iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.FP16Trainer.iteration">[docs]</a>    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div></div>
-
-
 <div class="viewcode-block" id="DistributedSupervisedTrainer"><a class="viewcode-back" href="../../homura.html#homura.trainers.DistributedSupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">DistributedSupervisedTrainer</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Trainer with distributed functions</span>
 
@@ -512,7 +487,6 @@
 <span class="sd">    :param use_cudnn_benchmark:</span>
 <span class="sd">    :param backend: &quot;nccl&quot; or &quot;gloo&quot;</span>
 <span class="sd">    :param init_method:</span>
-<span class="sd">    :param use_apex_ddp: use nvidia&#39;s `apex`.</span>
 <span class="sd">    :param use_sync_bn:</span>
 <span class="sd">    :param kwargs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -520,7 +494,18 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">callbacks</span><span class="p">:</span> <span class="n">Callback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">LRScheduler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">verb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span>
-                 <span class="n">use_apex_ddp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">enable_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">use_sync_bn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Wait PyTorch&#39;s Update!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">enable_amp</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">homura</span> <span class="k">import</span> <span class="n">is_apex_available</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_apex_available</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;apex not installed&quot;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">apex</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="n">apex</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">convert_syncbn_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
         <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">python_sys</span>
         <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">distributed</span>
 
@@ -544,17 +529,33 @@
                                                            <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="n">use_cudnn_benchmark</span><span class="p">,</span>
                                                            <span class="n">use_cuda_nonblocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                                            <span class="n">device</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="n">rank</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">use_apex_ddp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">homura</span><span class="o">.</span><span class="n">is_apex_available</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;arg. use_apex_ddp requires apex!&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">apex.parallel</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">apex</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">DistributedDataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">use_sync_bn</span><span class="p">:</span>
-                    <span class="n">apex</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">convert_syncbn_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_scaler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">enable_amp</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">apex</span> <span class="k">import</span> <span class="n">amp</span>
+            <span class="kn">from</span> <span class="nn">apex.parallel</span> <span class="k">import</span> <span class="n">DistributedDataParallel</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span>
+                                                        <span class="n">opt_level</span><span class="o">=</span><span class="s2">&quot;02&quot;</span><span class="p">,</span>
+                                                        <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">DistributedDataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">delay_allreduce</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss_scaler</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">scale_loss</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">DistributedDataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">device_ids</span><span class="o">=</span><span class="p">[</span><span class="n">rank</span><span class="p">])</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">DistributedDataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">device_ids</span><span class="o">=</span><span class="p">[</span><span class="n">rank</span><span class="p">])</span>
+
+<div class="viewcode-block" id="DistributedSupervisedTrainer.iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.DistributedSupervisedTrainer.iteration">[docs]</a>    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_scaler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_scaler</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span> <span class="k">as</span> <span class="n">scaled_loss</span><span class="p">:</span>
+                    <span class="n">scaled_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># alias</span>
@@ -588,26 +589,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
