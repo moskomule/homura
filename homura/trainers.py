@@ -352,9 +352,6 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
 
             if not is_apex_available:
                 raise RuntimeError("apex not installed")
-            import apex
-
-            model = apex.parallel.convert_syncbn_model(model)
 
         import sys as python_sys
         from torch import distributed
