@@ -364,7 +364,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
             args = " ".join(python_sys.argv)
             raise RuntimeError(
                 f"For distributed training, use python -m torch.distributed.launch "
-                f"--nproc_per_node={torch.cuda.num_devices()} {args} ...")
+                f"--nproc_per_node={torch.cuda.device_count()} {args} ...")
 
         distributed.init_process_group(backend=backend, init_method=init_method)
         rank = distributed.get_rank()
