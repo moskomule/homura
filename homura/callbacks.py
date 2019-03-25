@@ -76,7 +76,7 @@ class MetricCallback(Callback):
         if self._last_iter.get(key) is None:
             metric = self.metric_function(data)
             if torch.is_tensor(metric):
-                metric = self.reduce(metric, mode == TRAIN)
+                metric = self.reduce(metric)
 
             if metric is None:
                 metric = 0
@@ -90,7 +90,7 @@ class MetricCallback(Callback):
                 if self._metrics_history[key][-1] == 0:
                     self._metrics_history[key][-1] = metric
                 else:
-                    self._metrics_history[key][-1] = {k: v + self.reduce(metric[k], mode == TRAIN)
+                    self._metrics_history[key][-1] = {k: v + self.reduce(metric[k])
                                                       for k, v in self._metrics_history[key][-1].items()}
             else:
                 self._metrics_history[key][-1] += metric
@@ -140,11 +140,11 @@ class MetricCallback(Callback):
         return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
 
     @staticmethod
-    def reduce(tensor, is_train):
-        """ for distributed setting, during training, not apply reduce op
+    def reduce(tensor):
+        """ for distributed setting
         """
 
-        if is_train or (not is_distributed or not torch.is_tensor(tensor)):
+        if not is_distributed or not torch.is_tensor(tensor):
             return tensor
 
         rt = tensor.cuda()
