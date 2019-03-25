@@ -12,7 +12,7 @@ is_apex_available = importlib.util.find_spec("apex") is not None
 is_tensorboardX_available = importlib.util.find_spec("tensorboardX") is not None
 
 args = " ".join(python_sys.argv)
-is_distributed = "--local_rank" not in args
+is_distributed = "--local_rank" in args
 
 
 def enable_accimage():

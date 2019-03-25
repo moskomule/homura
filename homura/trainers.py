@@ -358,7 +358,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
         from torch import distributed
 
         # should be used with torch.distributed.launch
-        if is_distributed:
+        if not is_distributed:
             raise RuntimeError(
                 f"For distributed training, use python -m torch.distributed.launch "
                 f"--nproc_per_node={torch.cuda.device_count()} {' '.join(python_sys.argv)} ...")
