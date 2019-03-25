@@ -1,13 +1,17 @@
 import torch
+import torchvision
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, callbacks, reporters
+from homura import optim, lr_scheduler, callbacks, reporters, is_accimage_available
 from homura.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders
 
 
 def main():
+    if is_accimage_available:
+        torchvision.set_image_backend('accimage')
+
     model = resnet50()
 
     optimizer = optim.SGD(lr=1e-1 * num_device, momentum=0.9,
