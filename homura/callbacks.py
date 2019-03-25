@@ -143,15 +143,12 @@ class MetricCallback(Callback):
         """ for distributed setting
         """
 
-        ws = distributed.get_world_size()
-        if ws == 0 or not torch.is_tensor(tensor):
-            # not distributed case
+        if not distributed.is_available() or not torch.is_tensor(tensor):
             return tensor
+
         rt = tensor.clone()
         distributed.all_reduce(rt, op=distributed.reduce_op.SUM)
-        rt /= ws
-
-        return rt
+        return rt / distributed.get_world_size()
 
 
 class CallbackList(Callback):
