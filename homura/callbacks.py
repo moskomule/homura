@@ -148,7 +148,7 @@ class MetricCallback(Callback):
             return tensor
 
         rt = tensor.cuda()
-        distributed.all_reduce(rt, op=distributed.reduce_op.SUM)
+        distributed.all_reduce(rt, op=distributed.ReduceOp.SUM)
         return rt / distributed.get_world_size()
 
 
