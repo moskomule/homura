@@ -147,7 +147,7 @@ class MetricCallback(Callback):
         if not is_distributed or not torch.is_tensor(tensor):
             return tensor
 
-        rt = tensor.clone()
+        rt = tensor.cuda()
         distributed.all_reduce(rt, op=distributed.reduce_op.SUM)
         return rt / distributed.get_world_size()
 
