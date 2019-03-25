@@ -367,7 +367,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
         rank = distributed.get_rank()
         if rank != 0:
             # to avoid overwriting
-            callbacks = None
+            # callbacks = None
             verb = False
         torch.cuda.set_device(rank)
 
