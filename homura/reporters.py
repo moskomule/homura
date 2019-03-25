@@ -7,7 +7,7 @@ from torch import nn
 
 from .callbacks import Callback, CallbackList
 from .utils._vocabulary import *
-from .utils.environment import is_distributed
+from .utils.environment import get_local_rank
 from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase
 
 
@@ -28,7 +28,7 @@ class Reporter(Callback, metaclass=ABCMeta):
         self.image_keys = [] if image_keys is None else image_keys
         self._reportable = True
         # if distributed and not the master, do not report
-        if is_distributed and torch.distributed.get_rank() != 0:
+        if get_local_rank() > 0:
             self._reportable = False
 
     def add_memo(self, text: str, *, name="memo", index=0):

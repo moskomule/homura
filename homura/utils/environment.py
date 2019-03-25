@@ -15,6 +15,15 @@ args = " ".join(python_sys.argv)
 is_distributed = "--local_rank" in args
 
 
+def get_local_rank():
+    if not is_distributed:
+        return -1
+    else:
+        for arg in python_sys.argv:
+            if "--local_rank" in arg:
+                return int(arg.split("=")[1])
+
+
 def enable_accimage():
     if is_accimage_available:
         import torchvision
