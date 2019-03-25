@@ -2,13 +2,14 @@ from abc import ABCMeta
 from collections import ChainMap
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Iterable, Callable
+from typing import Iterable, Callable, Any
 
 import torch
-from homura.liblog import get_logger
+from torch import distributed
 
-from .utils.miscs import get_git_hash
+from homura.liblog import get_logger
 from .utils._vocabulary import *
+from .utils.miscs import get_git_hash
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "metric_callback_decorator"]
@@ -53,7 +54,7 @@ class MetricCallback(Callback):
     :param name: name of the metric
     """
 
-    def __init__(self, metric: Callable[[Mapping], float], name: str, logger=None):
+    def __init__(self, metric: Callable[[Mapping], Any], name: str, logger=None):
         if metric is not None:
             self.metric_function = metric
         self.metric_name = name
@@ -73,17 +74,22 @@ class MetricCallback(Callback):
         # If once this method is called after an iteration, self._last_iter is not None
         if self._last_iter.get(key) is None:
             metric = self.metric_function(data)
-            self._last_iter[key] = metric
+            if torch.is_tensor(metric):
+                metric = self.reduce(metric)
+
             if metric is None:
                 metric = 0
                 if self._warning_flag:
                     self._logger.warning(f"{self.metric_function.__name__} get None and convert it to 0")
                     self._warning_flag = False
+
+            self._last_iter[key] = metric
+
             if isinstance(metric, Mapping):
                 if self._metrics_history[key][-1] == 0:
                     self._metrics_history[key][-1] = metric
                 else:
-                    self._metrics_history[key][-1] = {k: v + metric[k]
+                    self._metrics_history[key][-1] = {k: v + self.reduce(metric[k])
                                                       for k, v in self._metrics_history[key][-1].items()}
             else:
                 self._metrics_history[key][-1] += metric
@@ -131,6 +137,21 @@ class MetricCallback(Callback):
         """
 
         return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
+
+    @staticmethod
+    def reduce(tensor):
+        """ for distributed setting
+        """
+
+        ws = distributed.get_world_size()
+        if ws == 0 or not torch.is_tensor(tensor):
+            # not distributed case
+            return tensor
+        rt = tensor.clone()
+        distributed.all_reduce(rt, op=distributed.reduce_op.SUM)
+        rt /= ws
+
+        return rt
 
 
 class CallbackList(Callback):
@@ -192,7 +213,7 @@ class AccuracyCallback(MetricCallback):
         output, target = data[OUTPUT], data[DATA][1]
         _, pred_idx = output.topk(self.top_k, dim=1)
         target = target.view(-1, 1).expand_as(pred_idx)
-        return (pred_idx == target).float().sum(dim=1).mean().item()
+        return (pred_idx == target).float().sum(dim=1).mean()
 
 
 class LossCallback(MetricCallback):
