@@ -14,10 +14,11 @@ from homura.optim import Optimizer
 from .callbacks import Callback
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
+from .utils.environment import is_distributed
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
-__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer", "AMPTrainer"]
+__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
 
 
 class TrainerBase(Runner, metaclass=ABCMeta):
@@ -357,11 +358,10 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
         from torch import distributed
 
         # should be used with torch.distributed.launch
-        args = " ".join(python_sys.argv)
-        if "--local_rank" not in args:
+        if is_distributed:
             raise RuntimeError(
                 f"For distributed training, use python -m torch.distributed.launch "
-                f"--nproc_per_node={torch.cuda.device_count()} {args} ...")
+                f"--nproc_per_node={torch.cuda.device_count()} {' '.join(python_sys.argv)} ...")
 
         distributed.init_process_group(backend=backend, init_method=init_method)
         rank = distributed.get_rank()

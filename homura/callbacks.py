@@ -9,6 +9,7 @@ from torch import distributed
 
 from homura.liblog import get_logger
 from .utils._vocabulary import *
+from .utils.environment import is_distributed
 from .utils.miscs import get_git_hash
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
@@ -143,7 +144,7 @@ class MetricCallback(Callback):
         """ for distributed setting
         """
 
-        if not distributed.is_available() or not torch.is_tensor(tensor):
+        if not is_distributed or not torch.is_tensor(tensor):
             return tensor
 
         rt = tensor.clone()
