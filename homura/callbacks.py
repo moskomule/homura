@@ -144,7 +144,7 @@ class MetricCallback(Callback):
         """ for distributed setting.
         """
 
-        if apply and not is_distributed or not torch.is_tensor(tensor):
+        if not apply and (not is_distributed or not torch.is_tensor(tensor)):
             return tensor
 
         rt = tensor.cuda()
