@@ -152,11 +152,10 @@
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
 
+<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="k">import</span> <span class="p">(</span><span class="n">StepLR</span> <span class="k">as</span> <span class="n">_StepLR</span><span class="p">,</span> <span class="n">MultiStepLR</span> <span class="k">as</span> <span class="n">_MultiStepLR</span><span class="p">,</span> <span class="n">LambdaLR</span> <span class="k">as</span> <span class="n">_LambdaLR</span><span class="p">,</span>
                                       <span class="n">ExponentialLR</span> <span class="k">as</span> <span class="n">_ExponentialLR</span><span class="p">,</span> <span class="n">CosineAnnealingLR</span> <span class="k">as</span> <span class="n">_CosineAnnealingLR</span><span class="p">,</span>
                                       <span class="n">ReduceLROnPlateau</span> <span class="k">as</span> <span class="n">_ReduceLROnPlateau</span><span class="p">,</span> <span class="n">_LRScheduler</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">homura.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LRScheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;StepLR&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiStepLR&quot;</span><span class="p">,</span> <span class="s2">&quot;LambdaLR&quot;</span><span class="p">,</span> <span class="s2">&quot;ExponentialLR&quot;</span><span class="p">,</span>
            <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">,</span> <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">]</span>

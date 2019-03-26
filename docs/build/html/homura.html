@@ -319,7 +319,7 @@
 
 <dl class="class">
 <dt id="homura.callbacks.MetricCallback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], float], name: str, logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
 <p>Base class of MetricCallback class such as AccuracyCallback</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -372,6 +372,12 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">final_result</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="homura.callbacks.MetricCallback.reduce">
+<em class="property">static </em><code class="descname">reduce</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>for distributed setting</p>
 </dd></dl>
 
 </dd></dl>
@@ -539,7 +545,7 @@
 
 <dl class="method">
 <dt id="homura.lr_scheduler.LRScheduler.set_optimizer">
-<code class="descname">set_optimizer</code><span class="sig-paren">(</span><em>optimizer: homura.optim.Optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler.set_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.set_optimizer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_optimizer</code><span class="sig-paren">(</span><em>optimizer: torch.optim.optimizer.Optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler.set_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.set_optimizer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1004,6 +1010,11 @@ is need to be update by user.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="homura.trainers.TrainerBase.update_scheduler">
+<code class="descname">update_scheduler</code><span class="sig-paren">(</span><em>scheduler: homura.lr_scheduler.LRScheduler</em>, <em>update_scheduler_by_epoch: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.update_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.update_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="attribute">
@@ -1151,6 +1162,11 @@ is need to be update by user.</li>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="homura.enable_accimage">
+<code class="descclassname">homura.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.enable_accimage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 </div>
