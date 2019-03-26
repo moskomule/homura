@@ -2,9 +2,9 @@
 
 [document](https://moskomule.github.io/homura)
 
-*Homura* is a support tool for research experiments.
+**homura** is a library for DL research.
 
-🔥🔥🔥🔥 *Homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
+🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
 ## Requirements
 

@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -81,7 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -154,8 +156,9 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">CallbackList</span>
-<span class="kn">from</span> <span class="nn">.utils.reporter_backends</span> <span class="k">import</span> <span class="n">TQDMWrapper</span><span class="p">,</span> <span class="n">TensorBoardWrapper</span><span class="p">,</span> <span class="n">LoggerWrapper</span><span class="p">,</span> <span class="n">_num_elements</span><span class="p">,</span> <span class="n">_WrapperBase</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">get_local_rank</span>
+<span class="kn">from</span> <span class="nn">.utils.reporter_backends</span> <span class="k">import</span> <span class="n">TQDMWrapper</span><span class="p">,</span> <span class="n">TensorBoardWrapper</span><span class="p">,</span> <span class="n">LoggerWrapper</span><span class="p">,</span> <span class="n">_num_elements</span><span class="p">,</span> <span class="n">_WrapperBase</span>
 
 
 <div class="viewcode-block" id="Reporter"><a class="viewcode-back" href="../../homura.html#homura.reporters.Reporter">[docs]</a><span class="k">class</span> <span class="nc">Reporter</span><span class="p">(</span><span class="n">Callback</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
@@ -173,12 +176,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">=</span> <span class="n">report_param_freq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">=</span> <span class="n">report_image_freq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">image_keys</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">image_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># if distributed and not the master, do not report</span>
+        <span class="k">if</span> <span class="n">get_local_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Reporter.add_memo"><a class="viewcode-back" href="../../homura.html#homura.reporters.Reporter.add_memo">[docs]</a>    <span class="k">def</span> <span class="nf">add_memo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;memo&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;memo&quot;</span><span class="p">:</span>
             <span class="c1"># to avoid collision</span>
             <span class="n">name</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="n">text</span><span class="p">))[:</span><span class="mi">5</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_wrapper</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Reporter.before_all"><a class="viewcode-back" href="../../homura.html#homura.reporters.Reporter.before_all">[docs]</a>    <span class="k">def</span> <span class="nf">before_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">before_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
@@ -194,19 +202,21 @@
 <span class="s2">        :param data: Mapping. Requires to have at least </span><span class="si">{MODE}</span><span class="s2">, </span><span class="si">{STEP}</span><span class="s2">, </span><span class="si">{MODEL}</span><span class="s2"> as its key</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">STEP</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">STEP</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mode}</span><span class="s2">_</span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">step</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mode}</span><span class="s2">_</span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">step</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Reporter.before_epoch"><a class="viewcode-back" href="../../homura.html#homura.reporters.Reporter.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
@@ -217,18 +227,20 @@
 <span class="s2">        &quot;&quot;&quot;</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
-        <span class="n">epoch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+            <span class="n">epoch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mode}</span><span class="s2">_</span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">epoch</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_image_freq</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_report_images</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mode}</span><span class="s2">_</span><span class="si">{k}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TRAIN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_param_freq</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report_params</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">],</span> <span class="n">epoch</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -419,26 +431,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

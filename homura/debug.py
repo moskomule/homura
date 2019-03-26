@@ -39,6 +39,7 @@ def module_debugger(model: nn.Module,
                     loss: Optional[Callable] = None) -> None:
     """ log all modules connected with forward and backward calculation
     """
+
     original_verb = get_verb_level()
     set_verb_level("debug")
     nn.Module.extend_apply = _extend_apply
@@ -48,7 +49,8 @@ def module_debugger(model: nn.Module,
         logger.warning(f"Debugger may not be able to work with {type(model)}")
     model.extend_apply(lambda m: m.register_forward_pre_hook(partial(_log, "forward")))
     model.extend_apply(lambda m: m.register_backward_hook(partial(_log, "backward")))
-    logger.info("Start forward calculation")
+    logger.info("Start debugging mode")
+    logger.debug("Start forward calculation")
     if torch.is_tensor(input):
         input = (input,)
     output = model(*input)

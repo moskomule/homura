@@ -7,13 +7,13 @@ with open("requirements.txt") as f:
     requirements = f.read().split()
 
 setup(name="homura",
-      version="0.4.1",
+      version="0.5.0",
       author="moskomule",
       author_email="hataya@nlab.jp",
       packages=find_packages(exclude=["test", "docs", "examples"]),
       url="https://github.com/moskomule/homura",
       description="support tool for research experiments",
       long_description=readme,
-      license="BSD",
+      license="Apache License 2.0",
       install_requires=requirements,
       )

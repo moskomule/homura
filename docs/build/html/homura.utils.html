@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="homura.vision package" href="homura.vision.html" />
-    <link rel="prev" title="homura.modules.functions package" href="homura.modules.functions.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    <link rel="prev" title="homura.modules.functional package" href="homura.modules.functional.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -112,7 +114,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -191,6 +193,11 @@
 <dt id="homura.utils.containers.Map">
 <em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>dict like object but: stored values can be subscribed and attributed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="homura.utils.containers.Map.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.copy" title="Permalink to this definition">¶</a></dt>
@@ -209,7 +216,7 @@
 <dl class="method">
 <dt id="homura.utils.containers.Map.to">
 <code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.to" title="Permalink to this definition">¶</a></dt>
-<dd><p>move stored tensors to a given device</p>
+<dd><p>Move stored tensors to a given device</p>
 </dd></dl>
 
 <dl class="method">
@@ -223,7 +230,7 @@
 <dt id="homura.utils.containers.TensorTuple">
 <em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>tuple for tensors</p>
+<p>Tuple for tensors.</p>
 <dl class="method">
 <dt id="homura.utils.containers.TensorTuple.to">
 <code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
@@ -234,6 +241,11 @@
 </div>
 <div class="section" id="module-homura.utils.environment">
 <span id="homura-utils-environment-module"></span><h2>homura.utils.environment module<a class="headerlink" href="#module-homura.utils.environment" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.utils.environment.enable_accimage">
+<code class="descclassname">homura.utils.environment.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.enable_accimage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-homura.utils.inferencer">
 <span id="homura-utils-inferencer-module"></span><h2>homura.utils.inferencer module<a class="headerlink" href="#module-homura.utils.inferencer" title="Permalink to this headline">¶</a></h2>
@@ -430,11 +442,61 @@
 <dt id="homura.utils.runner.Runner">
 <em class="property">class </em><code class="descclassname">homura.utils.runner.</code><code class="descname">Runner</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: Optional[homura.callbacks.Callback] = None</em>, <em>device: torch.device = None</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>logger: Optional[logging.Logger] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/runner.html#Runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.runner.Runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta-class for Trainer and Inferencer</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-homura.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.utils.Map">
+<em class="property">class </em><code class="descclassname">homura.utils.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>dict like object but: stored values can be subscribed and attributed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="homura.utils.Map.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.Map.deepcopy">
+<code class="descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.Map.keys">
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.Map.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move stored tensors to a given device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.Map.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.utils.TensorTuple">
+<em class="property">class </em><code class="descclassname">homura.utils.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Tuple for tensors.</p>
+<dl class="method">
+<dt id="homura.utils.TensorTuple.to">
+<code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -449,7 +511,7 @@
         <a href="homura.vision.html" class="btn btn-neutral float-right" title="homura.vision package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="homura.modules.functions.html" class="btn btn-neutral" title="homura.modules.functions package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="homura.modules.functional.html" class="btn btn-neutral float-left" title="homura.modules.functional package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -475,26 +537,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

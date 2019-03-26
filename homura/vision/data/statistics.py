@@ -10,10 +10,16 @@ from .folder import ImageFolder
 
 
 class PerChannelStatistics(object):
+    """ estimates per channel image dataset statistics (mean, stdev) ::
+
+        >>> estimator = PerChannelStatistics(100)
+        >>> estimator.from_directory("data/images")
+        >>> estimator.from_batch(img_tensor)
+        >>> estimator.estimated
+    """
+
     def __init__(self, num_samples: int):
-        """
-        estimates per channel image dataset statistics (mean, stdev)
-        """
+
         self._num_samples = num_samples
         self._mean = torch.zeros(3)
         self._stdev = torch.zeros(3)
@@ -43,8 +49,12 @@ class PerChannelStatistics(object):
         image_paths = []
         for ext in ImageFolder.IMG_EXTENSIONS:
             # *.jpg ...
+            # in `root`
+            image_paths += list(root.glob(f"*.{ext}"))
+            # in subdirectories
             image_paths += list(root.glob(f"**/*.{ext}"))
             # *.JPG ...
+            image_paths += list(root.glob(f"*.{ext.capitalize()}"))
             image_paths += list(root.glob(f"**/*.{ext.capitalize()}"))
 
         if len(image_paths) < self._num_samples:
@@ -52,7 +62,7 @@ class PerChannelStatistics(object):
 
         image_paths = random.sample(image_paths, k=self._num_samples)
         for path in image_paths:
-            with path.open() as f:
+            with path.open("rb") as f:
                 img = Image.open(f).convert("RGB")
                 self._calc(to_tensor(img))
             if self._sample_count == self._num_samples:

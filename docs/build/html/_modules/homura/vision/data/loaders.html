@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -81,7 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -147,7 +149,7 @@
             
   <h1>Source code for homura.vision.data.loaders</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DistributedSampler</span><span class="p">,</span> <span class="n">RandomSampler</span>
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="k">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
@@ -156,13 +158,26 @@
 <span class="kn">from</span> <span class="nn">.folder</span> <span class="k">import</span> <span class="n">ImageFolder</span>
 
 
-<span class="k">class</span> <span class="nc">_BaseLoaders</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseLoaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.BaseLoaders">[docs]</a><span class="k">class</span> <span class="nc">BaseLoaders</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A base class for simple data-loaders</span>
+
+<span class="sd">    :param dataset:</span>
+<span class="sd">    :param mean_std:</span>
+<span class="sd">    :param data_augmentation_transforms:</span>
+<span class="sd">    :param test_time_transforms:</span>
+<span class="sd">    :param replacement:</span>
+<span class="sd">    :param num_train_samples:</span>
+<span class="sd">    :param distributed:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span>
                  <span class="n">mean_std</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
                  <span class="n">data_augmentation_transforms</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
                  <span class="n">test_time_transforms</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span> <span class="o">=</span> <span class="n">dataset</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_transform</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">data_augmentation_transforms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data_augmentation_transforms</span>
@@ -170,6 +185,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_norm_transform</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
                                 <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="o">*</span><span class="n">mean_std</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_replacement</span> <span class="o">=</span> <span class="n">replacement</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replacement</span> <span class="ow">and</span> <span class="n">num_train_samples</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;num_train_samples should be specified if `replacement=True`&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_train_samples</span> <span class="o">=</span> <span class="n">num_train_samples</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distributed</span> <span class="o">=</span> <span class="n">distributed</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -178,6 +196,17 @@
                  <span class="n">train_set_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                  <span class="n">test_set_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                  <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param batch_size:</span>
+<span class="sd">        :param num_workers:</span>
+<span class="sd">        :param shuffle:</span>
+<span class="sd">        :param train_set_kwargs:</span>
+<span class="sd">        :param test_set_kwargs:</span>
+<span class="sd">        :param val_size:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">shuffle</span> <span class="o">=</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distributed</span><span class="p">)</span> <span class="ow">and</span> <span class="n">shuffle</span>
 
         <span class="n">test_transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tt_transform</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm_transform</span><span class="p">)</span>
@@ -203,7 +232,11 @@
                 <span class="n">val_sampler</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replacement</span><span class="p">:</span>
-            <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_train_samples</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Required number of train samples </span><span class="si">{self._num_train_samples}</span><span class="s2"> is &quot;</span>
+                                     <span class="n">f</span><span class="s2">&quot;larger than the size of train set {len(train_set)}.&quot;</span>
+                                     <span class="n">f</span><span class="s2">&quot;It works but may cause problem!&quot;</span><span class="p">)</span>
+            <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_train_samples</span><span class="p">)</span>
 
         <span class="n">train</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">train_sampler</span><span class="p">,</span>
                            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -216,33 +249,34 @@
                          <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">val</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="BaseLoaders.absolute_root"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.BaseLoaders.absolute_root">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">root</span>
+        <span class="k">return</span> <span class="n">root</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="BaseLoaders.check_root_exists"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.BaseLoaders.check_root_exists">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_root_exists</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot find </span><span class="si">{root}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">root</span>
+        <span class="k">return</span> <span class="n">root</span></div></div>
 
 
-<span class="k">def</span> <span class="nf">_mnists_loaders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-                    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/mnist&quot;</span><span class="p">,</span>
-                    <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_base_mnists_loaders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                         <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/mnist&quot;</span><span class="p">,</span>
+                         <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                         <span class="n">mean_and_std</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.1307</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.3081</span><span class="p">,))):</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
-    <span class="n">_base</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.1307</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.3081</span><span class="p">,)),</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">)</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">_base</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mean_and_std</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">,</span>
+                        <span class="n">num_train_samples</span><span class="o">=</span><span class="n">num_train_samples</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_base</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="ow">not</span> <span class="n">replacement</span><span class="p">,</span> <span class="n">val_size</span><span class="o">=</span><span class="n">val_size</span><span class="p">,</span>
                  <span class="n">train_set_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">download</span><span class="o">=</span><span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">force_download</span><span class="p">),</span>
@@ -256,6 +290,7 @@
                   <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A simple data loader for MNIST.</span>
 
@@ -265,31 +300,48 @@
 <span class="sd">    :param data_augmentation: default transformation is RandomHorizontalFlip()</span>
 <span class="sd">    :param val_size:</span>
 <span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param num_train_samples: number of data sampled when `replacement` is True</span>
 <span class="sd">    :param force_download:</span>
 <span class="sd">    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">_mnists_loaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span> <span class="n">replacement</span><span class="p">,</span>
-                           <span class="n">force_download</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_base_mnists_loaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span> <span class="n">replacement</span><span class="p">,</span>
+                                <span class="n">num_train_samples</span><span class="p">,</span> <span class="n">force_download</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="fashion_mnist_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.fashion_mnist_loaders">[docs]</a><span class="k">def</span> <span class="nf">fashion_mnist_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                           <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
                           <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/fmnist&quot;</span><span class="p">,</span>
-                          <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                           <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_mnists_loaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span>
-                           <span class="n">replacement</span><span class="p">,</span> <span class="n">force_download</span><span class="p">)</span></div>
+    <span class="c1"># A simple loaders for Fashion MNIST a.k.a. FMNIST</span>
+    <span class="k">return</span> <span class="n">_base_mnists_loaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span>
+                                <span class="n">replacement</span><span class="p">,</span> <span class="n">num_train_samples</span><span class="p">,</span> <span class="n">force_download</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kuzushiji_mnist_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.kuzushiji_mnist_loaders">[docs]</a><span class="k">def</span> <span class="nf">kuzushiji_mnist_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                            <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                            <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/kmnist&quot;</span><span class="p">,</span>
+                            <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># A simple loaders for Kuzushiji MNIST a.k.a. KMINIST</span>
+    <span class="k">return</span> <span class="n">_base_mnists_loaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">KMNIST</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span>
+                                <span class="n">replacement</span><span class="p">,</span> <span class="n">num_train_samples</span><span class="p">,</span> <span class="n">force_download</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cifar10_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar10_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar10_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                     <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
                     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span>
-                    <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                     <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A simple data loader for CIFAR-10</span>
 
@@ -299,16 +351,17 @@
 <span class="sd">    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</span>
 <span class="sd">    :param val_size:</span>
 <span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param num_train_samples: number of data sampled when `replacement` is True</span>
 <span class="sd">    :param force_download:</span>
 <span class="sd">    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
                              <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
-    <span class="n">_base</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.4914</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4465</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2023</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2010</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span>
-                         <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">)</span>
+    <span class="n">_base</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.4914</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4465</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2023</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2010</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span>
+                        <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">,</span> <span class="n">num_train_samples</span><span class="o">=</span><span class="n">num_train_samples</span><span class="p">)</span>
 
-    <span class="n">root</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_base</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="ow">not</span> <span class="n">replacement</span><span class="p">,</span> <span class="n">val_size</span><span class="o">=</span><span class="n">val_size</span><span class="p">,</span>
                  <span class="n">train_set_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">download</span><span class="o">=</span><span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">force_download</span><span class="p">),</span>
@@ -319,28 +372,30 @@
 <div class="viewcode-block" id="cifar100_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.cifar100_loaders">[docs]</a><span class="k">def</span> <span class="nf">cifar100_loaders</span><span class="p">(</span><span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                      <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
                      <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;~/.torch/data/cifar100&quot;</span><span class="p">,</span>
-                     <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                      <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">force_download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A simple data loader for CIFAR-100</span>
 
 <span class="sd">    :param batch_size:</span>
 <span class="sd">    :param num_workers:</span>
 <span class="sd">    :param root:</span>
-<span class="sd">    :param data_augmentation: default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</span>
+<span class="sd">    :param data_augmentation: default transformation is `RandomCrop(32, padding=4)` and `RandomHorizontalFlip()`</span>
 <span class="sd">    :param val_size:</span>
 <span class="sd">    :param replacement: sampling with replacement</span>
+<span class="sd">    :param num_train_samples: number of data sampled when `replacement` is True</span>
 <span class="sd">    :param force_download:</span>
 <span class="sd">    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
                              <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
-    <span class="n">_base</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR100</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.5071</span><span class="p">,</span> <span class="mf">0.4867</span><span class="p">,</span> <span class="mf">0.4408</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2675</span><span class="p">,</span> <span class="mf">0.2565</span><span class="p">,</span> <span class="mf">0.2761</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span>
-                         <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">)</span>
+    <span class="n">_base</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR100</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.5071</span><span class="p">,</span> <span class="mf">0.4867</span><span class="p">,</span> <span class="mf">0.4408</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2675</span><span class="p">,</span> <span class="mf">0.2565</span><span class="p">,</span> <span class="mf">0.2761</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span>
+                        <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">,</span> <span class="n">num_train_samples</span><span class="o">=</span><span class="n">num_train_samples</span><span class="p">)</span>
 
-    <span class="n">root</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="o">.</span><span class="n">absolute_root</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_base</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="ow">not</span> <span class="n">replacement</span><span class="p">,</span> <span class="n">val_size</span><span class="o">=</span><span class="n">val_size</span><span class="p">,</span>
                  <span class="n">train_set_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">download</span><span class="o">=</span><span class="ow">not</span> <span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">force_download</span><span class="p">),</span>
@@ -351,15 +406,15 @@
 <div class="viewcode-block" id="imagenet_loaders"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.loaders.imagenet_loaders">[docs]</a><span class="k">def</span> <span class="nf">imagenet_loaders</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
                      <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                      <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-                     <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">data_augmentation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                     <span class="n">num_train_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">num_test_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">num_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">num_test_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A simple data loader for ILSVRC classification data set</span>
 
 <span class="sd">    :param root:</span>
-<span class="sd">    :param batch_size:</span>
+<span class="sd">    :param batch_size: Total batch size</span>
 <span class="sd">    :param num_workers:</span>
 <span class="sd">    :param data_augmentation:</span>
 <span class="sd">    :param val_size:</span>
@@ -375,9 +430,9 @@
     <span class="k">if</span> <span class="n">data_augmentation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data_augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]</span>
     <span class="n">tt_transform</span> <span class="o">=</span> <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">)]</span>
-    <span class="n">_base</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="p">(</span><span class="n">ImageFolder</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">tt_transform</span><span class="p">,</span>
-                         <span class="n">distributed</span><span class="o">=</span><span class="n">distributed</span><span class="p">)</span>
-    <span class="n">root</span> <span class="o">=</span> <span class="n">_BaseLoaders</span><span class="o">.</span><span class="n">check_root_exists</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">_base</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="p">(</span><span class="n">ImageFolder</span><span class="p">,</span> <span class="p">((</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">)),</span> <span class="n">data_augmentation</span><span class="p">,</span> <span class="n">tt_transform</span><span class="p">,</span>
+                        <span class="n">distributed</span><span class="o">=</span><span class="n">distributed</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">BaseLoaders</span><span class="o">.</span><span class="n">check_root_exists</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_base</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">val_size</span><span class="o">=</span><span class="n">val_size</span><span class="p">,</span>
                  <span class="n">train_set_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;train&quot;</span><span class="p">),</span> <span class="n">num_samples</span><span class="o">=</span><span class="n">num_train_samples</span><span class="p">),</span>
                  <span class="n">test_set_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;val&quot;</span><span class="p">),</span> <span class="n">num_samples</span><span class="o">=</span><span class="n">num_test_samples</span><span class="p">))</span></div>
@@ -410,26 +465,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

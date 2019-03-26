@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="homura.modules package" href="homura.modules.html" />
+    <link rel="next" title="homura.metrics.generative package" href="homura.metrics.generative.html" />
     <link rel="prev" title="homura package" href="homura.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -83,8 +85,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.metrics package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics.commons">homura.metrics.commons module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.metrics">Module contents</a></li>
 </ul>
 </li>
@@ -106,13 +110,18 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.metrics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="homura.metrics.generative.html">homura.metrics.generative package</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics.commons">homura.metrics.commons module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.metrics">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functions.html">homura.modules.functions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -182,161 +191,39 @@
             
   <div class="section" id="homura-metrics-package">
 <h1>homura.metrics package<a class="headerlink" href="#homura-metrics-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="homura.metrics.generative.html">homura.metrics.generative package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homura.metrics.generative.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative.utils">homura.metrics.generative.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-homura.metrics.commons">
 <span id="homura-metrics-commons-module"></span><h2>homura.metrics.commons module<a class="headerlink" href="#module-homura.metrics.commons" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="homura.metrics.commons.classwise_accuracy">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">classwise_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#classwise_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.classwise_accuracy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate class wise accuracy</p>
+<dt id="homura.metrics.commons.true_positive">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate true positive</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">class wise accuracy in float tensor of C</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.confusion_matrix">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate confusion matrix</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">confusion matrix in long tensor of CxC</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.f1_score">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">f1_score</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.f1_score" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate f1 score</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f1 score in float tensor of C</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.false_negative">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_negative" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate false negative
-:param input: output of network, expected to be BxCx(OPTIONAL DIMENSIONS)
-:param target: target, expected to be Bx(OPTIONAL DIMENSIONS)
-:return: false negative in float tensor of C</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.false_positive">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_positive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate false positive</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">false positive in float tensor of C</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.precision">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">precision</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.precision" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate precision</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">precision in float tensor of C</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.recall">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">recall</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.recall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate recall</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">recall in float tensor of C</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.metrics.commons.specificity">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">specificity</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#specificity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.specificity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate specificity</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">specificity in float tensor of C</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true positive in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
@@ -352,12 +239,12 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true negative in float tensor of C</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true negative in float tensor of <cite>C</cite></p>
 </td>
 </tr>
 </tbody>
@@ -365,20 +252,242 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.metrics.commons.true_positive">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">true_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#true_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.true_positive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate true positive</p>
+<dt id="homura.metrics.commons.false_positive">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_positive</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate false positive</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – output of network, expected to be BxCx(OPTIONAL DIMENSIONS)</li>
-<li><strong>target</strong> – target, expected to be Bx(OPTIONAL DIMENSIONS)</li>
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">true positive in float tensor of C</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">false positive in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.false_negative">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">false_negative</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#false_negative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.false_negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate false negative
+:param input: output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite>
+:param target: target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite>
+:return: false negative in float tensor of <cite>C</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.classwise_accuracy">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">classwise_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#classwise_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.classwise_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate class wise accuracy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">class wise accuracy in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.precision">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">precision</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate precision</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">precision in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.recall">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">recall</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate recall</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">recall in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.specificity">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">specificity</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#specificity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.specificity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate specificity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">specificity in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.f1_score">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">f1_score</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.f1_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate f1 score</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f1 score in float tensor of <cite>C</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.commons.confusion_matrix">
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate confusion matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – output of network, expected to be <cite>BxCx(OPTIONAL DIMENSIONS)</cite></li>
+<li><strong>target</strong> – target, expected to be <cite>Bx(OPTIONAL DIMENSIONS)</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">confusion matrix in long tensor of <cite>CxC</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.metrics.segmentation">
+<span id="homura-metrics-segmentation-module"></span><h2>homura.metrics.segmentation module<a class="headerlink" href="#module-homura.metrics.segmentation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.metrics.segmentation.binary_as_multiclass">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_as_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_as_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_as_multiclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <cite>Bx1xHxW</cite> outputs to <cite>BxCxHxW</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – </li>
+<li><strong>threshold</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.pixel_accuracy">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">pixel_accuracy</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#pixel_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.pixel_accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pixel accuracy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.mean_iou">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">mean_iou</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#mean_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.mean_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean IoU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.metrics.segmentation.classwise_iou">
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">classwise_iou</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#classwise_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.classwise_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class-wise IoU</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – logits (<cite>BxCxHxW</cite>)</li>
+<li><strong>target</strong> – target in LongTensor (<cite>BxHxW</cite>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -399,10 +508,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="homura.modules.html" class="btn btn-neutral float-right" title="homura.modules package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="homura.metrics.generative.html" class="btn btn-neutral float-right" title="homura.metrics.generative package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="homura.html" class="btn btn-neutral" title="homura package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="homura.html" class="btn btn-neutral float-left" title="homura package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -428,26 +537,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

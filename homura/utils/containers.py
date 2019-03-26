@@ -7,18 +7,18 @@ __all__ = ["Map", "TensorTuple"]
 
 
 class Map(MutableMapping, dict):
+    """ dict like object but: stored values can be subscribed and attributed.
+
+        >>> m = Map(test="test")
+        >>> m.test is m["test"]
+    """
+
     # inherit `dict` to avoid problem with `backward_hook`s
     __default_methods = ["update", "keys", "items", "values", "clear",
                          "copy", "get", "pop", "to", "deepcopy"] + __import__('keyword').kwlist
     __slots__ = ["_data"]
 
     def __init__(self, **kwargs):
-        """
-        dict like object but: stored values can be subscribed and attributed.
-        >>> m = Map(test="test")
-        >>> m.test is m["test"]
-        Both of them are valid
-        """
         super(Map, self).__init__()
         self._data = {}
         if len(kwargs) > 0:
@@ -67,7 +67,7 @@ class Map(MutableMapping, dict):
         return self._data.values()
 
     def to(self, device: str, **kwargs):
-        """move stored tensors to a given device
+        """ Move stored tensors to a given device
         """
         for k, v in self._data.items():
             if isinstance(v, torch.Tensor):
@@ -79,6 +79,7 @@ class Map(MutableMapping, dict):
         for k, v in self._data.items():
             if isinstance(v, torch.Tensor):
                 # Only leave tensors support __deepcopy__
+                # detach creates a new tensor
                 new[k] = v.detach()
             else:
                 new[k] = deepcopy(v)
@@ -91,21 +92,21 @@ class Map(MutableMapping, dict):
 
 
 class TensorTuple(tuple):
-    """
-    tuple for tensors
+    """ Tuple for tensors.
     """
 
     def to(self, *args, **kwargs):
-        return TensorTuple((t.to(*args, **kwargs) for t in self))
+        return TensorTuple((t.to(*args, **kwargs) for t in self if torch.is_tensor(t)))
 
 
 class StepDict(dict):
+    """ Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler
+
+    :param _type:
+    :param kwargs:
+    """
+
     def __init__(self, _type, **kwargs):
-        """dictionary with step, state_dict, load_state_dict.
-        intended to be for Optimizer, lr_scheduler
-        :param _type:
-        :param kwargs:
-        """
         super(StepDict, self).__init__(**kwargs)
         for k, v in self.items():
             if not (v is None or isinstance(v, _type)):
