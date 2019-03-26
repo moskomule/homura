@@ -2,11 +2,10 @@
 
 from abc import ABCMeta
 
+from torch.optim import Optimizer
 from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiStepLR, LambdaLR as _LambdaLR,
                                       ExponentialLR as _ExponentialLR, CosineAnnealingLR as _CosineAnnealingLR,
                                       ReduceLROnPlateau as _ReduceLROnPlateau, _LRScheduler)
-
-from homura.optim import Optimizer
 
 __all__ = ["LRScheduler", "StepLR", "MultiStepLR", "LambdaLR", "ExponentialLR",
            "CosineAnnealingLR", "ReduceLROnPlateau"]

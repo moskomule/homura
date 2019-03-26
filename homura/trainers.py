@@ -57,15 +57,14 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         if optimizer is None:
             self.optimizer = None
         elif isinstance(optimizer, Optimizer):
-            optimizer.set_model(self.model.parameters())
-            self.optimizer = optimizer.optim
+            self.optimizer = optimizer.set_model(self.model.parameters())
         elif isinstance(optimizer, torch.optim.Optimizer):
             self.optimizer = optimizer
         elif isinstance(optimizer, dict):
             if not isinstance(model, dict):
                 raise TypeError(f"model is not dict but optimizer is dict!")
             self.optimizer = StepDict(torch.optim.Optimizer)
-            # self.model is nn.ModuleDict
+            # self.model is nn.ModuleDict, then self.optimizer is StepDict
             for k, opt in optimizer.items():
                 m = self.model._modules.get(k)
                 if m is None:
@@ -81,29 +80,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
 
         # set scheduler(s)
-        if scheduler is None:
-            self.scheduler = None
-        elif isinstance(scheduler, LRScheduler):
-            scheduler.set_optimizer(self.optimizer)
-            self.scheduler = scheduler.scheduler
-        elif isinstance(scheduler, torch.optim.lr_scheduler._LRScheduler):
-            self.scheduler = scheduler
-        elif isinstance(scheduler, dict):
-            if not isinstance(optimizer, dict):
-                raise TypeError(f"optimizer is not dict but scheduler is dict!")
-            self.scheduler = StepDict(torch.optim.lr_scheduler._LRScheduler)
-            for k, schdlr in scheduler.items():
-                opt = self.optimizer.get(k)
-                if schdlr is None:
-                    self.scheduler[k] = None
-                elif isinstance(schdlr, LRScheduler):
-                    self.scheduler[k] = schdlr.set_optimizer(opt)
-                else:
-                    raise TypeError(f"Unknown type: {type(schdlr)}")
-        else:
-            raise TypeError(f"Unknown type: {type(scheduler)}")
+        self.update_scheduler(scheduler, update_scheduler_by_epoch)
+
         self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
-        self._update_scheduler_by_epoch = update_scheduler_by_epoch
 
         self.loss_f = loss_f
         self._verb = verb
@@ -187,7 +166,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
     def register_after_all(self, name, data):
         self._all_map[name] = data
 
-    def _iteration(self, data: Tuple[torch.Tensor], mode: str):
+    def _iteration(self,
+                   data: Tuple[torch.Tensor],
+                   mode: str):
         """ Iteration level training loop for backend
 
         :param data: should be TensorTuple
@@ -214,7 +195,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         for k in results.keys():
             self._iteration_map.pop(k)
 
-    def _loop(self, data_loader: DataLoader, mode: str):
+    def _loop(self,
+              data_loader: DataLoader,
+              mode: str):
         # handle epoch level training loop
         self._epoch_map.update({EPOCH: self.epoch,
                                 STEP: self.step,
@@ -235,7 +218,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._callbacks.after_epoch(self._epoch_map)
         self.logger.debug(f"epoch {self.epoch} finished")
 
-    def train(self, data_loader: DataLoader, mode: str = TRAIN):
+    def train(self,
+              data_loader: DataLoader,
+              mode: str = TRAIN):
         """ Training loop.
 
         :param data_loader:
@@ -250,10 +235,12 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.enable_grad():
             self._loop(data_loader, mode=mode)
 
-        if self.scheduler is not None and self._update_scheduler_by_epoch:
+        if self.scheduler is not None and self.update_scheduler_by_epoch:
             self.scheduler.step()
 
-    def test(self, data_loader: DataLoader, mode: str = TEST):
+    def test(self,
+             data_loader: DataLoader,
+             mode: str = TEST):
         """ Non-training loop.
 
         :param data_loader:
@@ -268,7 +255,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.no_grad():
             self._loop(data_loader, mode=mode)
 
-    def run(self, epochs: int, train_data: DataLoader, test_data: DataLoader):
+    def run(self,
+            epochs: int,
+            train_data: DataLoader,
+            test_data: DataLoader):
         try:
             for ep in range(1, epochs + 1):
                 self.train(train_data)
@@ -285,7 +275,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.after_all(self._all_map)
 
-    def resume(self, path: str or Path):
+    def resume(self,
+               path: str or Path):
         """ Resume training from saved states by `homura.callbacks.WeightSave`.
 
         :param path:
@@ -301,6 +292,32 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._step = loaded.get(STEP, 0)
         self._epoch = loaded.get(EPOCH, 0)
         self.logger.info(f"Resume training from {self.epoch}th epoch")
+
+    def update_scheduler(self,
+                         scheduler: LRScheduler,
+                         update_scheduler_by_epoch: bool = True):
+        if scheduler is None:
+            self.scheduler = None
+        elif isinstance(scheduler, LRScheduler) and isinstance(self.optimizer, torch.optim.Optimizer):
+            self.scheduler = scheduler.set_optimizer(self.optimizer)
+        elif isinstance(scheduler, torch.optim.lr_scheduler._LRScheduler):
+            self.scheduler = scheduler
+        elif isinstance(scheduler, dict):
+            if not isinstance(self.optimizer, StepDict):
+                raise TypeError(f"optimizer is not dict but scheduler is dict!")
+            self.scheduler = StepDict(torch.optim.lr_scheduler._LRScheduler)
+            for k, schdlr in scheduler.items():
+                opt = self.optimizer.get(k)
+                if schdlr is None:
+                    self.scheduler[k] = None
+                elif isinstance(schdlr, LRScheduler):
+                    self.scheduler[k] = schdlr.set_optimizer(opt)
+                else:
+                    raise TypeError(f"Unknown type: {type(schdlr)}")
+        else:
+            raise TypeError(f"Unknown type: {type(scheduler)}")
+        self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
+        self.update_scheduler_by_epoch = update_scheduler_by_epoch
 
 
 class SupervisedTrainer(TrainerBase):
@@ -323,6 +340,8 @@ class SupervisedTrainer(TrainerBase):
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
+            if self.scheduler is not None and not self.update_scheduler_by_epoch:
+                self.scheduler.step()
         return Map(loss=loss, output=output)
 
 

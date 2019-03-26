@@ -11,7 +11,7 @@ def main():
     enable_accimage()
     model = resnet50()
 
-    optimizer = optim.SGD(lr=1e-1 * num_device, momentum=0.9,
+    optimizer = optim.SGD(lr=1e-1 * args.batch_size / 256, momentum=0.9,
                           weight_decay=1e-4)
     scheduler = lr_scheduler.MultiStepLR([50, 70])
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     p = miniargs.ArgumentParser()
     p.add_str("root")
     p.add_int("--epochs", default=90)
-    p.add_int("--batch_size", default=128)
+    p.add_int("--batch_size", default=256)
     p.add_true("--distributed")
     p.add_int("--local_rank", default=-1)
     p.add_str("--init_method", default="env://")
