@@ -13,7 +13,6 @@ def main():
 
     optimizer = optim.SGD(lr=1e-1 * args.batch_size / 256, momentum=0.9,
                           weight_decay=1e-4)
-    scheduler = lr_scheduler.MultiStepLR([50, 70])
 
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
     r = reporters.TQDMReporter(range(args.epochs), callbacks=c)
@@ -24,7 +23,7 @@ def main():
         # DistributedSupervisedTrainer sets up torch.distributed
         if args.local_rank == 0:
             print("\nuse DistributedDataParallel")
-        trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler,
+        trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
                                                init_method=args.init_method, backend=args.backend,
                                                enable_amp=args.enable_amp)
     else:
@@ -32,14 +31,24 @@ def main():
         if multi_gpus:
             print("\nuse DataParallel")
         trainer = SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
-                                    scheduler=scheduler, data_parallel=multi_gpus)
+                                    data_parallel=multi_gpus)
     # if distributed, need to setup loaders after DistributedSupervisedTrainer
     train_loader, test_loader = imagenet_loaders(args.root, args.batch_size, distributed=args.distributed,
                                                  num_train_samples=args.batch_size * 10 if args.debug else None,
                                                  num_test_samples=args.batch_size * 10 if args.debug else None)
-    for _ in r:
+    for epoch in r:
+        # following apex's training scheme
+        if epoch < 5:
+            trainer.update_scheduler(
+                scheduler=lr_scheduler.LambdaLR(
+                    lambda step: (1 + step + epoch * len(train_loader) / (5 * len(train_loader)))),
+                update_scheduler_by_epoch=False)
+        else:
+            trainer.update_scheduler(scheduler=lr_scheduler.MultiStepLR([30, 60, 80]),
+                                     update_scheduler_by_epoch=True)
         trainer.train(train_loader)
         trainer.test(test_loader)
+
     rep.close()
 
 
