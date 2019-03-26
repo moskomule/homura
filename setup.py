@@ -7,7 +7,7 @@ with open("requirements.txt") as f:
     requirements = f.read().split()
 
 setup(name="homura",
-      version="0.5.0b",
+      version="0.5.0",
       author="moskomule",
       author_email="hataya@nlab.jp",
       packages=find_packages(exclude=["test", "docs", "examples"]),
