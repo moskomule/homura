@@ -137,7 +137,7 @@ class _NoOpWrapper(_WrapperBase):
     """ NoOp for distributed training
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         pass
 
     def save(self):
