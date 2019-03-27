@@ -164,7 +164,7 @@
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
-<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span>
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
 
@@ -533,10 +533,9 @@
                 <span class="n">f</span><span class="s2">&quot;--nproc_per_node={torch.cuda.device_count()} {&#39; &#39;.join(python_sys.argv)} ...&quot;</span><span class="p">)</span>
 
         <span class="n">distributed</span><span class="o">.</span><span class="n">init_process_group</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">init_method</span><span class="p">)</span>
-        <span class="n">rank</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="n">get_local_rank</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># to avoid overwriting</span>
-            <span class="c1"># callbacks = None</span>
             <span class="n">verb</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
 
@@ -551,9 +550,7 @@
             <span class="kn">from</span> <span class="nn">apex</span> <span class="k">import</span> <span class="n">amp</span>
             <span class="kn">from</span> <span class="nn">apex.parallel</span> <span class="k">import</span> <span class="n">DistributedDataParallel</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
-                                                        <span class="n">opt_level</span><span class="o">=</span><span class="s2">&quot;O2&quot;</span><span class="p">,</span>
-                                                        <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">opt_level</span><span class="o">=</span><span class="s2">&quot;O2&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">DistributedDataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">delay_allreduce</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss_scaler</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">scale_loss</span>
         <span class="k">else</span><span class="p">:</span>
