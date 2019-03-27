@@ -144,3 +144,28 @@ See [examples](examples).
 * [cifar10.py](examples/cifar10.py): training ResNet-20 or WideResNet-28-10 with random crop on CIFAR10
 * [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and     multi process)
 * [gap.py](examples/gap.py): better implementation of generative adversarial perturbation
+
+For [imagenet.py](examples/imagenet.py), if you want 
+
+* single node single gpu
+* single node multi gpus
+
+run `python imagenet.py /path/to/imagenet/root`.
+
+If you want
+
+* single node multi threads multi gpus
+
+run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS /path/to/imagenet/root imagenet.py  --distributed`.
+
+If you want
+
+* multi nodes multi threads multi gpus,
+
+run
+
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py /path/to/imagenet/root --distributed` on the master node
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py /path/to/imagenet/root --distributed` on the other nodes
+
+Here, `0<$RANK<$NUM_NODES`.
+
