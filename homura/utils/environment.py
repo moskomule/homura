@@ -18,6 +18,7 @@ is_distributed = "--local_rank" in args
 
 def get_local_rank():
     # returns -1 if not distributed, else returns local rank
+    # it works before dist.init_process_group
     if not is_distributed:
         return -1
     else:
@@ -28,6 +29,7 @@ def get_local_rank():
 
 def get_global_rank():
     # returns -1 if not distributed, else returns global rank
+    # it works before dist.init_process_group
     if not is_distributed:
         return -1
     else:

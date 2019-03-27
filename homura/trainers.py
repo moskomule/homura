@@ -14,7 +14,7 @@ from homura.optim import Optimizer
 from .callbacks import Callback
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
-from .utils.environment import is_distributed, get_global_rank
+from .utils.environment import is_distributed, get_global_rank, get_local_rank
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
@@ -383,7 +383,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                 f"--nproc_per_node={torch.cuda.device_count()} {' '.join(python_sys.argv)} ...")
 
         distributed.init_process_group(backend=backend, init_method=init_method)
-        rank = distributed.get_rank()
+        rank = get_local_rank()
         if get_global_rank() > 0:
             # to avoid overwriting
             verb = False
