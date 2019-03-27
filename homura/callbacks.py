@@ -9,7 +9,7 @@ from torch import distributed
 
 from homura.liblog import get_logger
 from .utils._vocabulary import *
-from .utils.environment import is_distributed
+from .utils.environment import is_distributed, get_global_rank
 from .utils.miscs import get_git_hash
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
@@ -243,6 +243,12 @@ class WeightSave(Callback):
     :param save_path: path to be saved
     :param save_freq: frequency of saving in epoch
     """
+
+    def __new__(cls, *args, **kwargs):
+        if get_global_rank() > 0:
+            return None
+        else:
+            return object.__new__(cls)
 
     def __init__(self, save_path: str or Path, save_freq: int = 1):
 
