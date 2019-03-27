@@ -166,8 +166,8 @@ class CallbackList(Callback):
             callbacks = [callbacks]
 
         for c in [c for c in callbacks if c is not None]:
-            if isinstance(c, Callback):
-                raise TypeError(f"{c} is not a callback!")
+            if not isinstance(c, Callback):
+                raise TypeError(f"{c} is not callback!")
         self._callbacks: Iterable[Callback] = list(callbacks)
 
     def before_iteration(self, data: Mapping):
