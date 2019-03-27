@@ -14,7 +14,7 @@ from homura.optim import Optimizer
 from .callbacks import Callback
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
-from .utils.environment import is_distributed
+from .utils.environment import is_distributed, get_global_rank
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
@@ -384,9 +384,8 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
 
         distributed.init_process_group(backend=backend, init_method=init_method)
         rank = distributed.get_rank()
-        if rank != 0:
+        if get_global_rank() > 0:
             # to avoid overwriting
-            # callbacks = None
             verb = False
         torch.cuda.set_device(rank)
 
@@ -401,8 +400,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
             from apex import amp
             from apex.parallel import DistributedDataParallel
 
-            self.model, self.optimizer = amp.initialize(self.model, self.optimizer,
-                                                        opt_level="O2",)
+            self.model, self.optimizer = amp.initialize(self.model, self.optimizer, opt_level="O2")
             self.model = DistributedDataParallel(self.model, delay_allreduce=True)
             self.loss_scaler = amp.scale_loss
         else:

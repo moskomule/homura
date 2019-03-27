@@ -1,4 +1,5 @@
 import importlib.util
+import os as python_os
 import sys as python_sys
 
 from homura.liblog import get_logger
@@ -16,12 +17,21 @@ is_distributed = "--local_rank" in args
 
 
 def get_local_rank():
+    # returns -1 if not distributed, else returns local rank
     if not is_distributed:
         return -1
     else:
         for arg in python_sys.argv:
             if "--local_rank" in arg:
                 return int(arg.split("=")[1])
+
+
+def get_global_rank():
+    # returns -1 if not distributed, else returns global rank
+    if not is_distributed:
+        return -1
+    else:
+        return int(python_os.environ["RANK"])
 
 
 def enable_accimage():

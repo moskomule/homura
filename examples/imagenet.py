@@ -22,14 +22,14 @@ def main():
     if args.distributed:
         # DistributedSupervisedTrainer sets up torch.distributed
         if args.local_rank == 0:
-            print("\nuse DistributedDataParallel")
+            print("\nuse DistributedDataParallel\n")
         trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
                                                init_method=args.init_method, backend=args.backend,
                                                enable_amp=args.enable_amp)
     else:
         multi_gpus = torch.cuda.device_count() > 1
         if multi_gpus:
-            print("\nuse DataParallel")
+            print("\nuse DataParallel\n")
         trainer = SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
                                     data_parallel=multi_gpus)
     # if distributed, need to setup loaders after DistributedSupervisedTrainer
@@ -69,7 +69,6 @@ if __name__ == '__main__':
     p.add_true("--enable_amp")
     p.add_true("--debug", help="Use less images and less epochs")
     args, _else = p.parse(return_unknown=True)
-    num_device = torch.cuda.device_count()
 
     print(args)
     main()
