@@ -8,8 +8,7 @@ from torch import nn
 from .callbacks import Callback, CallbackList
 from .utils._vocabulary import *
 from .utils.environment import get_global_rank
-from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase, \
-    _NoOpWrapper
+from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrapper, _num_elements, _WrapperBase
 
 
 class Reporter(Callback, metaclass=ABCMeta):
@@ -21,18 +20,23 @@ class Reporter(Callback, metaclass=ABCMeta):
                  report_image_freq: int = 0,
                  image_keys: Optional[Iterable[str]] = None):
 
-        self.base_wrapper = _NoOpWrapper if get_global_rank() > 0 else base_wrapper
+        self.base_wrapper = base_wrapper
         self.callbacks = callbacks if isinstance(callbacks, Callback) else CallbackList(*callbacks)
         self.report_freq = report_freq
         self.report_param_freq = report_param_freq
         self.report_image_freq = report_image_freq
         self.image_keys = [] if image_keys is None else image_keys
+        self._reportable = True
+        # if distributed and not the master, do not report
+        if get_global_rank() > 0:
+            self._reportable = False
 
     def add_memo(self, text: str, *, name="memo", index=0):
         if name == "memo":
             # to avoid collision
             name += str(hash(text))[:5]
-        self.base_wrapper.add_text(text, name, index)
+        if self._reportable:
+            self.base_wrapper.add_text(text, name, index)
 
     def before_all(self, data: Mapping):
         self.callbacks.before_all(data)
@@ -49,19 +53,20 @@ class Reporter(Callback, metaclass=ABCMeta):
         """
         results = self.callbacks.after_iteration(data)
 
-        mode = data[MODE]
-        step = data[STEP]
+        if self._reportable:
+            mode = data[MODE]
+            step = data[STEP]
 
-        if self.report_freq > 0 and (step % self.report_freq == 0):
-            self._report(results, mode, step)
+            if self.report_freq > 0 and (step % self.report_freq == 0):
+                self._report(results, mode, step)
 
-        if self.report_image_freq > 0 and (step % self.report_image_freq == 0):
-            for k in self.image_keys:
-                if data.get(k) is not None:
-                    self._report_images(data[k], f"{mode}_{k}", step)
+            if self.report_image_freq > 0 and (step % self.report_image_freq == 0):
+                for k in self.image_keys:
+                    if data.get(k) is not None:
+                        self._report_images(data[k], f"{mode}_{k}", step)
 
-        if mode == TRAIN and self.report_param_freq > 0 and (step % self.report_param_freq == 0):
-            self._report_params(data[MODEL], step)
+            if mode == TRAIN and self.report_param_freq > 0 and (step % self.report_param_freq == 0):
+                self._report_params(data[MODEL], step)
 
     def before_epoch(self, data: Mapping):
         self.callbacks.before_epoch(data)
@@ -73,18 +78,19 @@ class Reporter(Callback, metaclass=ABCMeta):
 
         results = self.callbacks.after_epoch(data)
 
-        mode = data[MODE]
-        epoch = data[EPOCH]
+        if self._reportable:
+            mode = data[MODE]
+            epoch = data[EPOCH]
 
-        self._report(results, mode, epoch)
+            self._report(results, mode, epoch)
 
-        if self.report_image_freq < 0:
-            for k in self.image_keys:
-                if data.get(k) is not None:
-                    self._report_images(data[k], f"{mode}_{k}", epoch)
+            if self.report_image_freq < 0:
+                for k in self.image_keys:
+                    if data.get(k) is not None:
+                        self._report_images(data[k], f"{mode}_{k}", epoch)
 
-        if mode == TRAIN and self.report_param_freq < 0:
-            self._report_params(data[MODEL], epoch)
+            if mode == TRAIN and self.report_param_freq < 0:
+                self._report_params(data[MODEL], epoch)
 
     def _report(self, results: Mapping, mode: str, idx: int):
         for k, v in results.items():

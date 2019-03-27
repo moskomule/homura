@@ -238,6 +238,13 @@ class LoggerWrapper(_WrapperBase):
 
 
 class TensorBoardWrapper(_WrapperBase):
+
+    def __new__(cls, *args, **kwargs):
+        if homura.get_global_rank() > 0:
+            return _NoOpWrapper
+        else:
+            object.__new__(cls)
+
     def __init__(self, save_dir=None, save_images=False):
         if homura.is_tensorboardX_available:
             from tensorboardX import SummaryWriter

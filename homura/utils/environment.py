@@ -5,7 +5,7 @@ import sys as python_sys
 from homura.liblog import get_logger
 
 __all__ = ["is_accimage_available", "is_apex_available", "is_tensorboardX_available", "is_distributed",
-           "enable_accimage"]
+           "enable_accimage", "get_global_rank"]
 
 logger = get_logger("homura.env")
 is_accimage_available = importlib.util.find_spec("accimage") is not None
