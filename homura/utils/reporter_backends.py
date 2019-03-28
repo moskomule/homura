@@ -15,8 +15,8 @@ from torchvision.utils import make_grid, save_image as _save_image
 
 import homura
 from homura.liblog import _set_tqdm_handler
-from .miscs import get_git_hash
 from ._vocabulary import *
+from .miscs import get_git_hash
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
@@ -133,6 +133,35 @@ class _WrapperBase(metaclass=ABCMeta):
         self.close()
 
 
+class _NoOpWrapper(_WrapperBase):
+    """ NoOp for distributed training
+    """
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def save(self):
+        pass
+
+    def add_text(self, x: str, name: str, idx: int):
+        pass
+
+    def add_histogram(self, x: torch.Tensor, name: str, idx: int):
+        pass
+
+    def add_scalar(self, x: Vector, name: str, idx: int):
+        pass
+
+    def add_scalars(self, x: Dict[str, Vector], name, idx: int):
+        pass
+
+    def add_image(self, x: torch.Tensor, name: str, idx: int):
+        pass
+
+    def add_images(self, x: torch.Tensor, name: str, idx: int):
+        pass
+
+
 class TQDMWrapper(_WrapperBase):
     def __init__(self, iterator, save_dir=None):
         from tqdm import tqdm
@@ -209,6 +238,13 @@ class LoggerWrapper(_WrapperBase):
 
 
 class TensorBoardWrapper(_WrapperBase):
+
+    def __new__(cls, *args, **kwargs):
+        if homura.get_global_rank() > 0:
+            return _NoOpWrapper
+        else:
+            return object.__new__(cls)
+
     def __init__(self, save_dir=None, save_images=False):
         if homura.is_tensorboardX_available:
             from tensorboardX import SummaryWriter

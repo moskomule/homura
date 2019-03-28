@@ -157,7 +157,7 @@
 
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">CallbackList</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">get_local_rank</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">get_global_rank</span>
 <span class="kn">from</span> <span class="nn">.utils.reporter_backends</span> <span class="k">import</span> <span class="n">TQDMWrapper</span><span class="p">,</span> <span class="n">TensorBoardWrapper</span><span class="p">,</span> <span class="n">LoggerWrapper</span><span class="p">,</span> <span class="n">_num_elements</span><span class="p">,</span> <span class="n">_WrapperBase</span>
 
 
@@ -178,7 +178,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">image_keys</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">image_keys</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">image_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># if distributed and not the master, do not report</span>
-        <span class="k">if</span> <span class="n">get_local_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reportable</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Reporter.add_memo"><a class="viewcode-back" href="../../homura.html#homura.reporters.Reporter.add_memo">[docs]</a>    <span class="k">def</span> <span class="nf">add_memo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;memo&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
