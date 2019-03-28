@@ -10,6 +10,7 @@ class DataPrefetcher(object):
 
     def __init__(self, loader: DataLoader):
         self._cuda_available = torch.cuda.is_available()
+        self._length = len(loader)
         self.loader = iter(loader)
         self.stream = torch.cuda.Stream() if self._cuda_available else None
         self.next_data = None
@@ -24,6 +25,9 @@ class DataPrefetcher(object):
         if self._cuda_available:
             with torch.cuda.stream(self.stream):
                 self.next_data = self.next_data.to(device="cuda", non_blocking=True)
+
+    def __len__(self):
+        return self._length
 
     def __iter__(self):
         return self
