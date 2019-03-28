@@ -4,7 +4,7 @@ from torchvision.models import resnet50
 
 from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage
 from homura.trainers import SupervisedTrainer, DistributedSupervisedTrainer
-from homura.vision.data import imagenet_loaders
+from homura.vision.data import imagenet_loaders, prefetcher
 
 
 def main():
@@ -33,10 +33,15 @@ def main():
         trainer = SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
                                     data_parallel=multi_gpus)
     # if distributed, need to setup loaders after DistributedSupervisedTrainer
-    train_loader, test_loader = imagenet_loaders(args.root, args.batch_size, distributed=args.distributed,
-                                                 num_train_samples=args.batch_size * 10 if args.debug else None,
-                                                 num_test_samples=args.batch_size * 10 if args.debug else None)
+    _train_loader, _test_loader = imagenet_loaders(args.root, args.batch_size, distributed=args.distributed,
+                                                   num_train_samples=args.batch_size * 10 if args.debug else None,
+                                                   num_test_samples=args.batch_size * 10 if args.debug else None)
     for epoch in r:
+        if args.use_prefetcher:
+            train_loader = prefetcher.DataPrefetcher(_train_loader)
+            test_loader = prefetcher.DataPrefetcher(_test_loader)
+        else:
+            train_loader, test_loader = _train_loader, _test_loader
         # following apex's training scheme
         if epoch < 5:
             trainer.update_scheduler(
@@ -56,6 +61,7 @@ if __name__ == '__main__':
     import miniargs
     import warnings
 
+    # to suppress annoying warnings
     warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
 
     p = miniargs.ArgumentParser()
@@ -67,6 +73,7 @@ if __name__ == '__main__':
     p.add_str("--init_method", default="env://")
     p.add_str("--backend", default="nccl")
     p.add_true("--enable_amp")
+    p.add_true("--use_prefetcher")
     p.add_true("--debug", help="Use less images and less epochs")
     args, _else = p.parse(return_unknown=True)
 
