@@ -48,6 +48,11 @@ class Callback(metaclass=ABCMeta):
         self.close()
 
 
+class _NoOpCallback(Callback):
+    def __init__(self, *args, **kwargs):
+        pass
+
+
 class MetricCallback(Callback):
     """ Base class of MetricCallback class such as AccuracyCallback
 
@@ -247,7 +252,7 @@ class WeightSave(Callback):
 
     def __new__(cls, *args, **kwargs):
         if get_global_rank() > 0:
-            return None
+            return _NoOpCallback
         else:
             return object.__new__(cls)
 

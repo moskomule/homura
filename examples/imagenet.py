@@ -2,7 +2,7 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage
+from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, get_world_size
 from homura.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders, prefetcher
 
@@ -11,7 +11,7 @@ def main():
     enable_accimage()
     model = resnet50()
 
-    optimizer = optim.SGD(lr=1e-1 * args.batch_size / 256, momentum=0.9,
+    optimizer = optim.SGD(lr=1e-1 * args.batch_size * get_world_size() / 256, momentum=0.9,
                           weight_decay=1e-4)
 
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
