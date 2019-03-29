@@ -252,7 +252,7 @@ class WeightSave(Callback):
 
     def __new__(cls, *args, **kwargs):
         if get_global_rank() > 0:
-            return _NoOpCallback
+            return _NoOpCallback()
         else:
             return object.__new__(cls)
 

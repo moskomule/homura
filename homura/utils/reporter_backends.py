@@ -241,7 +241,7 @@ class TensorBoardWrapper(_WrapperBase):
 
     def __new__(cls, *args, **kwargs):
         if homura.get_global_rank() > 0:
-            return _NoOpWrapper
+            return _NoOpWrapper()
         else:
             return object.__new__(cls)
 
