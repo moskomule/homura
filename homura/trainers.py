@@ -418,6 +418,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
             else:
                 loss.backward()
             self.optimizer.step()
+
             if self.scheduler is not None and not self.update_scheduler_by_epoch:
                 self.scheduler.step()
         return Map(loss=loss, output=output)
