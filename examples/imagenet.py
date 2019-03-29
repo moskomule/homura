@@ -10,8 +10,8 @@ from homura.vision.data import imagenet_loaders, prefetcher
 def main():
     enable_accimage()
     model = resnet50()
-
-    optimizer = optim.SGD(lr=1e-1 * args.batch_size * get_world_size() / 256, momentum=0.9,
+    lr = 1e-1 * args.batch_size * get_world_size() / 256
+    optimizer = optim.SGD(lr=lr, momentum=0.9,
                           weight_decay=1e-4)
 
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
@@ -46,7 +46,7 @@ def main():
         if epoch < 5:
             trainer.update_scheduler(
                 scheduler=lr_scheduler.LambdaLR(
-                    lambda step: (1 + step + epoch * len(train_loader) / (5 * len(train_loader)))),
+                    lambda step: lr * (1 + step + epoch * len(train_loader) / (5 * len(train_loader)))),
                 update_scheduler_by_epoch=False)
         else:
             trainer.update_scheduler(scheduler=lr_scheduler.MultiStepLR([30, 60, 80]),
