@@ -43,13 +43,13 @@ def main():
         else:
             train_loader, test_loader = _train_loader, _test_loader
         # following apex's training scheme
-        if epoch < 5:
+        if epoch == 0:
             trainer.update_scheduler(
                 scheduler=lr_scheduler.LambdaLR(
                     lambda step: lr * (1 + step + epoch * len(train_loader) / (5 * len(train_loader)))),
                 update_scheduler_by_epoch=False)
-        else:
-            trainer.update_scheduler(scheduler=lr_scheduler.MultiStepLR([30, 60, 80]),
+        elif epoch == 5:
+            trainer.update_scheduler(scheduler=lr_scheduler.MultiStepLR([30, 60, 80], last_epoch=4),
                                      update_scheduler_by_epoch=True)
         trainer.train(train_loader)
         trainer.test(test_loader)
