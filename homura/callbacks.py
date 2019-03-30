@@ -69,6 +69,7 @@ class MetricCallback(Callback):
         self._metrics_history = {}
         self._logger = get_logger(__name__) if logger is None else logger
         self._warning_flag = True
+        self._no_reduce = True
 
     def before_iteration(self, data: Mapping):
         self._last_iter.clear()
@@ -144,12 +145,11 @@ class MetricCallback(Callback):
 
         return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
 
-    @staticmethod
-    def reduce(tensor):
+    def reduce(self, tensor):
         """ for distributed setting
         """
 
-        if not is_distributed or not torch.is_tensor(tensor):
+        if not is_distributed or not torch.is_tensor(tensor) or self._no_reduce:
             return tensor
 
         rt = tensor.cuda()
