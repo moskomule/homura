@@ -2,7 +2,7 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, get_world_size
+from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, get_num_nodes
 from homura.trainers import SupervisedTrainer, DistributedSupervisedTrainer
 from homura.vision.data import imagenet_loaders, prefetcher
 
@@ -10,10 +10,9 @@ from homura.vision.data import imagenet_loaders, prefetcher
 def main():
     enable_accimage()
     model = resnet50()
-    lr = 1e-1 * args.batch_size * get_world_size() / 256
-    optimizer = optim.SGD(lr=lr, momentum=0.9,
+    optimizer = optim.SGD(lr=1e-1 * args.batch_size * get_num_nodes() / 256, momentum=0.9,
                           weight_decay=1e-4)
-
+    scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
     c = [callbacks.AccuracyCallback(), callbacks.LossCallback()]
     r = reporters.TQDMReporter(range(args.epochs), callbacks=c)
     tb = reporters.TensorboardReporter(c)
@@ -23,7 +22,7 @@ def main():
         # DistributedSupervisedTrainer sets up torch.distributed
         if args.local_rank == 0:
             print("\nuse DistributedDataParallel\n")
-        trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep,
+        trainer = DistributedSupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=rep, scheduler=scheduler,
                                                init_method=args.init_method, backend=args.backend,
                                                enable_amp=args.enable_amp)
     else:
@@ -43,14 +42,6 @@ def main():
         else:
             train_loader, test_loader = _train_loader, _test_loader
         # following apex's training scheme
-        if epoch == 0:
-            trainer.update_scheduler(
-                scheduler=lr_scheduler.LambdaLR(
-                    lambda step: lr * (1 + step + epoch * len(train_loader) / (5 * len(train_loader)))),
-                update_scheduler_by_epoch=False)
-        elif epoch == 5:
-            trainer.update_scheduler(scheduler=lr_scheduler.MultiStepLR([30, 60, 80], last_epoch=4),
-                                     update_scheduler_by_epoch=True)
         trainer.train(train_loader)
         trainer.test(test_loader)
 
