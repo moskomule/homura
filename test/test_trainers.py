@@ -1,20 +1,8 @@
-import pytest
 import torch
-from homura import optim, is_apex_available, trainers, utils
 from torch import nn
 from torch.nn import functional as F
 
-
-@pytest.mark.skipif(not (torch.cuda.is_available() and is_apex_available), reason="GPU and apex is unavailable")
-def test_fp16():
-    model = nn.Linear(10, 10)
-    optimizer = optim.SGD(lr=0.1)
-    trainer = trainers.AMPTrainer(model, optimizer, F.cross_entropy)
-    epoch = range(1)
-    loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
-    for _ in epoch:
-        trainer.train(loader)
-        trainer.test(loader)
+from homura import optim, trainers, utils, lr_scheduler
 
 
 def test_dict_model():
@@ -40,3 +28,20 @@ def test_dict_model():
     for _ in range(1):
         trainer.train(loader)
         trainer.test(loader)
+
+
+def test_update_scheduler():
+    model = nn.Linear(10, 10)
+    optimizer = optim.SGD(lr=0.1)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy)
+    trainer.update_scheduler(lr_scheduler.LambdaLR(lambda step: 0.1 ** step),
+                             update_scheduler_by_epoch=False)
+    loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(2)]
+    trainer.train(loader)
+    # lambda calculates the factor!
+    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 2
+
+    trainer.update_scheduler(lr_scheduler.LambdaLR(lambda epoch: 0.1 ** epoch, last_epoch=1),
+                             update_scheduler_by_epoch=True)
+    trainer.train(loader)
+    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3
