@@ -1,4 +1,5 @@
 import math
+from typing import Tuple
 
 import torch
 from torch import nn
@@ -11,7 +12,11 @@ class KeyValAttention(nn.Module):
         self._scaling = scaling
         self._dropout = nn.Dropout(dropout_ratio) if dropout_ratio > 0 else None
 
-    def forward(self, queries: torch.Tensor, keys: torch.Tensor, values: torch.Tensor, mask=None):
+    def forward(self,
+                queries: torch.Tensor,
+                keys: torch.Tensor,
+                values: torch.Tensor,
+                mask=None) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         dim of X >= 0,
         dim of Y >= 1

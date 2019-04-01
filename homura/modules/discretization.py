@@ -37,7 +37,7 @@ class SemanticHashing(nn.Module):
     def __init__(self):
         super(SemanticHashing, self).__init__()
 
-    def forward(self, input: torch.Tensor):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         return semantic_hashing(input, self.training)
 
 
@@ -52,7 +52,7 @@ class GumbelSoftmax(nn.Module):
         self.dim = dim
         self.temp = temp
 
-    def forward(self, input: torch.Tensor):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         if self.training:
             return gumbel_softmax(input, self.dim, self.temp)
         else:

@@ -6,7 +6,7 @@ from torch.nn import functional as F
 
 
 def weight_standardization(model: nn.Module,
-                           input: torch.Tensor):
+                           input: torch.Tensor) -> torch.Tensor:
     """ `forward` of weight initialization. Currently only supports `nn.Conv2d`.
 
     :param model:
@@ -25,7 +25,7 @@ def weight_standardization(model: nn.Module,
                     model.padding, model.dilation, model.groups)
 
 
-def convert_ws(model: nn.Module):
+def convert_ws(model: nn.Module) -> nn.Module:
     """ Convert the given model's `nn.Conv2d` to weight standardized `Conv2d`
 
     :param model:
@@ -44,5 +44,5 @@ class WSConv2d(nn.Conv2d):
     """
 
     def forward(self,
-                input: torch.Tensor):
+                input: torch.Tensor) -> torch.Tensor:
         return weight_standardization(self, input)
