@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="homura.modules.functional package" href="homura.modules.functional.html" />
-    <link rel="prev" title="homura.metrics.generative package" href="homura.metrics.generative.html" /> 
+    <link rel="prev" title="homura.metrics package" href="homura.metrics.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,6 +92,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -122,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -396,6 +398,67 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-homura.modules.regularizer">
+<span id="homura-modules-regularizer-module"></span><h2>homura.modules.regularizer module<a class="headerlink" href="#module-homura.modules.regularizer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.modules.regularizer.WSConv2d">
+<em class="property">class </em><code class="descclassname">homura.modules.regularizer.</code><code class="descname">WSConv2d</code><span class="sig-paren">(</span><em>in_channels</em>, <em>out_channels</em>, <em>kernel_size</em>, <em>stride=1</em>, <em>padding=0</em>, <em>dilation=1</em>, <em>groups=1</em>, <em>bias=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.conv.Conv2d</span></code></p>
+<p><cite>nn.Conv2d</cite> with weight standardization</p>
+<dl class="method">
+<dt id="homura.modules.regularizer.WSConv2d.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.modules.regularizer.convert_ws">
+<code class="descclassname">homura.modules.regularizer.</code><code class="descname">convert_ws</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#convert_ws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.convert_ws" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given model’s <cite>nn.Conv2d</cite> to weight standardized <cite>Conv2d</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.modules.regularizer.weight_standardization">
+<code class="descclassname">homura.modules.regularizer.</code><code class="descname">weight_standardization</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#weight_standardization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.weight_standardization" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>forward</cite> of weight initialization. Currently only supports <cite>nn.Conv2d</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – </li>
+<li><strong>input</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-homura.modules">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -412,7 +475,7 @@ registered hooks while the latter silently ignores them.</p>
         <a href="homura.modules.functional.html" class="btn btn-neutral float-right" title="homura.modules.functional package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="homura.metrics.generative.html" class="btn btn-neutral float-left" title="homura.metrics.generative package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="homura.metrics.html" class="btn btn-neutral float-left" title="homura.metrics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

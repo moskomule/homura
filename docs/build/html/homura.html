@@ -177,15 +177,6 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="homura.metrics.generative.html">homura.metrics.generative package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative.utils">homura.metrics.generative.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.metrics.generative.html#module-homura.metrics.generative">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
@@ -209,6 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -320,7 +312,7 @@
 
 <dl class="class">
 <dt id="homura.callbacks.MetricCallback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None, no_reduce: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
 <p>Base class of MetricCallback class such as AccuracyCallback</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -330,6 +322,8 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>metric</strong> – metric function: (data) -&gt; float</li>
 <li><strong>name</strong> – name of the metric</li>
+<li><strong>logger</strong> – </li>
+<li><strong>no_reduce</strong> – skip reducing</li>
 </ul>
 </td>
 </tr>
@@ -375,9 +369,9 @@
 </div>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="homura.callbacks.MetricCallback.reduce">
-<em class="property">static </em><code class="descname">reduce</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reduce</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>for distributed setting</p>
 </dd></dl>
 
@@ -1172,6 +1166,21 @@ is need to be update by user.</li>
 <dl class="function">
 <dt id="homura.get_global_rank">
 <code class="descclassname">homura.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_global_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.get_local_rank">
+<code class="descclassname">homura.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_local_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.get_world_size">
+<code class="descclassname">homura.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_world_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.get_num_nodes">
+<code class="descclassname">homura.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_num_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

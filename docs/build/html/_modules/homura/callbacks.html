@@ -198,14 +198,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
+<span class="k">class</span> <span class="nc">_NoOpCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
 <div class="viewcode-block" id="MetricCallback"><a class="viewcode-back" href="../../homura.html#homura.callbacks.MetricCallback">[docs]</a><span class="k">class</span> <span class="nc">MetricCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Base class of MetricCallback class such as AccuracyCallback</span>
 
 <span class="sd">    :param metric: metric function: (data) -&gt; float</span>
 <span class="sd">    :param name: name of the metric</span>
+<span class="sd">    :param logger:</span>
+<span class="sd">    :param no_reduce: skip reducing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">no_reduce</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metric_function</span> <span class="o">=</span> <span class="n">metric</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -214,6 +225,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_warning_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_reduce</span> <span class="o">=</span> <span class="n">no_reduce</span>
 
 <div class="viewcode-block" id="MetricCallback.before_iteration"><a class="viewcode-back" href="../../homura.html#homura.callbacks.MetricCallback.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
@@ -289,17 +301,16 @@
 
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-<div class="viewcode-block" id="MetricCallback.reduce"><a class="viewcode-back" href="../../homura.html#homura.callbacks.MetricCallback.reduce">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricCallback.reduce"><a class="viewcode-back" href="../../homura.html#homura.callbacks.MetricCallback.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; for distributed setting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_reduce</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tensor</span>
 
         <span class="n">rt</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
         <span class="n">distributed</span><span class="o">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">rt</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">distributed</span><span class="o">.</span><span class="n">ReduceOp</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rt</span> <span class="o">/</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="n">rt</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="o">/</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="CallbackList"><a class="viewcode-back" href="../../homura.html#homura.callbacks.CallbackList">[docs]</a><span class="k">class</span> <span class="nc">CallbackList</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
@@ -397,7 +408,7 @@
 
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">_NoOpCallback</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
