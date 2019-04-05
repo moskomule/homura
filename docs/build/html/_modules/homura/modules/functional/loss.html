@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -164,7 +165,9 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Wrong reduction: </span><span class="si">{reduction}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="cross_entropy_with_softlabels"><a class="viewcode-back" href="../../../../homura.modules.functional.html#homura.modules.functional.loss.cross_entropy_with_softlabels">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy_with_softlabels</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_entropy_with_softlabels"><a class="viewcode-back" href="../../../../homura.modules.functional.html#homura.modules.functional.loss.cross_entropy_with_softlabels">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy_with_softlabels</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                  <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                  <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Cross entropy with soft labels. Unlike `torch.nn.functional.cross_entropy`, `target` is expected to be</span>
 <span class="sd">    one-hot or soft labelj.</span>
 

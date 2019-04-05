@@ -103,7 +103,6 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reproductivity">homura.reproductivity module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -117,6 +116,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -370,7 +370,7 @@
 
 <dl class="function">
 <dt id="homura.metrics.commons.confusion_matrix">
-<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.metrics.commons.</code><code class="descname">confusion_matrix</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/commons.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.commons.confusion_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate confusion matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -394,7 +394,7 @@
 <span id="homura-metrics-segmentation-module"></span><h2>homura.metrics.segmentation module<a class="headerlink" href="#module-homura.metrics.segmentation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.metrics.segmentation.binary_as_multiclass">
-<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_as_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_as_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_as_multiclass" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.metrics.segmentation.</code><code class="descname">binary_as_multiclass</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>threshold: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/metrics/segmentation.html#binary_as_multiclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.metrics.segmentation.binary_as_multiclass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <cite>Bx1xHxW</cite> outputs to <cite>BxCxHxW</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

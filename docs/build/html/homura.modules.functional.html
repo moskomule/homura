@@ -107,7 +107,6 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reproductivity">homura.reproductivity module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -142,6 +141,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -220,7 +220,7 @@
 <span id="homura-modules-functional-convert-module"></span><h2>homura.modules.functional.convert module<a class="headerlink" href="#module-homura.modules.functional.convert" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.modules.functional.convert.to_onehot">
-<code class="descclassname">homura.modules.functional.convert.</code><code class="descname">to_onehot</code><span class="sig-paren">(</span><em>target: torch.Tensor</em>, <em>num_classes: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/convert.html#to_onehot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.convert.to_onehot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.modules.functional.convert.</code><code class="descname">to_onehot</code><span class="sig-paren">(</span><em>target: torch.Tensor</em>, <em>num_classes: int</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/convert.html#to_onehot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.convert.to_onehot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert given target tensor to onehot format</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -289,7 +289,7 @@
 <span id="homura-modules-functional-loss-module"></span><h2>homura.modules.functional.loss module<a class="headerlink" href="#module-homura.modules.functional.loss" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.modules.functional.loss.cross_entropy_with_softlabels">
-<code class="descclassname">homura.modules.functional.loss.</code><code class="descname">cross_entropy_with_softlabels</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em>, <em>reduction: str = 'mean'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/loss.html#cross_entropy_with_softlabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.loss.cross_entropy_with_softlabels" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.modules.functional.loss.</code><code class="descname">cross_entropy_with_softlabels</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>target: torch.Tensor</em>, <em>reduction: str = 'mean'</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/loss.html#cross_entropy_with_softlabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.loss.cross_entropy_with_softlabels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross entropy with soft labels. Unlike <cite>torch.nn.functional.cross_entropy</cite>, <cite>target</cite> is expected to be
 one-hot or soft labelj.</p>
 <table class="docutils field-list" frame="void" rules="none">

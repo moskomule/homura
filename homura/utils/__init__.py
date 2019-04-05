@@ -1,10 +1,6 @@
 from . import *
 from .containers import Map, TensorTuple
+from .reproductivity import set_seed, set_deterministic
 
 __all__ = ["containers", "Map", "TensorTuple", "inferencer",
-           # for backward compatibility
-           "reporter", "trainer"]
-
-# backward compatibility
-from homura import reporters as reporter
-from homura import trainers as trainer
+           "set_seed", "set_deterministic"]

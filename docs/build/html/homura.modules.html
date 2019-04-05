@@ -107,7 +107,6 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reproductivity">homura.reproductivity module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -128,6 +127,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -223,7 +223,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="method">
 <dt id="homura.modules.attention.KeyValAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>queries: torch.Tensor</em>, <em>keys: torch.Tensor</em>, <em>values: torch.Tensor</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>queries: torch.Tensor</em>, <em>keys: torch.Tensor</em>, <em>values: torch.Tensor</em>, <em>mask=None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>dim of X &gt;= 0,
 dim of Y &gt;= 1</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -275,7 +275,7 @@ V. Dumoulin, J. Shlens, and M. Kudlur, “A learned representation for artistic 
 </table>
 <dl class="method">
 <dt id="homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>categories</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>categories: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -320,7 +320,7 @@ registered hooks while the latter silently ignores them.</p>
 <p>This module outputs <cite>gumbel_softmax</cite> while training and argmax in onehot fashion while evaluation</p>
 <dl class="method">
 <dt id="homura.modules.discretization.GumbelSoftmax.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -360,7 +360,7 @@ registered hooks while the latter silently ignores them.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="method">
 <dt id="homura.modules.discretization.SemanticHashing.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -407,7 +407,7 @@ registered hooks while the latter silently ignores them.</p>
 <p><cite>nn.Conv2d</cite> with weight standardization</p>
 <dl class="method">
 <dt id="homura.modules.regularizer.WSConv2d.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -423,7 +423,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="function">
 <dt id="homura.modules.regularizer.convert_ws">
-<code class="descclassname">homura.modules.regularizer.</code><code class="descname">convert_ws</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#convert_ws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.convert_ws" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.modules.regularizer.</code><code class="descname">convert_ws</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em><span class="sig-paren">)</span> &#x2192; torch.nn.modules.module.Module<a class="reference internal" href="_modules/homura/modules/regularizer.html#convert_ws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.convert_ws" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the given model’s <cite>nn.Conv2d</cite> to weight standardized <cite>Conv2d</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -439,7 +439,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="function">
 <dt id="homura.modules.regularizer.weight_standardization">
-<code class="descclassname">homura.modules.regularizer.</code><code class="descname">weight_standardization</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#weight_standardization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.weight_standardization" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.modules.regularizer.</code><code class="descname">weight_standardization</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/regularizer.html#weight_standardization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.weight_standardization" title="Permalink to this definition">¶</a></dt>
 <dd><p><cite>forward</cite> of weight initialization. Currently only supports <cite>nn.Conv2d</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
