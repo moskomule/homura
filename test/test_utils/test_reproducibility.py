@@ -1,7 +1,7 @@
 import torch
 
 from homura import set_seed
-from homura.utils.reproductivity import unset_seed
+from homura.utils.reproducibility import unset_seed
 
 
 def test_seed():

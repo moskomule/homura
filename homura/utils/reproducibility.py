@@ -29,7 +29,7 @@ def set_deterministic(seed: int = 0):
     set_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    logger.info("Set to be deterministic. But some GPU computations is still nondeterministic. Also, this may affect "
+    logger.info("Set to be deterministic. But some GPU computations is still non-deterministic. Also, this may affect "
                 "the performance.")
 
 
