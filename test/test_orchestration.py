@@ -3,7 +3,7 @@ from tempfile import gettempdir
 
 import pytest
 import torch
-from homura import reporter, callbacks, optim, is_tensorboardX_available, metrics, trainers
+from homura import reporters, callbacks, optim, is_tensorboardX_available, metrics, trainers
 from homura.utils.inferencer import Inferencer
 from torch import nn
 from torch.nn import functional as F
@@ -26,9 +26,9 @@ def test(rep):
     c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(tmpdir))
     epoch = range(1)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
-    with {"tqdm": lambda: reporter.TQDMReporter(epoch, c, tmpdir),
-          "logger": lambda: reporter.LoggerReporter(c, tmpdir),
-          "tensorboard": lambda: reporter.TensorboardReporter(c, tmpdir)
+    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, tmpdir),
+          "logger": lambda: reporters.LoggerReporter(c, tmpdir),
+          "tensorboard": lambda: reporters.TensorboardReporter(c, tmpdir)
           }[rep]() as _rep:
         tr = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy,
                                         callbacks=_rep, verb=False)
@@ -42,9 +42,9 @@ def test(rep):
     tr.resume(save_file)
 
     c = callbacks.AccuracyCallback()
-    with {"tqdm": lambda: reporter.TQDMReporter(epoch, c, tmpdir),
-          "logger": lambda: reporter.LoggerReporter(c, tmpdir),
-          "tensorboard": lambda: reporter.TensorboardReporter(c, tmpdir)
+    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, tmpdir),
+          "logger": lambda: reporters.LoggerReporter(c, tmpdir),
+          "tensorboard": lambda: reporters.TensorboardReporter(c, tmpdir)
           }[rep]() as _rep:
         inferencer = Inferencer(model, _rep)
         inferencer.load(save_file)

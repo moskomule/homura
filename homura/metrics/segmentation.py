@@ -7,7 +7,7 @@ from homura.modules import to_onehot
 __all__ = ["binary_as_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"]
 
 
-def binary_as_multiclass(input: torch.Tensor, threshold: float):
+def binary_as_multiclass(input: torch.Tensor, threshold: float) -> torch.Tensor:
     """ Convert `Bx1xHxW` outputs to `BxCxHxW`.
 
     :param input:

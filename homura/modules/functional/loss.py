@@ -14,7 +14,9 @@ def _reduction(input: torch.Tensor, reduction: str) -> torch.Tensor:
         raise NotImplementedError(f"Wrong reduction: {reduction}")
 
 
-def cross_entropy_with_softlabels(input: torch.Tensor, target: torch.Tensor, reduction: str = "mean"):
+def cross_entropy_with_softlabels(input: torch.Tensor,
+                                  target: torch.Tensor,
+                                  reduction: str = "mean") -> torch.Tensor:
     """ Cross entropy with soft labels. Unlike `torch.nn.functional.cross_entropy`, `target` is expected to be
     one-hot or soft labelj.
 

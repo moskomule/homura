@@ -85,6 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -351,6 +352,8 @@
       </ul></li>
       <li><a href="homura.metrics.html#homura.metrics.commons.confusion_matrix">confusion_matrix() (in module homura.metrics.commons)</a>
 </li>
+      <li><a href="homura.modules.html#homura.modules.regularizer.convert_ws">convert_ws() (in module homura.modules.regularizer)</a>
+</li>
       <li><a href="homura.html#homura.Map.copy">copy() (homura.Map method)</a>
 
       <ul>
@@ -446,6 +449,8 @@
 </li>
         <li><a href="homura.modules.html#homura.modules.discretization.StraightThroughEstimator.forward">(homura.modules.discretization.StraightThroughEstimator method)</a>
 </li>
+        <li><a href="homura.modules.html#homura.modules.regularizer.WSConv2d.forward">(homura.modules.regularizer.WSConv2d method)</a>
+</li>
         <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.forward">(homura.vision.models.classification.densenet.CIFARDenseNet method)</a>
 </li>
         <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.PreActResNet.forward">(homura.vision.models.classification.resnet.PreActResNet method)</a>
@@ -479,12 +484,30 @@
         <li><a href="homura.utils.html#homura.utils.environment.get_global_rank">(in module homura.utils.environment)</a>
 </li>
       </ul></li>
+      <li><a href="homura.html#homura.get_local_rank">get_local_rank() (in module homura)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.environment.get_local_rank">(in module homura.utils.environment)</a>
+</li>
+      </ul></li>
       <li><a href="homura.html#homura.liblog.get_logger">get_logger() (in module homura.liblog)</a>
 </li>
+      <li><a href="homura.html#homura.get_num_nodes">get_num_nodes() (in module homura)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.environment.get_num_nodes">(in module homura.utils.environment)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#homura.liblog.get_verb_level">get_verb_level() (in module homura.liblog)</a>
 </li>
+      <li><a href="homura.html#homura.get_world_size">get_world_size() (in module homura)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.environment.get_world_size">(in module homura.utils.environment)</a>
+</li>
+      </ul></li>
       <li><a href="homura.modules.functional.html#homura.modules.functional.discretization.gumbel_sigmoid">gumbel_sigmoid() (in module homura.modules.functional.discretization)</a>
 </li>
       <li><a href="homura.modules.functional.html#homura.modules.functional.discretization.gumbel_softmax">gumbel_softmax() (in module homura.modules.functional.discretization)</a>
@@ -515,10 +538,6 @@
 </li>
       <li><a href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons (module)</a>
 </li>
-      <li><a href="homura.metrics.generative.html#module-homura.metrics.generative">homura.metrics.generative (module)</a>
-</li>
-      <li><a href="homura.metrics.generative.html#module-homura.metrics.generative.utils">homura.metrics.generative.utils (module)</a>
-</li>
       <li><a href="homura.metrics.html#module-homura.metrics.segmentation">homura.metrics.segmentation (module)</a>
 </li>
       <li><a href="homura.modules.html#module-homura.modules">homura.modules (module)</a>
@@ -539,18 +558,18 @@
 </li>
       <li><a href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs (module)</a>
 </li>
+      <li><a href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer (module)</a>
+</li>
       <li><a href="homura.html#module-homura.optim">homura.optim (module)</a>
 </li>
       <li><a href="homura.html#module-homura.reporters">homura.reporters (module)</a>
 </li>
-      <li><a href="homura.html#module-homura.reproductivity">homura.reproductivity (module)</a>
-</li>
       <li><a href="homura.html#module-homura.trainers">homura.trainers (module)</a>
+</li>
+      <li><a href="homura.utils.html#module-homura.utils">homura.utils (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.utils.html#module-homura.utils">homura.utils (module)</a>
-</li>
       <li><a href="homura.utils.html#module-homura.utils.containers">homura.utils.containers (module)</a>
 </li>
       <li><a href="homura.utils.html#module-homura.utils.environment">homura.utils.environment (module)</a>
@@ -560,6 +579,8 @@
       <li><a href="homura.utils.html#module-homura.utils.miscs">homura.utils.miscs (module)</a>
 </li>
       <li><a href="homura.utils.html#module-homura.utils.reporter_backends">homura.utils.reporter_backends (module)</a>
+</li>
+      <li><a href="homura.utils.html#module-homura.utils.reproductivity">homura.utils.reproductivity (module)</a>
 </li>
       <li><a href="homura.utils.html#module-homura.utils.runner">homura.utils.runner (module)</a>
 </li>
@@ -769,7 +790,7 @@
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.recall">recall() (in module homura.metrics.commons)</a>
 </li>
-      <li><a href="homura.html#homura.callbacks.MetricCallback.reduce">reduce() (homura.callbacks.MetricCallback static method)</a>
+      <li><a href="homura.html#homura.callbacks.MetricCallback.reduce">reduce() (homura.callbacks.MetricCallback method)</a>
 </li>
       <li><a href="homura.html#homura.lr_scheduler.ReduceLROnPlateau">ReduceLROnPlateau (class in homura.lr_scheduler)</a>
 </li>
@@ -825,18 +846,28 @@
 </li>
       <li><a href="homura.modules.html#homura.modules.discretization.SemanticHashing">SemanticHashing (class in homura.modules.discretization)</a>
 </li>
-      <li><a href="homura.html#homura.reproductivity.set_deterministic">set_deterministic() (in module homura.reproductivity)</a>
+      <li><a href="homura.utils.html#homura.utils.set_deterministic">set_deterministic() (in module homura.utils)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.reproductivity.set_deterministic">(in module homura.utils.reproductivity)</a>
 </li>
+      </ul></li>
       <li><a href="homura.html#homura.liblog.set_file_handler">set_file_handler() (in module homura.liblog)</a>
 </li>
       <li><a href="homura.html#homura.optim.Optimizer.set_model">set_model() (homura.optim.Optimizer method)</a>
 </li>
       <li><a href="homura.html#homura.lr_scheduler.LRScheduler.set_optimizer">set_optimizer() (homura.lr_scheduler.LRScheduler method)</a>
 </li>
-      <li><a href="homura.html#homura.liblog.set_verb_level">set_verb_level() (in module homura.liblog)</a>
+      <li><a href="homura.utils.html#homura.utils.set_seed">set_seed() (in module homura.utils)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.reproductivity.set_seed">(in module homura.utils.reproductivity)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.html#homura.liblog.set_verb_level">set_verb_level() (in module homura.liblog)</a>
+</li>
       <li><a href="homura.html#homura.optim.SGD">SGD (class in homura.optim)</a>
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.specificity">specificity() (in module homura.metrics.commons)</a>
@@ -923,7 +954,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.vision.models.segmentation.html#homura.vision.models.segmentation.unet.unet">unet() (in module homura.vision.models.segmentation.unet)</a>
 </li>
-      <li><a href="homura.html#homura.reproductivity.unset_deterministic">unset_deterministic() (in module homura.reproductivity)</a>
+      <li><a href="homura.utils.html#homura.utils.reproductivity.unset_deterministic">unset_deterministic() (in module homura.utils.reproductivity)</a>
+</li>
+      <li><a href="homura.utils.html#homura.utils.reproductivity.unset_seed">unset_seed() (in module homura.utils.reproductivity)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -959,6 +992,8 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.modules.html#homura.modules.regularizer.weight_standardization">weight_standardization() (in module homura.modules.regularizer)</a>
+</li>
       <li><a href="homura.html#homura.callbacks.WeightSave">WeightSave (class in homura.callbacks)</a>
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.WideBasicModule">WideBasicModule (class in homura.vision.models.classification.wideresnet)</a>
@@ -970,6 +1005,8 @@
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_10">wrn28_10() (in module homura.vision.models.classification.wideresnet)</a>
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.wideresnet.wrn28_2">wrn28_2() (in module homura.vision.models.classification.wideresnet)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.regularizer.WSConv2d">WSConv2d (class in homura.modules.regularizer)</a>
 </li>
   </ul></td>
 </tr></table>

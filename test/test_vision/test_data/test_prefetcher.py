@@ -10,5 +10,6 @@ def test_prefetcher():
     dataset = TensorDataset(data, label)
     loader = DataLoader(dataset, batch_size=32)
     prefetcher = DataPrefetcher(loader)
-    for input, target in prefetcher:
-        pass
+    for _ in range(2):
+        for input, target in prefetcher:
+            pass

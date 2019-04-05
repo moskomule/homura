@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from torch.autograd import Function
 
@@ -36,5 +37,5 @@ class StraightBackprop(nn.Module):
         super(StraightBackprop, self).__init__()
         self._fn = straight_backprop(function)
 
-    def forward(self, input):
+    def forward(self, input) -> torch.Tensor:
         return self._fn(input)

@@ -5,7 +5,7 @@ import torch
 __all__ = ["to_onehot"]
 
 
-def to_onehot(target: torch.Tensor, num_classes: int):
+def to_onehot(target: torch.Tensor, num_classes: int) -> torch.Tensor:
     """ Convert given target tensor to onehot format
 
     :param target: `LongTensor` of `BxCx(optional dimensions)`

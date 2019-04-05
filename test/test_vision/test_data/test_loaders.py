@@ -1,8 +1,9 @@
 from pathlib import Path
 
 import pytest
-from homura.vision import mnist_loaders, cifar10_loaders
 from torchvision import transforms
+
+from homura.vision import mnist_loaders, cifar10_loaders
 
 
 @pytest.mark.skipif(not Path("~/.torch/data/mnist").expanduser().exists(), reason="To avoid downloading")

@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -155,7 +156,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;to_onehot&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="to_onehot"><a class="viewcode-back" href="../../../../homura.modules.functional.html#homura.modules.functional.convert.to_onehot">[docs]</a><span class="k">def</span> <span class="nf">to_onehot</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="to_onehot"><a class="viewcode-back" href="../../../../homura.modules.functional.html#homura.modules.functional.convert.to_onehot">[docs]</a><span class="k">def</span> <span class="nf">to_onehot</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Convert given target tensor to onehot format</span>
 
 <span class="sd">    :param target: `LongTensor` of `BxCx(optional dimensions)`</span>

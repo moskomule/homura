@@ -11,7 +11,7 @@ __all__ = ["true_positive", "true_negative", "false_positive", "false_negative",
            "confusion_matrix", ]
 
 
-def _base(input: torch.Tensor, target: torch.Tensor) -> Tuple[torch.Tensor]:
+def _base(input: torch.Tensor, target: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     classes = torch.arange(input.size(1), device=input.device)
     pred = input.argmax(dim=1).view(-1, 1)
     target = target.view(-1, 1)
@@ -139,7 +139,7 @@ def f1_score(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return 2 * prec * rec / (prec + rec)
 
 
-def confusion_matrix(input: torch.Tensor, target: torch.Tensor):
+def confusion_matrix(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Calculate confusion matrix
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`

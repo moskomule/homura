@@ -93,6 +93,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.inferencer">homura.utils.inferencer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.miscs">homura.utils.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.reporter_backends">homura.utils.reporter_backends module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.reproductivity">homura.utils.reproductivity module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.runner">homura.utils.runner module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
 </ul>
@@ -107,7 +108,6 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reproductivity">homura.reproductivity module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -115,6 +115,18 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">homura.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.environment">homura.utils.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.inferencer">homura.utils.inferencer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.miscs">homura.utils.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reporter_backends">homura.utils.reporter_backends module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reproductivity">homura.utils.reproductivity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.runner">homura.utils.runner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -249,6 +261,21 @@
 <dl class="function">
 <dt id="homura.utils.environment.get_global_rank">
 <code class="descclassname">homura.utils.environment.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_global_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.environment.get_local_rank">
+<code class="descclassname">homura.utils.environment.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_local_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.environment.get_world_size">
+<code class="descclassname">homura.utils.environment.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_world_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.environment.get_num_nodes">
+<code class="descclassname">homura.utils.environment.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_num_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -441,6 +468,32 @@
 <dd></dd></dl>
 
 </div>
+<div class="section" id="module-homura.utils.reproductivity">
+<span id="homura-utils-reproductivity-module"></span><h2>homura.utils.reproductivity module<a class="headerlink" href="#module-homura.utils.reproductivity" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="homura.utils.reproductivity.set_deterministic">
+<code class="descclassname">homura.utils.reproductivity.</code><code class="descname">set_deterministic</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproductivity.set_deterministic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to 0 for making it deterministic. Because of CUDA’s limitation, this
+does not make everything deterministic, however.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.reproductivity.set_seed">
+<code class="descclassname">homura.utils.reproductivity.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproductivity.set_seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.reproductivity.unset_deterministic">
+<code class="descclassname">homura.utils.reproductivity.</code><code class="descname">unset_deterministic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#unset_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproductivity.unset_deterministic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unset seed and set cudnn stochastic.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.reproductivity.unset_seed">
+<code class="descclassname">homura.utils.reproductivity.</code><code class="descname">unset_seed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#unset_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproductivity.unset_seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
 <div class="section" id="module-homura.utils.runner">
 <span id="homura-utils-runner-module"></span><h2>homura.utils.runner module<a class="headerlink" href="#module-homura.utils.runner" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -500,6 +553,18 @@
 <code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.set_seed">
+<code class="descclassname">homura.utils.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="homura.utils.set_deterministic">
+<code class="descclassname">homura.utils.</code><code class="descname">set_deterministic</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproductivity.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_deterministic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to 0 for making it deterministic. Because of CUDA’s limitation, this
+does not make everything deterministic, however.</p>
 </dd></dl>
 
 </div>
