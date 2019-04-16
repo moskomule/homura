@@ -40,7 +40,13 @@ def test(rep, save_freq):
             tr.train(loader)
             tr.test(loader)
 
-    save_file = list(Path(tmpdir).glob("*/*.pkl"))[0]
+    # circle-CI cause an error
+    save_files = list(Path(tmpdir).glob("*/*.pkl"))
+    try:
+        save_file = save_files[0]
+    except IndexError as e:
+        print(save_files)
+        raise e
     tr.resume(save_file)
 
     c = callbacks.AccuracyCallback()
