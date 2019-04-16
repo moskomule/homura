@@ -80,6 +80,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
 
         # set scheduler(s)
+        self.update_scheduler_by_epoch = update_scheduler_by_epoch
         self.update_scheduler(scheduler, update_scheduler_by_epoch)
 
         self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
@@ -195,6 +196,19 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         for k in results.keys():
             self._iteration_map.pop(k)
 
+    def __enter__(self):
+        """
+
+        >>> with Trainer(...) as trainer:
+        >>>     trainer.train(...)
+
+        """
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.exit()
+
     def _loop(self,
               data_loader: DataLoader,
               mode: str):
@@ -263,7 +277,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            self._exit()
+            self.exit()
 
         except KeyboardInterrupt:
             print("\ninterrupted")
@@ -271,7 +285,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._callbacks.close()
             exit()
 
-    def _exit(self):
+    def exit(self):
         with torch.no_grad():
             self._callbacks.after_all(self._all_map)
 

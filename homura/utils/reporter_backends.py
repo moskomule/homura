@@ -16,7 +16,7 @@ from torchvision.utils import make_grid, save_image as _save_image
 import homura
 from homura.liblog import _set_tqdm_handler
 from ._vocabulary import *
-from .miscs import get_git_hash
+from .environment import get_git_hash
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
