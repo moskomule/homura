@@ -3,14 +3,16 @@ from tempfile import gettempdir
 
 import pytest
 import torch
-from homura import reporters, callbacks, optim, is_tensorboardX_available, metrics, trainers
-from homura.utils.inferencer import Inferencer
 from torch import nn
 from torch.nn import functional as F
 
+from homura import reporters, callbacks, optim, is_tensorboardX_available, metrics, trainers
+from homura.utils.inferencer import Inferencer
+
 
 @pytest.mark.parametrize("rep", ["tqdm", "logger", "tensorboard"])
-def test(rep):
+@pytest.mark.parametrize("save_freq", [-1, 1])
+def test(rep, save_freq):
     tmpdir = str(gettempdir())
     if rep == "tensorboard" and not is_tensorboardX_available:
         pytest.skip("tensorboardX is not available")
@@ -23,7 +25,7 @@ def test(rep):
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
 
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(tmpdir))
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(tmpdir, save_freq=save_freq))
     epoch = range(1)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, tmpdir),
