@@ -265,7 +265,10 @@ class WeightSave(Callback):
                  save_path: str or Path,
                  save_freq: int = 1):
 
-        self.save_path = Path(save_path) / (NOW + "-" + get_git_hash())
+        postfix = ""
+        if len(get_git_hash()) > 0:
+            postfix = "-" + get_git_hash()
+        self.save_path = Path(save_path) / (NOW + postfix)
         self.save_freq = save_freq
         self._epoch = 0
         self._step = 0

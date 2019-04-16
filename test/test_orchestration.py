@@ -1,5 +1,4 @@
 from pathlib import Path
-from tempfile import gettempdir
 
 import pytest
 import torch
@@ -12,8 +11,8 @@ from homura.utils.inferencer import Inferencer
 
 @pytest.mark.parametrize("rep", ["tqdm", "logger", "tensorboard"])
 @pytest.mark.parametrize("save_freq", [-1, 1])
-def test(rep, save_freq):
-    tmpdir = str(gettempdir())
+def test(tmp_path, rep, save_freq):
+    temp_dir = tmp_path / "test"
     if rep == "tensorboard" and not is_tensorboardX_available:
         pytest.skip("tensorboardX is not available")
 
@@ -25,12 +24,13 @@ def test(rep, save_freq):
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
 
-    c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(tmpdir, save_freq=save_freq))
+    c = callbacks.CallbackList(callbacks.AccuracyCallback(), ca, callbacks.WeightSave(save_path=temp_dir,
+                                                                                      save_freq=save_freq))
     epoch = range(1)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
-    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, tmpdir),
-          "logger": lambda: reporters.LoggerReporter(c, tmpdir),
-          "tensorboard": lambda: reporters.TensorboardReporter(c, tmpdir)
+    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, temp_dir),
+          "logger": lambda: reporters.LoggerReporter(c, temp_dir),
+          "tensorboard": lambda: reporters.TensorboardReporter(c, temp_dir)
           }[rep]() as _rep:
         tr = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy,
                                         callbacks=_rep, verb=False)
@@ -39,20 +39,20 @@ def test(rep, save_freq):
         for _ in epoch:
             tr.train(loader)
             tr.test(loader)
+        tr.exit()
 
-    # circle-CI cause an error
-    save_files = list(Path(tmpdir).glob("*/*.pkl"))
     try:
-        save_file = save_files[0]
+        # .../test/**/0.pkl
+        save_file = list(Path(temp_dir).glob("*/*.pkl"))[0]
     except IndexError as e:
-        print(save_files)
+        print(list(Path(temp_dir).glob("*/*")))
         raise e
     tr.resume(save_file)
 
     c = callbacks.AccuracyCallback()
-    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, tmpdir),
-          "logger": lambda: reporters.LoggerReporter(c, tmpdir),
-          "tensorboard": lambda: reporters.TensorboardReporter(c, tmpdir)
+    with {"tqdm": lambda: reporters.TQDMReporter(epoch, c, temp_dir),
+          "logger": lambda: reporters.LoggerReporter(c, temp_dir),
+          "tensorboard": lambda: reporters.TensorboardReporter(c, temp_dir)
           }[rep]() as _rep:
         inferencer = Inferencer(model, _rep)
         inferencer.load(save_file)
