@@ -231,6 +231,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use optimizer: </span><span class="si">{self.optimizer.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># set scheduler(s)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler_by_epoch</span> <span class="o">=</span> <span class="n">update_scheduler_by_epoch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">update_scheduler_by_epoch</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use scheduler: </span><span class="si">{self.scheduler.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -346,6 +347,19 @@
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &gt;&gt;&gt; with Trainer(...) as trainer:</span>
+<span class="sd">        &gt;&gt;&gt;     trainer.train(...)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
               <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
               <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -414,7 +428,7 @@
             <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">interrupted&quot;</span><span class="p">)</span>
@@ -422,9 +436,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">exit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrainerBase.exit"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TrainerBase.resume"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">):</span>

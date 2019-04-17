@@ -160,8 +160,7 @@
 
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">get_global_rank</span>
-<span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">get_git_hash</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_git_hash</span><span class="p">,</span> <span class="n">get_args</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Callback&quot;</span><span class="p">,</span> <span class="s2">&quot;MetricCallback&quot;</span><span class="p">,</span> <span class="s2">&quot;CallbackList&quot;</span><span class="p">,</span> <span class="s2">&quot;AccuracyCallback&quot;</span><span class="p">,</span>
            <span class="s2">&quot;LossCallback&quot;</span><span class="p">,</span> <span class="s2">&quot;WeightSave&quot;</span><span class="p">,</span> <span class="s2">&quot;metric_callback_decorator&quot;</span><span class="p">]</span>
@@ -404,7 +403,7 @@
     <span class="sd">&quot;&quot;&quot; Save weights after every epoch</span>
 
 <span class="sd">    :param save_path: path to be saved</span>
-<span class="sd">    :param save_freq: frequency of saving in epoch</span>
+<span class="sd">    :param save_freq: frequency of saving in epoch. If -1, saved by `after_all`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -413,24 +412,44 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span> <span class="n">save_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span>
+                 <span class="n">save_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">NOW</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">get_git_hash</span><span class="p">())</span>
+        <span class="n">postfix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_git_hash</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">postfix</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">get_git_hash</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">NOW</span> <span class="o">+</span> <span class="n">postfix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">=</span> <span class="n">save_freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+<div class="viewcode-block" id="WeightSave.save"><a class="viewcode-back" href="../../homura.html#homura.callbacks.WeightSave.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span>
+             <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="s2">&quot;git&quot;</span><span class="p">:</span> <span class="n">get_git_hash</span><span class="p">(),</span>
+                        <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">get_args</span><span class="p">(),</span>
+                        <span class="n">MODEL</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">]</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+                        <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">OPTIMIZER</span><span class="p">]</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+                        <span class="n">EPOCH</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span><span class="p">,</span>
+                        <span class="n">STEP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">},</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">/</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
 <div class="viewcode-block" id="WeightSave.after_epoch"><a class="viewcode-back" href="../../homura.html#homura.callbacks.WeightSave.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="n">MODEL</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">MODEL</span><span class="p">]</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
-                            <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">OPTIMIZER</span><span class="p">]</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
-                            <span class="n">EPOCH</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">],</span>
-                            <span class="n">STEP</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">STEP</span><span class="p">]},</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">/</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{data[EPOCH]}</span><span class="s2">.pkl&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">STEP</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{data[EPOCH]}</span><span class="s2">.pkl&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WeightSave.after_all"><a class="viewcode-back" href="../../homura.html#homura.callbacks.WeightSave.after_all">[docs]</a>    <span class="k">def</span> <span class="nf">after_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_freq</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;weight.pkl&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

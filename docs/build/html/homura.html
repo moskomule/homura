@@ -211,7 +211,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.inferencer">homura.utils.inferencer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.miscs">homura.utils.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.reporter_backends">homura.utils.reporter_backends module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.reproductivity">homura.utils.reproductivity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.runner">homura.utils.runner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils">Module contents</a></li>
 </ul>
@@ -461,15 +461,25 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>save_path</strong> – path to be saved</li>
-<li><strong>save_freq</strong> – frequency of saving in epoch</li>
+<li><strong>save_freq</strong> – frequency of saving in epoch. If -1, saved by <cite>after_all</cite>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
+<dt id="homura.callbacks.WeightSave.after_all">
+<code class="descname">after_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.after_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="homura.callbacks.WeightSave.after_epoch">
 <code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.WeightSave.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em>, <em>file_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -840,6 +850,11 @@ is need to be update by user.</li>
 <code class="descname">epoch</code><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="homura.trainers.TrainerBase.exit">
+<code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="homura.trainers.TrainerBase.is_train">
 <code class="descname">is_train</code><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
@@ -1146,27 +1161,27 @@ is need to be update by user.</li>
 
 <dl class="function">
 <dt id="homura.enable_accimage">
-<code class="descclassname">homura.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.enable_accimage" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.enable_accimage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_global_rank">
-<code class="descclassname">homura.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_global_rank" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_global_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_local_rank">
-<code class="descclassname">homura.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_local_rank" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_local_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_world_size">
-<code class="descclassname">homura.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_world_size" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_world_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_num_nodes">
-<code class="descclassname">homura.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_num_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">homura.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_num_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

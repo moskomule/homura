@@ -117,7 +117,8 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 
 ```python
 from homura.reproductivity import set_deterministic
-set_deterministic(1)
+with set_deterministic(seed):
+    something()
 ```
 
 ## debugger
