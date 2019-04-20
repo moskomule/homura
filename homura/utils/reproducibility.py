@@ -11,16 +11,17 @@ logger = get_logger(__name__)
 
 @contextlib.contextmanager
 def set_seed(seed: int = 0):
-    """ Fix seed of random generator in the given context. ::
+    """ Fix seed of random generator in the given context. Negative seed has no effect ::
 
         >>> with set_seed(0):
         >>>     do_some_random_thing()
 
     """
 
-    random.seed(seed)
-    torch.manual_seed(seed)
-    numpy.random.seed(seed)
+    if seed >= 0:
+        random.seed(seed)
+        torch.manual_seed(seed)
+        numpy.random.seed(seed)
     yield
     random.seed()
     new_seed = random.randrange(2 ** 32 - 1)
@@ -36,10 +37,11 @@ def set_deterministic(seed: int = 0):
     """
 
     with set_seed(seed):
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
-        logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "
-                    "Also, this may affect the performance.")
+        if seed >= 0:
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+            logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "
+                        "Also, this may affect the performance.")
         yield
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = True
