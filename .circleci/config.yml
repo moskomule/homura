@@ -14,10 +14,10 @@ jobs:
           command: |
             python -m venv venv
             . venv/bin/activate
-            pip install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
-            pip install https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
-            pip install pytest
-            pip install .
+            pip install -U https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
+            pip install -U https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
+            pip install -U pytest
+            pip install -U .
       - save_cache:
           paths:
             - ./venv
