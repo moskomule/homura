@@ -15,7 +15,8 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             pip install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
-            pip install torchvision pytest
+            pip install https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
+            pip install pytest
             pip install .
       - save_cache:
           paths:
