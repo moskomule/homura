@@ -18,7 +18,7 @@ def cross_entropy_with_softlabels(input: torch.Tensor,
                                   target: torch.Tensor,
                                   reduction: str = "mean") -> torch.Tensor:
     """ Cross entropy with soft labels. Unlike `torch.nn.functional.cross_entropy`, `target` is expected to be
-    one-hot or soft labelj.
+    one-hot or soft label.
 
     :param input: Tensor of `BxCx(optional dimensions)`
     :param target: Tensor of `BxCx(optional dimensions)`
@@ -26,5 +26,5 @@ def cross_entropy_with_softlabels(input: torch.Tensor,
     :return:
     """
     if input.size() != target.size():
-        raise RuntimeError(f"Input size ({input.size()}) and target size ({target.size()}) should be sama!")
+        raise RuntimeError(f"Input size ({input.size()}) and target size ({target.size()}) should be same!")
     return _reduction(-(input.log_softmax(dim=1) * target).sum(dim=-1), reduction)
