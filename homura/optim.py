@@ -33,6 +33,8 @@ class Adam(Optimizer):
         super(Adam, self).__init__(torch_optim.Adam,
                                    lr=lr, betas=betas, eps=eps, weight_decay=weight_decay, amsgrad=amsgrad)
 
+    __doc__ = torch_optim.Adam.__doc__
+
 
 class SGD(Optimizer):
     def __init__(self, lr, momentum=0, dampening=0, weight_decay=0, nesterov=False):
@@ -40,16 +42,22 @@ class SGD(Optimizer):
                                   weight_decay=weight_decay,
                                   nesterov=nesterov)
 
+    __doc__ = torch_optim.SGD.__doc__
+
 
 class RMSProp(Optimizer):
     def __init__(self, lr=0.01, alpha=0.99, eps=1e-08, weight_decay=0, momentum=0, centered=False):
         super(RMSProp, self).__init__(torch_optim.RMSprop, lr=lr, alpha=alpha, eps=eps, weight_decay=weight_decay,
                                       momentum=momentum, centered=centered)
 
+    __doc__ = torch_optim.RMSProp.__doc__
+
 
 class ASGD(Optimizer):
     def __init__(self, lr=0.01, lambd=0.0001, alpha=0.75, t0=1000000.0, weight_decay=0):
         super(ASGD, self).__init__(torch_optim.ASGD, lr=lr, lambd=lambd, alpha=alpha, t0=t0, weight_decay=weight_decay)
+
+    __doc__ = torch_optim.ASGD.__doc__
 
 
 class AdaBound(Optimizer):
@@ -57,3 +65,5 @@ class AdaBound(Optimizer):
                  eps=1e-8, weight_decay=0, amsbound=False):
         super(AdaBound, self).__init__(_optimizers.AdaBound, lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
                                        eps=eps, weight_decay=weight_decay, amsbound=amsbound)
+
+    __doc__ = torch_optim.AdaBound.__doc__

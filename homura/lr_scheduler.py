@@ -2,10 +2,11 @@
 
 from abc import ABCMeta
 
-from torch.optim import Optimizer
 from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiStepLR, LambdaLR as _LambdaLR,
-                                      ExponentialLR as _ExponentialLR, CosineAnnealingLR as _CosineAnnealingLR,
+                                      ExponentialLR as _ExponentialLR, CosineAnnealingLr as _CosineAnnealingLR,
+                                      CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts,
                                       ReduceLROnPlateau as _ReduceLROnPlateau, _LRScheduler)
+from torch.optim.optimizer import Optimizer
 
 __all__ = ["LRScheduler", "StepLR", "MultiStepLR", "LambdaLR", "ExponentialLR",
            "CosineAnnealingLR", "ReduceLROnPlateau"]
@@ -30,25 +31,43 @@ class StepLR(LRScheduler):
     def __init__(self, step_size, gamma=0.1, last_epoch=-1):
         super(StepLR, self).__init__(_StepLR, step_size=step_size, gamma=gamma, last_epoch=last_epoch)
 
+    __doc__ = _StepLR.__doc__
+
 
 class MultiStepLR(LRScheduler):
     def __init__(self, milestones, gamma=0.1, last_epoch=-1):
         super(MultiStepLR, self).__init__(_MultiStepLR, milestones=milestones, gamma=gamma, last_epoch=last_epoch)
+
+    __doc__ = _MultiStepLR.__doc__
 
 
 class LambdaLR(LRScheduler):
     def __init__(self, lr_lambda, last_epoch=-1):
         super(LambdaLR, self).__init__(_LambdaLR, lr_lambda=lr_lambda, last_epoch=last_epoch)
 
+    __doc__ = _LambdaLR.__doc__
+
 
 class ExponentialLR(LRScheduler):
     def __init__(self, gamma, last_epoch=-1):
         super(ExponentialLR, self).__init__(_ExponentialLR, gamma=gamma, last_epoch=last_epoch)
 
+    __doc__ = _ExponentialLR.__doc__
+
 
 class CosineAnnealingLR(LRScheduler):
     def __init__(self, T_max, eta_min=0, last_epoch=-1):
         super(CosineAnnealingLR, self).__init__(_CosineAnnealingLR, T_max=T_max, eta_min=eta_min, last_epoch=last_epoch)
+
+    __doc__ = _CosineAnnealingLR.__doc__
+
+
+class CosineAnnealingWarmRestart(LRScheduler):
+    def __init__(self, T_0, T_mult=1, eta_min=0, last_epoch=-1):
+        super(CosineAnnealingWarmRestart, self).__init__(_CosineAnnealingWarmRestarts, T_0=T_0, T_mult=T_mult,
+                                                         eta_min=eta_min, last_epoch=last_epoch)
+
+    __doc__ = _CosineAnnealingWarmRestarts.__doc__
 
 
 class ReduceLROnPlateau(LRScheduler):
@@ -58,3 +77,5 @@ class ReduceLROnPlateau(LRScheduler):
         super(ReduceLROnPlateau, self).__init__(_ReduceLROnPlateau, mode=mode, factor=factor, patience=patience,
                                                 verbose=verbose, threshold=threshold, threshold_mode=threshold_mode,
                                                 cooldown=cooldown, min_lr=min_lr, eps=eps)
+
+    __doc__ = _ReduceLROnPlateau.__doc__
