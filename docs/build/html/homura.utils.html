@@ -475,7 +475,7 @@ does not make everything deterministic, however.</p>
 <dl class="function">
 <dt id="homura.utils.reproducibility.set_seed">
 <code class="descclassname">homura.utils.reproducibility.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_seed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fix seed of random generator in the given context.</p>
+<dd><p>Fix seed of random generator in the given context. Negative seed has no effect</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">set_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">do_some_random_thing</span><span class="p">()</span>
 </pre></div>
@@ -547,7 +547,7 @@ does not make everything deterministic, however.</p>
 <dl class="function">
 <dt id="homura.utils.set_seed">
 <code class="descclassname">homura.utils.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_seed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fix seed of random generator in the given context.</p>
+<dd><p>Fix seed of random generator in the given context. Negative seed has no effect</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">set_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">do_some_random_thing</span><span class="p">()</span>
 </pre></div>

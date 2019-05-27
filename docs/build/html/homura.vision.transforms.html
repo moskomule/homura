@@ -115,6 +115,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.vision.transforms package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.erase">homura.vision.transforms.erase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.zca">homura.vision.transforms.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms">Module contents</a></li>
 </ul>
 </li>
@@ -207,6 +208,41 @@
 <code class="descname">min_ratio</code><em class="property"> = 0.1</em><a class="headerlink" href="#homura.vision.transforms.erase.RandomErase.min_ratio" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.vision.transforms.zca">
+<span id="homura-vision-transforms-zca-module"></span><h2>homura.vision.transforms.zca module<a class="headerlink" href="#module-homura.vision.transforms.zca" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.vision.transforms.zca.ZCATransformation">
+<em class="property">class </em><code class="descclassname">homura.vision.transforms.zca.</code><code class="descname">ZCATransformation</code><span class="sig-paren">(</span><em>transformation_matrix</em>, <em>mean_vector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.transforms.LinearTransformation</span></code></p>
+<dl class="staticmethod">
+<dt id="homura.vision.transforms.zca.ZCATransformation.zca">
+<em class="property">static </em><code class="descname">zca</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation.zca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation.zca" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.vision.transforms.zca.zca_statistics">
+<code class="descclassname">homura.vision.transforms.zca.</code><code class="descname">zca_statistics</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#zca_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.zca_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZCA-whitening</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input</strong> – </li>
+<li><strong>eps</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
