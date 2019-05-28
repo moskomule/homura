@@ -3,7 +3,7 @@
 from abc import ABCMeta
 
 from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiStepLR, LambdaLR as _LambdaLR,
-                                      ExponentialLR as _ExponentialLR, CosineAnnealingLr as _CosineAnnealingLR,
+                                      ExponentialLR as _ExponentialLR, CosineAnnealingLR as _CosineAnnealingLR,
                                       CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts,
                                       ReduceLROnPlateau as _ReduceLROnPlateau, _LRScheduler)
 from torch.optim.optimizer import Optimizer

@@ -50,7 +50,7 @@ class RMSProp(Optimizer):
         super(RMSProp, self).__init__(torch_optim.RMSprop, lr=lr, alpha=alpha, eps=eps, weight_decay=weight_decay,
                                       momentum=momentum, centered=centered)
 
-    __doc__ = torch_optim.RMSProp.__doc__
+    __doc__ = torch_optim.RMSprop.__doc__
 
 
 class ASGD(Optimizer):
@@ -66,4 +66,4 @@ class AdaBound(Optimizer):
         super(AdaBound, self).__init__(_optimizers.AdaBound, lr=lr, betas=betas, final_lr=final_lr, gamma=gamma,
                                        eps=eps, weight_decay=weight_decay, amsbound=amsbound)
 
-    __doc__ = torch_optim.AdaBound.__doc__
+    __doc__ = _optimizers.AdaBound.__doc__

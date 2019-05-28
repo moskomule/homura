@@ -23,9 +23,14 @@ def zca_statistics(input: torch.Tensor,
 
 
 class ZCATransformation(LinearTransformation):
+    """
+
+    >>> transform = ZCATransformation.create(torch.randn(4, 3, 32, 32))
+    >>> transform(torch.randn(2, 3, 32, 32))
+    """
 
     @staticmethod
-    def zca(input: torch.Tensor,
-            eps: float = 1e-3):
+    def create(input: torch.Tensor,
+               eps: float = 1e-3):
         matrix, mean = zca_statistics(input, eps)
         return ZCATransformation(matrix, mean)
