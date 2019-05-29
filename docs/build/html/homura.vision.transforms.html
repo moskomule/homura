@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -217,9 +218,13 @@
 <dt id="homura.vision.transforms.zca.ZCATransformation">
 <em class="property">class </em><code class="descclassname">homura.vision.transforms.zca.</code><code class="descname">ZCATransformation</code><span class="sig-paren">(</span><em>transformation_matrix</em>, <em>mean_vector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.transforms.LinearTransformation</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">ZCATransformation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
 <dl class="staticmethod">
-<dt id="homura.vision.transforms.zca.ZCATransformation.zca">
-<em class="property">static </em><code class="descname">zca</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation.zca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation.zca" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.vision.transforms.zca.ZCATransformation.create">
+<em class="property">static </em><code class="descname">create</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation.create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

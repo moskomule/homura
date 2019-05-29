@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -201,6 +202,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.zca">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -561,36 +563,203 @@
 <dt id="homura.lr_scheduler.StepLR">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">StepLR</code><span class="sig-paren">(</span><em>step_size</em>, <em>gamma=0.1</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#StepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.StepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Decays the learning rate of each parameter group by gamma every
+step_size epochs. Notice that such decay can happen simultaneously with
+other changes to the learning rate from outside this scheduler. When
+last_epoch=-1, sets initial lr as lr.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+step_size (int): Period of learning rate decay.
+gamma (float): Multiplicative factor of learning rate decay.</p>
+<blockquote>
+<div>Default: 0.1.</div></blockquote>
+<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+</dd>
+<dt>Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.05     if epoch &lt; 30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.005    if 30 &lt;= epoch &lt; 60</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.0005   if 60 &lt;= epoch &lt; 90</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">validate</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.MultiStepLR">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">MultiStepLR</code><span class="sig-paren">(</span><em>milestones</em>, <em>gamma=0.1</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#MultiStepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.MultiStepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Decays the learning rate of each parameter group by gamma once the
+number of epoch reaches one of the milestones. Notice that such decay can
+happen simultaneously with other changes to the learning rate from outside
+this scheduler. When last_epoch=-1, sets initial lr as lr.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+milestones (list): List of epoch indices. Must be increasing.
+gamma (float): Multiplicative factor of learning rate decay.</p>
+<blockquote>
+<div>Default: 0.1.</div></blockquote>
+<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+</dd>
+<dt>Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.05     if epoch &lt; 30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.005    if 30 &lt;= epoch &lt; 80</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.0005   if epoch &gt;= 80</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="mi">80</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">validate</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.LambdaLR">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">LambdaLR</code><span class="sig-paren">(</span><em>lr_lambda</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LambdaLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LambdaLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Sets the learning rate of each parameter group to the initial lr
+times a given function. When last_epoch=-1, sets initial lr as lr.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+lr_lambda (function or list): A function which computes a multiplicative</p>
+<blockquote>
+<div>factor given an integer parameter epoch, or a list of such
+functions, one for each group in optimizer.param_groups.</div></blockquote>
+<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+</dd>
+<dt>Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer has two groups.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">//</span> <span class="mi">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">epoch</span><span class="p">:</span> <span class="mf">0.95</span> <span class="o">**</span> <span class="n">epoch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_lambda</span><span class="o">=</span><span class="p">[</span><span class="n">lambda1</span><span class="p">,</span> <span class="n">lambda2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">validate</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.ExponentialLR">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">ExponentialLR</code><span class="sig-paren">(</span><em>gamma</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ExponentialLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ExponentialLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Decays the learning rate of each parameter group by gamma every epoch.
+When last_epoch=-1, sets initial lr as lr.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>optimizer (Optimizer): Wrapped optimizer.
+gamma (float): Multiplicative factor of learning rate decay.
+last_epoch (int): The index of last epoch. Default: -1.</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.CosineAnnealingLR">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">CosineAnnealingLR</code><span class="sig-paren">(</span><em>T_max</em>, <em>eta_min=0</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#CosineAnnealingLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.CosineAnnealingLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Set the learning rate of each parameter group using a cosine annealing
+schedule, where <span class="math notranslate nohighlight">\(\eta_{max}\)</span> is set to the initial lr and
+<span class="math notranslate nohighlight">\(T_{cur}\)</span> is the number of epochs since the last restart in SGDR:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\eta_{t+1} = \eta_{min} + (\eta_t - \eta_{min})\frac{1 +
+\cos(\frac{T_{cur+1}}{T_{max}}\pi)}{1 + \cos(\frac{T_{cur}}{T_{max}}\pi)},
+T_{cur} \neq (2k+1)T_{max};\\
+\eta_{t+1} = \eta_{t} + (\eta_{max} - \eta_{min})\frac{1 -
+\cos(\frac{1}{T_{max}}\pi)}{2},
+T_{cur} = (2k+1)T_{max}.\\\end{split}\]</div>
+<p>When last_epoch=-1, sets initial lr as lr. Notice that because the schedule
+is defined recursively, the learning rate can be simultaneously modified
+outside this scheduler by other operators. If the learning rate is set
+solely by this scheduler, the learning rate at each step becomes:</p>
+<div class="math notranslate nohighlight">
+\[\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 +
+\cos(\frac{T_{cur}}{T_{max}}\pi))\]</div>
+<p>It has been proposed in
+<a class="reference external" href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. Note that this only
+implements the cosine annealing part of SGDR, and not the restarts.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>optimizer (Optimizer): Wrapped optimizer.
+T_max (int): Maximum number of iterations.
+eta_min (float): Minimum learning rate. Default: 0.
+last_epoch (int): The index of last epoch. Default: -1.</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.ReduceLROnPlateau">
 <em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">ReduceLROnPlateau</code><span class="sig-paren">(</span><em>mode='min'</em>, <em>factor=0.1</em>, <em>patience=10</em>, <em>verbose=False</em>, <em>threshold=0.0001</em>, <em>threshold_mode='rel'</em>, <em>cooldown=0</em>, <em>min_lr=0</em>, <em>eps=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ReduceLROnPlateau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ReduceLROnPlateau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
+<p>Reduce learning rate when a metric has stopped improving.
+Models often benefit from reducing the learning rate by a factor
+of 2-10 once learning stagnates. This scheduler reads a metrics
+quantity and if no improvement is seen for a ‘patience’ number
+of epochs, the learning rate is reduced.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+mode (str): One of <cite>min</cite>, <cite>max</cite>. In <cite>min</cite> mode, lr will</p>
+<blockquote>
+<div>be reduced when the quantity monitored has stopped
+decreasing; in <cite>max</cite> mode it will be reduced when the
+quantity monitored has stopped increasing. Default: ‘min’.</div></blockquote>
+<dl class="last docutils">
+<dt>factor (float): Factor by which the learning rate will be</dt>
+<dd>reduced. new_lr = lr * factor. Default: 0.1.</dd>
+<dt>patience (int): Number of epochs with no improvement after</dt>
+<dd>which learning rate will be reduced. For example, if
+<cite>patience = 2</cite>, then we will ignore the first 2 epochs
+with no improvement, and will only decrease the LR after the
+3rd epoch if the loss still hasn’t improved then.
+Default: 10.</dd>
+<dt>verbose (bool): If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints a message to stdout for</dt>
+<dd>each update. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</dd>
+<dt>threshold (float): Threshold for measuring the new optimum,</dt>
+<dd>to only focus on significant changes. Default: 1e-4.</dd>
+<dt>threshold_mode (str): One of <cite>rel</cite>, <cite>abs</cite>. In <cite>rel</cite> mode,</dt>
+<dd>dynamic_threshold = best * ( 1 + threshold ) in ‘max’
+mode or best * ( 1 - threshold ) in <cite>min</cite> mode.
+In <cite>abs</cite> mode, dynamic_threshold = best + threshold in
+<cite>max</cite> mode or best - threshold in <cite>min</cite> mode. Default: ‘rel’.</dd>
+<dt>cooldown (int): Number of epochs to wait before resuming</dt>
+<dd>normal operation after lr has been reduced. Default: 0.</dd>
+<dt>min_lr (float or list): A scalar or a list of scalars. A</dt>
+<dd>lower bound on the learning rate of all param groups
+or each group respectively. Default: 0.</dd>
+<dt>eps (float): Minimal decay applied to lr. If the difference</dt>
+<dd>between new and old lr is smaller than eps, the update is
+ignored. Default: 1e-8.</dd>
+</dl>
+</dd>
+<dt>Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Note that step should be called after validate()</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -616,30 +785,154 @@
 <dt id="homura.optim.Adam">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">Adam</code><span class="sig-paren">(</span><em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>amsgrad=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Adam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+<p>Implements Adam algorithm.</p>
+<p>It has been proposed in <a class="reference external" href="https://arxiv.org/abs/1412.6980">Adam: A Method for Stochastic Optimization</a>.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
+<dd>parameter groups</dd>
+</dl>
+<p>lr (float, optional): learning rate (default: 1e-3)
+betas (Tuple[float, float], optional): coefficients used for computing</p>
+<blockquote>
+<div>running averages of gradient and its square (default: (0.9, 0.999))</div></blockquote>
+<dl class="docutils">
+<dt>eps (float, optional): term added to the denominator to improve</dt>
+<dd>numerical stability (default: 1e-8)</dd>
+</dl>
+<p>weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
+amsgrad (boolean, optional): whether to use the AMSGrad variant of this</p>
+<blockquote class="last">
+<div>algorithm from the paper <a class="reference external" href="https://openreview.net/forum?id=ryQu7f-RZ">On the Convergence of Adam and Beyond</a>
+(default: False)</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.SGD">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">SGD</code><span class="sig-paren">(</span><em>lr</em>, <em>momentum=0</em>, <em>dampening=0</em>, <em>weight_decay=0</em>, <em>nesterov=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.SGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+<p>Implements stochastic gradient descent (optionally with momentum).</p>
+<p>Nesterov momentum is based on the formula from
+<a class="reference external" href="http://www.cs.toronto.edu/%7Ehinton/absps/momentum.pdf">On the importance of initialization and momentum in deep learning</a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
+<dd>parameter groups</dd>
+</dl>
+<p class="last">lr (float): learning rate
+momentum (float, optional): momentum factor (default: 0)
+weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
+dampening (float, optional): dampening for momentum (default: 0)
+nesterov (bool, optional): enables Nesterov momentum (default: False)</p>
+</dd>
+<dt>Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">),</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The implementation of SGD with Momentum/Nesterov subtly differs from
+Sutskever et. al. and implementations in some other frameworks.</p>
+<p>Considering the specific case of Momentum, the update can be written as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}v = \rho * v + g \\
+p = p - lr * v\end{split}\]</div>
+<p>where p, g, v and <span class="math notranslate nohighlight">\(\rho\)</span> denote the parameters, gradient,
+velocity, and momentum respectively.</p>
+<p>This is in contrast to Sutskever et. al. and
+other frameworks which employ an update of the form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}v = \rho * v + lr * g \\
+p = p - v\end{split}\]</div>
+<p class="last">The Nesterov version is analogously modified.</p>
+</div>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.ASGD">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">ASGD</code><span class="sig-paren">(</span><em>lr=0.01</em>, <em>lambd=0.0001</em>, <em>alpha=0.75</em>, <em>t0=1000000.0</em>, <em>weight_decay=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#ASGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.ASGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+<p>Implements Averaged Stochastic Gradient Descent.</p>
+<p>It has been proposed in <a class="reference external" href="http://dl.acm.org/citation.cfm?id=131098">Acceleration of stochastic approximation by
+averaging</a>.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
+<dd>parameter groups</dd>
+</dl>
+<p class="last">lr (float, optional): learning rate (default: 1e-2)
+lambd (float, optional): decay term (default: 1e-4)
+alpha (float, optional): power for eta update (default: 0.75)
+t0 (float, optional): point at which to start averaging (default: 1e6)
+weight_decay (float, optional): weight decay (L2 penalty) (default: 0)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.RMSProp">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">RMSProp</code><span class="sig-paren">(</span><em>lr=0.01</em>, <em>alpha=0.99</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>momentum=0</em>, <em>centered=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#RMSProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.RMSProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+<p>Implements RMSprop algorithm.</p>
+<p>Proposed by G. Hinton in his
+<a class="reference external" href="http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf">course</a>.</p>
+<p>The centered version first appears in <a class="reference external" href="https://arxiv.org/pdf/1308.0850v5.pdf">Generating Sequences
+With Recurrent Neural Networks</a>.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
+<dd>parameter groups</dd>
+</dl>
+<p>lr (float, optional): learning rate (default: 1e-2)
+momentum (float, optional): momentum factor (default: 0)
+alpha (float, optional): smoothing constant (default: 0.99)
+eps (float, optional): term added to the denominator to improve</p>
+<blockquote>
+<div>numerical stability (default: 1e-8)</div></blockquote>
+<dl class="docutils">
+<dt>centered (bool, optional) <span class="classifier-delimiter">:</span> <span class="classifier">if <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute the centered RMSProp,</span></dt>
+<dd>the gradient is normalized by an estimation of its variance</dd>
+</dl>
+<p class="last">weight_decay (float, optional): weight decay (L2 penalty) (default: 0)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.AdaBound">
 <em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">AdaBound</code><span class="sig-paren">(</span><em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>final_lr=0.1</em>, <em>gamma=0.001</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>amsbound=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#AdaBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.AdaBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
+<p>Implements AdaBound algorithm.
+It has been proposed in <a href="#id2"><span class="problematic" id="id3">`Adaptive Gradient Methods with Dynamic Bound of Learning Rate`_</span></a>.
+Arguments:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
+<dd>parameter groups</dd>
+</dl>
+<p>lr (float, optional): Adam learning rate (default: 1e-3)
+betas (Tuple[float, float], optional): coefficients used for computing</p>
+<blockquote>
+<div>running averages of gradient and its square (default: (0.9, 0.999))</div></blockquote>
+<p>final_lr (float, optional): final (SGD) learning rate (default: 0.1)
+gamma (float, optional): convergence speed of the bound functions (default: 1e-3)
+eps (float, optional): term added to the denominator to improve</p>
+<blockquote>
+<div>numerical stability (default: 1e-8)</div></blockquote>
+<p>weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
+amsbound (boolean, optional): whether to use the AMSBound variant of this algorithm</p>
+</div></blockquote>
 </dd></dl>
 
 </div>

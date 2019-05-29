@@ -7,7 +7,8 @@ from homura.vision.transforms.zca import zca_statistics
 class ZCA(nn.Module):
     """ ZCA requires large matrix multiplication, so one solution is do it on GPUs.
 
-    >>> ZCA.create(torch.randn(4, 3, 24, 24))
+    >>> zca = ZCA.create(torch.randn(4, 3, 24, 24))
+    >>> zca(torch.rand(4, 3, 24, 24))
 
     """
 
