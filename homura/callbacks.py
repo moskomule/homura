@@ -268,7 +268,7 @@ class WeightSave(Callback):
         postfix = ""
         if len(get_git_hash()) > 0:
             postfix = "-" + get_git_hash()
-        self.save_path = Path(save_path) / (NOW + postfix)
+        self.save_path = Path(save_path) / (BASIC_DIR_NAME + postfix)
         self.save_freq = save_freq
         self._epoch = 0
         self._step = 0

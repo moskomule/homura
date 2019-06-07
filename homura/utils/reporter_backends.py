@@ -91,7 +91,7 @@ class _WrapperBase(metaclass=ABCMeta):
         postfix = ""
         if len(get_git_hash()) > 0:
             postfix = "-" + get_git_hash()
-        self._save_dir = pathlib.Path(save_dir) / (NOW + postfix)
+        self._save_dir = pathlib.Path(save_dir) / (BASIC_DIR_NAME + postfix)
         self._filename = NOW + ".json"
         self.logger = homura.liblog.get_logger(__name__)
 

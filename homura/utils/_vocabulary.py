@@ -1,5 +1,5 @@
+import os
 from datetime import datetime
-
 
 # vocabularies
 EPOCH = "epoch"
@@ -15,6 +15,7 @@ TRAIN = "train"
 TRAINER = "trainer"
 STEP = "step"
 NOW = datetime.now().strftime("%b%d-%H-%M-%S")
+BASIC_DIR_NAME = NOW + f"{os.getpgid():0>5}"
 DATA = "data"
 GPU = "cuda"
 CPU = "cpu"
