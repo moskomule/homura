@@ -33,7 +33,7 @@ class PerChannelStatistics(object):
 
     def from_batch(self, batch: Sequence[torch.Tensor]):
         batch_size = len(batch)
-        if batch_size > self._num_samples:
+        if batch_size < self._num_samples:
             raise RuntimeError(f"Need more than {self._num_samples} samples but {batch_size}")
         for image in batch[torch.randperm(batch_size).tolist()]:
             self._calc(image)
