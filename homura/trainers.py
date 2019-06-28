@@ -380,7 +380,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
                  use_sync_bn: bool = False, enable_amp=False, **kwargs):
         if use_sync_bn:
-            raise RuntimeError("Wait PyTorch's Update!")
+            model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
         if enable_amp:
             from homura import is_apex_available
 
