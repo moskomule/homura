@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import torch
 
-__all__ = ["Map", "TensorTuple"]
+__all__ = ["Map", "TensorTuple", "StepDict"]
 
 
 class Map(MutableMapping, dict):
