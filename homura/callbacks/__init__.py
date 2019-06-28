@@ -8,8 +8,8 @@ import torch
 from torch import distributed
 
 from homura.liblog import get_logger
-from .utils._vocabulary import *
-from .utils.environment import is_distributed, get_global_rank, get_git_hash, get_args
+from ..utils._vocabulary import *
+from ..utils.environment import is_distributed, get_global_rank, get_git_hash, get_args
 
 __all__ = ["Callback", "MetricCallback", "CallbackList", "AccuracyCallback",
            "LossCallback", "WeightSave", "metric_callback_decorator"]
