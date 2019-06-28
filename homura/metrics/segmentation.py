@@ -3,11 +3,13 @@
 import torch
 
 from homura.modules import to_onehot
+from .commons import confusion_matrix
 
 __all__ = ["binary_as_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"]
 
 
-def binary_as_multiclass(input: torch.Tensor, threshold: float) -> torch.Tensor:
+def binary_as_multiclass(input: torch.Tensor,
+                         threshold: float) -> torch.Tensor:
     """ Convert `Bx1xHxW` outputs to `BxCxHxW`.
 
     :param input:
@@ -19,7 +21,8 @@ def binary_as_multiclass(input: torch.Tensor, threshold: float) -> torch.Tensor:
     return torch.cat([input.clone().fill_(threshold), input], dim=1)
 
 
-def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+def pixel_accuracy(input: torch.Tensor,
+                   target: torch.Tensor) -> torch.Tensor:
     """ Pixel accuracy
 
     :param input: logits (`BxCxHxW`)
@@ -38,7 +41,8 @@ def pixel_accuracy(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return acc.mean()
 
 
-def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+def classwise_iou(input: torch.Tensor,
+                  target: torch.Tensor) -> torch.Tensor:
     """ Class-wise IoU
 
     :param input: logits (`BxCxHxW`)
@@ -50,16 +54,13 @@ def classwise_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     if target.dim() != 3:
         raise RuntimeError(f"Dimension of target is expected to be 3, but got {target.dim()}")
 
-    b, c, h, w = input.size()
-    pred = to_onehot(input.argmax(dim=1), num_classes=c)
-    gt = to_onehot(target, num_classes=c)
-    tp = (pred * gt).sum(dim=(-1, -2))
-    ps = pred.sum(dim=(-1, -2))
-    tr = gt.sum(dim=(-1, -2))
-    return (tp / (ps + tr - tp + 1e-8)).mean(0)
+    cm = confusion_matrix(input, target).float()
+    print(cm)
+    return cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
 
 
-def mean_iou(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+def mean_iou(input: torch.Tensor,
+             target: torch.Tensor) -> torch.Tensor:
     """ Mean IoU
 
     :param input: logits (`BxCxHxW`)

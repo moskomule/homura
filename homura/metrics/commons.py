@@ -139,7 +139,8 @@ def f1_score(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return 2 * prec * rec / (prec + rec)
 
 
-def confusion_matrix(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+def confusion_matrix(input: torch.Tensor,
+                     target: torch.Tensor) -> torch.Tensor:
     """Calculate confusion matrix
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -147,7 +148,7 @@ def confusion_matrix(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     :return: confusion matrix in long tensor of `CxC`
     """
     num_classes = input.size(1)
-    classes = torch.arange(num_classes, device=input.device)
-    pred = input.argmax(dim=1).view(-1, 1)
-    target = target.view(-1, 1)
-    return ((pred == classes).t() @ (target == classes)).long()
+    indices = (0 <= target) & (target < num_classes)
+    pred = input.argmax(dim=1)[indices]
+    inds = num_classes * pred + target[indices]
+    return inds.bincount(minlength=num_classes ** 2).view(num_classes, num_classes)

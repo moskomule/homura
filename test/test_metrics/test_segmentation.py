@@ -32,8 +32,8 @@ def test_pixel_accuracy():
 
 
 def test_classwise_iou():
-    assert segmentation.classwise_iou(multi_input, multi_target).tolist() == pytest.approx([0, 1 / 6, 1 / 6])
+    assert segmentation.classwise_iou(multi_input, multi_target).tolist() == pytest.approx([0, 1 / 3, 1 / 3])
 
 
 def test_mean_iou():
-    assert segmentation.mean_iou(multi_input, multi_target).item() == pytest.approx(1 / 9)
+    assert segmentation.mean_iou(multi_input, multi_target).item() == pytest.approx(2 / 9)
