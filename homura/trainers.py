@@ -183,12 +183,12 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         results = self.iteration(data)
         # backward compatibility
         if isinstance(results, tuple):
-            loss, output = TensorTuple(results).to(CPU)
+            loss, output = TensorTuple(results)
             results = dict(loss=loss, output=output)
             self._iteration_map.update(**results)
         else:
-            self._iteration_map.update(**results.to(CPU))
-        self._iteration_map[DATA] = data.to(CPU)
+            self._iteration_map.update(**results)
+        self._iteration_map[DATA] = data
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
         # clean up

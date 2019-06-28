@@ -58,13 +58,15 @@ class MetricCallback(Callback):
     :param metric: metric function: (data) -> float
     :param name: name of the metric
     :param logger:
-    :param no_reduce: skip reducing
+    :param no_reduce: skip reducing when distributed
+    :param reduction: reduction method after every epoch
     """
 
     def __init__(self,
                  metric: Callable[[Mapping], Any],
                  name: str,
                  logger=None,
+                 reduction="average",
                  no_reduce: bool = False):
         if metric is not None:
             self.metric_function = metric
@@ -76,6 +78,10 @@ class MetricCallback(Callback):
         self._warning_flag = True
         self._no_reduce = no_reduce
 
+        if reduction not in ("average", "sum"):
+            raise RuntimeError(f"`reduction` should be 'average' or 'sum', but got {reduction} instead")
+        self.reduction = reduction
+
     def before_iteration(self, data: Mapping):
         self._last_iter.clear()
 
@@ -85,9 +91,8 @@ class MetricCallback(Callback):
         # To avoid calculate same metric multiple times.
         # If once this method is called after an iteration, self._last_iter is not None
         if self._last_iter.get(key) is None:
+            # Note that `metric` can be GPU tensor
             metric = self.metric_function(data)
-            if torch.is_tensor(metric):
-                metric = self.reduce(metric)
 
             if metric is None:
                 metric = 0
@@ -98,13 +103,14 @@ class MetricCallback(Callback):
             self._last_iter[key] = metric
 
             if isinstance(metric, Mapping):
+                # first time
                 if self._metrics_history[key][-1] == 0:
-                    self._metrics_history[key][-1] = metric
+                    self._metrics_history[key][-1] = {k: self.to_cpu(self.reduce(metric[k])) for k in metric.keys()}
                 else:
-                    self._metrics_history[key][-1] = {k: v + self.reduce(metric[k])
+                    self._metrics_history[key][-1] = {k: v + self.to_cpu(self.reduce(metric[k]))
                                                       for k, v in self._metrics_history[key][-1].items()}
             else:
-                self._metrics_history[key][-1] += metric
+                self._metrics_history[key][-1] += self.to_cpu(self.reduce(metric))
         return self._last_iter
 
     def before_epoch(self, data: Mapping):
@@ -119,15 +125,15 @@ class MetricCallback(Callback):
 
     def after_epoch(self, data: Mapping):
         mode = data[MODE]
-        iter_per_epoch = data[ITER_PER_EPOCH]
+        divisor = data[ITER_PER_EPOCH] if self.reduction == "average" else 1
         key = self._get_key_name(mode)
         # if once this method is called, self._last_epoch is not None
         if self._last_epoch.get(key) is None:
             if isinstance(self._metrics_history[key][-1], Mapping):
-                self._metrics_history[key][-1] = {k: v / iter_per_epoch
+                self._metrics_history[key][-1] = {k: v / divisor
                                                   for k, v in self._metrics_history[key][-1].items()}
             else:
-                self._metrics_history[key][-1] /= iter_per_epoch
+                self._metrics_history[key][-1] /= divisor
             self._last_epoch[key] = self._metrics_history[key][-1]
         return self._last_epoch
 
@@ -151,15 +157,17 @@ class MetricCallback(Callback):
         return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
 
     def reduce(self, tensor):
-        """ for distributed setting
-        """
 
-        if not is_distributed or not torch.is_tensor(tensor) or self._no_reduce:
-            return tensor
+        if is_distributed and not self._no_reduce:
+            distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
+            return tensor / distributed.get_world_size()
+        return tensor
 
-        rt = tensor.cuda()
-        distributed.all_reduce(rt, op=distributed.ReduceOp.SUM)
-        return rt.cpu() / distributed.get_world_size()
+    @staticmethod
+    def to_cpu(tensor):
+        if torch.is_tensor(tensor):
+            return tensor.cpu()
+        return tensor
 
 
 class CallbackList(Callback):
