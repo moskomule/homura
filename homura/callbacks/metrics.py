@@ -5,6 +5,7 @@ import torch
 from torch import distributed
 
 from homura.liblog import get_logger
+from homura.metrics import confusion_matrix
 from .base import Callback
 from ..utils._vocabulary import *
 from ..utils.environment import is_distributed
@@ -155,7 +156,9 @@ class LossCallback(MetricCallback):
                                            name="loss")
 
 
-def metric_callback_decorator(_metric: Callable = None, name: str = None):
+def metric_callback_decorator(_metric: Callable = None,
+                              name: str = None,
+                              reduction="average"):
     """ Decorator to create a metrics callback
 
         >>> @metric_callback_decorator("loss")
@@ -164,6 +167,31 @@ def metric_callback_decorator(_metric: Callable = None, name: str = None):
     """
 
     def wrapper(metric: Callable):
-        return MetricCallback(metric, name=metric.__name__ if name is None else name)
+        return MetricCallback(metric,
+                              name=metric.__name__ if name is None else name,
+                              reduction=reduction)
 
     return wrapper if _metric is None else wrapper(_metric)
+
+
+class IOUCallback(MetricCallback):
+    """ Callback for IOU (classwise and mean IOU)
+    """
+
+    def __init__(self):
+        super(IOUCallback, self).__init__(self.cm,
+                                          "iou",
+                                          reduction="sum")
+
+    def cm(self, data):
+        output, target = data["output"], data["data"][1]
+        return confusion_matrix(output, target)
+
+    def after_epoch(self, data):
+        cm_map = super(IOUCallback, self).after_epoch(data)
+        name, cm = tuple(cm_map.items())[0]
+        _, post = name.split("_")
+        cm = cm.float()
+        iou = cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
+        return {f"iou_{post}": iou,
+                f"miou_{post}": iou.mean()}
