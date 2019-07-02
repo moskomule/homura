@@ -74,7 +74,9 @@ def save_image(path: Path, x: torch.Tensor, name: str, idx: int) -> None:
 
 
 def vector_to_dict(x: Union[Dict, Vector]):
-    if not isinstance(x, Mapping):
+    if isinstance(x, Mapping):
+        x = {str(k): v for k, v in x.items()}
+    else:
         if _dimension(x) == 1:
             x = {str(i): v for i, v in enumerate(x)}
         else:
