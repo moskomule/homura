@@ -44,6 +44,7 @@ class WeightSave(Callback):
                         "args": get_args(),
                         MODEL: data[MODEL].state_dict(),
                         OPTIMIZER: data[OPTIMIZER].state_dict(),
+                        SCHEDULER: data[SCHEDULER].state_dict(),
                         EPOCH: self._epoch,
                         STEP: self._step},
                        self.save_path / file_name)
