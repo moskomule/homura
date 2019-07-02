@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from homura import reporters, callbacks, optim, is_tensorboardX_available, metrics, trainers
+from homura import reporters, callbacks, optim, metrics, trainers
 from homura.utils.inferencer import Inferencer
 
 
@@ -13,8 +13,6 @@ from homura.utils.inferencer import Inferencer
 @pytest.mark.parametrize("save_freq", [-1, 1])
 def test(tmp_path, rep, save_freq):
     temp_dir = tmp_path / "test"
-    if rep == "tensorboard" and not is_tensorboardX_available:
-        pytest.skip("tensorboardX is not available")
 
     @callbacks.metric_callback_decorator
     def ca(data):
