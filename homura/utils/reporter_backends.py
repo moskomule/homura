@@ -16,7 +16,7 @@ from torchvision.utils import make_grid, save_image as _save_image
 import homura
 from homura.liblog import _set_tqdm_handler
 from ._vocabulary import *
-from .miscs import get_git_hash
+from .environment import get_git_hash
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
@@ -74,7 +74,9 @@ def save_image(path: Path, x: torch.Tensor, name: str, idx: int) -> None:
 
 
 def vector_to_dict(x: Union[Dict, Vector]):
-    if not isinstance(x, Mapping):
+    if isinstance(x, Mapping):
+        x = {str(k): v for k, v in x.items()}
+    else:
         if _dimension(x) == 1:
             x = {str(i): v for i, v in enumerate(x)}
         else:
@@ -91,7 +93,7 @@ class _WrapperBase(metaclass=ABCMeta):
         postfix = ""
         if len(get_git_hash()) > 0:
             postfix = "-" + get_git_hash()
-        self._save_dir = pathlib.Path(save_dir) / (NOW + postfix)
+        self._save_dir = pathlib.Path(save_dir) / (BASIC_DIR_NAME + postfix)
         self._filename = NOW + ".json"
         self.logger = homura.liblog.get_logger(__name__)
 
@@ -246,10 +248,7 @@ class TensorBoardWrapper(_WrapperBase):
             return object.__new__(cls)
 
     def __init__(self, save_dir=None, save_images=False):
-        if homura.is_tensorboardX_available:
-            from tensorboardX import SummaryWriter
-        else:
-            raise ImportError("To use TensorboardWrapper, tensorboardX is needed!")
+        from torch.utils.tensorboard import SummaryWriter
 
         super(TensorBoardWrapper, self).__init__(save_dir)
         self._writer = SummaryWriter(log_dir=str(self._save_dir))

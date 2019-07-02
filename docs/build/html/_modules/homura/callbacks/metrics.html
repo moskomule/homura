@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.callbacks.metrics &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>homura.callbacks.metrics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for homura.callbacks.metrics</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="k">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">distributed</span>
+
+<span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">homura.metrics</span> <span class="k">import</span> <span class="n">confusion_matrix</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">..utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span>
+
+
+<div class="viewcode-block" id="MetricCallback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback">[docs]</a><span class="k">class</span> <span class="nc">MetricCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class of MetricCallback class such as AccuracyCallback</span>
+
+<span class="sd">    :param metric: metric function: (data) -&gt; float</span>
+<span class="sd">    :param name: name of the metric</span>
+<span class="sd">    :param logger:</span>
+<span class="sd">    :param no_reduce: skip reducing when distributed</span>
+<span class="sd">    :param reduction: reduction method after every epoch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span>
+                 <span class="n">no_reduce</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metric_function</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_epoch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span> <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warning_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_reduce</span> <span class="o">=</span> <span class="n">no_reduce</span>
+
+        <span class="k">if</span> <span class="n">reduction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`reduction` should be &#39;average&#39; or &#39;sum&#39;, but got </span><span class="si">{reduction}</span><span class="s2"> instead&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
+
+<div class="viewcode-block" id="MetricCallback.before_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MetricCallback.after_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key_name</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="c1"># To avoid calculate same metric multiple times.</span>
+        <span class="c1"># If once this method is called after an iteration, self._last_iter is not None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Note that `metric` can be GPU tensor</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warning_flag</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.metric_function.__name__}</span><span class="s2"> get None and convert it to 0&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_warning_flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+                <span class="c1"># first time</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_cpu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">metric</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">metric</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_cpu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">metric</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                                                      <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_cpu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">metric</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_iter</span></div>
+
+<div class="viewcode-block" id="MetricCallback.before_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="c1"># initialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_epoch</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key_name</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MetricCallback.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">MODE</span><span class="p">]</span>
+        <span class="n">divisor</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ITER_PER_EPOCH</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">==</span> <span class="s2">&quot;average&quot;</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key_name</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="c1"># if once this method is called, self._last_epoch is not None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_epoch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">/</span> <span class="n">divisor</span>
+                                                  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">divisor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_epoch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_epoch</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_key_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.metric_name}</span><span class="s2">_</span><span class="si">{name}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; History of metric.</span>
+
+<span class="sd">        :return: dict of histories in {mode: [history]}</span>
+
+<span class="sd">        Using this property, history of metrics can be used after a training loop ::</span>
+
+<span class="sd">            &gt;&gt;&gt; metric = ...</span>
+<span class="sd">            &gt;&gt;&gt; # training loop</span>
+<span class="sd">            &gt;&gt;&gt; final_result = metric.history[&quot;val&quot;][-1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_history</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<div class="viewcode-block" id="MetricCallback.reduce"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">is_distributed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_reduce</span><span class="p">:</span>
+            <span class="n">distributed</span><span class="o">.</span><span class="n">all_reduce</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">distributed</span><span class="o">.</span><span class="n">ReduceOp</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tensor</span> <span class="o">/</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">tensor</span></div>
+
+<div class="viewcode-block" id="MetricCallback.to_cpu"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.MetricCallback.to_cpu">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_cpu</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">tensor</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">tensor</span></div></div>
+
+
+<div class="viewcode-block" id="AccuracyCallback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.AccuracyCallback">[docs]</a><span class="k">class</span> <span class="nc">AccuracyCallback</span><span class="p">(</span><span class="n">MetricCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Callback for accuracy</span>
+
+<span class="sd">    :param k: report top-k accuracy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;_top</span><span class="si">{self.top_k}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AccuracyCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;accuracy</span><span class="si">{suffix}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AccuracyCallback.accuracy"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.AccuracyCallback.accuracy">[docs]</a>    <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">OUTPUT</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">DATA</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pred_idx</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">pred_idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pred_idx</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="LossCallback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.LossCallback">[docs]</a><span class="k">class</span> <span class="nc">LossCallback</span><span class="p">(</span><span class="n">MetricCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Callback for loss function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LossCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="n">LOSS</span><span class="p">],</span>
+                                           <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="metric_callback_decorator"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.metric_callback_decorator">[docs]</a><span class="k">def</span> <span class="nf">metric_callback_decorator</span><span class="p">(</span><span class="n">_metric</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Decorator to create a metrics callback</span>
+
+<span class="sd">        &gt;&gt;&gt; @metric_callback_decorator(&quot;loss&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; def loss(data):</span>
+<span class="sd">        &gt;&gt;&gt;     return data[&quot;loss&quot;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">metric</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MetricCallback</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span>
+                              <span class="n">name</span><span class="o">=</span><span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">,</span>
+                              <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span> <span class="k">if</span> <span class="n">_metric</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">_metric</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IOUCallback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.IOUCallback">[docs]</a><span class="k">class</span> <span class="nc">IOUCallback</span><span class="p">(</span><span class="n">MetricCallback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Callback for IOU (classwise and mean IOU)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IOUCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="p">,</span>
+                                          <span class="s2">&quot;iou&quot;</span><span class="p">,</span>
+                                          <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IOUCallback.cm"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.IOUCallback.cm">[docs]</a>    <span class="k">def</span> <span class="nf">cm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IOUCallback.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.metrics.IOUCallback.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">cm_map</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">IOUCallback</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">cm</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cm_map</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">post</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">iou</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">f</span><span class="s2">&quot;iou_</span><span class="si">{post}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">iou</span><span class="p">,</span>
+                <span class="n">f</span><span class="s2">&quot;miou_</span><span class="si">{post}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">iou</span><span class="o">.</span><span class="n">mean</span><span class="p">()}</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

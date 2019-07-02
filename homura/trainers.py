@@ -80,6 +80,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
 
         # set scheduler(s)
+        self.update_scheduler_by_epoch = update_scheduler_by_epoch
         self.update_scheduler(scheduler, update_scheduler_by_epoch)
 
         self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
@@ -95,6 +96,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         _map_base = {MODEL: self.model,
                      OPTIMIZER: self.optimizer,
+                     SCHEDULER: self.scheduler,
                      TRAINER: self}
         self._iteration_map = Map(**_map_base.copy())
         self._epoch_map = Map(**_map_base.copy())
@@ -182,18 +184,31 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         results = self.iteration(data)
         # backward compatibility
         if isinstance(results, tuple):
-            loss, output = TensorTuple(results).to(CPU)
+            loss, output = TensorTuple(results)
             results = dict(loss=loss, output=output)
             self._iteration_map.update(**results)
         else:
-            self._iteration_map.update(**results.to(CPU))
-        self._iteration_map[DATA] = data.to(CPU)
+            self._iteration_map.update(**results)
+        self._iteration_map[DATA] = data
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
         # clean up
         self._iteration_map.pop(DATA)
         for k in results.keys():
             self._iteration_map.pop(k)
+
+    def __enter__(self):
+        """
+
+        >>> with Trainer(...) as trainer:
+        >>>     trainer.train(...)
+
+        """
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.exit()
 
     def _loop(self,
               data_loader: DataLoader,
@@ -263,7 +278,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             for ep in range(1, epochs + 1):
                 self.train(train_data)
                 self.test(test_data)
-            self._exit()
+            self.exit()
 
         except KeyboardInterrupt:
             print("\ninterrupted")
@@ -271,7 +286,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._callbacks.close()
             exit()
 
-    def _exit(self):
+    def exit(self):
         with torch.no_grad():
             self._callbacks.after_all(self._all_map)
 
@@ -288,7 +303,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             loaded = torch.load(f)
 
         self.model.load_state_dict(loaded[MODEL])
-        self.optimizer.load_state_dict(loaded[OPTIMIZER])
+        if loaded.get(OPTIMIZER) is not None:
+            self.optimizer.load_state_dict(loaded[OPTIMIZER])
+        if loaded.get(SCHEDULER) is not None:
+            self.scheduler.load_state_dict(loaded[SCHEDULER])
         self._step = loaded.get(STEP, 0)
         self._epoch = loaded.get(EPOCH, 0)
         self.logger.info(f"Resume training from {self.epoch}th epoch")
@@ -366,7 +384,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
                  use_sync_bn: bool = False, enable_amp=False, **kwargs):
         if use_sync_bn:
-            raise RuntimeError("Wait PyTorch's Update!")
+            model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
         if enable_amp:
             from homura import is_apex_available
 

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -81,6 +82,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -169,7 +171,7 @@
                                   <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                                   <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Cross entropy with soft labels. Unlike `torch.nn.functional.cross_entropy`, `target` is expected to be</span>
-<span class="sd">    one-hot or soft labelj.</span>
+<span class="sd">    one-hot or soft label.</span>
 
 <span class="sd">    :param input: Tensor of `BxCx(optional dimensions)`</span>
 <span class="sd">    :param target: Tensor of `BxCx(optional dimensions)`</span>
@@ -177,7 +179,7 @@
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Input size ({input.size()}) and target size ({target.size()}) should be sama!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Input size ({input.size()}) and target size ({target.size()}) should be same!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_reduction</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">reduction</span><span class="p">)</span></div>
 </pre></div>
 

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -84,6 +85,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -95,7 +97,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -105,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -202,12 +204,12 @@
 <span id="homura-vision-models-segmentation-msdnet-module"></span><h2>homura.vision.models.segmentation.msdnet module<a class="headerlink" href="#module-homura.vision.models.segmentation.msdnet" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.vision.models.segmentation.msdnet.msdnet25">
-<code class="descclassname">homura.vision.models.segmentation.msdnet.</code><code class="descname">msdnet25</code><span class="sig-paren">(</span><em>num_classes</em>, <em>input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/msdnet.html#msdnet25"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.msdnet.msdnet25" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.segmentation.msdnet.</code><code class="sig-name descname">msdnet25</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/msdnet.html#msdnet25"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.msdnet.msdnet25" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.segmentation.msdnet.msdnet50">
-<code class="descclassname">homura.vision.models.segmentation.msdnet.</code><code class="descname">msdnet50</code><span class="sig-paren">(</span><em>num_classes</em>, <em>input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/msdnet.html#msdnet50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.msdnet.msdnet50" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.segmentation.msdnet.</code><code class="sig-name descname">msdnet50</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/msdnet.html#msdnet50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.msdnet.msdnet50" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -215,21 +217,21 @@
 <span id="homura-vision-models-segmentation-unet-module"></span><h2>homura.vision.models.segmentation.unet module<a class="headerlink" href="#module-homura.vision.models.segmentation.unet" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.vision.models.segmentation.unet.unet">
-<code class="descclassname">homura.vision.models.segmentation.unet.</code><code class="descname">unet</code><span class="sig-paren">(</span><em>num_classes</em>, <em>input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#unet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.unet" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.segmentation.unet.</code><code class="sig-name descname">unet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#unet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.unet" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.models.segmentation.unet.CustomUNet">
-<em class="property">class </em><code class="descclassname">homura.vision.models.segmentation.unet.</code><code class="descname">CustomUNet</code><span class="sig-paren">(</span><em>num_classes</em>, <em>input_channels</em>, <em>config=((64</em>, <em>128</em>, <em>256</em>, <em>512</em>, <em>1024)</em>, <em>(1024</em>, <em>512</em>, <em>256</em>, <em>128</em>, <em>64))</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.segmentation.unet.</code><code class="sig-name descname">CustomUNet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels</em>, <em class="sig-param">config=((64</em>, <em class="sig-param">128</em>, <em class="sig-param">256</em>, <em class="sig-param">512</em>, <em class="sig-param">1024)</em>, <em class="sig-param">(1024</em>, <em class="sig-param">512</em>, <em class="sig-param">256</em>, <em class="sig-param">128</em>, <em class="sig-param">64))</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.models.segmentation.unet.UNet</span></code></p>
 <dl class="method">
 <dt id="homura.vision.models.segmentation.unet.CustomUNet.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -81,6 +82,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -231,6 +233,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use optimizer: </span><span class="si">{self.optimizer.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># set scheduler(s)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler_by_epoch</span> <span class="o">=</span> <span class="n">update_scheduler_by_epoch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">update_scheduler_by_epoch</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Use scheduler: </span><span class="si">{self.scheduler.__class__.__name__}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -246,6 +249,7 @@
 
         <span class="n">_map_base</span> <span class="o">=</span> <span class="p">{</span><span class="n">MODEL</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
                      <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+                     <span class="n">SCHEDULER</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span>
                      <span class="n">TRAINER</span><span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
@@ -333,18 +337,31 @@
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># backward compatibility</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">loss</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">TensorTuple</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span>
+            <span class="n">loss</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">TensorTuple</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">results</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">results</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">CPU</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">results</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="p">)</span>
         <span class="c1"># clean up</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &gt;&gt;&gt; with Trainer(...) as trainer:</span>
+<span class="sd">        &gt;&gt;&gt;     trainer.train(...)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
               <span class="n">data_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
@@ -414,7 +431,7 @@
             <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">interrupted&quot;</span><span class="p">)</span>
@@ -422,9 +439,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">exit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrainerBase.exit"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TrainerBase.resume"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">):</span>
@@ -439,7 +456,10 @@
             <span class="n">loaded</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">MODEL</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">OPTIMIZER</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">OPTIMIZER</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SCHEDULER</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="n">SCHEDULER</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">STEP</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCH</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Resume training from </span><span class="si">{self.epoch}</span><span class="s2">th epoch&quot;</span><span class="p">)</span></div>
@@ -517,7 +537,7 @@
                  <span class="n">verb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span>
                  <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">enable_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">use_sync_bn</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Wait PyTorch&#39;s Update!&quot;</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">SyncBatchNorm</span><span class="o">.</span><span class="n">convert_sync_batchnorm</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">enable_amp</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">homura</span> <span class="k">import</span> <span class="n">is_apex_available</span>
 

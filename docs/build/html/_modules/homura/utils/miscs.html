@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -81,6 +82,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -149,27 +151,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.utils.miscs</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-
-
-<span class="k">def</span> <span class="nf">_decode_bytes</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-
-<div class="viewcode-block" id="get_git_hash"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.miscs.get_git_hash">[docs]</a><span class="k">def</span> <span class="nf">get_git_hash</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">is_git_repo</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--is-inside-work-tree&quot;</span><span class="p">],</span>
-                                     <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">_decode_bytes</span><span class="p">(</span><span class="n">is_git_repo</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
-        <span class="n">git_hash</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--short&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
-                                  <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
-        <span class="k">return</span> <span class="n">_decode_bytes</span><span class="p">(</span><span class="n">git_hash</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
 
 <div class="viewcode-block" id="check_path"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.miscs.check_path">[docs]</a><span class="k">def</span> <span class="nf">check_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">):</span>

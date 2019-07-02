@@ -38,8 +38,8 @@ def test_update_scheduler():
                              update_scheduler_by_epoch=False)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(2)]
     trainer.train(loader)
-    # lambda calculates the factor!
-    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 2
+    # 0.1 * (0.1 ** 2)
+    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3
 
     trainer.update_scheduler(lr_scheduler.LambdaLR(lambda epoch: 0.1 ** epoch, last_epoch=1),
                              update_scheduler_by_epoch=True)

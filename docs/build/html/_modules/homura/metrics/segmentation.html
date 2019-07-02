@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -81,6 +82,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -154,11 +156,13 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">from</span> <span class="nn">homura.modules</span> <span class="k">import</span> <span class="n">to_onehot</span>
+<span class="kn">from</span> <span class="nn">.commons</span> <span class="k">import</span> <span class="n">confusion_matrix</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;binary_as_multiclass&quot;</span><span class="p">,</span> <span class="s2">&quot;pixel_accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_iou&quot;</span><span class="p">,</span> <span class="s2">&quot;classwise_iou&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="binary_as_multiclass"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.binary_as_multiclass">[docs]</a><span class="k">def</span> <span class="nf">binary_as_multiclass</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="binary_as_multiclass"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.binary_as_multiclass">[docs]</a><span class="k">def</span> <span class="nf">binary_as_multiclass</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                         <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Convert `Bx1xHxW` outputs to `BxCxHxW`.</span>
 
 <span class="sd">    :param input:</span>
@@ -170,7 +174,8 @@
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="nb">input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">threshold</span><span class="p">),</span> <span class="nb">input</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="pixel_accuracy"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.pixel_accuracy">[docs]</a><span class="k">def</span> <span class="nf">pixel_accuracy</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="pixel_accuracy"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.pixel_accuracy">[docs]</a><span class="k">def</span> <span class="nf">pixel_accuracy</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                   <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Pixel accuracy</span>
 
 <span class="sd">    :param input: logits (`BxCxHxW`)</span>
@@ -189,7 +194,8 @@
     <span class="k">return</span> <span class="n">acc</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="classwise_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.classwise_iou">[docs]</a><span class="k">def</span> <span class="nf">classwise_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="classwise_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.classwise_iou">[docs]</a><span class="k">def</span> <span class="nf">classwise_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                  <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Class-wise IoU</span>
 
 <span class="sd">    :param input: logits (`BxCxHxW`)</span>
@@ -201,16 +207,13 @@
     <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of target is expected to be 3, but got {target.dim()}&quot;</span><span class="p">)</span>
 
-    <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-    <span class="n">pred</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
-    <span class="n">gt</span> <span class="o">=</span> <span class="n">to_onehot</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
-    <span class="n">tp</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">*</span> <span class="n">gt</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">ps</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">tr</span> <span class="o">=</span> <span class="n">gt</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">ps</span> <span class="o">+</span> <span class="n">tr</span> <span class="o">-</span> <span class="n">tp</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="mean_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.mean_iou">[docs]</a><span class="k">def</span> <span class="nf">mean_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="mean_iou"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.segmentation.mean_iou">[docs]</a><span class="k">def</span> <span class="nf">mean_iou</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+             <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Mean IoU</span>
 
 <span class="sd">    :param input: logits (`BxCxHxW`)</span>

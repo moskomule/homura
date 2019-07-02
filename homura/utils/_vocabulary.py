@@ -1,5 +1,5 @@
+import os
 from datetime import datetime
-
 
 # vocabularies
 EPOCH = "epoch"
@@ -8,6 +8,7 @@ LOSS = "loss"
 MODEL = "model"
 MODE = "mode"
 OPTIMIZER = "optimizer"
+SCHEDULER = "scheduler"
 OUTPUT = "output"
 TARGET = "target"
 TEST = "test"
@@ -15,6 +16,7 @@ TRAIN = "train"
 TRAINER = "trainer"
 STEP = "step"
 NOW = datetime.now().strftime("%b%d-%H-%M-%S")
+BASIC_DIR_NAME = NOW + f"{os.getpid():0>5}"
 DATA = "data"
 GPU = "cuda"
 CPU = "cpu"

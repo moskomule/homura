@@ -2,7 +2,7 @@
 
 [document](https://moskomule.github.io/homura)
 
-**homura** is a library for DL research.
+**homura** is a library for prototyping DL research.
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
@@ -12,21 +12,20 @@
 
 ```
 Python>=3.7
-PyTorch>=1.0
-torchvision>=0.2.1
+PyTorch>=1.1.0
+torchvision>=0.3.0
 tqdm # automatically installed
+tensorboard # automatically installed
 ```
 
 ### optional
 
 ```
-tensorboardX
 miniargs
 colorlog
-optuna
 ```
 
-To enable distributed training using Synced BN and FP 16, install apex.
+To enable distributed training using auto mixed precision (AMP), install apex.
 
 ```
 git clone https://github.com/NVIDIA/apex.git
@@ -117,7 +116,8 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 
 ```python
 from homura.reproductivity import set_deterministic
-set_deterministic(1)
+with set_deterministic(seed):
+    something()
 ```
 
 ## debugger
