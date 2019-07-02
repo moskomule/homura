@@ -96,6 +96,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
 
         _map_base = {MODEL: self.model,
                      OPTIMIZER: self.optimizer,
+                     SCHEDULER: self.scheduler,
                      TRAINER: self}
         self._iteration_map = Map(**_map_base.copy())
         self._epoch_map = Map(**_map_base.copy())
@@ -302,7 +303,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             loaded = torch.load(f)
 
         self.model.load_state_dict(loaded[MODEL])
-        self.optimizer.load_state_dict(loaded[OPTIMIZER])
+        if loaded.get(OPTIMIZER) is not None:
+            self.optimizer.load_state_dict(loaded[OPTIMIZER])
+        if loaded.get(SCHEDULER) is not None:
+            self.scheduler.load_state_dict(loaded[SCHEDULER])
         self._step = loaded.get(STEP, 0)
         self._epoch = loaded.get(EPOCH, 0)
         self.logger.info(f"Resume training from {self.epoch}th epoch")
