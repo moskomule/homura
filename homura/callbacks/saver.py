@@ -40,10 +40,16 @@ class WeightSave(Callback):
              data: Mapping,
              file_name: str):
         try:
+            # scheduler is not a must
+            scheduler_state_dict = data.get(SCHEDULER)
+            if scheduler_state_dict is not None:
+                scheduler_state_dict = scheduler_state_dict.state_dict()
+                
             torch.save({"git": get_git_hash(),
                         "args": get_args(),
                         MODEL: data[MODEL].state_dict(),
                         OPTIMIZER: data[OPTIMIZER].state_dict(),
+                        SCHEDULER: scheduler_state_dict,
                         EPOCH: self._epoch,
                         STEP: self._step},
                        self.save_path / file_name)
