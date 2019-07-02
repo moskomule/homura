@@ -246,10 +246,7 @@ class TensorBoardWrapper(_WrapperBase):
             return object.__new__(cls)
 
     def __init__(self, save_dir=None, save_images=False):
-        if homura.is_tensorboardX_available:
-            from tensorboardX import SummaryWriter
-        else:
-            raise ImportError("To use TensorboardWrapper, tensorboardX is needed!")
+        from torch.utils.tensorboard import SummaryWriter
 
         super(TensorBoardWrapper, self).__init__(save_dir)
         self._writer = SummaryWriter(log_dir=str(self._save_dir))

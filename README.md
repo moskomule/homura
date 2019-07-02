@@ -20,7 +20,6 @@ tqdm # automatically installed
 ### optional
 
 ```
-tensorboardX
 miniargs
 colorlog
 optuna
