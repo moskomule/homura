@@ -85,6 +85,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -96,7 +97,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -206,19 +207,19 @@
 <span id="homura-vision-data-custom-dataset-module"></span><h2>homura.vision.data.custom_dataset module<a class="headerlink" href="#module-homura.vision.data.custom_dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.custom_dataset.TransformableSubset">
-<em class="property">class </em><code class="descclassname">homura.vision.data.custom_dataset.</code><code class="descname">TransformableSubset</code><span class="sig-paren">(</span><em>dataset</em>, <em>indices</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.custom_dataset.</code><code class="sig-name descname">TransformableSubset</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">indices</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Subset</span></code></p>
 <p>Subset with transform</p>
 <dl class="method">
 <dt id="homura.vision.data.custom_dataset.TransformableSubset.update_transforms">
-<code class="descname">update_transforms</code><span class="sig-paren">(</span><em>transforms</em>, <em>target_transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset.update_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset.update_transforms" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_transforms</code><span class="sig-paren">(</span><em class="sig-param">transforms</em>, <em class="sig-param">target_transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset.update_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset.update_transforms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.custom_dataset.transformable_random_split">
-<code class="descclassname">homura.vision.data.custom_dataset.</code><code class="descname">transformable_random_split</code><span class="sig-paren">(</span><em>dataset</em>, <em>lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#transformable_random_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.transformable_random_split" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.custom_dataset.</code><code class="sig-name descname">transformable_random_split</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#transformable_random_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.transformable_random_split" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -226,42 +227,38 @@
 <span id="homura-vision-data-folder-module"></span><h2>homura.vision.data.folder module<a class="headerlink" href="#module-homura.vision.data.folder" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.folder.FolderABC">
-<em class="property">class </em><code class="descclassname">homura.vision.data.folder.</code><code class="descname">FolderABC</code><span class="sig-paren">(</span><em>root</em>, <em>samples</em>, <em>transform=None</em>, <em>on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.folder.</code><code class="sig-name descname">FolderABC</code><span class="sig-paren">(</span><em class="sig-param">root</em>, <em class="sig-param">samples</em>, <em class="sig-param">transform=None</em>, <em class="sig-param">on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Dataset</span></code></p>
 <p>Abstract class for ImageFolder and LabelCorruptedImages</p>
-<dl class="staticmethod">
+<dl class="method">
 <dt id="homura.vision.data.folder.FolderABC.image_loader">
-<em class="property">static </em><code class="descname">image_loader</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC.image_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC.image_loader" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">image_loader</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#FolderABC.image_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.FolderABC.image_loader" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.data.folder.ImageFolder">
-<em class="property">class </em><code class="descclassname">homura.vision.data.folder.</code><code class="descname">ImageFolder</code><span class="sig-paren">(</span><em>root</em>, <em>transform=None</em>, <em>num_samples: int = None</em>, <em>on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#ImageFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.ImageFolder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.folder.</code><code class="sig-name descname">ImageFolder</code><span class="sig-paren">(</span><em class="sig-param">root</em>, <em class="sig-param">transform=None</em>, <em class="sig-param">num_samples: int = None</em>, <em class="sig-param">on_memory: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/folder.html#ImageFolder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.folder.ImageFolder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.data.folder.FolderABC" title="homura.vision.data.folder.FolderABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.data.folder.FolderABC</span></code></a></p>
 <p>A generic data loader where the images are arranged in this way</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">/</span><span class="n">cat</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">png</span>
 <span class="n">root</span><span class="o">/</span><span class="n">dog</span><span class="o">/</span><span class="n">xxx</span><span class="o">.</span><span class="n">png</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>root</strong> – </li>
-<li><strong>transform</strong> – </li>
-<li><strong>num_samples</strong> – Number of samples you want to use. If None, use all samples.</li>
-<li><strong>on_memory</strong> – True if you want to store loaded images on the RAM for faster reloading. (False by default)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – </p></li>
+<li><p><strong>transform</strong> – </p></li>
+<li><p><strong>num_samples</strong> – Number of samples you want to use. If None, use all samples.</p></li>
+<li><p><strong>on_memory</strong> – True if you want to store loaded images on the RAM for faster reloading. (False by default)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="homura.vision.data.folder.ImageFolder.IMG_EXTENSIONS">
-<code class="descname">IMG_EXTENSIONS</code><em class="property"> = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']</em><a class="headerlink" href="#homura.vision.data.folder.ImageFolder.IMG_EXTENSIONS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">IMG_EXTENSIONS</code><em class="property"> = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif']</em><a class="headerlink" href="#homura.vision.data.folder.ImageFolder.IMG_EXTENSIONS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -271,154 +268,134 @@
 <span id="homura-vision-data-loaders-module"></span><h2>homura.vision.data.loaders module<a class="headerlink" href="#module-homura.vision.data.loaders" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.loaders.BaseLoaders">
-<em class="property">class </em><code class="descclassname">homura.vision.data.loaders.</code><code class="descname">BaseLoaders</code><span class="sig-paren">(</span><em>dataset</em>, <em>mean_std: tuple</em>, <em>data_augmentation_transforms: list</em>, <em>test_time_transforms: list = None</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">BaseLoaders</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">mean_std: tuple</em>, <em class="sig-param">data_augmentation_transforms: list</em>, <em class="sig-param">test_time_transforms: list = None</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A base class for simple data-loaders</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> – </li>
-<li><strong>mean_std</strong> – </li>
-<li><strong>data_augmentation_transforms</strong> – </li>
-<li><strong>test_time_transforms</strong> – </li>
-<li><strong>replacement</strong> – </li>
-<li><strong>num_train_samples</strong> – </li>
-<li><strong>distributed</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> – </p></li>
+<li><p><strong>mean_std</strong> – </p></li>
+<li><p><strong>data_augmentation_transforms</strong> – </p></li>
+<li><p><strong>test_time_transforms</strong> – </p></li>
+<li><p><strong>replacement</strong> – </p></li>
+<li><p><strong>num_train_samples</strong> – </p></li>
+<li><p><strong>distributed</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="staticmethod">
+</dd>
+</dl>
+<dl class="method">
 <dt id="homura.vision.data.loaders.BaseLoaders.absolute_root">
-<em class="property">static </em><code class="descname">absolute_root</code><span class="sig-paren">(</span><em>root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.absolute_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.absolute_root" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">absolute_root</code><span class="sig-paren">(</span><em class="sig-param">root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.absolute_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.absolute_root" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="homura.vision.data.loaders.BaseLoaders.check_root_exists">
-<em class="property">static </em><code class="descname">check_root_exists</code><span class="sig-paren">(</span><em>root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.check_root_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.check_root_exists" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">check_root_exists</code><span class="sig-paren">(</span><em class="sig-param">root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#BaseLoaders.check_root_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.BaseLoaders.check_root_exists" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar100_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar100_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar100'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">cifar100_loaders</code><span class="sig-paren">(</span><em class="sig-param">batch_size: int</em>, <em class="sig-param">num_workers: int = 4</em>, <em class="sig-param">root: str = '~/.torch/data/cifar100'</em>, <em class="sig-param">data_augmentation: Optional[Iterable] = None</em>, <em class="sig-param">val_size: int = 0</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar100_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar100_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-100</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>batch_size</strong> – </li>
-<li><strong>num_workers</strong> – </li>
-<li><strong>root</strong> – </li>
-<li><strong>data_augmentation</strong> – default transformation is <cite>RandomCrop(32, padding=4)</cite> and <cite>RandomHorizontalFlip()</cite></li>
-<li><strong>val_size</strong> – </li>
-<li><strong>replacement</strong> – sampling with replacement</li>
-<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
-<li><strong>force_download</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> – </p></li>
+<li><p><strong>num_workers</strong> – </p></li>
+<li><p><strong>root</strong> – </p></li>
+<li><p><strong>data_augmentation</strong> – default transformation is <cite>RandomCrop(32, padding=4)</cite> and <cite>RandomHorizontalFlip()</cite></p></li>
+<li><p><strong>val_size</strong> – </p></li>
+<li><p><strong>replacement</strong> – sampling with replacement</p></li>
+<li><p><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</p></li>
+<li><p><strong>force_download</strong> – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.cifar10_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">cifar10_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 4</em>, <em>root: str = '~/.torch/data/cifar10'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">cifar10_loaders</code><span class="sig-paren">(</span><em class="sig-param">batch_size: int</em>, <em class="sig-param">num_workers: int = 4</em>, <em class="sig-param">root: str = '~/.torch/data/cifar10'</em>, <em class="sig-param">data_augmentation: Optional[Iterable] = None</em>, <em class="sig-param">val_size: int = 0</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#cifar10_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.cifar10_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for CIFAR-10</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>batch_size</strong> – </li>
-<li><strong>num_workers</strong> – </li>
-<li><strong>root</strong> – </li>
-<li><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</li>
-<li><strong>val_size</strong> – </li>
-<li><strong>replacement</strong> – sampling with replacement</li>
-<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
-<li><strong>force_download</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> – </p></li>
+<li><p><strong>num_workers</strong> – </p></li>
+<li><p><strong>root</strong> – </p></li>
+<li><p><strong>data_augmentation</strong> – default transformation is RandomCrop(32, padding=4) and RandomHorizontalFlip()</p></li>
+<li><p><strong>val_size</strong> – </p></li>
+<li><p><strong>replacement</strong> – sampling with replacement</p></li>
+<li><p><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</p></li>
+<li><p><strong>force_download</strong> – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.fashion_mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">fashion_mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/fmnist'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#fashion_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.fashion_mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">fashion_mnist_loaders</code><span class="sig-paren">(</span><em class="sig-param">batch_size: int</em>, <em class="sig-param">num_workers: int = 2</em>, <em class="sig-param">root: str = '~/.torch/data/fmnist'</em>, <em class="sig-param">data_augmentation: Optional[Iterable] = None</em>, <em class="sig-param">val_size: int = 0</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#fashion_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.fashion_mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.imagenet_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">imagenet_loaders</code><span class="sig-paren">(</span><em>root: Union[pathlib.Path, str], batch_size: int, num_workers: int = 8, data_augmentation: Optional[Iterable[T_co]] = None, val_size: int = 0, num_train_samples: Optional[int] = None, num_test_samples: Optional[int] = None, distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">imagenet_loaders</code><span class="sig-paren">(</span><em class="sig-param">root: Union[pathlib.Path, str], batch_size: int, num_workers: int = 8, data_augmentation: Optional[Iterable] = None, val_size: int = 0, num_train_samples: Optional[int] = None, num_test_samples: Optional[int] = None, distributed: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#imagenet_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.imagenet_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for ILSVRC classification data set</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>root</strong> – </li>
-<li><strong>batch_size</strong> – Total batch size</li>
-<li><strong>num_workers</strong> – </li>
-<li><strong>data_augmentation</strong> – </li>
-<li><strong>val_size</strong> – </li>
-<li><strong>num_train_samples</strong> – </li>
-<li><strong>num_test_samples</strong> – </li>
-<li><strong>distributed</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – </p></li>
+<li><p><strong>batch_size</strong> – Total batch size</p></li>
+<li><p><strong>num_workers</strong> – </p></li>
+<li><p><strong>data_augmentation</strong> – </p></li>
+<li><p><strong>val_size</strong> – </p></li>
+<li><p><strong>num_train_samples</strong> – </p></li>
+<li><p><strong>num_test_samples</strong> – </p></li>
+<li><p><strong>distributed</strong> – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of train and test loaders</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of train and test loaders</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.kuzushiji_mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">kuzushiji_mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/kmnist'</em>, <em>data_augmentation: Optional[Iterable[T_co]] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#kuzushiji_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.kuzushiji_mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">kuzushiji_mnist_loaders</code><span class="sig-paren">(</span><em class="sig-param">batch_size: int</em>, <em class="sig-param">num_workers: int = 2</em>, <em class="sig-param">root: str = '~/.torch/data/kmnist'</em>, <em class="sig-param">data_augmentation: Optional[Iterable] = None</em>, <em class="sig-param">val_size: int = 0</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#kuzushiji_mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.kuzushiji_mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.data.loaders.mnist_loaders">
-<code class="descclassname">homura.vision.data.loaders.</code><code class="descname">mnist_loaders</code><span class="sig-paren">(</span><em>batch_size: int</em>, <em>num_workers: int = 2</em>, <em>root: str = '~/.torch/data/mnist'</em>, <em>data_augmentation: Iterable[T_co] = None</em>, <em>val_size: int = 0</em>, <em>replacement: bool = False</em>, <em>num_train_samples: Optional[int] = None</em>, <em>force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.data.loaders.</code><code class="sig-name descname">mnist_loaders</code><span class="sig-paren">(</span><em class="sig-param">batch_size: int</em>, <em class="sig-param">num_workers: int = 2</em>, <em class="sig-param">root: str = '~/.torch/data/mnist'</em>, <em class="sig-param">data_augmentation: Iterable = None</em>, <em class="sig-param">val_size: int = 0</em>, <em class="sig-param">replacement: bool = False</em>, <em class="sig-param">num_train_samples: Optional[int] = None</em>, <em class="sig-param">force_download: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/loaders.html#mnist_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.loaders.mnist_loaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>A simple data loader for MNIST.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>batch_size</strong> – </li>
-<li><strong>num_workers</strong> – </li>
-<li><strong>root</strong> – </li>
-<li><strong>data_augmentation</strong> – default transformation is RandomHorizontalFlip()</li>
-<li><strong>val_size</strong> – </li>
-<li><strong>replacement</strong> – sampling with replacement</li>
-<li><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</li>
-<li><strong>force_download</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> – </p></li>
+<li><p><strong>num_workers</strong> – </p></li>
+<li><p><strong>root</strong> – </p></li>
+<li><p><strong>data_augmentation</strong> – default transformation is RandomHorizontalFlip()</p></li>
+<li><p><strong>val_size</strong> – </p></li>
+<li><p><strong>replacement</strong> – sampling with replacement</p></li>
+<li><p><strong>num_train_samples</strong> – number of data sampled when <cite>replacement</cite> is True</p></li>
+<li><p><strong>force_download</strong> – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(train_loader, test_loader) if <cite>val_size==0</cite> else (train_loader, test_loader, val_loader)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -426,12 +403,12 @@
 <span id="homura-vision-data-prefetcher-module"></span><h2>homura.vision.data.prefetcher module<a class="headerlink" href="#module-homura.vision.data.prefetcher" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.prefetcher.DataPrefetcher">
-<em class="property">class </em><code class="descclassname">homura.vision.data.prefetcher.</code><code class="descname">DataPrefetcher</code><span class="sig-paren">(</span><em>loader: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.prefetcher.</code><code class="sig-name descname">DataPrefetcher</code><span class="sig-paren">(</span><em class="sig-param">loader: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>prefetch data</p>
 <dl class="method">
 <dt id="homura.vision.data.prefetcher.DataPrefetcher.preload">
-<code class="descname">preload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher.preload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher.preload" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">preload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher.preload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher.preload" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -441,7 +418,7 @@
 <span id="homura-vision-data-statistics-module"></span><h2>homura.vision.data.statistics module<a class="headerlink" href="#module-homura.vision.data.statistics" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.statistics.PerChannelStatistics">
-<em class="property">class </em><code class="descclassname">homura.vision.data.statistics.</code><code class="descname">PerChannelStatistics</code><span class="sig-paren">(</span><em>num_samples: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.statistics.</code><code class="sig-name descname">PerChannelStatistics</code><span class="sig-paren">(</span><em class="sig-param">num_samples: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>estimates per channel image dataset statistics (mean, stdev)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span> <span class="o">=</span> <span class="n">PerChannelStatistics</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
@@ -450,29 +427,29 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">estimated</span>
 </pre></div>
 </div>
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.estimated">
-<code class="descname">estimated</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.estimated" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">estimated</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.estimated" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.from_batch">
-<code class="descname">from_batch</code><span class="sig-paren">(</span><em>batch: Sequence[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_batch</code><span class="sig-paren">(</span><em class="sig-param">batch: Sequence[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_batch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.from_directory">
-<code class="descname">from_directory</code><span class="sig-paren">(</span><em>root: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_directory" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_directory</code><span class="sig-paren">(</span><em class="sig-param">root: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_directory" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.mean">
-<code class="descname">mean</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.mean" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">mean</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.mean" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.vision.data.statistics.PerChannelStatistics.stdev">
-<code class="descname">stdev</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.stdev" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">stdev</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.stdev" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

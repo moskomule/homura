@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="homura.metrics package" href="homura.metrics.html" />
+    <link rel="next" title="homura.callbacks package" href="homura.callbacks.html" />
     <link rel="prev" title="Indices and tables" href="index.html" /> 
 </head>
 
@@ -85,6 +85,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -92,7 +93,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -102,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -177,6 +178,14 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.base">homura.callbacks.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons module</a></li>
@@ -270,240 +279,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.callbacks">
-<span id="homura-callbacks-module"></span><h2>homura.callbacks module<a class="headerlink" href="#module-homura.callbacks" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.callbacks.Callback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">Callback</code><a class="reference internal" href="_modules/homura/callbacks.html#Callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class of Callback class</p>
-<dl class="method">
-<dt id="homura.callbacks.Callback.after_all">
-<code class="descname">after_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.after_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.after_epoch">
-<code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.after_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.after_iteration">
-<code class="descname">after_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.after_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.before_all">
-<code class="descname">before_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.before_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.before_epoch">
-<code class="descname">before_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.before_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.before_iteration">
-<code class="descname">before_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks.html#Callback.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.before_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.Callback.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#Callback.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.Callback.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.callbacks.MetricCallback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">MetricCallback</code><span class="sig-paren">(</span><em>metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None, no_reduce: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
-<p>Base class of MetricCallback class such as AccuracyCallback</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>metric</strong> – metric function: (data) -&gt; float</li>
-<li><strong>name</strong> – name of the metric</li>
-<li><strong>logger</strong> – </li>
-<li><strong>no_reduce</strong> – skip reducing</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="homura.callbacks.MetricCallback.after_epoch">
-<code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.MetricCallback.after_iteration">
-<code class="descname">after_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.after_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.MetricCallback.before_epoch">
-<code class="descname">before_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.before_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.MetricCallback.before_iteration">
-<code class="descname">before_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.before_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="homura.callbacks.MetricCallback.history">
-<code class="descname">history</code><a class="headerlink" href="#homura.callbacks.MetricCallback.history" title="Permalink to this definition">¶</a></dt>
-<dd><p>History of metric.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict of histories in {mode: [history]}</td>
-</tr>
-</tbody>
-</table>
-<p>Using this property, history of metrics can be used after a training loop</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># training loop</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">final_result</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.MetricCallback.reduce">
-<code class="descname">reduce</code><span class="sig-paren">(</span><em>tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
-<dd><p>for distributed setting</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.callbacks.CallbackList">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">CallbackList</code><span class="sig-paren">(</span><em>*callbacks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
-<p>Combine some callbacks</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>callbacks</strong> – callbacks</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.after_all">
-<code class="descname">after_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.after_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.after_epoch">
-<code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.after_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.after_iteration">
-<code class="descname">after_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.after_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.before_epoch">
-<code class="descname">before_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.before_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.before_iteration">
-<code class="descname">before_iteration</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.before_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.CallbackList.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#CallbackList.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.CallbackList.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.callbacks.AccuracyCallback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">AccuracyCallback</code><span class="sig-paren">(</span><em>k: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.MetricCallback" title="homura.callbacks.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.MetricCallback</span></code></a></p>
-<p>Callback for accuracy</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>k</strong> – report top-k accuracy</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="homura.callbacks.AccuracyCallback.accuracy">
-<code class="descname">accuracy</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#AccuracyCallback.accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.AccuracyCallback.accuracy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.callbacks.LossCallback">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">LossCallback</code><a class="reference internal" href="_modules/homura/callbacks.html#LossCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.LossCallback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.MetricCallback" title="homura.callbacks.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.MetricCallback</span></code></a></p>
-<p>Callback for loss function</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.callbacks.WeightSave">
-<em class="property">class </em><code class="descclassname">homura.callbacks.</code><code class="descname">WeightSave</code><span class="sig-paren">(</span><em>save_path: str</em>, <em>save_freq: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
-<p>Save weights after every epoch</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>save_path</strong> – path to be saved</li>
-<li><strong>save_freq</strong> – frequency of saving in epoch. If -1, saved by <cite>after_all</cite>.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="homura.callbacks.WeightSave.after_all">
-<code class="descname">after_all</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.after_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.WeightSave.after_epoch">
-<code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.after_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.callbacks.WeightSave.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>data: collections.abc.Mapping</em>, <em>file_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#WeightSave.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.WeightSave.save" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.callbacks.metric_callback_decorator">
-<code class="descclassname">homura.callbacks.</code><code class="descname">metric_callback_decorator</code><span class="sig-paren">(</span><em>_metric: Callable = None</em>, <em>name: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks.html#metric_callback_decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metric_callback_decorator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator to create a metrics callback</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@metric_callback_decorator</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</div>
 <div class="section" id="module-homura.debug">
 <span id="homura-debug-module"></span><h2>homura.debug module<a class="headerlink" href="#module-homura.debug" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.debug.module_debugger">
-<code class="descclassname">homura.debug.</code><code class="descname">module_debugger</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module, input: Tuple[torch.Tensor], target: Optional[Tuple[torch.Tensor]] = None, loss: Optional[Callable] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/debug.html#module_debugger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.debug.module_debugger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.debug.</code><code class="sig-name descname">module_debugger</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module, input: Tuple[torch.Tensor], target: Optional[Tuple[torch.Tensor]] = None, loss: Optional[Callable] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/debug.html#module_debugger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.debug.module_debugger" title="Permalink to this definition">¶</a></dt>
 <dd><p>log all modules connected with forward and backward calculation</p>
 </dd></dl>
 
@@ -512,32 +292,32 @@
 <span id="homura-liblog-module"></span><h2>homura.liblog module<a class="headerlink" href="#module-homura.liblog" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.liblog.disable_default_handler">
-<code class="descclassname">homura.liblog.</code><code class="descname">disable_default_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#disable_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.disable_default_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">disable_default_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#disable_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.disable_default_handler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.liblog.enable_default_handler">
-<code class="descclassname">homura.liblog.</code><code class="descname">enable_default_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#enable_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.enable_default_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">enable_default_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#enable_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.enable_default_handler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.liblog.get_logger">
-<code class="descclassname">homura.liblog.</code><code class="descname">get_logger</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/liblog.html#get_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.get_logger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">get_logger</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/liblog.html#get_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.get_logger" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.liblog.get_verb_level">
-<code class="descclassname">homura.liblog.</code><code class="descname">get_verb_level</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/liblog.html#get_verb_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.get_verb_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">get_verb_level</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/liblog.html#get_verb_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.get_verb_level" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.liblog.set_file_handler">
-<code class="descclassname">homura.liblog.</code><code class="descname">set_file_handler</code><span class="sig-paren">(</span><em>log_file: str</em>, <em>level: str = 10</em>, <em>formatter: Optional[logging.Formatter] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_file_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">set_file_handler</code><span class="sig-paren">(</span><em class="sig-param">log_file: str</em>, <em class="sig-param">level: str = 10</em>, <em class="sig-param">formatter: Optional[logging.Formatter] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_file_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_file_handler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.liblog.set_verb_level">
-<code class="descclassname">homura.liblog.</code><code class="descname">set_verb_level</code><span class="sig-paren">(</span><em>level: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_verb_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_verb_level" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.liblog.</code><code class="sig-name descname">set_verb_level</code><span class="sig-paren">(</span><em class="sig-param">level: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/liblog.html#set_verb_level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.liblog.set_verb_level" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -545,39 +325,38 @@
 <span id="homura-lr-scheduler-module"></span><h2>homura.lr_scheduler module<a class="headerlink" href="#module-homura.lr_scheduler" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.lr_scheduler.LRScheduler">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">LRScheduler</code><span class="sig-paren">(</span><em>schdlr_cls</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">LRScheduler</code><span class="sig-paren">(</span><em class="sig-param">schdlr_cls</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.lr_scheduler.LRScheduler.scheduler">
-<code class="descname">scheduler</code><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.scheduler" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">scheduler</code><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.scheduler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.lr_scheduler.LRScheduler.set_optimizer">
-<code class="descname">set_optimizer</code><span class="sig-paren">(</span><em>optimizer: torch.optim.optimizer.Optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler.set_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.set_optimizer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_optimizer</code><span class="sig-paren">(</span><em class="sig-param">optimizer: torch.optim.optimizer.Optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LRScheduler.set_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LRScheduler.set_optimizer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.StepLR">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">StepLR</code><span class="sig-paren">(</span><em>step_size</em>, <em>gamma=0.1</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#StepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.StepLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">StepLR</code><span class="sig-paren">(</span><em class="sig-param">step_size</em>, <em class="sig-param">gamma=0.1</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#StepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.StepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Decays the learning rate of each parameter group by gamma every
 step_size epochs. Notice that such decay can happen simultaneously with
 other changes to the learning rate from outside this scheduler. When
 last_epoch=-1, sets initial lr as lr.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+<dl>
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 step_size (int): Period of learning rate decay.
 gamma (float): Multiplicative factor of learning rate decay.</p>
 <blockquote>
-<div>Default: 0.1.</div></blockquote>
-<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+<div><p>Default: 0.1.</p>
+</div></blockquote>
+<p>last_epoch (int): The index of last epoch. Default: -1.</p>
 </dd>
-<dt>Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.05     if epoch &lt; 30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.005    if 30 &lt;= epoch &lt; 60</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.0005   if 60 &lt;= epoch &lt; 90</span>
@@ -595,23 +374,22 @@ gamma (float): Multiplicative factor of learning rate decay.</p>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.MultiStepLR">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">MultiStepLR</code><span class="sig-paren">(</span><em>milestones</em>, <em>gamma=0.1</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#MultiStepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.MultiStepLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">MultiStepLR</code><span class="sig-paren">(</span><em class="sig-param">milestones</em>, <em class="sig-param">gamma=0.1</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#MultiStepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.MultiStepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Decays the learning rate of each parameter group by gamma once the
 number of epoch reaches one of the milestones. Notice that such decay can
 happen simultaneously with other changes to the learning rate from outside
 this scheduler. When last_epoch=-1, sets initial lr as lr.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+<dl>
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 milestones (list): List of epoch indices. Must be increasing.
 gamma (float): Multiplicative factor of learning rate decay.</p>
 <blockquote>
-<div>Default: 0.1.</div></blockquote>
-<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+<div><p>Default: 0.1.</p>
+</div></blockquote>
+<p>last_epoch (int): The index of last epoch. Default: -1.</p>
 </dd>
-<dt>Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer uses lr = 0.05 for all groups</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.05     if epoch &lt; 30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.005    if 30 &lt;= epoch &lt; 80</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># lr = 0.0005   if epoch &gt;= 80</span>
@@ -628,21 +406,20 @@ gamma (float): Multiplicative factor of learning rate decay.</p>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.LambdaLR">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">LambdaLR</code><span class="sig-paren">(</span><em>lr_lambda</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LambdaLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LambdaLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">LambdaLR</code><span class="sig-paren">(</span><em class="sig-param">lr_lambda</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#LambdaLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.LambdaLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Sets the learning rate of each parameter group to the initial lr
 times a given function. When last_epoch=-1, sets initial lr as lr.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+<dl>
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 lr_lambda (function or list): A function which computes a multiplicative</p>
 <blockquote>
-<div>factor given an integer parameter epoch, or a list of such
-functions, one for each group in optimizer.param_groups.</div></blockquote>
-<p class="last">last_epoch (int): The index of last epoch. Default: -1.</p>
+<div><p>factor given an integer parameter epoch, or a list of such
+functions, one for each group in optimizer.param_groups.</p>
+</div></blockquote>
+<p>last_epoch (int): The index of last epoch. Default: -1.</p>
 </dd>
-<dt>Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer has two groups.</span>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assuming optimizer has two groups.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lambda1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">//</span> <span class="mi">30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lambda2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">epoch</span><span class="p">:</span> <span class="mf">0.95</span> <span class="o">**</span> <span class="n">epoch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_lambda</span><span class="o">=</span><span class="p">[</span><span class="n">lambda1</span><span class="p">,</span> <span class="n">lambda2</span><span class="p">])</span>
@@ -658,21 +435,21 @@ functions, one for each group in optimizer.param_groups.</div></blockquote>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.ExponentialLR">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">ExponentialLR</code><span class="sig-paren">(</span><em>gamma</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ExponentialLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ExponentialLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">ExponentialLR</code><span class="sig-paren">(</span><em class="sig-param">gamma</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ExponentialLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ExponentialLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Decays the learning rate of each parameter group by gamma every epoch.
 When last_epoch=-1, sets initial lr as lr.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>optimizer (Optimizer): Wrapped optimizer.
+<dl class="simple">
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 gamma (float): Multiplicative factor of learning rate decay.
-last_epoch (int): The index of last epoch. Default: -1.</dd>
+last_epoch (int): The index of last epoch. Default: -1.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.CosineAnnealingLR">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">CosineAnnealingLR</code><span class="sig-paren">(</span><em>T_max</em>, <em>eta_min=0</em>, <em>last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#CosineAnnealingLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.CosineAnnealingLR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">CosineAnnealingLR</code><span class="sig-paren">(</span><em class="sig-param">T_max</em>, <em class="sig-param">eta_min=0</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#CosineAnnealingLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.CosineAnnealingLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Set the learning rate of each parameter group using a cosine annealing
 schedule, where <span class="math notranslate nohighlight">\(\eta_{max}\)</span> is set to the initial lr and
@@ -694,62 +471,61 @@ solely by this scheduler, the learning rate at each step becomes:</p>
 <p>It has been proposed in
 <a class="reference external" href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. Note that this only
 implements the cosine annealing part of SGDR, and not the restarts.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>optimizer (Optimizer): Wrapped optimizer.
+<dl class="simple">
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 T_max (int): Maximum number of iterations.
 eta_min (float): Minimum learning rate. Default: 0.
-last_epoch (int): The index of last epoch. Default: -1.</dd>
+last_epoch (int): The index of last epoch. Default: -1.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.lr_scheduler.ReduceLROnPlateau">
-<em class="property">class </em><code class="descclassname">homura.lr_scheduler.</code><code class="descname">ReduceLROnPlateau</code><span class="sig-paren">(</span><em>mode='min'</em>, <em>factor=0.1</em>, <em>patience=10</em>, <em>verbose=False</em>, <em>threshold=0.0001</em>, <em>threshold_mode='rel'</em>, <em>cooldown=0</em>, <em>min_lr=0</em>, <em>eps=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ReduceLROnPlateau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ReduceLROnPlateau" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">ReduceLROnPlateau</code><span class="sig-paren">(</span><em class="sig-param">mode='min'</em>, <em class="sig-param">factor=0.1</em>, <em class="sig-param">patience=10</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">threshold=0.0001</em>, <em class="sig-param">threshold_mode='rel'</em>, <em class="sig-param">cooldown=0</em>, <em class="sig-param">min_lr=0</em>, <em class="sig-param">eps=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ReduceLROnPlateau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ReduceLROnPlateau" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
 <p>Reduce learning rate when a metric has stopped improving.
 Models often benefit from reducing the learning rate by a factor
 of 2-10 once learning stagnates. This scheduler reads a metrics
 quantity and if no improvement is seen for a ‘patience’ number
 of epochs, the learning rate is reduced.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">optimizer (Optimizer): Wrapped optimizer.
+<dl>
+<dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 mode (str): One of <cite>min</cite>, <cite>max</cite>. In <cite>min</cite> mode, lr will</p>
 <blockquote>
-<div>be reduced when the quantity monitored has stopped
+<div><p>be reduced when the quantity monitored has stopped
 decreasing; in <cite>max</cite> mode it will be reduced when the
-quantity monitored has stopped increasing. Default: ‘min’.</div></blockquote>
-<dl class="last docutils">
-<dt>factor (float): Factor by which the learning rate will be</dt>
-<dd>reduced. new_lr = lr * factor. Default: 0.1.</dd>
-<dt>patience (int): Number of epochs with no improvement after</dt>
-<dd>which learning rate will be reduced. For example, if
+quantity monitored has stopped increasing. Default: ‘min’.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>factor (float): Factor by which the learning rate will be</dt><dd><p>reduced. new_lr = lr * factor. Default: 0.1.</p>
+</dd>
+<dt>patience (int): Number of epochs with no improvement after</dt><dd><p>which learning rate will be reduced. For example, if
 <cite>patience = 2</cite>, then we will ignore the first 2 epochs
 with no improvement, and will only decrease the LR after the
 3rd epoch if the loss still hasn’t improved then.
-Default: 10.</dd>
-<dt>verbose (bool): If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints a message to stdout for</dt>
-<dd>each update. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</dd>
-<dt>threshold (float): Threshold for measuring the new optimum,</dt>
-<dd>to only focus on significant changes. Default: 1e-4.</dd>
-<dt>threshold_mode (str): One of <cite>rel</cite>, <cite>abs</cite>. In <cite>rel</cite> mode,</dt>
-<dd>dynamic_threshold = best * ( 1 + threshold ) in ‘max’
+Default: 10.</p>
+</dd>
+<dt>verbose (bool): If <code class="docutils literal notranslate"><span class="pre">True</span></code>, prints a message to stdout for</dt><dd><p>each update. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt>threshold (float): Threshold for measuring the new optimum,</dt><dd><p>to only focus on significant changes. Default: 1e-4.</p>
+</dd>
+<dt>threshold_mode (str): One of <cite>rel</cite>, <cite>abs</cite>. In <cite>rel</cite> mode,</dt><dd><p>dynamic_threshold = best * ( 1 + threshold ) in ‘max’
 mode or best * ( 1 - threshold ) in <cite>min</cite> mode.
 In <cite>abs</cite> mode, dynamic_threshold = best + threshold in
-<cite>max</cite> mode or best - threshold in <cite>min</cite> mode. Default: ‘rel’.</dd>
-<dt>cooldown (int): Number of epochs to wait before resuming</dt>
-<dd>normal operation after lr has been reduced. Default: 0.</dd>
-<dt>min_lr (float or list): A scalar or a list of scalars. A</dt>
-<dd>lower bound on the learning rate of all param groups
-or each group respectively. Default: 0.</dd>
-<dt>eps (float): Minimal decay applied to lr. If the difference</dt>
-<dd>between new and old lr is smaller than eps, the update is
-ignored. Default: 1e-8.</dd>
+<cite>max</cite> mode or best - threshold in <cite>min</cite> mode. Default: ‘rel’.</p>
+</dd>
+<dt>cooldown (int): Number of epochs to wait before resuming</dt><dd><p>normal operation after lr has been reduced. Default: 0.</p>
+</dd>
+<dt>min_lr (float or list): A scalar or a list of scalars. A</dt><dd><p>lower bound on the learning rate of all param groups
+or each group respectively. Default: 0.</p>
+</dd>
+<dt>eps (float): Minimal decay applied to lr. If the difference</dt><dd><p>between new and old lr is smaller than eps, the update is
+ignored. Default: 1e-8.</p>
+</dd>
 </dl>
 </dd>
-<dt>Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -767,70 +543,69 @@ ignored. Default: 1e-8.</dd>
 <span id="homura-optim-module"></span><h2>homura.optim module<a class="headerlink" href="#module-homura.optim" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.optim.Optimizer">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim_cls</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param">optim_cls</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.optim.Optimizer.optim">
-<code class="descname">optim</code><a class="headerlink" href="#homura.optim.Optimizer.optim" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">optim</code><a class="headerlink" href="#homura.optim.Optimizer.optim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.optim.Optimizer.set_model">
-<code class="descname">set_model</code><span class="sig-paren">(</span><em>params: Iterable[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer.set_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_model</code><span class="sig-paren">(</span><em class="sig-param">params: Iterable[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Optimizer.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Optimizer.set_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.Adam">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">Adam</code><span class="sig-paren">(</span><em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>amsgrad=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Adam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">Adam</code><span class="sig-paren">(</span><em class="sig-param">lr=0.001</em>, <em class="sig-param">betas=(0.9</em>, <em class="sig-param">0.999)</em>, <em class="sig-param">eps=1e-08</em>, <em class="sig-param">weight_decay=0</em>, <em class="sig-param">amsgrad=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#Adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.Adam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 <p>Implements Adam algorithm.</p>
 <p>It has been proposed in <a class="reference external" href="https://arxiv.org/abs/1412.6980">Adam: A Method for Stochastic Optimization</a>.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><dl class="first docutils">
-<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
-<dd>parameter groups</dd>
+<dl>
+<dt>Arguments:</dt><dd><dl class="simple">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt><dd><p>parameter groups</p>
+</dd>
 </dl>
 <p>lr (float, optional): learning rate (default: 1e-3)
 betas (Tuple[float, float], optional): coefficients used for computing</p>
 <blockquote>
-<div>running averages of gradient and its square (default: (0.9, 0.999))</div></blockquote>
-<dl class="docutils">
-<dt>eps (float, optional): term added to the denominator to improve</dt>
-<dd>numerical stability (default: 1e-8)</dd>
+<div><p>running averages of gradient and its square (default: (0.9, 0.999))</p>
+</div></blockquote>
+<dl class="simple">
+<dt>eps (float, optional): term added to the denominator to improve</dt><dd><p>numerical stability (default: 1e-8)</p>
+</dd>
 </dl>
 <p>weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
 amsgrad (boolean, optional): whether to use the AMSGrad variant of this</p>
-<blockquote class="last">
-<div>algorithm from the paper <a class="reference external" href="https://openreview.net/forum?id=ryQu7f-RZ">On the Convergence of Adam and Beyond</a>
-(default: False)</div></blockquote>
+<blockquote>
+<div><p>algorithm from the paper <a class="reference external" href="https://openreview.net/forum?id=ryQu7f-RZ">On the Convergence of Adam and Beyond</a>
+(default: False)</p>
+</div></blockquote>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.SGD">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">SGD</code><span class="sig-paren">(</span><em>lr</em>, <em>momentum=0</em>, <em>dampening=0</em>, <em>weight_decay=0</em>, <em>nesterov=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.SGD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr</em>, <em class="sig-param">momentum=0</em>, <em class="sig-param">dampening=0</em>, <em class="sig-param">weight_decay=0</em>, <em class="sig-param">nesterov=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.SGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 <p>Implements stochastic gradient descent (optionally with momentum).</p>
 <p>Nesterov momentum is based on the formula from
 <a class="reference external" href="http://www.cs.toronto.edu/%7Ehinton/absps/momentum.pdf">On the importance of initialization and momentum in deep learning</a>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first docutils">
-<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
-<dd>parameter groups</dd>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt><dd><p>parameter groups</p>
+</dd>
 </dl>
-<p class="last">lr (float): learning rate
+<p>lr (float): learning rate
 momentum (float, optional): momentum factor (default: 0)
 weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
 dampening (float, optional): dampening for momentum (default: 0)
 nesterov (bool, optional): enables Nesterov momentum (default: False)</p>
 </dd>
-<dt>Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<dt>Example:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">),</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -839,7 +614,7 @@ nesterov (bool, optional): enables Nesterov momentum (default: False)</p>
 </dd>
 </dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>The implementation of SGD with Momentum/Nesterov subtly differs from
 Sutskever et. al. and implementations in some other frameworks.</p>
 <p>Considering the specific case of Momentum, the update can be written as</p>
@@ -853,24 +628,23 @@ other frameworks which employ an update of the form</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}v = \rho * v + lr * g \\
 p = p - v\end{split}\]</div>
-<p class="last">The Nesterov version is analogously modified.</p>
+<p>The Nesterov version is analogously modified.</p>
 </div>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.ASGD">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">ASGD</code><span class="sig-paren">(</span><em>lr=0.01</em>, <em>lambd=0.0001</em>, <em>alpha=0.75</em>, <em>t0=1000000.0</em>, <em>weight_decay=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#ASGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.ASGD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">ASGD</code><span class="sig-paren">(</span><em class="sig-param">lr=0.01</em>, <em class="sig-param">lambd=0.0001</em>, <em class="sig-param">alpha=0.75</em>, <em class="sig-param">t0=1000000.0</em>, <em class="sig-param">weight_decay=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#ASGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.ASGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 <p>Implements Averaged Stochastic Gradient Descent.</p>
 <p>It has been proposed in <a class="reference external" href="http://dl.acm.org/citation.cfm?id=131098">Acceleration of stochastic approximation by
 averaging</a>.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><dl class="first docutils">
-<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
-<dd>parameter groups</dd>
+<dl>
+<dt>Arguments:</dt><dd><dl class="simple">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt><dd><p>parameter groups</p>
+</dd>
 </dl>
-<p class="last">lr (float, optional): learning rate (default: 1e-2)
+<p>lr (float, optional): learning rate (default: 1e-2)
 lambd (float, optional): decay term (default: 1e-4)
 alpha (float, optional): power for eta update (default: 0.75)
 t0 (float, optional): point at which to start averaging (default: 1e6)
@@ -881,55 +655,57 @@ weight_decay (float, optional): weight decay (L2 penalty) (default: 0)</p>
 
 <dl class="class">
 <dt id="homura.optim.RMSProp">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">RMSProp</code><span class="sig-paren">(</span><em>lr=0.01</em>, <em>alpha=0.99</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>momentum=0</em>, <em>centered=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#RMSProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.RMSProp" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">RMSProp</code><span class="sig-paren">(</span><em class="sig-param">lr=0.01</em>, <em class="sig-param">alpha=0.99</em>, <em class="sig-param">eps=1e-08</em>, <em class="sig-param">weight_decay=0</em>, <em class="sig-param">momentum=0</em>, <em class="sig-param">centered=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#RMSProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.RMSProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 <p>Implements RMSprop algorithm.</p>
 <p>Proposed by G. Hinton in his
 <a class="reference external" href="http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf">course</a>.</p>
 <p>The centered version first appears in <a class="reference external" href="https://arxiv.org/pdf/1308.0850v5.pdf">Generating Sequences
 With Recurrent Neural Networks</a>.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><dl class="first docutils">
-<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
-<dd>parameter groups</dd>
+<dl>
+<dt>Arguments:</dt><dd><dl class="simple">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt><dd><p>parameter groups</p>
+</dd>
 </dl>
 <p>lr (float, optional): learning rate (default: 1e-2)
 momentum (float, optional): momentum factor (default: 0)
 alpha (float, optional): smoothing constant (default: 0.99)
 eps (float, optional): term added to the denominator to improve</p>
 <blockquote>
-<div>numerical stability (default: 1e-8)</div></blockquote>
-<dl class="docutils">
-<dt>centered (bool, optional) <span class="classifier-delimiter">:</span> <span class="classifier">if <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute the centered RMSProp,</span></dt>
-<dd>the gradient is normalized by an estimation of its variance</dd>
+<div><p>numerical stability (default: 1e-8)</p>
+</div></blockquote>
+<dl>
+<dt>centered (bool, optional)<span class="classifier">if <code class="docutils literal notranslate"><span class="pre">True</span></code>, compute the centered RMSProp,</span></dt><dd><p>the gradient is normalized by an estimation of its variance</p>
+</dd>
 </dl>
-<p class="last">weight_decay (float, optional): weight decay (L2 penalty) (default: 0)</p>
+<p>weight_decay (float, optional): weight decay (L2 penalty) (default: 0)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.optim.AdaBound">
-<em class="property">class </em><code class="descclassname">homura.optim.</code><code class="descname">AdaBound</code><span class="sig-paren">(</span><em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>final_lr=0.1</em>, <em>gamma=0.001</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>amsbound=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#AdaBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.AdaBound" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">AdaBound</code><span class="sig-paren">(</span><em class="sig-param">lr=0.001</em>, <em class="sig-param">betas=(0.9</em>, <em class="sig-param">0.999)</em>, <em class="sig-param">final_lr=0.1</em>, <em class="sig-param">gamma=0.001</em>, <em class="sig-param">eps=1e-08</em>, <em class="sig-param">weight_decay=0</em>, <em class="sig-param">amsbound=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#AdaBound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.AdaBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.optim.Optimizer" title="homura.optim.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.optim.Optimizer</span></code></a></p>
 <p>Implements AdaBound algorithm.
 It has been proposed in <a href="#id2"><span class="problematic" id="id3">`Adaptive Gradient Methods with Dynamic Bound of Learning Rate`_</span></a>.
 Arguments:</p>
 <blockquote>
-<div><dl class="docutils">
-<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt>
-<dd>parameter groups</dd>
+<div><dl class="simple">
+<dt>params (iterable): iterable of parameters to optimize or dicts defining</dt><dd><p>parameter groups</p>
+</dd>
 </dl>
 <p>lr (float, optional): Adam learning rate (default: 1e-3)
 betas (Tuple[float, float], optional): coefficients used for computing</p>
 <blockquote>
-<div>running averages of gradient and its square (default: (0.9, 0.999))</div></blockquote>
+<div><p>running averages of gradient and its square (default: (0.9, 0.999))</p>
+</div></blockquote>
 <p>final_lr (float, optional): final (SGD) learning rate (default: 0.1)
 gamma (float, optional): convergence speed of the bound functions (default: 1e-3)
 eps (float, optional): term added to the denominator to improve</p>
 <blockquote>
-<div>numerical stability (default: 1e-8)</div></blockquote>
+<div><p>numerical stability (default: 1e-8)</p>
+</div></blockquote>
 <p>weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
 amsbound (boolean, optional): whether to use the AMSBound variant of this algorithm</p>
 </div></blockquote>
@@ -940,7 +716,7 @@ amsbound (boolean, optional): whether to use the AMSBound variant of this algori
 <span id="homura-reporters-module"></span><h2>homura.reporters module<a class="headerlink" href="#module-homura.reporters" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.reporters.LoggerReporter">
-<em class="property">class </em><code class="descclassname">homura.reporters.</code><code class="descname">LoggerReporter</code><span class="sig-paren">(</span><em>callbacks: Union[Iterable[homura.callbacks.Callback], homura.callbacks.Callback], save_dir: Optional[str] = None, logger: Optional[logging.Logger] = None, report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_log: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#LoggerReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.LoggerReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">LoggerReporter</code><span class="sig-paren">(</span><em class="sig-param">callbacks: Union[Iterable[homura.callbacks.base.Callback], homura.callbacks.base.Callback], save_dir: Optional[str] = None, logger: Optional[logging.Logger] = None, report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_log: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#LoggerReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.LoggerReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.reporters.Reporter" title="homura.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters.Reporter</span></code></a></p>
 <p>Something like this</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">LoggerReporter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">lr</span><span class="p">:</span>
@@ -954,93 +730,89 @@ amsbound (boolean, optional): whether to use the AMSBound variant of this algori
 <span class="p">[</span><span class="n">homura</span><span class="o">.</span><span class="n">reporter</span><span class="o">|</span><span class="mi">2019</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">30</span> <span class="mi">27</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">20</span><span class="o">|</span><span class="n">INFO</span><span class="p">]</span> <span class="p">[</span>      <span class="mi">1</span><span class="p">]</span>                  <span class="n">accuracy_test</span> <span class="mf">0.8631</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>callbacks</strong> – </li>
-<li><strong>save_dir</strong> – </li>
-<li><strong>report_freq</strong> – </li>
-<li><strong>save_image_freq</strong> – If n&gt;0, saves images every n iteration. if n==-1, every epoch.
-This may need large storage space.</li>
-<li><strong>image_keys</strong> – keys for images.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callbacks</strong> – </p></li>
+<li><p><strong>save_dir</strong> – </p></li>
+<li><p><strong>report_freq</strong> – </p></li>
+<li><p><strong>save_image_freq</strong> – If n&gt;0, saves images every n iteration. if n==-1, every epoch.
+This may need large storage space.</p></li>
+<li><p><strong>image_keys</strong> – keys for images.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.reporters.Reporter">
-<em class="property">class </em><code class="descclassname">homura.reporters.</code><code class="descname">Reporter</code><span class="sig-paren">(</span><em>base_wrapper: homura.utils.reporter_backends._WrapperBase, callbacks: Union[Iterable[homura.callbacks.Callback], homura.callbacks.Callback], report_freq: int = -1, report_param_freq: int = 0, report_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.Callback" title="homura.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.Callback</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">Reporter</code><span class="sig-paren">(</span><em class="sig-param">base_wrapper: homura.utils.reporter_backends._WrapperBase, callbacks: Union[Iterable[homura.callbacks.base.Callback], homura.callbacks.base.Callback], report_freq: int = -1, report_param_freq: int = 0, report_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="homura.callbacks.html#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
 <dl class="method">
 <dt id="homura.reporters.Reporter.add_memo">
-<code class="descname">add_memo</code><span class="sig-paren">(</span><em>text: str</em>, <em>*</em>, <em>name='memo'</em>, <em>index=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.add_memo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.add_memo" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_memo</code><span class="sig-paren">(</span><em class="sig-param">text: str</em>, <em class="sig-param">*</em>, <em class="sig-param">name='memo'</em>, <em class="sig-param">index=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.add_memo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.add_memo" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.after_all">
-<code class="descname">after_all</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_all" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">after_all</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.after_epoch">
-<code class="descname">after_epoch</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.after_iteration">
-<code class="descname">after_iteration</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.after_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.before_all">
-<code class="descname">before_all</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_all" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">before_all</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.before_epoch">
-<code class="descname">before_epoch</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">before_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.before_iteration">
-<code class="descname">before_iteration</code><span class="sig-paren">(</span><em>data: Mapping[KT, VT_co]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">before_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.before_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.close" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.close" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.disable_report_images">
-<code class="descname">disable_report_images</code><span class="sig-paren">(</span><em>image_keys: Union[str</em>, <em>list</em>, <em>None] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.disable_report_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.disable_report_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">disable_report_images</code><span class="sig-paren">(</span><em class="sig-param">image_keys: Union[str</em>, <em class="sig-param">list</em>, <em class="sig-param">None] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.disable_report_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.disable_report_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.disable_report_params">
-<code class="descname">disable_report_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.disable_report_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.disable_report_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">disable_report_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.disable_report_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.disable_report_params" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.enable_report_images">
-<code class="descname">enable_report_images</code><span class="sig-paren">(</span><em>report_freq: int = -1</em>, <em>image_keys: Union[str</em>, <em>list] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.enable_report_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.enable_report_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">enable_report_images</code><span class="sig-paren">(</span><em class="sig-param">report_freq: int = -1</em>, <em class="sig-param">image_keys: Union[str</em>, <em class="sig-param">list] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.enable_report_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.enable_report_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.reporters.Reporter.enable_report_params">
-<code class="descname">enable_report_params</code><span class="sig-paren">(</span><em>report_freq: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.enable_report_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.enable_report_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">enable_report_params</code><span class="sig-paren">(</span><em class="sig-param">report_freq: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#Reporter.enable_report_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.Reporter.enable_report_params" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.reporters.TQDMReporter">
-<em class="property">class </em><code class="descclassname">homura.reporters.</code><code class="descname">TQDMReporter</code><span class="sig-paren">(</span><em>iterator: Iterable[T_co], callbacks: Union[Iterable[homura.callbacks.Callback], homura.callbacks.Callback], save_dir: Optional[str] = None, report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">TQDMReporter</code><span class="sig-paren">(</span><em class="sig-param">iterator: Iterable, callbacks: Union[Iterable[homura.callbacks.base.Callback], homura.callbacks.base.Callback], save_dir: Optional[str] = None, report_freq: int = -1, save_image_freq: int = 0, image_keys: Optional[Iterable[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.reporters.Reporter" title="homura.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters.Reporter</span></code></a></p>
 <p>Reporter using tqdm. Use like</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TQDMReporter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">callbacks</span><span class="p">)</span> <span class="k">as</span> <span class="n">tq</span><span class="p">:</span>
@@ -1053,28 +825,24 @@ This may need large storage space.</li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|█| 200/200 [1:01:10&lt;00:00, 18.44s/it, loss_test=0.358, accuracy_test=0.919]
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>iterator</strong> – </li>
-<li><strong>callbacks</strong> – </li>
-<li><strong>save_dir</strong> – </li>
-<li><strong>report_freq</strong> – </li>
-<li><strong>save_image_freq</strong> – If n&gt;0, saves images every n iteration. if n==-1, every epoch.
-This may need large storage space.</li>
-<li><strong>image_keys</strong> – keys for images.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterator</strong> – </p></li>
+<li><p><strong>callbacks</strong> – </p></li>
+<li><p><strong>save_dir</strong> – </p></li>
+<li><p><strong>report_freq</strong> – </p></li>
+<li><p><strong>save_image_freq</strong> – If n&gt;0, saves images every n iteration. if n==-1, every epoch.
+This may need large storage space.</p></li>
+<li><p><strong>image_keys</strong> – keys for images.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.reporters.TensorboardReporter">
-<em class="property">class </em><code class="descclassname">homura.reporters.</code><code class="descname">TensorboardReporter</code><span class="sig-paren">(</span><em>callbacks: Union[Iterable[homura.callbacks.Callback], homura.callbacks.Callback], save_dir=None, report_freq: int = -1, report_params_freq: int = 0, report_images_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_images: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">TensorboardReporter</code><span class="sig-paren">(</span><em class="sig-param">callbacks: Union[Iterable[homura.callbacks.base.Callback], homura.callbacks.base.Callback], save_dir=None, report_freq: int = -1, report_params_freq: int = 0, report_images_freq: int = 0, image_keys: Optional[Iterable[str]] = None, save_images: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.reporters.Reporter" title="homura.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters.Reporter</span></code></a></p>
 <p>Reporter using Tensorboard.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TensorboardReporter</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
@@ -1083,28 +851,24 @@ This may need large storage space.</li>
         <span class="o">...</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>callbacks</strong> – </li>
-<li><strong>save_dir</strong> – </li>
-<li><strong>report_freq</strong> – </li>
-<li><strong>report_params_freq</strong> – If n&gt;0, reports parameter histograms every n iteration. if n==-1, every epoch.</li>
-<li><strong>report_images_freq</strong> – If n&gt;0, reports images every n iteration. if n==-1, every epoch.</li>
-<li><strong>image_keys</strong> – keys for images.</li>
-<li><strong>save_images</strong> – If True, saving images in addition to reporting</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callbacks</strong> – </p></li>
+<li><p><strong>save_dir</strong> – </p></li>
+<li><p><strong>report_freq</strong> – </p></li>
+<li><p><strong>report_params_freq</strong> – If n&gt;0, reports parameter histograms every n iteration. if n==-1, every epoch.</p></li>
+<li><p><strong>report_images_freq</strong> – If n&gt;0, reports images every n iteration. if n==-1, every epoch.</p></li>
+<li><p><strong>image_keys</strong> – keys for images.</p></li>
+<li><p><strong>save_images</strong> – If True, saving images in addition to reporting</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.reporters.VisdomReporter">
-<em class="property">class </em><code class="descclassname">homura.reporters.</code><code class="descname">VisdomReporter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#VisdomReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.VisdomReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">VisdomReporter</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#VisdomReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.VisdomReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Deprecated. Use TensorboardReporter instead.</p>
 </dd></dl>
@@ -1114,49 +878,45 @@ This may need large storage space.</li>
 <span id="homura-trainers-module"></span><h2>homura.trainers module<a class="headerlink" href="#module-homura.trainers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.trainers.TrainerBase">
-<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">TrainerBase</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module, optimizer: Optional[homura.optim.Optimizer], loss_f: Optional[Callable], *, callbacks: Optional[homura.callbacks.Callback] = None, scheduler: Optional[homura.lr_scheduler.LRScheduler] = None, update_scheduler_by_epoch: bool = True, device: Optional[torch.device] = None, verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">TrainerBase</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module, optimizer: Optional[homura.optim.Optimizer], loss_f: Optional[Callable], *, callbacks: Optional[homura.callbacks.base.Callback] = None, scheduler: Optional[homura.lr_scheduler.LRScheduler] = None, update_scheduler_by_epoch: bool = True, device: Optional[torch.device] = None, verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="homura.utils.html#homura.utils.runner.Runner" title="homura.utils.runner.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.runner.Runner</span></code></a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> – nn.Module or dict like {“generator”: gen, “discriminator”: dis}</li>
-<li><strong>optimizer</strong> – homura.optimizer.Optimizer or dict like {“generator”: Adam(lr=3e-4)}</li>
-<li><strong>loss_f</strong> – loss function or dict of loss functions</li>
-<li><strong>callbacks</strong> – callbacks or list of callbacks</li>
-<li><strong>scheduler</strong> – homura.scheduler.LRScheduler or dict like {“generator”: StepLR(10)}</li>
-<li><strong>update_scheduler_by_epoch</strong> – If True, update scheduler every epoch. If False and scheduler is given, scheduler
-is need to be update by user.</li>
-<li><strong>device</strong> – </li>
-<li><strong>verb</strong> – </li>
-<li><strong>use_cudnn_benchmark</strong> – </li>
-<li><strong>use_cuda_nonblocking</strong> – </li>
-<li><strong>logger</strong> – </li>
-<li><strong>kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – nn.Module or dict like {“generator”: gen, “discriminator”: dis}</p></li>
+<li><p><strong>optimizer</strong> – homura.optimizer.Optimizer or dict like {“generator”: Adam(lr=3e-4)}</p></li>
+<li><p><strong>loss_f</strong> – loss function or dict of loss functions</p></li>
+<li><p><strong>callbacks</strong> – callbacks or list of callbacks</p></li>
+<li><p><strong>scheduler</strong> – homura.scheduler.LRScheduler or dict like {“generator”: StepLR(10)}</p></li>
+<li><p><strong>update_scheduler_by_epoch</strong> – If True, update scheduler every epoch. If False and scheduler is given, scheduler
+is need to be update by user.</p></li>
+<li><p><strong>device</strong> – </p></li>
+<li><p><strong>verb</strong> – </p></li>
+<li><p><strong>use_cudnn_benchmark</strong> – </p></li>
+<li><p><strong>use_cuda_nonblocking</strong> – </p></li>
+<li><p><strong>logger</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="method">
 <dt id="homura.trainers.TrainerBase.epoch">
-<code class="descname">epoch</code><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">epoch</code><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.exit">
-<code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.exit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.exit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.trainers.TrainerBase.is_train">
-<code class="descname">is_train</code><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">is_train</code><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Iterable[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.iteration" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Iterable[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iteration part, user can override via duck typing or override_iteration</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
@@ -1169,21 +929,19 @@ is need to be update by user.</li>
     <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – data used during a iteration</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">loss, output</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – data used during a iteration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>loss, output</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.override_iteration">
-<code class="descname">override_iteration</code><span class="sig-paren">(</span><em>new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.override_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">override_iteration</code><span class="sig-paren">(</span><em class="sig-param">new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.override_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override iteration method</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_iteration</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
     <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
@@ -1193,133 +951,121 @@ is need to be update by user.</li>
 <span class="n">trainer</span><span class="o">.</span><span class="n">update_iteration</span><span class="p">(</span><span class="n">new_iteration</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_iteration</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_iteration</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_after_all">
-<code class="descname">register_after_all</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_all" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_after_all</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_after_epoch">
-<code class="descname">register_after_epoch</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_after_epoch</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_after_iteration">
-<code class="descname">register_after_iteration</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_after_iteration</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_after_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_before_all">
-<code class="descname">register_before_all</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_all" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_before_all</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_before_epoch">
-<code class="descname">register_before_epoch</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_epoch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_before_epoch</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.register_before_iteration">
-<code class="descname">register_before_iteration</code><span class="sig-paren">(</span><em>name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register_before_iteration</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.register_before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.register_before_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.resume">
-<code class="descname">resume</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.resume" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resume</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.resume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resume training from saved states by <cite>homura.callbacks.WeightSave</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>epochs: int</em>, <em>train_data: torch.utils.data.dataloader.DataLoader</em>, <em>test_data: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">epochs: int</em>, <em class="sig-param">train_data: torch.utils.data.dataloader.DataLoader</em>, <em class="sig-param">test_data: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="homura.trainers.TrainerBase.step">
-<code class="descname">step</code><a class="headerlink" href="#homura.trainers.TrainerBase.step" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">step</code><a class="headerlink" href="#homura.trainers.TrainerBase.step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.test">
-<code class="descname">test</code><span class="sig-paren">(</span><em>data_loader: torch.utils.data.dataloader.DataLoader</em>, <em>mode: str = 'test'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param">data_loader: torch.utils.data.dataloader.DataLoader</em>, <em class="sig-param">mode: str = 'test'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Non-training loop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_loader</strong> – </li>
-<li><strong>mode</strong> – Name of this loop. Default is <cite>test</cite>. Passed to callbacks.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_loader</strong> – </p></li>
+<li><p><strong>mode</strong> – Name of this loop. Default is <cite>test</cite>. Passed to callbacks.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>data_loader: torch.utils.data.dataloader.DataLoader</em>, <em>mode: str = 'train'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.train" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">data_loader: torch.utils.data.dataloader.DataLoader</em>, <em class="sig-param">mode: str = 'train'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Training loop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data_loader</strong> – </li>
-<li><strong>mode</strong> – Name of this loop. Default is <cite>train</cite>. Passed to callbacks.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_loader</strong> – </p></li>
+<li><p><strong>mode</strong> – Name of this loop. Default is <cite>train</cite>. Passed to callbacks.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.update_scheduler">
-<code class="descname">update_scheduler</code><span class="sig-paren">(</span><em>scheduler: homura.lr_scheduler.LRScheduler</em>, <em>update_scheduler_by_epoch: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.update_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.update_scheduler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_scheduler</code><span class="sig-paren">(</span><em class="sig-param">scheduler: homura.lr_scheduler.LRScheduler</em>, <em class="sig-param">update_scheduler_by_epoch: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.update_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.update_scheduler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="attribute">
 <dt id="homura.trainers.Trainer">
-<code class="descclassname">homura.trainers.</code><code class="descname">Trainer</code><a class="headerlink" href="#homura.trainers.Trainer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">Trainer</code><a class="headerlink" href="#homura.trainers.Trainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#homura.trainers.SupervisedTrainer" title="homura.trainers.SupervisedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.SupervisedTrainer</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.trainers.SupervisedTrainer">
-<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">SupervisedTrainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: Optional[homura.callbacks.Callback] = None</em>, <em>scheduler: Optional[homura.lr_scheduler.LRScheduler] = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>data_parallel=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">SupervisedTrainer</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">optimizer: homura.optim.Optimizer</em>, <em class="sig-param">loss_f: Callable</em>, <em class="sig-param">*</em>, <em class="sig-param">callbacks: Optional[homura.callbacks.base.Callback] = None</em>, <em class="sig-param">scheduler: Optional[homura.lr_scheduler.LRScheduler] = None</em>, <em class="sig-param">verb=True</em>, <em class="sig-param">use_cudnn_benchmark=True</em>, <em class="sig-param">data_parallel=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.trainers.TrainerBase" title="homura.trainers.TrainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.TrainerBase</span></code></a></p>
 <dl class="method">
 <dt id="homura.trainers.SupervisedTrainer.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iteration part, user can override via duck typing or override_iteration</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
@@ -1332,49 +1078,43 @@ is need to be update by user.</li>
     <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – data used during a iteration</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">loss, output</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – data used during a iteration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>loss, output</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.trainers.DistributedSupervisedTrainer">
-<em class="property">class </em><code class="descclassname">homura.trainers.</code><code class="descname">DistributedSupervisedTrainer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>optimizer: homura.optim.Optimizer</em>, <em>loss_f: Callable</em>, <em>*</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>backend='nccl'</em>, <em>init_method='env://'</em>, <em>use_sync_bn: bool = False</em>, <em>enable_amp=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">DistributedSupervisedTrainer</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">optimizer: homura.optim.Optimizer</em>, <em class="sig-param">loss_f: Callable</em>, <em class="sig-param">*</em>, <em class="sig-param">callbacks: homura.callbacks.base.Callback = None</em>, <em class="sig-param">scheduler: homura.lr_scheduler.LRScheduler = None</em>, <em class="sig-param">verb=True</em>, <em class="sig-param">use_cudnn_benchmark=True</em>, <em class="sig-param">backend='nccl'</em>, <em class="sig-param">init_method='env://'</em>, <em class="sig-param">use_sync_bn: bool = False</em>, <em class="sig-param">enable_amp=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.trainers.SupervisedTrainer" title="homura.trainers.SupervisedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.SupervisedTrainer</span></code></a></p>
 <p>Trainer with distributed functions</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> – </li>
-<li><strong>optimizer</strong> – </li>
-<li><strong>loss_f</strong> – </li>
-<li><strong>callbacks</strong> – </li>
-<li><strong>scheduler</strong> – </li>
-<li><strong>verb</strong> – </li>
-<li><strong>use_cudnn_benchmark</strong> – </li>
-<li><strong>backend</strong> – “nccl” or “gloo”</li>
-<li><strong>init_method</strong> – </li>
-<li><strong>use_sync_bn</strong> – </li>
-<li><strong>kwargs</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – </p></li>
+<li><p><strong>optimizer</strong> – </p></li>
+<li><p><strong>loss_f</strong> – </p></li>
+<li><p><strong>callbacks</strong> – </p></li>
+<li><p><strong>scheduler</strong> – </p></li>
+<li><p><strong>verb</strong> – </p></li>
+<li><p><strong>use_cudnn_benchmark</strong> – </p></li>
+<li><p><strong>backend</strong> – “nccl” or “gloo”</p></li>
+<li><p><strong>init_method</strong> – </p></li>
+<li><p><strong>use_sync_bn</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="homura.trainers.DistributedSupervisedTrainer.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Mapping[str, torch.Tensor]<a class="reference internal" href="_modules/homura/trainers.html#DistributedSupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.DistributedSupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iteration part, user can override via duck typing or override_iteration</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
@@ -1387,16 +1127,14 @@ is need to be update by user.</li>
     <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – data used during a iteration</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">loss, output</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – data used during a iteration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>loss, output</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1406,7 +1144,7 @@ is need to be update by user.</li>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.Map">
-<em class="property">class </em><code class="descclassname">homura.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p>dict like object but: stored values can be subscribed and attributed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
@@ -1415,67 +1153,67 @@ is need to be update by user.</li>
 </div>
 <dl class="method">
 <dt id="homura.Map.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.copy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.Map.deepcopy">
-<code class="descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.Map.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.Map.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">device: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move stored tensors to a given device</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.Map.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.Map.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.TensorTuple">
-<em class="property">class </em><code class="descclassname">homura.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.TensorTuple" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.</code><code class="sig-name descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.TensorTuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>Tuple for tensors.</p>
 <dl class="method">
 <dt id="homura.TensorTuple.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.enable_accimage">
-<code class="descclassname">homura.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.enable_accimage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.enable_accimage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_global_rank">
-<code class="descclassname">homura.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_global_rank" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_global_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_local_rank">
-<code class="descclassname">homura.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_local_rank" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_local_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_world_size">
-<code class="descclassname">homura.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_world_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_world_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.get_num_nodes">
-<code class="descclassname">homura.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_num_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.get_num_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1489,7 +1227,7 @@ is need to be update by user.</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="homura.metrics.html" class="btn btn-neutral float-right" title="homura.metrics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="homura.callbacks.html" class="btn btn-neutral float-right" title="homura.callbacks package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

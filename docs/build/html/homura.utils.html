@@ -85,6 +85,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.utils package</a><ul>
@@ -103,7 +104,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -113,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -204,7 +205,7 @@
 <span id="homura-utils-containers-module"></span><h2>homura.utils.containers module<a class="headerlink" href="#module-homura.utils.containers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.containers.Map">
-<em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p>dict like object but: stored values can be subscribed and attributed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
@@ -213,40 +214,75 @@
 </div>
 <dl class="method">
 <dt id="homura.utils.containers.Map.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.copy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.containers.Map.deepcopy">
-<code class="descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.containers.Map.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.containers.Map.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">device: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move stored tensors to a given device</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.containers.Map.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.utils.containers.TensorTuple">
-<em class="property">class </em><code class="descclassname">homura.utils.containers.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>Tuple for tensors.</p>
 <dl class="method">
 <dt id="homura.utils.containers.TensorTuple.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.utils.containers.StepDict">
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">StepDict</code><span class="sig-paren">(</span><em class="sig-param">_type</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_type</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.utils.containers.StepDict.load_state_dict">
+<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param">state_dicts: dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.load_state_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.containers.StepDict.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.containers.StepDict.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.utils.containers.StepDict.zero_grad">
+<code class="sig-name descname">zero_grad</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.zero_grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.zero_grad" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -256,27 +292,27 @@
 <span id="homura-utils-environment-module"></span><h2>homura.utils.environment module<a class="headerlink" href="#module-homura.utils.environment" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.utils.environment.enable_accimage">
-<code class="descclassname">homura.utils.environment.</code><code class="descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.enable_accimage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.enable_accimage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.environment.get_global_rank">
-<code class="descclassname">homura.utils.environment.</code><code class="descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_global_rank" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_global_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.environment.get_local_rank">
-<code class="descclassname">homura.utils.environment.</code><code class="descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_local_rank" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_local_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.environment.get_world_size">
-<code class="descclassname">homura.utils.environment.</code><code class="descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_world_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_world_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.environment.get_num_nodes">
-<code class="descclassname">homura.utils.environment.</code><code class="descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_num_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_num_nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -284,42 +320,42 @@
 <span id="homura-utils-inferencer-module"></span><h2>homura.utils.inferencer module<a class="headerlink" href="#module-homura.utils.inferencer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.inferencer.Inferencer">
-<em class="property">class </em><code class="descclassname">homura.utils.inferencer.</code><code class="descname">Inferencer</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: homura.callbacks.Callback = None</em>, <em>device: torch.device = None</em>, <em>verb=True</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.inferencer.</code><code class="sig-name descname">Inferencer</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">callbacks: homura.callbacks.base.Callback = None</em>, <em class="sig-param">device: torch.device = None</em>, <em class="sig-param">verb=True</em>, <em class="sig-param">use_cudnn_benchmark=True</em>, <em class="sig-param">use_cuda_nonblocking=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.utils.runner.Runner" title="homura.utils.runner.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.runner.Runner</span></code></a></p>
 <p>Runner for inference only.</p>
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; homura.utils.containers.Map<a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Tuple[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; homura.utils.containers.Map<a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.load" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="homura.utils.inferencer.Inferencer.mode">
-<code class="descname">mode</code><em class="property"> = 'inference'</em><a class="headerlink" href="#homura.utils.inferencer.Inferencer.mode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mode</code><em class="property"> = 'inference'</em><a class="headerlink" href="#homura.utils.inferencer.Inferencer.mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.override_iteration">
-<code class="descname">override_iteration</code><span class="sig-paren">(</span><em>new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.override_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">override_iteration</code><span class="sig-paren">(</span><em class="sig-param">new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.override_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>data_loader: Iterable[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">data_loader: Iterable[torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.test">
-<code class="descname">test</code><span class="sig-paren">(</span><em>data_loader: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param">data_loader: torch.utils.data.dataloader.DataLoader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.test" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.inferencer.Inferencer.update_loss_f">
-<code class="descname">update_loss_f</code><span class="sig-paren">(</span><em>loss_f: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.update_loss_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.update_loss_f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_loss_f</code><span class="sig-paren">(</span><em class="sig-param">loss_f: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/inferencer.html#Inferencer.update_loss_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.inferencer.Inferencer.update_loss_f" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -329,7 +365,7 @@
 <span id="homura-utils-miscs-module"></span><h2>homura.utils.miscs module<a class="headerlink" href="#module-homura.utils.miscs" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.utils.miscs.check_path">
-<code class="descclassname">homura.utils.miscs.</code><code class="descname">check_path</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/miscs.html#check_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.miscs.check_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.miscs.</code><code class="sig-name descname">check_path</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/miscs.html#check_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.miscs.check_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -337,130 +373,130 @@
 <span id="homura-utils-reporter-backends-module"></span><h2>homura.utils.reporter_backends module<a class="headerlink" href="#module-homura.utils.reporter_backends" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.reporter_backends.LoggerWrapper">
-<em class="property">class </em><code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">LoggerWrapper</code><span class="sig-paren">(</span><em>logger=None</em>, <em>save_dir=None</em>, <em>save_log: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">LoggerWrapper</code><span class="sig-paren">(</span><em class="sig-param">logger=None</em>, <em class="sig-param">save_dir=None</em>, <em class="sig-param">save_log: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.reporter_backends._WrapperBase</span></code></p>
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_histogram">
-<code class="descname">add_histogram</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_histogram</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_image">
-<code class="descname">add_image</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_image</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_images">
-<code class="descname">add_images</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_images</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_scalar">
-<code class="descname">add_scalar</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalar</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_scalars">
-<code class="descname">add_scalars</code><span class="sig-paren">(</span><em>x: Union[Dict[KT, VT], numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalars</code><span class="sig-paren">(</span><em class="sig-param">x: Union[Dict, numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.LoggerWrapper.add_text">
-<code class="descname">add_text</code><span class="sig-paren">(</span><em>x: str</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param">x: str</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#LoggerWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.LoggerWrapper.add_text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.utils.reporter_backends.TQDMWrapper">
-<em class="property">class </em><code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">TQDMWrapper</code><span class="sig-paren">(</span><em>iterator</em>, <em>save_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">TQDMWrapper</code><span class="sig-paren">(</span><em class="sig-param">iterator</em>, <em class="sig-param">save_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.reporter_backends._WrapperBase</span></code></p>
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_histogram">
-<code class="descname">add_histogram</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_histogram</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_image">
-<code class="descname">add_image</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_image</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_images">
-<code class="descname">add_images</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_images</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_scalar">
-<code class="descname">add_scalar</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalar</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_scalars">
-<code class="descname">add_scalars</code><span class="sig-paren">(</span><em>x: dict</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalars</code><span class="sig-paren">(</span><em class="sig-param">x: dict</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TQDMWrapper.add_text">
-<code class="descname">add_text</code><span class="sig-paren">(</span><em>x</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TQDMWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TQDMWrapper.add_text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper">
-<em class="property">class </em><code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">TensorBoardWrapper</code><span class="sig-paren">(</span><em>save_dir=None</em>, <em>save_images=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">TensorBoardWrapper</code><span class="sig-paren">(</span><em class="sig-param">save_dir=None</em>, <em class="sig-param">save_images=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.reporter_backends._WrapperBase</span></code></p>
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_histogram">
-<code class="descname">add_histogram</code><span class="sig-paren">(</span><em>x: torch.Tensor</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_histogram</code><span class="sig-paren">(</span><em class="sig-param">x: torch.Tensor</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_histogram" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_image">
-<code class="descname">add_image</code><span class="sig-paren">(</span><em>x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_image</code><span class="sig-paren">(</span><em class="sig-param">x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_images">
-<code class="descname">add_images</code><span class="sig-paren">(</span><em>x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_images</code><span class="sig-paren">(</span><em class="sig-param">x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_scalar">
-<code class="descname">add_scalar</code><span class="sig-paren">(</span><em>x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalar</code><span class="sig-paren">(</span><em class="sig-param">x: Union[numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_scalar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_scalars">
-<code class="descname">add_scalars</code><span class="sig-paren">(</span><em>x: Union[Dict[KT, VT], numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_scalars</code><span class="sig-paren">(</span><em class="sig-param">x: Union[Dict, numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]], name: str, idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_scalars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.add_text">
-<code class="descname">add_text</code><span class="sig-paren">(</span><em>x: str</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param">x: str</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.add_text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.reporter_backends.TensorBoardWrapper.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.close" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#TensorBoardWrapper.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.TensorBoardWrapper.close" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.reporter_backends.make_dir">
-<code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">make_dir</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span> &#x2192; pathlib.Path<a class="reference internal" href="_modules/homura/utils/reporter_backends.html#make_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.make_dir" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">make_dir</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; pathlib.Path<a class="reference internal" href="_modules/homura/utils/reporter_backends.html#make_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.make_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.reporter_backends.save_image">
-<code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">save_image</code><span class="sig-paren">(</span><em>path: pathlib.Path</em>, <em>x: torch.Tensor</em>, <em>name: str</em>, <em>idx: int</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/reporter_backends.html#save_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.save_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">save_image</code><span class="sig-paren">(</span><em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">x: torch.Tensor</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/reporter_backends.html#save_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.save_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.reporter_backends.vector_to_dict">
-<code class="descclassname">homura.utils.reporter_backends.</code><code class="descname">vector_to_dict</code><span class="sig-paren">(</span><em>x: Union[Dict[KT, VT], numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#vector_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.vector_to_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.reporter_backends.</code><code class="sig-name descname">vector_to_dict</code><span class="sig-paren">(</span><em class="sig-param">x: Union[Dict, numbers.Number, torch.Tensor, numpy.ndarray, List[numbers.Number]]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reporter_backends.html#vector_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reporter_backends.vector_to_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -468,14 +504,14 @@
 <span id="homura-utils-reproducibility-module"></span><h2>homura.utils.reproducibility module<a class="headerlink" href="#module-homura.utils.reproducibility" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.utils.reproducibility.set_deterministic">
-<code class="descclassname">homura.utils.reproducibility.</code><code class="descname">set_deterministic</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_deterministic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.reproducibility.</code><code class="sig-name descname">set_deterministic</code><span class="sig-paren">(</span><em class="sig-param">seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_deterministic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to 0 for making it deterministic. Because of CUDA’s limitation, this
 does not make everything deterministic, however.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.reproducibility.set_seed">
-<code class="descclassname">homura.utils.reproducibility.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.reproducibility.</code><code class="sig-name descname">set_seed</code><span class="sig-paren">(</span><em class="sig-param">seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix seed of random generator in the given context. Negative seed has no effect</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">set_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">do_some_random_thing</span><span class="p">()</span>
@@ -488,7 +524,7 @@ does not make everything deterministic, however.</p>
 <span id="homura-utils-runner-module"></span><h2>homura.utils.runner module<a class="headerlink" href="#module-homura.utils.runner" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.runner.Runner">
-<em class="property">class </em><code class="descclassname">homura.utils.runner.</code><code class="descname">Runner</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>callbacks: Optional[homura.callbacks.Callback] = None</em>, <em>device: torch.device = None</em>, <em>use_cudnn_benchmark=True</em>, <em>use_cuda_nonblocking=False</em>, <em>logger: Optional[logging.Logger] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/runner.html#Runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.runner.Runner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.runner.</code><code class="sig-name descname">Runner</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">callbacks: Optional[homura.callbacks.base.Callback] = None</em>, <em class="sig-param">device: torch.device = None</em>, <em class="sig-param">use_cudnn_benchmark=True</em>, <em class="sig-param">use_cuda_nonblocking=False</em>, <em class="sig-param">logger: Optional[logging.Logger] = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/runner.html#Runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.runner.Runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Meta-class for Trainer and Inferencer</p>
 </dd></dl>
@@ -498,7 +534,7 @@ does not make everything deterministic, however.</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.utils.Map">
-<em class="property">class </em><code class="descclassname">homura.utils.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <p>dict like object but: stored values can be subscribed and attributed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
@@ -507,47 +543,47 @@ does not make everything deterministic, however.</p>
 </div>
 <dl class="method">
 <dt id="homura.utils.Map.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.copy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.Map.deepcopy">
-<code class="descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.Map.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.Map.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>device: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">device: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move stored tensors to a given device</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="homura.utils.Map.values">
-<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.Map.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.utils.TensorTuple">
-<em class="property">class </em><code class="descclassname">homura.utils.</code><code class="descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.</code><code class="sig-name descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>Tuple for tensors.</p>
 <dl class="method">
 <dt id="homura.utils.TensorTuple.to">
-<code class="descname">to</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.utils.set_seed">
-<code class="descclassname">homura.utils.</code><code class="descname">set_seed</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.</code><code class="sig-name descname">set_seed</code><span class="sig-paren">(</span><em class="sig-param">seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix seed of random generator in the given context. Negative seed has no effect</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">set_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">do_some_random_thing</span><span class="p">()</span>
@@ -557,7 +593,7 @@ does not make everything deterministic, however.</p>
 
 <dl class="function">
 <dt id="homura.utils.set_deterministic">
-<code class="descclassname">homura.utils.</code><code class="descname">set_deterministic</code><span class="sig-paren">(</span><em>seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_deterministic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.</code><code class="sig-name descname">set_deterministic</code><span class="sig-paren">(</span><em class="sig-param">seed: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.set_deterministic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to 0 for making it deterministic. Because of CUDA’s limitation, this
 does not make everything deterministic, however.</p>
 </dd></dl>

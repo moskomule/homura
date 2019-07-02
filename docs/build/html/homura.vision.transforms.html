@@ -84,6 +84,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -95,7 +96,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -105,6 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -202,11 +203,11 @@
 <span id="homura-vision-transforms-erase-module"></span><h2>homura.vision.transforms.erase module<a class="headerlink" href="#module-homura.vision.transforms.erase" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.transforms.erase.RandomErase">
-<em class="property">class </em><code class="descclassname">homura.vision.transforms.erase.</code><code class="descname">RandomErase</code><span class="sig-paren">(</span><em>erase_prob: float, area_ratio: Tuple[float, float], aspect_ratio: Tuple[float, float]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/erase.html#RandomErase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.erase.RandomErase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.erase.</code><code class="sig-name descname">RandomErase</code><span class="sig-paren">(</span><em class="sig-param">erase_prob: float, area_ratio: Tuple[float, float], aspect_ratio: Tuple[float, float]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/erase.html#RandomErase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.erase.RandomErase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="homura.vision.transforms.erase.RandomErase.min_ratio">
-<code class="descname">min_ratio</code><em class="property"> = 0.1</em><a class="headerlink" href="#homura.vision.transforms.erase.RandomErase.min_ratio" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">min_ratio</code><em class="property"> = 0.1</em><a class="headerlink" href="#homura.vision.transforms.erase.RandomErase.min_ratio" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -216,38 +217,34 @@
 <span id="homura-vision-transforms-zca-module"></span><h2>homura.vision.transforms.zca module<a class="headerlink" href="#module-homura.vision.transforms.zca" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.transforms.zca.ZCATransformation">
-<em class="property">class </em><code class="descclassname">homura.vision.transforms.zca.</code><code class="descname">ZCATransformation</code><span class="sig-paren">(</span><em>transformation_matrix</em>, <em>mean_vector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.zca.</code><code class="sig-name descname">ZCATransformation</code><span class="sig-paren">(</span><em class="sig-param">transformation_matrix</em>, <em class="sig-param">mean_vector</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.transforms.LinearTransformation</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">ZCATransformation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
 </pre></div>
 </div>
-<dl class="staticmethod">
+<dl class="method">
 <dt id="homura.vision.transforms.zca.ZCATransformation.create">
-<em class="property">static </em><code class="descname">create</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation.create" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#ZCATransformation.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.ZCATransformation.create" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.transforms.zca.zca_statistics">
-<code class="descclassname">homura.vision.transforms.zca.</code><code class="descname">zca_statistics</code><span class="sig-paren">(</span><em>input: torch.Tensor</em>, <em>eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#zca_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.zca_statistics" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.transforms.zca.</code><code class="sig-name descname">zca_statistics</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/zca.html#zca_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.zca.zca_statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>ZCA-whitening</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> – </li>
-<li><strong>eps</strong> – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – </p></li>
+<li><p><strong>eps</strong> – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

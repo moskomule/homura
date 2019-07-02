@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.callbacks package &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="homura.metrics package" href="homura.metrics.html" />
+    <link rel="prev" title="homura package" href="homura.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">homura.callbacks package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.base">homura.callbacks.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">homura.callbacks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.base">homura.callbacks.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="homura.html">homura package</a> &raquo;</li>
+        
+      <li>homura.callbacks package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/homura.callbacks.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="homura-callbacks-package">
+<h1>homura.callbacks package<a class="headerlink" href="#homura-callbacks-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-homura.callbacks.base">
+<span id="homura-callbacks-base-module"></span><h2>homura.callbacks.base module<a class="headerlink" href="#module-homura.callbacks.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.callbacks.base.Callback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.base.</code><code class="sig-name descname">Callback</code><a class="reference internal" href="_modules/homura/callbacks/base.html#Callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of Callback class</p>
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.after_all">
+<code class="sig-name descname">after_all</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.after_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.before_all">
+<code class="sig-name descname">before_all</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.before_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.before_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.before_epoch">
+<code class="sig-name descname">before_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.before_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.before_iteration">
+<code class="sig-name descname">before_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span> &#x2192; collections.abc.Mapping<a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.before_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.Callback.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#Callback.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.Callback.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.base.CallbackList">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.base.</code><code class="sig-name descname">CallbackList</code><span class="sig-paren">(</span><em class="sig-param">*callbacks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
+<p>Combine some callbacks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>callbacks</strong> – callbacks</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.after_all">
+<code class="sig-name descname">after_all</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.after_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.before_epoch">
+<code class="sig-name descname">before_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.before_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.before_iteration">
+<code class="sig-name descname">before_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.before_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.base.CallbackList.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/base.html#CallbackList.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.base.CallbackList.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.callbacks.metrics">
+<span id="homura-callbacks-metrics-module"></span><h2>homura.callbacks.metrics module<a class="headerlink" href="#module-homura.callbacks.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.callbacks.metrics.AccuracyCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">AccuracyCallback</code><span class="sig-paren">(</span><em class="sig-param">k: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for accuracy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>k</strong> – report top-k accuracy</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.metrics.AccuracyCallback.accuracy">
+<code class="sig-name descname">accuracy</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback.accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.IOUCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">IOUCallback</code><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for IOU (classwise and mean IOU)</p>
+<dl class="method">
+<dt id="homura.callbacks.metrics.IOUCallback.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.IOUCallback.cm">
+<code class="sig-name descname">cm</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback.cm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback.cm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.LossCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">LossCallback</code><a class="reference internal" href="_modules/homura/callbacks/metrics.html#LossCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.LossCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for loss function</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.MetricCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">MetricCallback</code><span class="sig-paren">(</span><em class="sig-param">metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None, reduction='average', no_reduce: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
+<p>Base class of MetricCallback class such as AccuracyCallback</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – metric function: (data) -&gt; float</p></li>
+<li><p><strong>name</strong> – name of the metric</p></li>
+<li><p><strong>logger</strong> – </p></li>
+<li><p><strong>no_reduce</strong> – skip reducing when distributed</p></li>
+<li><p><strong>reduction</strong> – reduction method after every epoch</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.before_epoch">
+<code class="sig-name descname">before_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.before_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.before_iteration">
+<code class="sig-name descname">before_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.before_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.history">
+<em class="property">property </em><code class="sig-name descname">history</code><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>History of metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict of histories in {mode: [history]}</p>
+</dd>
+</dl>
+<p>Using this property, history of metrics can be used after a training loop</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># training loop</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_result</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.reduce">
+<code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param">tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.to_cpu">
+<em class="property">static </em><code class="sig-name descname">to_cpu</code><span class="sig-paren">(</span><em class="sig-param">tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.to_cpu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.to_cpu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.callbacks.metrics.metric_callback_decorator">
+<code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">metric_callback_decorator</code><span class="sig-paren">(</span><em class="sig-param">_metric: Callable = None</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">reduction='average'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#metric_callback_decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.metric_callback_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to create a metrics callback</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@metric_callback_decorator</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.callbacks.saver">
+<span id="homura-callbacks-saver-module"></span><h2>homura.callbacks.saver module<a class="headerlink" href="#module-homura.callbacks.saver" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.callbacks.saver.WeightSave">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.saver.</code><code class="sig-name descname">WeightSave</code><span class="sig-paren">(</span><em class="sig-param">save_path: str</em>, <em class="sig-param">save_freq: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/saver.html#WeightSave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.saver.WeightSave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
+<p>Save weights after every epoch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_path</strong> – path to be saved</p></li>
+<li><p><strong>save_freq</strong> – frequency of saving in epoch. If -1, saved by <cite>after_all</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.saver.WeightSave.after_all">
+<code class="sig-name descname">after_all</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/saver.html#WeightSave.after_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.saver.WeightSave.after_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.saver.WeightSave.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/saver.html#WeightSave.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.saver.WeightSave.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.saver.WeightSave.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em>, <em class="sig-param">file_name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/saver.html#WeightSave.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.saver.WeightSave.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.callbacks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.callbacks" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="homura.metrics.html" class="btn btn-neutral float-right" title="homura.metrics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="homura.html" class="btn btn-neutral float-left" title="homura package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

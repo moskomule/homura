@@ -85,6 +85,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -96,7 +97,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.callbacks">homura.callbacks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -205,39 +206,35 @@
 <a class="reference external" href="https://github.com/liuzhuang13/DenseNet">https://github.com/liuzhuang13/DenseNet</a></p>
 <dl class="function">
 <dt id="homura.vision.models.classification.densenet.cifar_densenet100">
-<code class="descclassname">homura.vision.models.classification.densenet.</code><code class="descname">cifar_densenet100</code><span class="sig-paren">(</span><em>num_classes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#cifar_densenet100"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.cifar_densenet100" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.densenet.</code><code class="sig-name descname">cifar_densenet100</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#cifar_densenet100"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.cifar_densenet100" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.models.classification.densenet.CIFARDenseNet">
-<em class="property">class </em><code class="descclassname">homura.vision.models.classification.densenet.</code><code class="descname">CIFARDenseNet</code><span class="sig-paren">(</span><em>num_classes</em>, <em>init_channels</em>, <em>num_layers</em>, <em>growth_rate</em>, <em>dropout_rate=0</em>, <em>bn_size=4</em>, <em>reduction=2</em>, <em>padding='reflect'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.classification.densenet.</code><code class="sig-name descname">CIFARDenseNet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">init_channels</em>, <em class="sig-param">num_layers</em>, <em class="sig-param">growth_rate</em>, <em class="sig-param">dropout_rate=0</em>, <em class="sig-param">bn_size=4</em>, <em class="sig-param">reduction=2</em>, <em class="sig-param">padding='reflect'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>DenseNet-BC (bottleneck and compactness) for CIFAR dataset. For ImageNet classification, use <cite>torchvision</cite>’s.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_classes</strong> – (int) number of output classes</li>
-<li><strong>init_channels</strong> – (int) output channels which is performed on the input. 16 or 2 * growth_rate</li>
-<li><strong>num_layers</strong> – (int) number of layers of each dense block</li>
-<li><strong>growth_rate</strong> – (int) growth rate, which is referred as k in the paper</li>
-<li><strong>dropout_rate</strong> – (float=0) dropout rate</li>
-<li><strong>bn_size</strong> – (int=4) multiplicative factor in bottleneck</li>
-<li><strong>reduction</strong> – (int=2) divisional factor in transition</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_classes</strong> – (int) number of output classes</p></li>
+<li><p><strong>init_channels</strong> – (int) output channels which is performed on the input. 16 or 2 * growth_rate</p></li>
+<li><p><strong>num_layers</strong> – (int) number of layers of each dense block</p></li>
+<li><p><strong>growth_rate</strong> – (int) growth rate, which is referred as k in the paper</p></li>
+<li><p><strong>dropout_rate</strong> – (float=0) dropout rate</p></li>
+<li><p><strong>bn_size</strong> – (int=4) multiplicative factor in bottleneck</p></li>
+<li><p><strong>reduction</strong> – (int=2) divisional factor in transition</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="homura.vision.models.classification.densenet.CIFARDenseNet.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
@@ -246,7 +243,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="method">
 <dt id="homura.vision.models.classification.densenet.CIFARDenseNet.initialize">
-<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet.initialize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/densenet.html#CIFARDenseNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.densenet.CIFARDenseNet.initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -258,57 +255,57 @@ registered hooks while the latter silently ignores them.</p>
 <a class="reference external" href="https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua">https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua</a></p>
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.resnet20">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">resnet20</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet20" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">resnet20</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet20" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.resnet32">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">resnet32</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet32" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">resnet32</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet32" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.resnet56">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">resnet56</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet56" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">resnet56</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet56" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.resnet110">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">resnet110</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet110" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">resnet110</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.resnet110" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.preact_resnet20">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">preact_resnet20</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet20" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">preact_resnet20</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet20" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.preact_resnet32">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">preact_resnet32</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet32" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">preact_resnet32</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet32" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.preact_resnet56">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">preact_resnet56</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet56" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">preact_resnet56</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet56" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.resnet.preact_resnet110">
-<code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">preact_resnet110</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet110" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">preact_resnet110</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#preact_resnet110"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.preact_resnet110" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.models.classification.resnet.ResNet">
-<em class="property">class </em><code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">ResNet</code><span class="sig-paren">(</span><em>block</em>, <em>n_size</em>, <em>num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">ResNet</code><span class="sig-paren">(</span><em class="sig-param">block</em>, <em class="sig-param">n_size</em>, <em class="sig-param">num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>ResNet for CIFAR data. For ImageNet classification, use <cite>torchvision</cite>’s.</p>
 <dl class="method">
 <dt id="homura.vision.models.classification.resnet.ResNet.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
@@ -317,23 +314,23 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="method">
 <dt id="homura.vision.models.classification.resnet.ResNet.initialize">
-<code class="descname">initialize</code><span class="sig-paren">(</span><em>zero_init_residual=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet.initialize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param">zero_init_residual=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#ResNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.ResNet.initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.models.classification.resnet.PreActResNet">
-<em class="property">class </em><code class="descclassname">homura.vision.models.classification.resnet.</code><code class="descname">PreActResNet</code><span class="sig-paren">(</span><em>block</em>, <em>n_size</em>, <em>num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#PreActResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.PreActResNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.classification.resnet.</code><code class="sig-name descname">PreActResNet</code><span class="sig-paren">(</span><em class="sig-param">block</em>, <em class="sig-param">n_size</em>, <em class="sig-param">num_classes=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#PreActResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.PreActResNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.models.classification.resnet.ResNet" title="homura.vision.models.classification.resnet.ResNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.models.classification.resnet.ResNet</span></code></a></p>
 <dl class="method">
 <dt id="homura.vision.models.classification.resnet.PreActResNet.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#PreActResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.PreActResNet.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/resnet.html#PreActResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.resnet.PreActResNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
@@ -347,17 +344,17 @@ registered hooks while the latter silently ignores them.</p>
 <span id="homura-vision-models-classification-wideresnet-module"></span><h2>homura.vision.models.classification.wideresnet module<a class="headerlink" href="#module-homura.vision.models.classification.wideresnet" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.models.classification.wideresnet.WideResNet">
-<em class="property">class </em><code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">WideResNet</code><span class="sig-paren">(</span><em>num_classes</em>, <em>depth</em>, <em>widen_factor</em>, <em>dropout_rate</em>, <em>base=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.classification.wideresnet.</code><code class="sig-name descname">WideResNet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">depth</em>, <em class="sig-param">widen_factor</em>, <em class="sig-param">dropout_rate</em>, <em class="sig-param">base=16</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>WideResNet for CIFAR data.</p>
 <dl class="method">
 <dt id="homura.vision.models.classification.wideresnet.WideResNet.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
@@ -366,23 +363,23 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="method">
 <dt id="homura.vision.models.classification.wideresnet.WideResNet.initialize">
-<code class="descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet.initialize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideResNet.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideResNet.initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="homura.vision.models.classification.wideresnet.WideBasicModule">
-<em class="property">class </em><code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">WideBasicModule</code><span class="sig-paren">(</span><em>in_planes</em>, <em>planes</em>, <em>dropout_rate</em>, <em>stride=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.classification.wideresnet.</code><code class="sig-name descname">WideBasicModule</code><span class="sig-paren">(</span><em class="sig-param">in_planes</em>, <em class="sig-param">planes</em>, <em class="sig-param">dropout_rate</em>, <em class="sig-param">stride=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="method">
 <dt id="homura.vision.models.classification.wideresnet.WideBasicModule.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule.forward" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#WideBasicModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.WideBasicModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
 this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
@@ -393,12 +390,12 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.wideresnet.wrn28_10">
-<code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">wrn28_10</code><span class="sig-paren">(</span><em>num_classes=10</em>, <em>dropout_rate=0</em><span class="sig-paren">)</span> &#x2192; homura.vision.models.classification.wideresnet.WideResNet<a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_10" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.wideresnet.</code><code class="sig-name descname">wrn28_10</code><span class="sig-paren">(</span><em class="sig-param">num_classes=10</em>, <em class="sig-param">dropout_rate=0</em><span class="sig-paren">)</span> &#x2192; homura.vision.models.classification.wideresnet.WideResNet<a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_10" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.vision.models.classification.wideresnet.wrn28_2">
-<code class="descclassname">homura.vision.models.classification.wideresnet.</code><code class="descname">wrn28_2</code><span class="sig-paren">(</span><em>num_classes=10</em>, <em>dropout_rate=0</em><span class="sig-paren">)</span> &#x2192; homura.vision.models.classification.wideresnet.WideResNet<a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.vision.models.classification.wideresnet.</code><code class="sig-name descname">wrn28_2</code><span class="sig-paren">(</span><em class="sig-param">num_classes=10</em>, <em class="sig-param">dropout_rate=0</em><span class="sig-paren">)</span> &#x2192; homura.vision.models.classification.wideresnet.WideResNet<a class="reference internal" href="_modules/homura/vision/models/classification/wideresnet.html#wrn28_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.classification.wideresnet.wrn28_2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

@@ -82,6 +82,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -159,14 +160,13 @@
 
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;is_accimage_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_apex_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_tensorboardX_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_distributed&quot;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;is_accimage_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_apex_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_distributed&quot;</span><span class="p">,</span>
            <span class="s2">&quot;enable_accimage&quot;</span><span class="p">,</span>
            <span class="s2">&quot;get_global_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;get_local_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;get_world_size&quot;</span><span class="p">,</span> <span class="s2">&quot;get_num_nodes&quot;</span><span class="p">]</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;homura.env&quot;</span><span class="p">)</span>
 <span class="n">is_accimage_available</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;accimage&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="n">is_apex_available</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;apex&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="n">is_tensorboardX_available</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;tensorboardX&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
 <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">python_sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
 <span class="n">is_distributed</span> <span class="o">=</span> <span class="s2">&quot;--local_rank&quot;</span> <span class="ow">in</span> <span class="n">args</span>
