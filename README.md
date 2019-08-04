@@ -2,7 +2,7 @@
 
 [document](https://moskomule.github.io/homura)
 
-**homura** is a library for prototyping DL research.
+**homura** is a library for fast prototyping DL research.
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
@@ -169,3 +169,15 @@ run
 
 Here, `0<$RANK<$NUM_NODES`.
 
+# Citing
+
+```bibtex
+@misc{homura,
+    author = {Ryuichiro Hataya},
+    title = {homura},
+    year = {2018},
+    publisher = {GitHub},
+    journal = {GitHub repository},
+    howpublished = {\url{https://GitHub.com/moskomule/homura}},
+}
+```
