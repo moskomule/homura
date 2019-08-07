@@ -1,6 +1,4 @@
-# Homura [![CircleCI](https://circleci.com/gh/moskomule/homura/tree/master.svg?style=svg)](https://circleci.com/gh/moskomule/homura/tree/master)
-
-[document](https://moskomule.github.io/homura)
+# Homura [![CircleCI](https://circleci.com/gh/moskomule/homura/tree/master.svg?style=svg)](https://circleci.com/gh/moskomule/homura/tree/master) [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
 
 **homura** is a library for fast prototyping DL research.
 
@@ -82,9 +80,10 @@ with reporters.TensorboardReporter([callbacks.AccuracyCallback(),
 Now `iteration` of trainer can be updated as follows,
 
 ```python
+from homura.trainers import TrainerBase, SupervisedTrainer
 from homura.utils.containers import Map
 
-def iteration(trainer: Trainer, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+def iteration(trainer: TrainerBase, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
@@ -93,6 +92,7 @@ def iteration(trainer: Trainer, data: Tuple[torch.Tensor]) -> Mapping[torch.Tens
         trainer.optimizer.zero_grad()
         loss.backward()
         trainer.optimizer.step()
+    # iteration returns at least (loss, output)
     # registered values can be called in callbacks
     results.user_value = user_value
     return results
@@ -102,7 +102,44 @@ SupervisedTrainer.iteration = iteration
 trainer.update_iteration(iteration) 
 ```
 
-Also, `dict` of models, optimizers, loss functions are supported.
+`callbacks.Callback` can access the parameters of models, loss, outputs of models and other user-defined values.
+
+In most cases, `callbacks.metric_callback_decorator` is useful. The returned values are accumulated.
+
+```python
+from homura import callbacks
+
+# Note that `iteration` has `user_value`
+
+callbacks.metric_callback_decorator(lambda data: data["user_value"], name='user_value')
+
+# or equivalently,
+
+@callbacks.metric_callback_decorator
+def user_value(data):
+    return data["user_value"]
+```  
+
+`callbacks.Callback` has methods `before_all`, `before_iteration`, `before_epoch`, `after_all`, `after_iteration` and `after_epoch`. For example, `callbacks.WeightSave` is like:
+
+```python
+from homura.callbacks import Callback
+class WeightSave(Callback):
+    ...
+
+    def after_epoch(self, data: Mapping):
+        self._epoch = data["epoch"]
+        self._step = data["step"]
+        if self.save_freq > 0 and data["epoch"] % self.save_freq == 0:
+            self.save(data, f"{data['epoch']}.pkl")
+
+    def after_all(self, data: Mapping):
+        if self.save_freq == -1:
+            self.save(data, "weight.pkl")
+```
+
+
+`dict` of models, optimizers, loss functions are supported.
 
 ```python
 trainer = CustomTrainer({"generator": generator, "discriminator": discriminator},
@@ -113,14 +150,15 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 
 ## reproductivity
 
+This method fixes randomness deterministic in its context.
 
 ```python
-from homura.reproductivity import set_deterministic
+from homura.utils.reproducibility import set_deterministic
 with set_deterministic(seed):
     something()
 ```
 
-## debugger
+## debugging
 
 ```python
 >>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
