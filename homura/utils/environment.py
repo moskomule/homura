@@ -8,7 +8,7 @@ from torch.cuda import device_count
 from homura.liblog import get_logger
 
 __all__ = ["is_accimage_available", "is_apex_available", "is_distributed",
-           "enable_accimage",
+           "enable_accimage", "init_distributed",
            "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes"]
 
 logger = get_logger("homura.env")
@@ -75,7 +75,27 @@ def get_num_nodes() -> int:
     if not is_distributed:
         return 1
     else:
-        return get_world_size() / device_count()
+        return get_world_size() // device_count()
+
+
+def init_distributed(backend="nccl",
+                     init_method="env://", *,
+                     warning=True):
+    # A simple initializer of distributed
+
+    from torch import distributed
+
+    if not distributed.is_available():
+        raise RuntimeError("`distributed` is not available.")
+
+    if not is_distributed:
+        raise RuntimeError("This process is not launched as distributed.")
+
+    if distributed.is_initialized():
+        if warning:
+            logger.warn("`distributed` is already initialized, so skipped.")
+    else:
+        distributed.init_process_group(backend=backend, init_method=init_method)
 
 
 def enable_accimage() -> None:
