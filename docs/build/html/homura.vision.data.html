@@ -207,13 +207,25 @@
 <span id="homura-vision-data-custom-dataset-module"></span><h2>homura.vision.data.custom_dataset module<a class="headerlink" href="#module-homura.vision.data.custom_dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.vision.data.custom_dataset.TransformableSubset">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.custom_dataset.</code><code class="sig-name descname">TransformableSubset</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">indices</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.custom_dataset.</code><code class="sig-name descname">TransformableSubset</code><span class="sig-paren">(</span><em class="sig-param">dataset: torch.utils.data.dataset.Dataset</em>, <em class="sig-param">indices: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.dataset.Subset</span></code></p>
-<p>Subset with transform</p>
+<p>Subset with transform. The original <cite>Subset</cite> inherits transformations from the original Dataset,
+which may not be useful in some cases, e.g. train-validation split.</p>
 <dl class="method">
 <dt id="homura.vision.data.custom_dataset.TransformableSubset.update_transforms">
-<code class="sig-name descname">update_transforms</code><span class="sig-paren">(</span><em class="sig-param">transforms</em>, <em class="sig-param">target_transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset.update_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset.update_transforms" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">update_transforms</code><span class="sig-paren">(</span><em class="sig-param">transform</em>, <em class="sig-param">target_transform=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/custom_dataset.html#TransformableSubset.update_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.custom_dataset.TransformableSubset.update_transforms" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform</strong> – transform (e.g. torchvision’s) for the input image</p></li>
+<li><p><strong>target_transform</strong> – transform for the target (image?)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

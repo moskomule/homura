@@ -1,6 +1,6 @@
 # based on Thomas Viehmann's implementation
 # https://github.com/t-vi/pytorch-tvmisc/blob/master/wasserstein-distance/Pytorch_Wasserstein.ipynb
-
+# Note that original `dest` is renamed to `cost`
 
 cuda_source = """
 
@@ -60,11 +60,11 @@ __device__ __forceinline__ T WARP_SHFL_XOR(T value, int laneMask, int width = wa
 // many great ideas for improvement
 template <typename scalar_t, typename index_t>
 __global__ void sinkstep_kernel(
-  // compute log v_bj = log nu_bj - logsumexp_i 1/lambda dist_ij - log u_bi
-  // for this compute maxdiff_bj = max_i(1/lambda dist_ij - log u_bi)
+  // compute log v_bj = log nu_bj - logsumexp_i 1/lambda cost_ij - log u_bi
+  // for this compute maxdiff_bj = max_i(1/lambda cost_ij - log u_bi)
   // i = reduction dim, using threadIdx.x
   PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> log_v,
-  const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> dist,
+  const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> cost,
   const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> log_nu,
   const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> log_u,
   const scalar_t lambda) {
@@ -93,7 +93,7 @@ __global__ void sinkstep_kernel(
 
   for (index_t i = threadIdx.x; i < log_u.size(1); i += blockDim.x) {
     accscalar_t oldmax = max;
-    accscalar_t value = -dist[i][j]/lambda + log_u[b][i];
+    accscalar_t value = -cost[i][j]/lambda + log_u[b][i];
     max = max > value ? max : value;
     if (oldmax == -std::numeric_limits<accscalar_t>::infinity()) {
       // sumexp used to be 0, so the new max is value and we can set 1 here,
@@ -153,19 +153,19 @@ __global__ void sinkstep_kernel(
 }
 
 template <typename scalar_t>
-torch::Tensor sinkstep_cuda_template(const torch::Tensor& dist, const torch::Tensor& log_nu, const torch::Tensor& log_u,
+torch::Tensor sinkstep_cuda_template(const torch::Tensor& cost, const torch::Tensor& log_nu, const torch::Tensor& log_u,
                                      const double lambda) {
-  TORCH_CHECK(dist.is_cuda(), "need cuda tensors");
-  TORCH_CHECK(dist.device() == log_nu.device() && dist.device() == log_u.device(), "need tensors on same GPU");
-  TORCH_CHECK(dist.dim()==2 && log_nu.dim()==2 && log_u.dim()==2, "invalid sizes");
-  TORCH_CHECK(dist.size(0) == log_u.size(1) &&
-           dist.size(1) == log_nu.size(1) &&
+  TORCH_CHECK(cost.is_cuda(), "need cuda tensors");
+  TORCH_CHECK(cost.device() == log_nu.device() && cost.device() == log_u.device(), "need tensors on same GPU");
+  TORCH_CHECK(cost.dim()==2 && log_nu.dim()==2 && log_u.dim()==2, "invalid sizes");
+  TORCH_CHECK(cost.size(0) == log_u.size(1) &&
+           cost.size(1) == log_nu.size(1) &&
            log_u.size(0) == log_nu.size(0), "invalid sizes");
   auto log_v = torch::empty_like(log_nu);
   using index_t = int32_t;
 
   auto log_v_a = log_v.packed_accessor<scalar_t, 2, RestrictPtrTraits, index_t>();
-  auto dist_a = dist.packed_accessor<scalar_t, 2, RestrictPtrTraits, index_t>();
+  auto cost_a = cost.packed_accessor<scalar_t, 2, RestrictPtrTraits, index_t>();
   auto log_nu_a = log_nu.packed_accessor<scalar_t, 2, RestrictPtrTraits, index_t>();
   auto log_u_a = log_u.packed_accessor<scalar_t, 2, RestrictPtrTraits, index_t>();
 
@@ -176,16 +176,16 @@ torch::Tensor sinkstep_cuda_template(const torch::Tensor& dist, const torch::Ten
   dim3 threads(tf);
 
   sinkstep_kernel<<<blocks, threads, 2*WARP_SIZE*sizeof(scalar_t), stream>>>(
-    log_v_a, dist_a, log_nu_a, log_u_a, static_cast<scalar_t>(lambda)
+    log_v_a, cost_a, log_nu_a, log_u_a, static_cast<scalar_t>(lambda)
     );
 
   return log_v;
 }
 
-torch::Tensor sinkstep_cuda(const torch::Tensor& dist, const torch::Tensor& log_nu, const torch::Tensor& log_u,
+torch::Tensor sinkstep_cuda(const torch::Tensor& cost, const torch::Tensor& log_nu, const torch::Tensor& log_u,
                             const double lambda) {
     return AT_DISPATCH_FLOATING_TYPES(log_u.scalar_type(), "sinkstep", [&] {
-       return sinkstep_cuda_template<scalar_t>(dist, log_nu, log_u, lambda);
+       return sinkstep_cuda_template<scalar_t>(cost, log_nu, log_u, lambda);
     });
 }
 
@@ -203,48 +203,49 @@ wasserstein_ext = torch.utils.cpp_extension.load_inline("wasserstein", cpp_sourc
                                                         extra_cuda_cflags=["--expt-relaxed-constexpr"])
 
 
-def _sinkstep(dist: torch.Tensor,
+def _sinkstep(cost: torch.Tensor,
               log_nu: torch.Tensor,
               log_u: torch.Tensor,
               lam: float):
     # dispatch to optimized GPU implementation for GPU tensors, slow fallback for CPU
-    if dist.is_cuda:
-        return wasserstein_ext.sinkstep(dist, log_nu, log_u, lam)
+    if cost.is_cuda:
+        return wasserstein_ext.sinkstep(cost, log_nu, log_u, lam)
 
     # CPU case
-    assert dist.dim() == 2 and log_nu.dim() == 2 and log_u.dim() == 2
-    assert dist.size(0) == log_u.size(1) and dist.size(1) == log_nu.size(1) and log_u.size(0) == log_nu.size(0)
+    assert cost.dim() == 2 and log_nu.dim() == 2 and log_u.dim() == 2
+    assert cost.size(0) == log_u.size(1) and cost.size(1) == log_nu.size(1) and log_u.size(0) == log_nu.size(0)
     log_v = log_nu.clone()
     for b in range(log_u.size(0)):
-        log_v[b] -= torch.logsumexp(-dist / lam + log_u[b, :, None], 1)
+        log_v[b] -= torch.logsumexp(-cost / lam + log_u[b, :, None], 1)
     return log_v
 
 
 class _Sinkhorn(torch.autograd.Function):
     @staticmethod
     def forward(ctx,
-                mu: torch.Tensor, nu: torch.Tensor,
-                dist: torch.Tensor,
+                source: torch.Tensor,
+                dest: torch.Tensor,
+                cost: torch.Tensor,
                 lam: float = 1e-3,
                 num_iteration: int = 100):
-        assert mu.dim() == 2 and nu.dim() == 2 and dist.dim() == 2
-        bs = mu.size(0)
-        d1, d2 = dist.size()
-        assert nu.size(0) == bs and mu.size(1) == d1 and nu.size(1) == d2
-        log_mu = mu.log()
-        log_nu = nu.log()
-        log_u = torch.full_like(mu, -math.log(d1))
-        log_v = torch.full_like(nu, -math.log(d2))
+        assert source.dim() == 2 and dest.dim() == 2 and cost.dim() == 2
+        bs = source.size(0)
+        d1, d2 = cost.size()
+        assert dest.size(0) == bs and source.size(1) == d1 and dest.size(1) == d2
+        log_mu = source.log()
+        log_nu = dest.log()
+        log_u = torch.full_like(source, -math.log(d1))
+        log_v = torch.full_like(dest, -math.log(d2))
         for i in range(num_iteration):
-            log_v = _sinkstep(dist, log_nu, log_u, lam)
-            log_u = _sinkstep(dist.t(), log_mu, log_v, lam)
+            log_v = _sinkstep(cost, log_nu, log_u, lam)
+            log_u = _sinkstep(cost.t(), log_mu, log_v, lam)
 
         # this is slight abuse of the function. it computes (diag(exp(log_u))*Mt*exp(-Mt/lam)*diag(exp(log_v))).sum()
         # in an efficient (i.e. no bxnxm tensors) way in log space
-        distances = (-_sinkstep(-dist.log() + dist / lam, -log_v, log_u, 1.0)).logsumexp(1).exp()
+        distances = (-_sinkstep(-cost.log() + cost / lam, -log_v, log_u, 1.0)).logsumexp(1).exp()
         ctx.log_v = log_v
         ctx.log_u = log_u
-        ctx.dist = dist
+        ctx.dist = cost
         ctx.lam = lam
         return distances
 
@@ -254,28 +255,38 @@ class _Sinkhorn(torch.autograd.Function):
         return grad_out[:, None] * ctx.log_u * ctx.lam, grad_out[:, None] * ctx.log_v * ctx.lam, None, None, None
 
 
-def sinkhorn(mu: torch.Tensor,
-             nu: torch.Tensor,
-             dist: torch.Tensor,
+def sinkhorn(source: torch.Tensor,
+             dest: torch.Tensor,
+             cost: torch.Tensor,
              lam: float = 1e-3,
              num_iteration: int = 100):
-    return _Sinkhorn.apply(mu, nu, dist, lam, num_iteration)
+    """ Batched sinkhorn iteration from https://arxiv.org/abs/1907.01729.
+
+    :param source: The source histograms of `B x d_1`
+    :param dest: The destination histograms of `B x d_2`
+    :param cost: The cost matrix of `d_1 x d_2`
+    :param lam:　The coefficient of the entropy term
+    :param num_iteration: The number of iteration of Sinkhorn-Knopp iteration
+    :return: distances
+    """
+
+    return _Sinkhorn.apply(source, dest, cost, lam, num_iteration)
 
 
-def get_coupling(mu: torch.Tensor,
-                 nu: torch.Tensor,
-                 dist: torch.Tensor,
+def get_coupling(source: torch.Tensor,
+                 dest: torch.Tensor,
+                 cost: torch.Tensor,
                  lam: float = 1e-3,
                  num_iteration: int = 1000):
-    assert mu.dim() == 2 and nu.dim() == 2 and dist.dim() == 2
-    bs = mu.size(0)
-    d1, d2 = dist.size()
-    assert nu.size(0) == bs and mu.size(1) == d1 and nu.size(1) == d2
-    log_mu = mu.log()
-    log_nu = nu.log()
-    log_u = torch.full_like(mu, -math.log(d1))
-    log_v = torch.full_like(nu, -math.log(d2))
+    assert source.dim() == 2 and dest.dim() == 2 and cost.dim() == 2
+    bs = source.size(0)
+    d1, d2 = cost.size()
+    assert dest.size(0) == bs and source.size(1) == d1 and dest.size(1) == d2
+    log_mu = source.log()
+    log_nu = dest.log()
+    log_u = torch.full_like(source, -math.log(d1))
+    log_v = torch.full_like(dest, -math.log(d2))
     for i in range(num_iteration):
-        log_v = _sinkstep(dist, log_nu, log_u, lam)
-        log_u = _sinkstep(dist.t(), log_mu, log_v, lam)
-    return (log_v[:, None, :] - dist / lam + log_u[:, :, None]).exp()
+        log_v = _sinkstep(cost, log_nu, log_u, lam)
+        log_u = _sinkstep(cost.t(), log_mu, log_v, lam)
+    return (log_v[:, None, :] - cost / lam + log_u[:, :, None]).exp()

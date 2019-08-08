@@ -198,7 +198,7 @@
 
 <div class="viewcode-block" id="get_local_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_local_rank">[docs]</a><span class="k">def</span> <span class="nf">get_local_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="c1"># returns -1 if not distributed, else returns local rank</span>
-    <span class="c1"># it works before dist.init_process_group</span>
+    <span class="c1"># it works before cost.init_process_group</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
@@ -209,7 +209,7 @@
 
 <div class="viewcode-block" id="get_global_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_global_rank">[docs]</a><span class="k">def</span> <span class="nf">get_global_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="c1"># returns -1 if not distributed, else returns global rank</span>
-    <span class="c1"># it works before dist.init_process_group</span>
+    <span class="c1"># it works before cost.init_process_group</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
