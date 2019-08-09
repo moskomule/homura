@@ -240,7 +240,7 @@ class _Sinkhorn(torch.autograd.Function):
             log_v = _sinkstep(cost, log_nu, log_u, lam)
             log_u = _sinkstep(cost.t(), log_mu, log_v, lam)
 
-        # this is slight abuse of the function. it computes (diag(exp(log_u))*Mt*exp(-Mt/lam)*diag(exp(log_v))).sum()
+        # this is slight abuse of the function. it computes (diag(exp(log_u))*Mt*exp(-Mt/gamma)*diag(exp(log_v))).sum()
         # in an efficient (i.e. no bxnxm tensors) way in log space
         distances = (-_sinkstep(-cost.log() + cost / lam, -log_v, log_u, 1.0)).logsumexp(1).exp()
         ctx.log_v = log_v

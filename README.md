@@ -10,8 +10,8 @@
 
 ```
 Python>=3.7
-PyTorch>=1.1.0
-torchvision>=0.3.0
+PyTorch>=1.2.0
+torchvision>=0.4.0
 tqdm # automatically installed
 tensorboard # automatically installed
 ```

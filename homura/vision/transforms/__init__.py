@@ -1,2 +1,1 @@
-from .erase import RandomErase
-from .zca import ZCATransformation
+from .erase import RandomErasing as RandomErase
