@@ -14,7 +14,7 @@ from homura.optim import Optimizer
 from .callbacks import Callback
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
-from .utils.environment import is_distributed, get_global_rank, get_local_rank, init_distributed
+from .utils.environment import get_global_rank, get_local_rank, init_distributed
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
@@ -383,13 +383,6 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                  callbacks: Callback = None, scheduler: LRScheduler = None,
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
                  use_sync_bn: bool = False, enable_amp=False, **kwargs):
-
-        if not is_distributed:
-            import sys as python_sys
-
-            raise RuntimeError(
-                f"For distributed training, use python -m torch.distributed.launch "
-                f"--nproc_per_node={torch.cuda.device_count()} {' '.join(python_sys.argv)} ...")
 
         if use_sync_bn:
             model = nn.SyncBatchNorm.convert_sync_batchnorm(model)

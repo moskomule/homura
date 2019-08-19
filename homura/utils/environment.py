@@ -89,7 +89,9 @@ def init_distributed(backend="nccl",
         raise RuntimeError("`distributed` is not available.")
 
     if not is_distributed:
-        raise RuntimeError("This process is not launched as distributed.")
+        raise RuntimeError(
+            f"For distributed training, use `python -m torch.distributed.launch "
+            f"--nproc_per_node={device_count()} {args}` ...")
 
     if distributed.is_initialized():
         if warning:

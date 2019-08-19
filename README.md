@@ -148,9 +148,14 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
+### distributed training
+
+Easy distributed initializer `homura.init_distributed()` is available.
+
+
 ## reproductivity
 
-This method fixes randomness deterministic in its context.
+This method makes randomness deterministic in its context.
 
 ```python
 from homura.utils.reproducibility import set_deterministic
@@ -164,6 +169,7 @@ with set_deterministic(seed):
 >>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
                                         nn.Linear(5, 1)), 
                           torch.randn(4, 10))
+
 [homura.debug|2019-02-25 17:57:06|DEBUG] Start forward calculation
 [homura.debug|2019-02-25 17:57:06|DEBUG] forward> name=Sequential(1)
 [homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(2)
@@ -181,7 +187,6 @@ See [examples](examples).
 
 * [cifar10.py](examples/cifar10.py): training ResNet-20 or WideResNet-28-10 with random crop on CIFAR10
 * [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and     multi process)
-* [gap.py](examples/gap.py): better implementation of generative adversarial perturbation
 
 For [imagenet.py](examples/imagenet.py), if you want 
 
