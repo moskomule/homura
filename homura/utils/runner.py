@@ -68,4 +68,6 @@ class Runner(metaclass=ABCMeta):
                 raise AttributeError(f"{self} already has {k}")
             if torch.is_tensor(v):
                 v = v.to(self.device)
+            if isinstance(v, nn.Module):
+                v.to(self.device)
             setattr(self, k, v)
