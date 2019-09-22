@@ -70,4 +70,5 @@ class Runner(metaclass=ABCMeta):
                 v = v.to(self.device)
             if isinstance(v, nn.Module):
                 v.to(self.device)
+            print(f"{k}:{v}")
             setattr(self, k, v)
