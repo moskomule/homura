@@ -289,4 +289,4 @@ def get_coupling(source: torch.Tensor,
     for i in range(num_iteration):
         log_v = _sinkstep(cost, log_nu, log_u, lam)
         log_u = _sinkstep(cost.t(), log_mu, log_v, lam)
-    return (log_v[:, None, :] - cost / lam + log_u[:, :, None]).exp()
+    return (log_v[:, None, :] - cost / lam + log_u[:, :, None]).exp(z)
