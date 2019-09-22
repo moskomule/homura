@@ -346,7 +346,7 @@ class SupervisedTrainer(TrainerBase):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
                                                 verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
-        if data_parallel and not isinstance(self.model, nn.DataParallel):
+        if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
 
