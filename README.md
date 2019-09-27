@@ -19,8 +19,10 @@ tensorboard # automatically installed
 ### optional
 
 ```
-miniargs
-colorlog
+miniargs (to run samples)
+colorlog (to log with colors)
+faiss (for faster kNN)
+accimage (for faster image pre-processing)
 ```
 
 To enable distributed training using auto mixed precision (AMP), install apex.

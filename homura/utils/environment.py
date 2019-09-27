@@ -9,11 +9,21 @@ from homura.liblog import get_logger
 
 __all__ = ["is_accimage_available", "is_apex_available", "is_distributed",
            "enable_accimage", "init_distributed",
-           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes"]
+           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes",
+           "is_faiss_available"]
 
 logger = get_logger("homura.env")
+
 is_accimage_available = importlib.util.find_spec("accimage") is not None
 is_apex_available = importlib.util.find_spec("apex") is not None
+is_faiss_prepared = False
+
+try:
+    import faiss
+
+    is_faiss_available = hasattr(faiss, 'StandardGpuResources')
+except ImportError:
+    is_faiss_available = False
 
 args = " ".join(python_sys.argv)
 is_distributed = "--local_rank" in args
