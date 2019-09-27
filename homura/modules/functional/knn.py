@@ -66,11 +66,11 @@ def _faiss_knn(keys: torch.Tensor,
     return scores, indices
 
 
-def knn(keys: torch.Tensor,
-        queries: torch.Tensor,
-        num_neighbors: int,
-        distance: str, *,
-        backend: str = "torch"):
+def k_nearest_neighbor(keys: torch.Tensor,
+                       queries: torch.Tensor,
+                       num_neighbors: int,
+                       distance: str, *,
+                       backend: str = "torch"):
     """ k-Nearest Neighbor search
 
     :param keys: tensor of (num_keys, dim)
