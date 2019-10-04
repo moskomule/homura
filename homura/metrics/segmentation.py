@@ -55,7 +55,6 @@ def classwise_iou(input: torch.Tensor,
         raise RuntimeError(f"Dimension of target is expected to be 3, but got {target.dim()}")
 
     cm = confusion_matrix(input, target).float()
-    print(cm)
     return cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
 
 

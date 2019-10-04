@@ -373,15 +373,13 @@
       </ul></li>
       <li><a href="homura.html#homura.lr_scheduler.CosineAnnealingLR">CosineAnnealingLR (class in homura.lr_scheduler)</a>
 </li>
-      <li><a href="homura.modules.html#homura.modules.zca.ZCA.create">create() (homura.modules.zca.ZCA static method)</a>
-
-      <ul>
-        <li><a href="homura.vision.transforms.html#homura.vision.transforms.zca.ZCATransformation.create">(homura.vision.transforms.zca.ZCATransformation static method)</a>
-</li>
-      </ul></li>
       <li><a href="homura.modules.functional.html#homura.modules.functional.loss.cross_entropy_with_softlabels">cross_entropy_with_softlabels() (in module homura.modules.functional.loss)</a>
 </li>
+      <li><a href="homura.modules.functional.html#homura.modules.functional.grad_approximation.custom_straight_through_estimator">custom_straight_through_estimator() (in module homura.modules.functional.grad_approximation)</a>
+</li>
       <li><a href="homura.vision.models.segmentation.html#homura.vision.models.segmentation.unet.CustomUNet">CustomUNet (class in homura.vision.models.segmentation.unet)</a>
+</li>
+      <li><a href="homura.vision.html#homura.vision.cutmix.cutmix">cutmix() (in module homura.vision.cutmix)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -451,6 +449,8 @@
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.loaders.fashion_mnist_loaders">fashion_mnist_loaders() (in module homura.vision.data.loaders)</a>
 </li>
+      <li><a href="homura.modules.html#homura.modules.vq.VQModule.flatten_input">flatten_input() (homura.modules.vq.VQModule method)</a>
+</li>
       <li><a href="homura.vision.data.html#homura.vision.data.folder.FolderABC">FolderABC (class in homura.vision.data.folder)</a>
 </li>
       <li><a href="homura.modules.html#homura.modules.attention.KeyValAttention.forward">forward() (homura.modules.attention.KeyValAttention method)</a>
@@ -468,7 +468,7 @@
 </li>
         <li><a href="homura.modules.html#homura.modules.regularizer.WSConv2d.forward">(homura.modules.regularizer.WSConv2d method)</a>
 </li>
-        <li><a href="homura.modules.html#homura.modules.zca.ZCA.forward">(homura.modules.zca.ZCA method)</a>
+        <li><a href="homura.modules.html#homura.modules.vq.VQModule.forward">(homura.modules.vq.VQModule method)</a>
 </li>
         <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.forward">(homura.vision.models.classification.densenet.CIFARDenseNet method)</a>
 </li>
@@ -495,6 +495,8 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.modules.functional.html#homura.modules.functional.sinkhorn.get_coupling">get_coupling() (in module homura.modules.functional.sinkhorn)</a>
+</li>
       <li><a href="homura.html#homura.get_global_rank">get_global_rank() (in module homura)</a>
 
       <ul>
@@ -577,22 +579,28 @@
 </li>
       <li><a href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization (module)</a>
 </li>
+      <li><a href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation (module)</a>
+</li>
+      <li><a href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn (module)</a>
+</li>
       <li><a href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss (module)</a>
+</li>
+      <li><a href="homura.modules.functional.html#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn (module)</a>
 </li>
       <li><a href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs (module)</a>
 </li>
       <li><a href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer (module)</a>
 </li>
-      <li><a href="homura.modules.html#module-homura.modules.zca">homura.modules.zca (module)</a>
+      <li><a href="homura.modules.html#module-homura.modules.vq">homura.modules.vq (module)</a>
 </li>
       <li><a href="homura.html#module-homura.optim">homura.optim (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#module-homura.reporters">homura.reporters (module)</a>
 </li>
       <li><a href="homura.html#module-homura.trainers">homura.trainers (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.utils.html#module-homura.utils">homura.utils (module)</a>
 </li>
       <li><a href="homura.utils.html#module-homura.utils.containers">homura.utils.containers (module)</a>
@@ -611,6 +619,8 @@
 </li>
       <li><a href="homura.vision.html#module-homura.vision">homura.vision (module)</a>
 </li>
+      <li><a href="homura.vision.html#module-homura.vision.cutmix">homura.vision.cutmix (module)</a>
+</li>
       <li><a href="homura.vision.data.html#module-homura.vision.data">homura.vision.data (module)</a>
 </li>
       <li><a href="homura.vision.data.html#module-homura.vision.data.custom_dataset">homura.vision.data.custom_dataset (module)</a>
@@ -622,6 +632,8 @@
       <li><a href="homura.vision.data.html#module-homura.vision.data.prefetcher">homura.vision.data.prefetcher (module)</a>
 </li>
       <li><a href="homura.vision.data.html#module-homura.vision.data.statistics">homura.vision.data.statistics (module)</a>
+</li>
+      <li><a href="homura.vision.html#module-homura.vision.mixup">homura.vision.mixup (module)</a>
 </li>
       <li><a href="homura.vision.models.html#module-homura.vision.models">homura.vision.models (module)</a>
 </li>
@@ -641,10 +653,6 @@
 </li>
       <li><a href="homura.vision.transforms.html#module-homura.vision.transforms">homura.vision.transforms (module)</a>
 </li>
-      <li><a href="homura.vision.transforms.html#module-homura.vision.transforms.erase">homura.vision.transforms.erase (module)</a>
-</li>
-      <li><a href="homura.vision.transforms.html#module-homura.vision.transforms.zca">homura.vision.transforms.zca (module)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -661,6 +669,12 @@
 </li>
       <li><a href="homura.utils.html#homura.utils.inferencer.Inferencer">Inferencer (class in homura.utils.inferencer)</a>
 </li>
+      <li><a href="homura.html#homura.init_distributed">init_distributed() (in module homura)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.environment.init_distributed">(in module homura.utils.environment)</a>
+</li>
+      </ul></li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.initialize">initialize() (homura.vision.models.classification.densenet.CIFARDenseNet method)</a>
 
       <ul>
@@ -671,6 +685,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.vision.html#homura.vision.cutmix.input_cutmix">input_cutmix() (in module homura.vision.cutmix)</a>
+</li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.IOUCallback">IOUCallback (class in homura.callbacks.metrics)</a>
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.is_train">is_train() (homura.trainers.TrainerBase property)</a>
@@ -691,6 +707,8 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.modules.functional.html#homura.modules.functional.knn.k_nearest_neighbor">k_nearest_neighbor() (in module homura.modules.functional.knn)</a>
+</li>
       <li><a href="homura.html#homura.Map.keys">keys() (homura.Map method)</a>
 
       <ul>
@@ -711,6 +729,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.modules.html#homura.modules.vq.VQModule.l2_distance">l2_distance() (homura.modules.vq.VQModule static method)</a>
+</li>
       <li><a href="homura.html#homura.lr_scheduler.LambdaLR">LambdaLR (class in homura.lr_scheduler)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.inferencer.Inferencer.load">load() (homura.utils.inferencer.Inferencer method)</a>
@@ -722,6 +742,8 @@
       <li><a href="homura.html#homura.reporters.LoggerReporter">LoggerReporter (class in homura.reporters)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.reporter_backends.LoggerWrapper">LoggerWrapper (class in homura.utils.reporter_backends)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.vq.VQModule.lookup">lookup() (homura.modules.vq.VQModule method)</a>
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.LossCallback">LossCallback (class in homura.callbacks.metrics)</a>
 </li>
@@ -749,17 +771,19 @@
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.metric_callback_decorator">metric_callback_decorator() (in module homura.callbacks.metrics)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.MetricCallback">MetricCallback (class in homura.callbacks.metrics)</a>
 </li>
-      <li><a href="homura.vision.transforms.html#homura.vision.transforms.erase.RandomErase.min_ratio">min_ratio (homura.vision.transforms.erase.RandomErase attribute)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.vision.html#homura.vision.mixup.mixup">mixup() (in module homura.vision.mixup)</a>
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.loaders.mnist_loaders">mnist_loaders() (in module homura.vision.data.loaders)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.inferencer.Inferencer.mode">mode (homura.utils.inferencer.Inferencer attribute)</a>
 </li>
       <li><a href="homura.html#homura.debug.module_debugger">module_debugger() (in module homura.debug)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.vq.moving_average_">moving_average_() (in module homura.modules.vq)</a>
 </li>
       <li><a href="homura.vision.models.segmentation.html#homura.vision.models.segmentation.msdnet.msdnet25">msdnet25() (in module homura.vision.models.segmentation.msdnet)</a>
 </li>
@@ -791,6 +815,8 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.vision.html#homura.vision.mixup.partial_mixup">partial_mixup() (in module homura.vision.mixup)</a>
+</li>
       <li><a href="homura.vision.data.html#homura.vision.data.statistics.PerChannelStatistics">PerChannelStatistics (class in homura.vision.data.statistics)</a>
 </li>
       <li><a href="homura.metrics.html#homura.metrics.segmentation.pixel_accuracy">pixel_accuracy() (in module homura.metrics.segmentation)</a>
@@ -817,7 +843,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.vision.transforms.html#homura.vision.transforms.erase.RandomErase">RandomErase (class in homura.vision.transforms.erase)</a>
+      <li><a href="homura.vision.html#homura.vision.cutmix.rand_bbox">rand_bbox() (in module homura.vision.cutmix)</a>
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.recall">recall() (in module homura.metrics.commons)</a>
 </li>
@@ -897,11 +923,13 @@
         <li><a href="homura.utils.html#homura.utils.reproducibility.set_seed">(in module homura.utils.reproducibility)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#homura.liblog.set_verb_level">set_verb_level() (in module homura.liblog)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#homura.optim.SGD">SGD (class in homura.optim)</a>
+</li>
+      <li><a href="homura.modules.functional.html#homura.modules.functional.sinkhorn.sinkhorn">sinkhorn() (in module homura.modules.functional.sinkhorn)</a>
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.specificity">specificity() (in module homura.metrics.commons)</a>
 </li>
@@ -1025,6 +1053,8 @@
 </li>
       <li><a href="homura.html#homura.reporters.VisdomReporter">VisdomReporter (class in homura.reporters)</a>
 </li>
+      <li><a href="homura.modules.html#homura.modules.vq.VQModule">VQModule (class in homura.modules.vq)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1053,14 +1083,6 @@
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.modules.html#homura.modules.zca.ZCA">ZCA (class in homura.modules.zca)</a>
-</li>
-      <li><a href="homura.vision.transforms.html#homura.vision.transforms.zca.zca_statistics">zca_statistics() (in module homura.vision.transforms.zca)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.vision.transforms.html#homura.vision.transforms.zca.ZCATransformation">ZCATransformation (class in homura.vision.transforms.zca)</a>
-</li>
       <li><a href="homura.utils.html#homura.utils.containers.StepDict.zero_grad">zero_grad() (homura.utils.containers.StepDict method)</a>
 </li>
   </ul></td>

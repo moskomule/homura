@@ -95,7 +95,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.zca">homura.modules.zca module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -126,7 +127,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.zca">homura.modules.zca module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -209,7 +211,10 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -447,25 +452,20 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.modules.zca">
-<span id="homura-modules-zca-module"></span><h2>homura.modules.zca module<a class="headerlink" href="#module-homura.modules.zca" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.modules.vq">
+<span id="homura-modules-vq-module"></span><h2>homura.modules.vq module<a class="headerlink" href="#module-homura.modules.vq" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="homura.modules.zca.ZCA">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.zca.</code><code class="sig-name descname">ZCA</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/zca.html#ZCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.vq.VQModule">
+<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = False</em>, <em class="sig-param">gamma: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>ZCA requires large matrix multiplication, so one solution is do it on GPUs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zca</span> <span class="o">=</span> <span class="n">ZCA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">zca</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
-</pre></div>
-</div>
 <dl class="method">
-<dt id="homura.modules.zca.ZCA.create">
-<em class="property">static </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/zca.html#ZCA.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA.create" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.vq.VQModule.flatten_input">
+<code class="sig-name descname">flatten_input</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.flatten_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.flatten_input" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="homura.modules.zca.ZCA.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/zca.html#ZCA.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.vq.VQModule.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -477,8 +477,39 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="homura.modules.vq.VQModule.l2_distance">
+<em class="property">static </em><code class="sig-name descname">l2_distance</code><span class="sig-paren">(</span><em class="sig-param">emb: torch.Tensor</em>, <em class="sig-param">encoded: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.l2_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.l2_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.modules.vq.VQModule.lookup">
+<code class="sig-name descname">lookup</code><span class="sig-paren">(</span><em class="sig-param">ids: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.lookup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
+<dl class="function">
+<dt id="homura.modules.vq.moving_average_">
+<code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">moving_average_</code><span class="sig-paren">(</span><em class="sig-param">base: torch.Tensor</em>, <em class="sig-param">update: torch.Tensor</em>, <em class="sig-param">momentum: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#moving_average_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.moving_average_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace exponential moving average of <cite>base</cite> tensor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – </p></li>
+<li><p><strong>update</strong> – </p></li>
+<li><p><strong>momentum</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>exponential-moving-averaged <cite>base</cite> tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="homura-modules-zca-module">
+<h2>homura.modules.zca module<a class="headerlink" href="#homura-modules-zca-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-homura.modules">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>

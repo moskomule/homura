@@ -208,7 +208,6 @@
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dimension of target is expected to be 3, but got {target.dim()}&quot;</span><span class="p">)</span>
 
     <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">cm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">cm</span><span class="o">.</span><span class="n">diag</span><span class="p">())</span></div>
 
 

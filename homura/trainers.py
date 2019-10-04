@@ -14,7 +14,7 @@ from homura.optim import Optimizer
 from .callbacks import Callback
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
-from .utils.environment import is_distributed, get_global_rank, get_local_rank
+from .utils.environment import get_global_rank, get_local_rank, init_distributed
 from .utils.miscs import check_path
 from .utils.runner import Runner
 
@@ -347,7 +347,7 @@ class SupervisedTrainer(TrainerBase):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
                                                 verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
-        if data_parallel and not isinstance(self.model, nn.DataParallel):
+        if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
 
@@ -384,6 +384,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
                  callbacks: Callback = None, scheduler: LRScheduler = None,
                  verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
                  use_sync_bn: bool = False, enable_amp=False, **kwargs):
+
         if use_sync_bn:
             model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
         if enable_amp:
@@ -392,16 +393,7 @@ class DistributedSupervisedTrainer(SupervisedTrainer):
             if not is_apex_available:
                 raise RuntimeError("apex not installed")
 
-        import sys as python_sys
-        from torch import distributed
-
-        # should be used with torch.distributed.launch
-        if not is_distributed:
-            raise RuntimeError(
-                f"For distributed training, use python -m torch.distributed.launch "
-                f"--nproc_per_node={torch.cuda.device_count()} {' '.join(python_sys.argv)} ...")
-
-        distributed.init_process_group(backend=backend, init_method=init_method)
+        init_distributed(backend, init_method, warning=False)
         rank = get_local_rank()
         if get_global_rank() > 0:
             # to avoid overwriting

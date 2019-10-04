@@ -25,6 +25,21 @@ def test_ste():
     assert all(input.grad == dummy.grad)
 
 
+def test_custom_ste():
+    fwd = torch.randn(3)
+    fwd2 = fwd.clone()
+    bwd = torch.randn(3, requires_grad=True)
+    bwd2 = bwd.detach().clone().requires_grad_(True)
+    x = HF.custom_straight_through_estimator(fwd, bwd)
+    assert torch.equal(x, fwd)
+    (x ** 2).sum().backward()
+    x2 = fwd2 + (bwd2 - bwd2.detach())
+    assert torch.equal(x2, fwd2)
+    (x2 ** 2).sum().backward()
+    print(x, x2)
+    assert torch.equal(bwd.grad.data, bwd2.grad.data)
+
+
 def test_semantic_hashing():
     from homura.modules.functional.discretization import _saturated_sigmoid
 

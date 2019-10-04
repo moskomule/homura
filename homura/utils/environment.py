@@ -8,12 +8,22 @@ from torch.cuda import device_count
 from homura.liblog import get_logger
 
 __all__ = ["is_accimage_available", "is_apex_available", "is_distributed",
-           "enable_accimage",
-           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes"]
+           "enable_accimage", "init_distributed",
+           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes",
+           "is_faiss_available"]
 
 logger = get_logger("homura.env")
+
 is_accimage_available = importlib.util.find_spec("accimage") is not None
 is_apex_available = importlib.util.find_spec("apex") is not None
+is_faiss_prepared = False
+
+try:
+    import faiss
+
+    is_faiss_available = hasattr(faiss, 'StandardGpuResources')
+except ImportError:
+    is_faiss_available = False
 
 args = " ".join(python_sys.argv)
 is_distributed = "--local_rank" in args
@@ -75,7 +85,29 @@ def get_num_nodes() -> int:
     if not is_distributed:
         return 1
     else:
-        return get_world_size() / device_count()
+        return get_world_size() // device_count()
+
+
+def init_distributed(backend="nccl",
+                     init_method="env://", *,
+                     warning=True):
+    # A simple initializer of distributed
+
+    from torch import distributed
+
+    if not distributed.is_available():
+        raise RuntimeError("`distributed` is not available.")
+
+    if not is_distributed:
+        raise RuntimeError(
+            f"For distributed training, use `python -m torch.distributed.launch "
+            f"--nproc_per_node={device_count()} {args}` ...")
+
+    if distributed.is_initialized():
+        if warning:
+            logger.warn("`distributed` is already initialized, so skipped.")
+    else:
+        distributed.init_process_group(backend=backend, init_method=init_method)
 
 
 def enable_accimage() -> None:

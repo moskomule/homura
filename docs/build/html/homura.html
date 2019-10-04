@@ -199,7 +199,10 @@
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -211,7 +214,8 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.zca">homura.modules.zca module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.vq">homura.modules.vq module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -262,14 +266,14 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.transforms.html">homura.vision.transforms package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.transforms.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.transforms.html#module-homura.vision.transforms.erase">homura.vision.transforms.erase module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.transforms.html#module-homura.vision.transforms.zca">homura.vision.transforms.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.transforms.html#module-homura.vision.transforms">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision.cutmix">homura.vision.cutmix module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision.mixup">homura.vision.mixup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
 </ul>
 </li>
@@ -343,10 +347,9 @@
 <dt id="homura.lr_scheduler.StepLR">
 <em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">StepLR</code><span class="sig-paren">(</span><em class="sig-param">step_size</em>, <em class="sig-param">gamma=0.1</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#StepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.StepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
-<p>Decays the learning rate of each parameter group by gamma every
-step_size epochs. Notice that such decay can happen simultaneously with
-other changes to the learning rate from outside this scheduler. When
-last_epoch=-1, sets initial lr as lr.</p>
+<p>Sets the learning rate of each parameter group to the initial lr
+decayed by gamma every step_size epochs. When last_epoch=-1, sets
+initial lr as lr.</p>
 <dl>
 <dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 step_size (int): Period of learning rate decay.
@@ -376,10 +379,9 @@ gamma (float): Multiplicative factor of learning rate decay.</p>
 <dt id="homura.lr_scheduler.MultiStepLR">
 <em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">MultiStepLR</code><span class="sig-paren">(</span><em class="sig-param">milestones</em>, <em class="sig-param">gamma=0.1</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#MultiStepLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.MultiStepLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
-<p>Decays the learning rate of each parameter group by gamma once the
-number of epoch reaches one of the milestones. Notice that such decay can
-happen simultaneously with other changes to the learning rate from outside
-this scheduler. When last_epoch=-1, sets initial lr as lr.</p>
+<p>Set the learning rate of each parameter group to the initial lr decayed
+by gamma once the number of epoch reaches one of the milestones. When
+last_epoch=-1, sets initial lr as lr.</p>
 <dl>
 <dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 milestones (list): List of epoch indices. Must be increasing.
@@ -437,8 +439,8 @@ functions, one for each group in optimizer.param_groups.</p>
 <dt id="homura.lr_scheduler.ExponentialLR">
 <em class="property">class </em><code class="sig-prename descclassname">homura.lr_scheduler.</code><code class="sig-name descname">ExponentialLR</code><span class="sig-paren">(</span><em class="sig-param">gamma</em>, <em class="sig-param">last_epoch=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/lr_scheduler.html#ExponentialLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.lr_scheduler.ExponentialLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.lr_scheduler.LRScheduler" title="homura.lr_scheduler.LRScheduler"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.lr_scheduler.LRScheduler</span></code></a></p>
-<p>Decays the learning rate of each parameter group by gamma every epoch.
-When last_epoch=-1, sets initial lr as lr.</p>
+<p>Set the learning rate of each parameter group to the initial lr decayed
+by gamma every epoch. When last_epoch=-1, sets initial lr as lr.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>optimizer (Optimizer): Wrapped optimizer.
 gamma (float): Multiplicative factor of learning rate decay.
@@ -455,19 +457,9 @@ last_epoch (int): The index of last epoch. Default: -1.</p>
 schedule, where <span class="math notranslate nohighlight">\(\eta_{max}\)</span> is set to the initial lr and
 <span class="math notranslate nohighlight">\(T_{cur}\)</span> is the number of epochs since the last restart in SGDR:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\eta_{t+1} = \eta_{min} + (\eta_t - \eta_{min})\frac{1 +
-\cos(\frac{T_{cur+1}}{T_{max}}\pi)}{1 + \cos(\frac{T_{cur}}{T_{max}}\pi)},
-T_{cur} \neq (2k+1)T_{max};\\
-\eta_{t+1} = \eta_{t} + (\eta_{max} - \eta_{min})\frac{1 -
-\cos(\frac{1}{T_{max}}\pi)}{2},
-T_{cur} = (2k+1)T_{max}.\\\end{split}\]</div>
-<p>When last_epoch=-1, sets initial lr as lr. Notice that because the schedule
-is defined recursively, the learning rate can be simultaneously modified
-outside this scheduler by other operators. If the learning rate is set
-solely by this scheduler, the learning rate at each step becomes:</p>
-<div class="math notranslate nohighlight">
 \[\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 +
 \cos(\frac{T_{cur}}{T_{max}}\pi))\]</div>
+<p>When last_epoch=-1, sets initial lr as lr.</p>
 <p>It has been proposed in
 <a class="reference external" href="https://arxiv.org/abs/1608.03983">SGDR: Stochastic Gradient Descent with Warm Restarts</a>. Note that this only
 implements the cosine annealing part of SGDR, and not the restarts.</p>
@@ -1190,6 +1182,11 @@ is need to be update by user.</p></li>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="homura.init_distributed">
+<code class="sig-prename descclassname">homura.</code><code class="sig-name descname">init_distributed</code><span class="sig-paren">(</span><em class="sig-param">backend='nccl'</em>, <em class="sig-param">init_method='env://'</em>, <em class="sig-param">*</em>, <em class="sig-param">warning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#init_distributed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.init_distributed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="homura.enable_accimage">

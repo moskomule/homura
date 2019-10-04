@@ -21,7 +21,7 @@ class Runner(metaclass=ABCMeta):
 
         self.logger = get_logger(__name__) if logger is None else logger
         if device is None:
-            self.device = GPU if torch.cuda.is_available() else CPU
+            self.device = torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU)
         else:
             self.device = device
 
@@ -67,5 +67,7 @@ class Runner(metaclass=ABCMeta):
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
             if torch.is_tensor(v):
+                v = v.to(self.device)
+            if isinstance(v, nn.Module):
                 v.to(self.device)
             setattr(self, k, v)

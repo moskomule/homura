@@ -117,7 +117,7 @@ class Reporter(Callback, metaclass=ABCMeta):
         if image_keys is not None:
             if isinstance(image_keys, str):
                 image_keys = [image_keys]
-            self.report_param_freq = report_freq
+            self.report_image_freq = report_freq
             self.image_keys += list(image_keys)
         else:
             raise ValueError("Argument image_keys should be specified!")

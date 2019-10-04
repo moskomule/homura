@@ -167,7 +167,7 @@
 <span class="kn">from</span> <span class="nn">.callbacks</span> <span class="k">import</span> <span class="n">Callback</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="k">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
-<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="k">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span><span class="p">,</span> <span class="n">init_distributed</span>
 <span class="kn">from</span> <span class="nn">.utils.miscs</span> <span class="k">import</span> <span class="n">check_path</span>
 <span class="kn">from</span> <span class="nn">.utils.runner</span> <span class="k">import</span> <span class="n">Runner</span>
 
@@ -499,7 +499,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{type(self)} does not support dict model&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
                                                 <span class="n">verb</span><span class="o">=</span><span class="n">verb</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="n">use_cudnn_benchmark</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">data_parallel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data_parallel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">)</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
@@ -536,6 +536,7 @@
                  <span class="n">callbacks</span><span class="p">:</span> <span class="n">Callback</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">:</span> <span class="n">LRScheduler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">verb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span>
                  <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">enable_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
         <span class="k">if</span> <span class="n">use_sync_bn</span><span class="p">:</span>
             <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">SyncBatchNorm</span><span class="o">.</span><span class="n">convert_sync_batchnorm</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">enable_amp</span><span class="p">:</span>
@@ -544,16 +545,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_apex_available</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;apex not installed&quot;</span><span class="p">)</span>
 
-        <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">python_sys</span>
-        <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">distributed</span>
-
-        <span class="c1"># should be used with torch.distributed.launch</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s2">&quot;For distributed training, use python -m torch.distributed.launch &quot;</span>
-                <span class="n">f</span><span class="s2">&quot;--nproc_per_node={torch.cuda.device_count()} {&#39; &#39;.join(python_sys.argv)} ...&quot;</span><span class="p">)</span>
-
-        <span class="n">distributed</span><span class="o">.</span><span class="n">init_process_group</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">init_method</span><span class="p">)</span>
+        <span class="n">init_distributed</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">init_method</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="n">get_local_rank</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># to avoid overwriting</span>
