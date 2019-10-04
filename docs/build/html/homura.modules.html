@@ -94,10 +94,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.ot">homura.modules.ot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.zca">homura.modules.zca module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -127,10 +126,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.ot">homura.modules.ot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.zca">homura.modules.zca module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -213,8 +211,10 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-sinkhorn-module">homura.modules.functional.sinkhorn module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -397,9 +397,6 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.modules.ot">
-<span id="homura-modules-ot-module"></span><h2>homura.modules.ot module<a class="headerlink" href="#module-homura.modules.ot" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="module-homura.modules.regularizer">
 <span id="homura-modules-regularizer-module"></span><h2>homura.modules.regularizer module<a class="headerlink" href="#module-homura.modules.regularizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -511,38 +508,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.modules.zca">
-<span id="homura-modules-zca-module"></span><h2>homura.modules.zca module<a class="headerlink" href="#module-homura.modules.zca" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.zca.ZCA">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.zca.</code><code class="sig-name descname">ZCA</code><span class="sig-paren">(</span><em class="sig-param">matrix</em>, <em class="sig-param">mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/zca.html#ZCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>ZCA requires large matrix multiplication, so one solution is do it on GPUs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zca</span> <span class="o">=</span> <span class="n">ZCA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">zca</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
-</pre></div>
-</div>
-<dl class="method">
-<dt id="homura.modules.zca.ZCA.create">
-<em class="property">static </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">eps: float = 0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/zca.html#ZCA.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA.create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.modules.zca.ZCA.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/zca.html#ZCA.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.zca.ZCA.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="homura-modules-zca-module">
+<h2>homura.modules.zca module<a class="headerlink" href="#homura-modules-zca-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-homura.modules">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>
