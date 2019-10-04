@@ -188,7 +188,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             results = dict(loss=loss, output=output)
             self._iteration_map.update(**results)
         else:
-            self._iteration_map.update(**results)
+            for k in results:
+                self._iteration_map[k] = results[k]
         self._iteration_map[DATA] = data
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
