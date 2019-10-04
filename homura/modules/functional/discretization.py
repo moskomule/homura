@@ -1,4 +1,4 @@
-# some functions to discretize input tensors
+# some functions to discretize input_forward tensors
 
 import random
 
@@ -10,7 +10,8 @@ from torch.nn import functional as F
 __all__ = ["gumbel_softmax", "gumbel_sigmoid", "straight_through_estimator", "semantic_hashing"]
 
 
-def gumbel_sigmoid(input: torch.Tensor, temp: float) -> torch.Tensor:
+def gumbel_sigmoid(input: torch.Tensor,
+                   temp: float) -> torch.Tensor:
     """ gumbel sigmoid function
     """
     return RelaxedBernoulli(temp, probs=input.sigmoid()).rsample()
@@ -21,11 +22,13 @@ class _STE(Function):
     """
 
     @staticmethod
-    def forward(ctx, input: torch.Tensor) -> torch.Tensor:
+    def forward(ctx,
+                input: torch.Tensor) -> torch.Tensor:
         return (input > 0).float()
 
     @staticmethod
-    def backward(ctx, grad_output: torch.Tensor) -> torch.Tensor:
+    def backward(ctx,
+                 grad_output: torch.Tensor) -> torch.Tensor:
         return F.hardtanh(grad_output)
 
 
@@ -41,7 +44,7 @@ def straight_through_estimator(input: torch.Tensor) -> torch.Tensor:
 
 
 def _saturated_sigmoid(input: torch.Tensor) -> torch.Tensor:
-    # max(0, min(1, 1.2 * input.sigmoid() - 0.1))
+    # max(0, min(1, 1.2 * input_forward.sigmoid() - 0.1))
     return F.relu(1 - F.relu(1.1 - 1.2 * input.sigmoid()))
 
 
@@ -67,7 +70,9 @@ def semantic_hashing(input: torch.Tensor, is_training: bool) -> torch.Tensor:
         return v1
 
 
-def gumbel_softmax(input: torch.Tensor, dim: int, temp: float) -> torch.Tensor:
+def gumbel_softmax(input: torch.Tensor,
+                   dim: int,
+                   temp: float) -> torch.Tensor:
     """ gumbel softmax
     """
     return RelaxedOneHotCategorical(temp, input.softmax(dim=dim)).rsample()

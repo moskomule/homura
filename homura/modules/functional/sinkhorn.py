@@ -29,7 +29,7 @@ __device__ __forceinline__ int getMSB(int val) {
   return 31 - __clz(val);
 }
 
-// Number of threads in a block given an input size up to MAX_BLOCK_SIZE
+// Number of threads in a block given an input_forward size up to MAX_BLOCK_SIZE
 static int getNumThreads(int nElem) {
 #if defined(__HIP_PLATFORM_HCC__)
   int threadSizes[5] = { 16, 32, 64, 128, MAX_BLOCK_SIZE };
@@ -199,8 +199,11 @@ import math
 
 import torch
 
-wasserstein_ext = torch.utils.cpp_extension.load_inline("wasserstein", cpp_sources="", cuda_sources=cuda_source,
-                                                        extra_cuda_cflags=["--expt-relaxed-constexpr"])
+if torch.cuda.is_available():
+    import torch.utils.cpp_extension
+
+    wasserstein_ext = torch.utils.cpp_extension.load_inline("wasserstein", cpp_sources="", cuda_sources=cuda_source,
+                                                            extra_cuda_cflags=["--expt-relaxed-constexpr"])
 
 
 def _sinkstep(cost: torch.Tensor,
