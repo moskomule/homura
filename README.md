@@ -19,7 +19,7 @@ tensorboard # automatically installed
 ### optional
 
 ```
-miniargs (to run samples)
+hydra (to run samples)
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)

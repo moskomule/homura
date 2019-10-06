@@ -41,7 +41,7 @@ def test_custom_ste():
 
 
 def test_semantic_hashing():
-    from homura.modules.functional.discretization import _saturated_sigmoid
+    from homura.modules.functional.discretizations import _saturated_sigmoid
 
     for _ in range(10):
         input = torch.randn(3, requires_grad=True)
