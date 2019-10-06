@@ -28,7 +28,7 @@ def _torch_knn(keys: torch.Tensor,
             scores = keys.mm(queries.t())
             scores *= 2
             scores -= (keys.pow(2)).sum(1, keepdim=True)
-            scores -= (queries.pow(2)).sum(1, keepdim=True)
+            scores -= (queries.pow(2)).sum(1).unsqueeze_(0)
         scores, indices = scores.topk(k=num_neighbors, dim=0, largest=True)
         scores = scores.t()
         indices = indices.t()
@@ -70,7 +70,7 @@ def k_nearest_neighbor(keys: torch.Tensor,
                        queries: torch.Tensor,
                        num_neighbors: int,
                        distance: str, *,
-                       backend: str = "torch"):
+                       backend: str = "torch") -> Tuple[torch.Tensor, torch.Tensor]:
     """ k-Nearest Neighbor search
 
     :param keys: tensor of (num_keys, dim)
@@ -78,7 +78,7 @@ def k_nearest_neighbor(keys: torch.Tensor,
     :param num_neighbors: `k`
     :param distance: name of distance (`dot_product` or `l2`)
     :param backend: backend (`faiss` or `torch`)
-    :return:
+    :return: scores, indices
     """
     assert backend in ["faiss", "torch"]
     f = _faiss_knn if backend == "faiss" and is_faiss_available else _torch_knn

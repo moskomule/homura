@@ -59,3 +59,11 @@ def test_cross_entropy():
     output = HF.cross_entropy_with_softlabels(input, onetho_target)
     expected = F.cross_entropy(input, target)
     assert output.item() == approx(expected.item())
+
+
+def test_knn():
+    k = 5
+    keys = torch.randn(10, 6)
+    qu = torch.randn(20, 6)
+    s, i = HF.k_nearest_neighbor(keys, qu, k, "l2")
+    assert s.size() == torch.Size([20, k])
