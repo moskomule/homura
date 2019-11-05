@@ -73,6 +73,8 @@ class TrainerBase(metaclass=ABCMeta):
         if is_distributed():
             if use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
+
+            # just in case `init_distributed` is not called yet
             init_distributed(distributed_backend, init_method, warning=False)
             rank = get_local_rank()
             torch.cuda.set_device(rank)

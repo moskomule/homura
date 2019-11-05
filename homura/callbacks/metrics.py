@@ -117,7 +117,7 @@ class MetricCallback(Callback):
 
     def reduce(self, tensor):
 
-        if is_distributed and not self._no_reduce:
+        if is_distributed() and not self._no_reduce:
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()
         return tensor

@@ -16,7 +16,7 @@ from torchvision.utils import make_grid, save_image as _save_image
 import homura
 from homura.liblog import _set_tqdm_handler
 from ._vocabulary import *
-from .environment import get_git_hash
+from .environment import get_git_hash, get_global_rank
 
 DEFAULT_SAVE_DIR = "results"
 Vector = Union[Number, torch.Tensor, np.ndarray, List[Number]]
@@ -120,7 +120,7 @@ class _WrapperBase(metaclass=ABCMeta):
         self._container[name].append((idx, x))
 
     def save(self):
-        if self._save_dir is not None and not (self._save_dir / self._filename).exists():
+        if get_global_rank() < 1 and self._save_dir is not None and not (self._save_dir / self._filename).exists():
             p = make_dir(self._save_dir)
             with (p / self._filename).open("w") as f:
                 json.dump(self._container, f)
