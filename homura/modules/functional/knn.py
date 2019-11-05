@@ -41,7 +41,7 @@ def _faiss_knn(keys: torch.Tensor,
                num_neighbors: int,
                distance: str) -> Tuple[torch.Tensor, torch.Tensor]:
     # https://github.com/facebookresearch/XLM/blob/master/src/model/memory/utils.py
-    if not is_faiss_available:
+    if not is_faiss_available():
         raise RuntimeError("faiss_knn requires faiss-gpu")
     import faiss
 
@@ -81,11 +81,11 @@ def k_nearest_neighbor(keys: torch.Tensor,
     :return: scores, indices
     """
     assert backend in ["faiss", "torch"]
-    f = _faiss_knn if backend == "faiss" and is_faiss_available else _torch_knn
+    f = _faiss_knn if backend == "faiss" and is_faiss_available() else _torch_knn
     return f(keys, queries, num_neighbors, distance)
 
 
-if is_faiss_available:
+if is_faiss_available():
     FAISS_RES = faiss.StandardGpuResources()
     FAISS_RES.setDefaultNullStreamAllDevices()
     FAISS_RES.setTempMemory(1200 * 1024 * 1024)

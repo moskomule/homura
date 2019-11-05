@@ -159,7 +159,7 @@ class LossCallback(MetricCallback):
 def metric_callback_decorator(_metric: Callable = None,
                               name: str = None,
                               reduction="average"):
-    """ Decorator to create a metrics callback
+    """ Decorator to create a metric callback
 
         >>> @metric_callback_decorator("loss")
         >>> def loss(data):
@@ -172,6 +172,20 @@ def metric_callback_decorator(_metric: Callable = None,
                               reduction=reduction)
 
     return wrapper if _metric is None else wrapper(_metric)
+
+
+def metric_callback_by_name(name: str):
+    """ Construct a metric callback by ``name`` (key) of ``data``.
+
+    :param name:
+    :return:
+    """
+
+    @metric_callback_decorator(name)
+    def f(data):
+        return data[name]
+
+    return f
 
 
 class IOUCallback(MetricCallback):

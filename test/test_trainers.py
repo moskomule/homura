@@ -34,14 +34,14 @@ def test_update_scheduler():
     model = nn.Linear(10, 10)
     optimizer = optim.SGD(lr=0.1)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy)
-    trainer.update_scheduler(lr_scheduler.LambdaLR(lambda step: 0.1 ** step),
-                             update_scheduler_by_epoch=False)
+    trainer._set_scheduler(lr_scheduler.LambdaLR(lambda step: 0.1 ** step),
+                           update_scheduler_by_epoch=False)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(2)]
     trainer.train(loader)
     # 0.1 * (0.1 ** 2)
     assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3
 
-    trainer.update_scheduler(lr_scheduler.LambdaLR(lambda epoch: 0.1 ** epoch, last_epoch=1),
-                             update_scheduler_by_epoch=True)
+    trainer._set_scheduler(lr_scheduler.LambdaLR(lambda epoch: 0.1 ** epoch, last_epoch=1),
+                           update_scheduler_by_epoch=True)
     trainer.train(loader)
     assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3

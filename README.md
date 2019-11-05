@@ -4,6 +4,8 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
+**Notice: homura v1.0 introduces backward-inconpatibale changes**
+
 ## Requirements
 
 ### minimal requirements
@@ -49,7 +51,8 @@ or
 
 ```console
 git clone https://github.com/moskomule/homura
-cd homura; pip install -e .
+cd homura
+pip install -e .
 ```
 
 
@@ -163,24 +166,6 @@ This method makes randomness deterministic in its context.
 from homura.utils.reproducibility import set_deterministic
 with set_deterministic(seed):
     something()
-```
-
-## debugging
-
-```python
->>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
-                                        nn.Linear(5, 1)), 
-                          torch.randn(4, 10))
-
-[homura.debug|2019-02-25 17:57:06|DEBUG] Start forward calculation
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward> name=Sequential(1)
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(2)
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(3)
-[homura.debug|2019-02-25 17:57:06|DEBUG] Start backward calculation
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(3)
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward> name=Sequential(1)
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(2)
-[homura.debug|2019-02-25 17:57:06|INFO] Finish debugging mode
 ```
 
 # Examples

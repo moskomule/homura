@@ -72,6 +72,9 @@ class CallbackList(Callback):
     def after_epoch(self, data: Mapping):
         return self._cat([c.after_epoch(data) for c in self._callbacks])
 
+    def before_all(self, data: Mapping):
+        return self._cat([c.before_all(data) for c in self._callbacks])
+
     def after_all(self, data: Mapping):
         return self._cat([c.after_all(data) for c in self._callbacks])
 
