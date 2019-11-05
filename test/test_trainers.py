@@ -1,8 +1,9 @@
+import pytest
 import torch
 from torch import nn
 from torch.nn import functional as F
 
-from homura import optim, trainers, utils, lr_scheduler
+from homura import trainers, utils, optim, lr_scheduler
 
 
 def test_dict_model():
@@ -21,7 +22,7 @@ def test_dict_model():
 
     model = {"generator": nn.Linear(10, 10),
              "discriminator": nn.Linear(10, 10)}
-    optimizer = {"generator": optim.SGD(lr=0.1),
+    optimizer = {"generator": torch.optim.SGD(model["generator"].parameters(), lr=0.1),
                  "discriminator": None}
     trainer = Trainer(model, optimizer, F.cross_entropy)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
@@ -29,19 +30,29 @@ def test_dict_model():
         trainer.train(loader)
         trainer.test(loader)
 
+    with pytest.raises(RuntimeError):
+        optimizer = {"generator": optim.SGD(lr=0.1),
+                     "discriminator": None}
+        trainer = Trainer(model, optimizer, F.cross_entropy)
 
-def test_update_scheduler():
+
+def test_basic_trainer():
     model = nn.Linear(10, 10)
-    optimizer = optim.SGD(lr=0.1)
-    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy)
-    trainer._set_scheduler(lr_scheduler.LambdaLR(lambda step: 0.1 ** step),
-                           update_scheduler_by_epoch=False)
-    loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(2)]
+    optimizer = optim.SGD()
+    scheduler = lr_scheduler.StepLR(9)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
+                                         update_scheduler_by_epoch=False)
+    loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     trainer.train(loader)
-    # 0.1 * (0.1 ** 2)
-    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3
+    assert pytest.approx(trainer.optimizer.param_groups[0]["lr"], 0.01)
 
-    trainer._set_scheduler(lr_scheduler.LambdaLR(lambda epoch: 0.1 ** epoch, last_epoch=1),
-                           update_scheduler_by_epoch=True)
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
+                                         update_scheduler_by_epoch=False)
     trainer.train(loader)
-    assert list(trainer.optimizer.param_groups)[0]['lr'] == 0.1 ** 3
+
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 9)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
+                                         update_scheduler_by_epoch=False)
+    trainer.run(loader, loader, 15, 11)
+    assert trainer.step == 11 - 1

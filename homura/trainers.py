@@ -21,15 +21,15 @@ __all__ = ["TrainerBase", "SupervisedTrainer"]
 
 
 class TrainerBase(metaclass=ABCMeta):
-
     """ Train and evaluate model in a given period (an epoch or iterations)
 
-    :param model:
-    :param optimizer:
-    :param loss_f:
-    :param callbacks:
-    :param scheduler:
-    :param use_scheduler_by_epoch:
+    :param model: model to be trained in `nn.Module` or `{"name": nn.Module}`
+    :param optimizer: optimizer for the model in `partial`, `torch.optim.Optimizer` or dict of them. For distributed
+    training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.
+    :param loss_f: loss function
+    :param callbacks: callbacks
+    :param scheduler: scheduler for the model in `partial`, `lr_scheduler._LRScheduler` or dict of them
+    :param update_scheduler_by_epoch: `True` if scheduler is updated by epoch, otherwise update by iteration
     :param device:
     :param verb:
     :param use_cudnn_benchmark:
@@ -38,6 +38,7 @@ class TrainerBase(metaclass=ABCMeta):
     :param distributed_backend:
     :param init_method:
     :param use_sync_bn:
+    :param tqdm_ncols:
     :param kwargs:
     """
 
@@ -48,7 +49,7 @@ class TrainerBase(metaclass=ABCMeta):
                  *,
                  callbacks: Optional[Callback or Iterable[Callable]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
-                 use_scheduler_by_epoch: bool = True,
+                 update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
                  verb=True,
                  use_cudnn_benchmark=True,
@@ -57,9 +58,8 @@ class TrainerBase(metaclass=ABCMeta):
                  distributed_backend="nccl",
                  init_method="env://",
                  use_sync_bn: bool = False,
+                 tqdm_ncols: int = 80,
                  **kwargs):
-
-
 
         if logger is None:
             logger = get_logger(__name__)
@@ -109,8 +109,8 @@ class TrainerBase(metaclass=ABCMeta):
 
         self.optimizer = None
         self.scheduler = None
-        self._callbacks = Callback()
-        self.update_scheduler_by_epoch = use_scheduler_by_epoch
+        self._callbacks = None
+        self.update_scheduler_by_epoch = update_scheduler_by_epoch
         self._set_optimizer(optimizer)
         self._set_scheduler(scheduler)
         self._set_callbacks(callbacks)
@@ -123,6 +123,7 @@ class TrainerBase(metaclass=ABCMeta):
         self._step = -1
         self._epoch = -1
         self._is_train = True
+        self._tqdm = Partial(tqdm, ncols=tqdm_ncols) if verb else lambda x: x
 
         _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,
@@ -156,7 +157,8 @@ class TrainerBase(metaclass=ABCMeta):
         return self._is_train
 
     @abstractmethod
-    def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+    def iteration(self,
+                  data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         """ Iteration part, user can override via duck typing or override_iteration ::
 
             def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
@@ -173,7 +175,8 @@ class TrainerBase(metaclass=ABCMeta):
         :return: loss, output
         """
 
-    def override_iteration(self, new_iteration: Callable):
+    def override_iteration(self,
+                           new_iteration: Callable):
         """ Override iteration method ::
 
             def new_iteration(trainer, data):
@@ -251,10 +254,10 @@ class TrainerBase(metaclass=ABCMeta):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.exit()
 
-    def _loop_by_epoch(self,
-                       data_loader: DataLoader,
-                       mode: str):
-        # handle epoch level training loop
+    def _loop(self,
+              data_loader: Iterable or DataLoader,
+              mode: str):
+
         self._epoch_map.update({EPOCH: self.epoch,
                                 STEP: self.step,
                                 MODE: mode,
@@ -262,9 +265,7 @@ class TrainerBase(metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.before_epoch(self._epoch_map)
 
-        data_loader = tqdm(data_loader, ncols=80) if self._verb else data_loader
-
-        for data in data_loader:
+        for data in self._tqdm(data_loader):
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             if self.is_train:
                 self._step += 1
@@ -275,9 +276,9 @@ class TrainerBase(metaclass=ABCMeta):
         self.logger.debug(f"epoch {self.epoch} finished")
 
     def train(self,
-              data_loader: DataLoader,
+              data_loader: Iterable or DataLoader,
               mode: str = TRAIN):
-        """ Training loop.
+        """ Training the model for an epoch.
 
         :param data_loader:
         :param mode: Name of this loop. Default is `train`. Passed to callbacks.
@@ -289,15 +290,15 @@ class TrainerBase(metaclass=ABCMeta):
         if hasattr(self.loss_f, "train"):
             self.loss_f.train()
         with torch.enable_grad():
-            self._loop_by_epoch(data_loader, mode=mode)
+            self._loop(data_loader, mode=mode)
 
         if self.scheduler is not None and self.update_scheduler_by_epoch:
             self.scheduler.step()
 
     def test(self,
-             data_loader: DataLoader,
+             data_loader: Iterable or DataLoader,
              mode: str = TEST):
-        """ Non-training loop.
+        """ Evaluate the model.
 
         :param data_loader:
         :param mode: Name of this loop. Default is `test`. Passed to callbacks.
@@ -309,13 +310,43 @@ class TrainerBase(metaclass=ABCMeta):
         if hasattr(self.loss_f, "eval"):
             self.loss_f.eval()
         with torch.no_grad():
-            self._loop_by_epoch(data_loader, mode=mode)
+            self._loop(data_loader, mode=mode)
 
     def run(self,
-            train_loader: DataLoader,
-            val_loader: DataLoader,
-            val_intervals: int = 100):
-        pass
+            train_loader: Iterable or DataLoader,
+            val_loader: Iterable or DataLoader,
+            total_iterations: int,
+            val_intervals: int):
+        """ Train the model for a given iterations
+
+        :param train_loader:
+        :param val_loader:
+        :param total_iterations:
+        :param val_intervals:
+        :return:
+        """
+
+        class ProxyLoader(object):
+            def __init__(self, loader):
+                self.loader = loader
+
+            def __len__(self):
+                return val_intervals
+
+            def __iter__(self):
+                counter = 0
+                while True:
+                    for data in self.loader:
+                        if counter == val_intervals:
+                            return  # from python 3.7, this is valid
+                        yield data
+                        counter += 1
+
+        train_loader = ProxyLoader(train_loader)
+
+        for ep in range(total_iterations // val_intervals):
+            self.train(train_loader)
+            self.test(val_loader)
 
     def exit(self):
         with torch.no_grad():
@@ -323,14 +354,14 @@ class TrainerBase(metaclass=ABCMeta):
 
     def _set_optimizer(self,
                        optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
-        if isinstance(optimizer, Optimizer):
+        if isinstance(optimizer, Optimizer) or optimizer is None:
             self.optimizer = optimizer
 
         elif isinstance(optimizer, Partial):
             if not issubclass(optimizer.func, Optimizer):
                 raise TypeError(f"`optimizer.func` is expected to be subclass of `Optimizer`"
                                 f" but got {type(optimizer.func)}")
-            self.optimizer = optimizer(self.model)
+            self.optimizer = optimizer(self.model.parameters())
 
         elif isinstance(optimizer, dict):
             if not isinstance(self.model, nn.ModuleDict):
@@ -346,7 +377,7 @@ class TrainerBase(metaclass=ABCMeta):
         if self.optimizer is None:
             raise TypeError("Optimizer is not set, so scheduler cannot be set")
 
-        if isinstance(scheduler, Scheduler):
+        if isinstance(scheduler, Scheduler) or scheduler is None:
             self.scheduler = scheduler
 
         elif isinstance(scheduler, Partial):
@@ -365,12 +396,12 @@ class TrainerBase(metaclass=ABCMeta):
 
     def _set_callbacks(self,
                        callbacks: Optional[Callback or Iterable[Callable]]):
-        if isinstance(callbacks, CallbackList):
-            self._callbacks = callbacks
-        elif isinstance(callbacks, Callback):
+        if isinstance(callbacks, CallbackList) or isinstance(callbacks, Callback):
             self._callbacks = callbacks
         elif isinstance(callbacks, Iterable):
             self._callbacks = CallbackList(*callbacks)
+        elif callbacks is None:
+            self._callbacks = Callback()
         else:
             raise TypeError(f"type(callbacks) should not be {type(callbacks)}!")
 

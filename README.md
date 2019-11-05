@@ -71,6 +71,7 @@ from torch.nn import functional as F
 
 # model will be registered in the trainer
 resnet = resnet50()
+
 # optimizer and scheduler will be registered in the trainer, too
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
@@ -88,7 +89,10 @@ Now `iteration` of trainer can be updated as follows,
 from homura.trainers import TrainerBase, SupervisedTrainer
 from homura.utils.containers import Map
 
-def iteration(trainer: TrainerBase, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+trainer = SupervisedTrainer(...)
+
+def iteration(trainer: TrainerBase, 
+              data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
