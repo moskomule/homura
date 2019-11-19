@@ -167,9 +167,12 @@ Easy distributed initializer `homura.init_distributed()` is available.
 This method makes randomness deterministic in its context.
 
 ```python
-from homura.utils.reproducibility import set_deterministic
+from homura.utils.reproducibility import set_deterministic, set_seed
 with set_deterministic(seed):
     something()
+
+with set_seed(seed):
+    other_thing()
 ```
 
 # Examples

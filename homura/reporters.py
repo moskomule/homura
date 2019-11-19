@@ -13,7 +13,8 @@ from .utils.reporter_backends import TQDMWrapper, TensorBoardWrapper, LoggerWrap
 
 class Reporter(Callback, metaclass=ABCMeta):
 
-    def __init__(self, base_wrapper: _WrapperBase,
+    def __init__(self,
+                 base_wrapper: _WrapperBase,
                  callbacks: Union[Iterable[Callback], Callback],
                  report_freq: int = -1,
                  report_param_freq: int = 0,
@@ -31,7 +32,11 @@ class Reporter(Callback, metaclass=ABCMeta):
         if get_global_rank() > 0:
             self._reportable = False
 
-    def add_memo(self, text: str, *, name="memo", index=0):
+    def add_memo(self,
+                 text: str,
+                 *,
+                 name="memo",
+                 index=0):
         if name == "memo":
             # to avoid collision
             name += str(hash(text))[:5]
@@ -49,13 +54,13 @@ class Reporter(Callback, metaclass=ABCMeta):
 
     def after_iteration(self, data: Mapping):
         f"""
-        :param data: Mapping. Requires to have at least {MODE}, {STEP}, {MODEL} as its key
+        :param data: Mapping. Requires to have at least {MODE}, {ITERATION}, {MODEL} as its key
         """
         results = self.callbacks.after_iteration(data)
 
         if self._reportable:
             mode = data[MODE]
-            step = data[STEP]
+            step = data[ITERATION]
 
             if self.report_freq > 0 and (step % self.report_freq == 0):
                 self._report(results, mode, step)
@@ -160,7 +165,8 @@ class TQDMReporter(Reporter):
     :param image_keys: keys for images.
     """
 
-    def __init__(self, iterator: Iterable,
+    def __init__(self,
+                 iterator: Iterable,
                  callbacks: Union[Iterable[Callback], Callback],
                  save_dir: Optional[str] = None,
                  report_freq: int = -1,
@@ -203,7 +209,8 @@ class LoggerReporter(Reporter):
     :param image_keys: keys for images.
     """
 
-    def __init__(self, callbacks: Union[Iterable[Callback], Callback],
+    def __init__(self,
+                 callbacks: Union[Iterable[Callback], Callback],
                  save_dir: Optional[str] = None,
                  logger: Optional[Logger] = None,
                  report_freq: int = -1,
@@ -232,7 +239,8 @@ class TensorboardReporter(Reporter):
     :param save_images: If True, saving images in addition to reporting
     """
 
-    def __init__(self, callbacks: Union[Iterable[Callback], Callback],
+    def __init__(self,
+                 callbacks: Union[Iterable[Callback], Callback],
                  save_dir=None,
                  report_freq: int = -1,
                  report_params_freq: int = 0,
@@ -243,12 +251,3 @@ class TensorboardReporter(Reporter):
                                                   callbacks, report_freq,
                                                   report_param_freq=report_params_freq,
                                                   report_image_freq=report_images_freq, image_keys=image_keys, )
-
-
-class VisdomReporter(object):
-    """
-    Deprecated. Use TensorboardReporter instead.
-    """
-
-    def __init__(self, **kwargs):
-        raise DeprecationWarning("VisdomReporter is no longer supported!")

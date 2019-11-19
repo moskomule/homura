@@ -194,24 +194,6 @@ class TrainerBase(metaclass=ABCMeta):
         setattr(self, "iteration", MethodType(new_iteration, self))
         self.logger.debug("Override iteration")
 
-    def register_before_iteration(self, name, data):
-        self._iteration_map[name] = data
-
-    def register_after_iteration(self, name, data):
-        self._iteration_map[name] = data
-
-    def register_before_epoch(self, name, data):
-        self._epoch_map[name] = data
-
-    def register_after_epoch(self, name, data):
-        self._epoch_map[name] = data
-
-    def register_before_all(self, name, data):
-        self._all_map[name] = data
-
-    def register_after_all(self, name, data):
-        self._all_map[name] = data
-
     def _iteration(self,
                    data: Tuple[torch.Tensor],
                    mode: str):
@@ -222,7 +204,7 @@ class TrainerBase(metaclass=ABCMeta):
         :return:
         """
 
-        self._iteration_map.update({STEP: self.step, MODE: mode})
+        self._iteration_map.update({ITERATION: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
         results = self.iteration(data)
@@ -261,7 +243,7 @@ class TrainerBase(metaclass=ABCMeta):
               mode: str):
 
         self._epoch_map.update({EPOCH: self.epoch,
-                                STEP: self.step,
+                                ITERATION: self.step,
                                 MODE: mode,
                                 ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
@@ -429,7 +411,7 @@ class SupervisedTrainer(TrainerBase):
             self.model.to(self.device)
 
     def iteration(self,
-                  data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+                  data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
         output = self.model(input)
         loss = self.loss_f(output, target)
