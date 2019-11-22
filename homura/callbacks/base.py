@@ -67,7 +67,7 @@ class CallbackList(Callback):
     """
 
     def __init__(self,
-                 *callbacks: Iterable[Callback] or Callback):
+                 callbacks: Iterable[Callback] or Callback):
         if callbacks is None:
             raise TypeError("callbacks is expected to be Callback but None")
 
@@ -80,22 +80,28 @@ class CallbackList(Callback):
                 raise TypeError(f"{c} is not callback!")
         self._callbacks = list(callbacks)
 
-    def before_iteration(self, data: Mapping):
+    def before_iteration(self,
+                         data: Mapping):
         return self._cat([c.before_iteration(data) for c in self._callbacks])
 
-    def after_iteration(self, data: Mapping):
+    def after_iteration(self,
+                        data: Mapping):
         return self._cat([c.after_iteration(data) for c in self._callbacks])
 
-    def before_epoch(self, data: Mapping):
+    def before_epoch(self,
+                     data: Mapping):
         return self._cat([c.before_epoch(data) for c in self._callbacks])
 
-    def after_epoch(self, data: Mapping):
+    def after_epoch(self,
+                    data: Mapping):
         return self._cat([c.after_epoch(data) for c in self._callbacks])
 
-    def before_all(self, data: Mapping):
+    def before_all(self,
+                   data: Mapping):
         return self._cat([c.before_all(data) for c in self._callbacks])
 
-    def after_all(self, data: Mapping):
+    def after_all(self,
+                  data: Mapping):
         return self._cat([c.after_all(data) for c in self._callbacks])
 
     def close(self):

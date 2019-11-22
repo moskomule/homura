@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from homura import is_distributed
 from homura.liblog import get_logger
-from .callbacks import Callback, CallbackList
+from .callbacks import Callback, CallbackList, Reporter, WeightSave
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.environment import get_global_rank, get_local_rank, init_distributed
@@ -47,7 +47,7 @@ class TrainerBase(metaclass=ABCMeta):
                  optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]],
                  loss_f: Optional[Callable or Dict[str, Callable]],
                  *,
-                 callbacks: Optional[Callback or Iterable[Callable]] = None,
+                 callbacks: Optional[Iterable[Callback]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
@@ -252,6 +252,7 @@ class TrainerBase(metaclass=ABCMeta):
         for data in self._tqdm(data_loader):
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             if self.is_train:
+                # increment step here for `callbacks`
                 self._step += 1
             self._iteration(data, mode)
 
@@ -335,6 +336,7 @@ class TrainerBase(metaclass=ABCMeta):
     def exit(self):
         with torch.no_grad():
             self._callbacks.after_all(self._all_map)
+            self._callbacks.close()
 
     def _set_optimizer(self,
                        optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
@@ -379,15 +381,30 @@ class TrainerBase(metaclass=ABCMeta):
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
 
     def _set_callbacks(self,
-                       callbacks: Optional[Callback or Iterable[Callable]]):
-        if isinstance(callbacks, CallbackList) or isinstance(callbacks, Callback):
-            self._callbacks = callbacks
-        elif isinstance(callbacks, Iterable):
-            self._callbacks = CallbackList(*callbacks)
-        elif callbacks is None:
+                       callbacks: Optional[Iterable[Callback]]):
+
+        if callbacks is None:
             self._callbacks = Callback()
-        else:
-            raise TypeError(f"type(callbacks) should not be {type(callbacks)}!")
+            return
+        
+        _reporters = []
+        _outers = []
+        _inners = []
+
+        for c in callbacks:
+            if isinstance(c, Reporter):
+                _reporters.append(c)
+            elif isinstance(c, WeightSave):
+                _outers.append(c)
+            elif isinstance(c, Callback):
+                _inners.append(c)
+            else:
+                raise TypeError(f"Element of `callbacks` is expected to be `Callback`, but got `{type(c)}`")
+
+        _inners = CallbackList(_inners)
+        for r in _reporters:
+            r.register_callbacks(_inners)
+        self._callbacks = CallbackList(_reporters + _outers)
 
 
 class SupervisedTrainer(TrainerBase):
