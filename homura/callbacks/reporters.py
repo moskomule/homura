@@ -207,7 +207,7 @@ class IOReporter(Reporter):
             for c in self.callbacks.callbacks:
                 if isinstance(c, MetricCallback):
                     history[c.metric_name] = c.history
-            with (self.save_dir / "results.json").open('r') as f:
+            with (self.save_dir / "results.json").open('w') as f:
                 json.dump(history, f)
 
     @staticmethod
