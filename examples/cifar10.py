@@ -16,11 +16,11 @@ def main():
     optimizer = optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
     tq = reporters.TQDMReporter(range(200))
-    c = [callbacks.AccuracyCallback(), callbacks.LossCallback(), reporters.TensorboardReporter("."), tq]
+    c = [callbacks.AccuracyCallback(), callbacks.LossCallback(), reporters.IOReporter("."),
+         reporters.TensorboardReporter("."), tq]
 
     with trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=c,
                                     scheduler=scheduler) as trainer:
-
         for _ in tq:
             trainer.train(train_loader)
             trainer.test(test_loader)
