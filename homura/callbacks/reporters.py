@@ -67,7 +67,7 @@ class Reporter(_ReporterBase):
     def __new__(cls,
                 *args,
                 **kwargs):
-        if get_global_rank() > 0:
+        if cls.master_only and get_global_rank() > 0:
             return _ReporterBase(*args, **kwargs)
         return object.__new__(cls)
 
@@ -108,9 +108,8 @@ class TQDMReporter(Reporter):
     >>>     pass
     """
 
-    def __new__(cls,
-                iterator: Iterable):
-        return object.__new__(cls)
+    # to enable __iter__ and __len__
+    master_only = False
 
     def __init__(self,
                  iterator: Iterable):
