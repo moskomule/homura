@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -174,12 +173,13 @@
 <span class="sd">        dim of X &gt;= 0,</span>
 <span class="sd">        dim of Y &gt;= 1</span>
 
-<span class="sd">        :param queries: B x X x L</span>
-<span class="sd">        :param keys: B x Y x L</span>
-<span class="sd">        :param values: B x Y x L</span>
-<span class="sd">        :param mask: B x Y x L or None</span>
+<span class="sd">        :param queries: B img X img L</span>
+<span class="sd">        :param keys: B img Y img L</span>
+<span class="sd">        :param values: B img Y img L</span>
+<span class="sd">        :param mask: B img Y img L or None</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">raw_attention</span> <span class="o">=</span> <span class="n">queries</span> <span class="o">@</span> <span class="n">keys</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span><span class="p">:</span>
             <span class="c1"># see Transformer</span>
