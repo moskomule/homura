@@ -67,7 +67,7 @@ class Reporter(_ReporterBase):
     def __new__(cls,
                 *args,
                 **kwargs):
-        if cls.master_only and is_master():
+        if cls.master_only and not is_master():
             return _ReporterBase(*args, **kwargs)
         return object.__new__(cls)
 
