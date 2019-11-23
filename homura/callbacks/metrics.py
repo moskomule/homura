@@ -148,7 +148,8 @@ class AccuracyCallback(MetricCallback):
                  k: int = 1):
         self.top_k = k
         suffix = f"_top{self.top_k}" if self.top_k != 1 else ""
-        self._accuracy = partial(torch.argmax, dim=1) if k == 1 else lambda x: partial(torch.topk, k=k, dim=1)(x)[1]
+        self._accuracy = partial(torch.argmax, dim=1, keepdim=True) if k == 1 \
+            else lambda x: partial(torch.topk, k=k, dim=1)(x)[1]
         super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
 
     def accuracy(self,

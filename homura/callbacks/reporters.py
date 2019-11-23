@@ -124,7 +124,7 @@ class TQDMReporter(Reporter):
         results = super(TQDMReporter, self).after_iteration(data)
         for k, v in results.items():
             if self._is_scalar(v):
-                reportable[k] = v
+                reportable[k] = float(v)
             elif isinstance(v, dict):
                 reportable.update(v)
         self.writer.set_postfix(reportable)
