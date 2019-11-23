@@ -4,7 +4,7 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
-**Notice: homura v1.0 introduces backward-inconpatibale changes**
+**Notice: homura v2019.11+ introduces backward-inconpatibale changes**
 
 ## Requirements
 
@@ -77,10 +77,12 @@ optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 
 # list of callbacks or reporters can be registered in the trainer
-with reporters.TensorboardReporter([callbacks.AccuracyCallback(), 
-                                    callbacks.LossCallback()]) as reporter:
-    trainer = trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
-                                         callbacks=reporter, scheduler=scheduler)
+c = [callbacks.AccuracyCallback(),
+    reporters.TensorboardReporter(".")]
+with trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
+                                     callbacks=c, scheduler=scheduler) as trainer:
+    trainer.train(...)
+    trainer.test(...)
 ```
 
 Now `iteration` of trainer can be updated as follows,
