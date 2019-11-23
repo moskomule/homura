@@ -62,7 +62,7 @@ template <typename scalar_t, typename index_t>
 __global__ void sinkstep_kernel(
   // compute log v_bj = log nu_bj - logsumexp_i 1/lambda cost_ij - log u_bi
   // for this compute maxdiff_bj = max_i(1/lambda cost_ij - log u_bi)
-  // i = reduction dim, using threadIdx.x
+  // i = reduction dim, using threadIdx.img
   PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> log_v,
   const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> cost,
   const PackedTensorAccessor<scalar_t, 2, RestrictPtrTraits, index_t> log_nu,
@@ -74,8 +74,8 @@ __global__ void sinkstep_kernel(
   __shared__ accscalar_t shared_mem[2 * WARP_SIZE];
 
   index_t b = blockIdx.y;
-  index_t j = blockIdx.x;
-  int tid = threadIdx.x;
+  index_t j = blockIdx.img;
+  int tid = threadIdx.img;
 
   if (b >= log_u.size(0) || j >= log_v.size(1)) {
     return;
@@ -91,7 +91,7 @@ __global__ void sinkstep_kernel(
     return;
   }
 
-  for (index_t i = threadIdx.x; i < log_u.size(1); i += blockDim.x) {
+  for (index_t i = threadIdx.img; i < log_u.size(1); i += blockDim.img) {
     accscalar_t oldmax = max;
     accscalar_t value = -cost[i][j]/lambda + log_u[b][i];
     max = max > value ? max : value;
@@ -130,8 +130,8 @@ __global__ void sinkstep_kernel(
   }
   __syncthreads();
   if (tid < WARP_SIZE) {
-    max = (tid < blockDim.x / WARP_SIZE ? shared_mem[2 * tid] : -std::numeric_limits<accscalar_t>::infinity());
-    sumexp = (tid < blockDim.x / WARP_SIZE ? shared_mem[2 * tid + 1] : 0);
+    max = (tid < blockDim.img / WARP_SIZE ? shared_mem[2 * tid] : -std::numeric_limits<accscalar_t>::infinity());
+    sumexp = (tid < blockDim.img / WARP_SIZE ? shared_mem[2 * tid + 1] : 0);
   }
   for (int i = 0; i < getMSB(WARP_SIZE); ++i) {
     accscalar_t o_max    = WARP_SHFL_XOR(max, 1 << i, WARP_SIZE);
@@ -265,9 +265,9 @@ def sinkhorn(source: torch.Tensor,
              num_iteration: int = 100):
     """ Batched sinkhorn iteration from https://arxiv.org/abs/1907.01729.
 
-    :param source: The source histograms of `B x d_1`
-    :param dest: The destination histograms of `B x d_2`
-    :param cost: The cost matrix of `d_1 x d_2`
+    :param source: The source histograms of `B img d_1`
+    :param dest: The destination histograms of `B img d_2`
+    :param cost: The cost matrix of `d_1 img d_2`
     :param lam:　The coefficient of the entropy term
     :param num_iteration: The number of iteration of Sinkhorn-Knopp iteration
     :return: distances

@@ -49,10 +49,10 @@ class VQModule(nn.Module):
 
     def forward(self,
                 input: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        flatten = self.flatten_input(input)  # `? x emb_dim`
+        flatten = self.flatten_input(input)  # `? img emb_dim`
         with torch.no_grad():
             _, ids = knn(self.embed, flatten, 1, "l2",
-                         backend=self._knn_backend)  # `dict_size x emb_dim`, `? x emb_dim`
+                         backend=self._knn_backend)  # `dict_size img emb_dim`, `? img emb_dim`
             _input_size = list(input.size())
             _input_size.pop(1)
             ids = ids.view(*_input_size)
@@ -78,12 +78,12 @@ class VQModule(nn.Module):
                     ids: torch.Tensor):
         with torch.no_grad():
             ids = ids.view(-1, 1)
-            # `? x dict_size`
+            # `? img dict_size`
             onehot_ids = ids.new_zeros([ids.size(0), self.dict_size], dtype=torch.float)
             onehot_ids.scatter_(1, ids, 1)
             # `dict_size`
             moving_average_(self._track_num, onehot_ids.sum(dim=0).view_as(self._track_num), self.gamma)
-            # `dict_size x emb_dim`
+            # `dict_size img emb_dim`
             moving_average_(self._track_enc, onehot_ids.t().matmul(flatten), self.gamma)
 
             # following sonnet's implementation

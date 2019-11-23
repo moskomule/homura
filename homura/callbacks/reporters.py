@@ -1,3 +1,4 @@
+import json
 from numbers import Number
 from pathlib import Path
 from typing import Mapping, Iterable, Optional, List
@@ -5,10 +6,12 @@ from typing import Mapping, Iterable, Optional, List
 import torch
 import tqdm
 from torch.utils import tensorboard
+from torchvision.utils import save_image as _save_image
 
 from homura import get_global_rank, liblog
 from homura.utils._vocabulary import *
 from .base import Callback, CallbackList
+from .metrics import MetricCallback
 
 Callbacks = Callback or Iterable[Callback]
 Vector = torch.Tensor or List[Number] or Number
@@ -190,11 +193,29 @@ class IOReporter(Reporter):
     def after_iteration(self,
                         data: Mapping):
         # save image
-        raise NotImplementedError
+        results = super(IOReporter, self).after_iteration(data)
+        for k, v in results:
+            if self._is_images(v):
+                self.save_image(self.save_dir, v, k, data[EPOCH])
 
     def close(self):
         # save text
-        raise NotImplementedError
+        history = {}
+        if hasattr(self.callbacks, "callbacks"):
+            for c in self.callbacks.callbacks:
+                if isinstance(c, MetricCallback):
+                    history[c.metric_name] = c.history
+            json.dump(history, self.save_dir / "results.json")
+
+    @staticmethod
+    def save_image(path: Path,
+                   img: torch.Tensor,
+                   name: str,
+                   idx: int) -> None:
+        (path / "images").mkdir(exist_ok=True, parents=True)
+        filename = path / "images" / f"{name}-{idx}.png"
+        if not filename.exists():
+            _save_image(img, filename)
 
 
 class CallImage(Callback):

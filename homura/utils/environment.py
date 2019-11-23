@@ -8,11 +8,6 @@ from torch.cuda import device_count
 
 from homura.liblog import get_logger
 
-__all__ = ["is_accimage_available", "is_apex_available", "is_distributed",
-           "enable_accimage", "init_distributed",
-           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes",
-           "is_faiss_available"]
-
 logger = get_logger("homura.env")
 args = " ".join(python_sys.argv)
 

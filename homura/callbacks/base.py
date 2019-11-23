@@ -78,34 +78,34 @@ class CallbackList(Callback):
         for c in callbacks:
             if not isinstance(c, Callback):
                 raise TypeError(f"{c} is not callback!")
-        self._callbacks = list(callbacks)
+        self.callbacks = list(callbacks)
 
     def before_iteration(self,
                          data: Mapping):
-        return self._cat([c.before_iteration(data) for c in self._callbacks])
+        return self._cat([c.before_iteration(data) for c in self.callbacks])
 
     def after_iteration(self,
                         data: Mapping):
-        return self._cat([c.after_iteration(data) for c in self._callbacks])
+        return self._cat([c.after_iteration(data) for c in self.callbacks])
 
     def before_epoch(self,
                      data: Mapping):
-        return self._cat([c.before_epoch(data) for c in self._callbacks])
+        return self._cat([c.before_epoch(data) for c in self.callbacks])
 
     def after_epoch(self,
                     data: Mapping):
-        return self._cat([c.after_epoch(data) for c in self._callbacks])
+        return self._cat([c.after_epoch(data) for c in self.callbacks])
 
     def before_all(self,
                    data: Mapping):
-        return self._cat([c.before_all(data) for c in self._callbacks])
+        return self._cat([c.before_all(data) for c in self.callbacks])
 
     def after_all(self,
                   data: Mapping):
-        return self._cat([c.after_all(data) for c in self._callbacks])
+        return self._cat([c.after_all(data) for c in self.callbacks])
 
     def close(self):
-        for c in self._callbacks:
+        for c in self.callbacks:
             c.close()
 
     @staticmethod

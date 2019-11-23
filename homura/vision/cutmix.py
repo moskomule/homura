@@ -55,8 +55,8 @@ def cutmix(input: torch.Tensor,
            indices: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
     """ CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features
 
-    :param input: The input tensor (B x C x H x W)
-    :param target: The target tensor (B x C) is assumed to be onehot.
+    :param input: The input tensor (B img C img H img W)
+    :param target: The target tensor (B img C) is assumed to be onehot.
     :param gamma:
     :param indices:
     :return:
