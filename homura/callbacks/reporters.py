@@ -154,7 +154,7 @@ class TensorboardReporter(Reporter):
         results = super(TensorboardReporter, self).after_iteration(data)
         global_step = data[EPOCH if self._use_epoch else ITERATION]
         for k, v in results.items():
-            if data[ITERATION] % self._report_freq == 0:
+            if self._report_freq is not None and data[ITERATION] % self._report_freq == 0:
                 self._report_values(k, v, global_step)
             elif self._is_images(v):
                 self.writer.add_images(k, v, global_step)
