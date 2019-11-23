@@ -108,11 +108,15 @@ class TQDMReporter(Reporter):
     >>>     pass
     """
 
+    def __new__(cls,
+                iterator: Iterable):
+        return object.__new__(cls)
+
     def __init__(self,
                  iterator: Iterable):
 
         super(TQDMReporter, self).__init__()
-        self.writer = tqdm.tqdm(iterator, ncols=80)
+        self.writer = tqdm.tqdm(iterator, ncols=80) if get_global_rank() > 0 else iterator
         self._length = len(iterator)
         liblog._set_tqdm_handler()
 
@@ -125,18 +129,20 @@ class TQDMReporter(Reporter):
 
     def add_text(self,
                  text: str):
-        self.writer.write(text)
+        if get_global_rank() > 0:
+            self.writer.write(text)
 
     def after_epoch(self,
                     data: Mapping):
         reportable = {}
         results = super(TQDMReporter, self).after_iteration(data)
-        for k, v in results.items():
-            if self._is_scalar(v):
-                reportable[k] = self.to_serializable(v)
-            elif isinstance(v, dict):
-                reportable.update({k: self.to_serializable(e) for k, e in v.items()})
-        self.writer.set_postfix(reportable)
+        if get_global_rank() > 0:
+            for k, v in results.items():
+                if self._is_scalar(v):
+                    reportable[k] = self.to_serializable(v)
+                elif isinstance(v, dict):
+                    reportable.update({k: self.to_serializable(e) for k, e in v.items()})
+            self.writer.set_postfix(reportable)
 
 
 class TensorboardReporter(Reporter):
