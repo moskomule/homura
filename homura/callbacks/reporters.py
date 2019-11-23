@@ -124,7 +124,7 @@ class TQDMReporter(Reporter):
         results = super(TQDMReporter, self).after_iteration(data)
         for k, v in results.items():
             if self._is_scalar(v):
-                reportable[k] = float(v)
+                reportable[k] = v.item() if torch.is_tensor(v) else v
             elif isinstance(v, dict):
                 reportable.update(v)
         self.writer.set_postfix(reportable)
@@ -207,7 +207,8 @@ class IOReporter(Reporter):
             for c in self.callbacks.callbacks:
                 if isinstance(c, MetricCallback):
                     history[c.metric_name] = c.history
-            json.dump(history, self.save_dir / "results.json")
+            with (self.save_dir / "results.json").open('r') as f:
+                json.dump(history, f)
 
     @staticmethod
     def save_image(path: Path,
@@ -216,8 +217,7 @@ class IOReporter(Reporter):
                    idx: int) -> None:
         (path / "images").mkdir(exist_ok=True, parents=True)
         filename = path / "images" / f"{name}-{idx}.png"
-        if not filename.exists():
-            _save_image(img, filename)
+        _save_image(img, filename)
 
 
 class CallImage(Callback):
