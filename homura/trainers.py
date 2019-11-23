@@ -12,7 +12,8 @@ from tqdm import tqdm
 
 from homura import is_distributed
 from homura.liblog import get_logger
-from .callbacks import Callback, CallbackList, Reporter, WeightSave
+from .callbacks import Callback, CallbackList, WeightSave
+from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.environment import get_global_rank, get_local_rank, init_distributed
@@ -386,13 +387,13 @@ class TrainerBase(metaclass=ABCMeta):
         if callbacks is None:
             self._callbacks = Callback()
             return
-        
+
         _reporters = []
         _outers = []
         _inners = []
 
         for c in callbacks:
-            if isinstance(c, Reporter):
+            if isinstance(c, _ReporterBase):
                 _reporters.append(c)
             elif isinstance(c, WeightSave):
                 _outers.append(c)
