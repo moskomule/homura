@@ -115,7 +115,7 @@ class TQDMReporter(Reporter):
                  iterator: Iterable):
 
         super(TQDMReporter, self).__init__()
-        self.writer = tqdm.tqdm(iterator, ncols=80) if get_global_rank() > 0 else iterator
+        self.writer = tqdm.tqdm(iterator, ncols=80) if get_global_rank() <= 0 else iterator
         self._length = len(iterator)
         liblog._set_tqdm_handler()
 
