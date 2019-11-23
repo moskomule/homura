@@ -3,7 +3,7 @@ import torch
 from torch import nn
 
 from homura import callbacks
-from homura.callbacks import AccuracyCallback, TQDMReporter, TensorboardReporter, IOReporter
+from homura.callbacks import AccuracyCallback, TQDMReporter, IOReporter
 from homura.optim import SGD
 from homura.trainers import SupervisedTrainer
 
@@ -27,8 +27,8 @@ def test_metrics_single_value():
         metric.after_iteration({"mode": "val", "test": 0.1})
     metric.after_epoch({"mode": "val", "iter_per_epoch": num_iter})
 
-    assert metric.history["train"] == [1]
-    assert metric.history["val"] == [0.1]
+    assert pytest.approx(metric.history["train"][0] == 1)
+    assert pytest.approx(metric.history["val"][0] == 0.1)
 
 
 def test_metrics_multiple_values():
@@ -49,8 +49,8 @@ def test_metrics_multiple_values():
         metric.before_iteration({"mode": "val"})
         metric.after_iteration({"mode": "val", "test": torch.tensor([1.1, 2.0])})
     metric.after_epoch({"mode": "val", "iter_per_epoch": num_iter})
-    assert all(metric.history["train"][0] == torch.tensor([1.0, 1.2]))
-    assert all(metric.history["val"][0] == torch.tensor([1.1, 2.0]))
+    assert pytest.approx(metric.history["train"][0] == [1.0, 1.2])
+    assert pytest.approx(metric.history["val"][0] == [1.1, 2.0])
 
 
 loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
