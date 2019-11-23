@@ -190,7 +190,7 @@ class IOReporter(Reporter):
                  save_dir: Optional[str or Path]):
         super(IOReporter, self).__init__()
         Path(save_dir).mkdir(exist_ok=True, parents=True)
-        self.save_dir = save_dir
+        self.save_dir = Path(save_dir)
 
     def after_iteration(self,
                         data: Mapping):
