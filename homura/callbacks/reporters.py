@@ -5,7 +5,6 @@ from typing import Mapping, Iterable, Optional, List
 
 import torch
 import tqdm
-from torch.utils import tensorboard
 from torchvision.utils import save_image as _save_image
 
 from homura import liblog
@@ -143,6 +142,8 @@ class TensorboardReporter(Reporter):
                  report_freq: Optional[int] = None,
                  is_global_step_epoch: bool = True):
         super(TensorboardReporter, self).__init__()
+        from torch.utils import tensorboard
+
         Path(save_dir).mkdir(exist_ok=True, parents=True)
         self.writer = tensorboard.SummaryWriter(save_dir)
         self._report_freq = report_freq
