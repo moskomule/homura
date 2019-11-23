@@ -158,8 +158,6 @@ class TensorboardReporter(Reporter):
                 self._report_values(k, v, global_step)
             elif self._is_images(v):
                 self.writer.add_images(k, v, global_step)
-            else:
-                raise NotImplementedError
 
     def after_epoch(self,
                     data: Mapping):
@@ -196,7 +194,7 @@ class IOReporter(Reporter):
                         data: Mapping):
         # save image
         results = super(IOReporter, self).after_iteration(data)
-        for k, v in results:
+        for k, v in results.items():
             if self._is_images(v):
                 self.save_image(self.save_dir, v, k, data[EPOCH])
 
