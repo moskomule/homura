@@ -1,5 +1,5 @@
-from callbacks import reporters
-from utils import *
+from .callbacks import reporters
+from .utils import *
 from . import callbacks, debug, liblog, lr_scheduler, optim, trainers, metrics, modules, utils, vision
 
 __all__ = ["callbacks", "debug", "liblog", "lr_scheduler", "optim", "trainers", "reporters",
