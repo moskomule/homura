@@ -85,6 +85,10 @@ def get_global_rank() -> int:
         return int(python_os.environ["RANK"])
 
 
+def is_master() -> bool:
+    return get_global_rank() <= 0
+
+
 def get_num_nodes() -> int:
     # assume all nodes have the same number of gpus
     if not is_distributed():

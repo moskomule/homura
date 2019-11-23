@@ -8,7 +8,7 @@ import tqdm
 from torchvision.utils import save_image as _save_image
 
 from homura import liblog
-from homura.utils import get_global_rank
+from homura.utils import is_master
 from homura.utils._vocabulary import *
 from .base import Callback, CallbackList
 from .metrics import MetricCallback
@@ -67,7 +67,7 @@ class Reporter(_ReporterBase):
     def __new__(cls,
                 *args,
                 **kwargs):
-        if cls.master_only and get_global_rank() > 0:
+        if cls.master_only and is_master():
             return _ReporterBase(*args, **kwargs)
         return object.__new__(cls)
 
@@ -115,7 +115,7 @@ class TQDMReporter(Reporter):
                  iterator: Iterable):
 
         super(TQDMReporter, self).__init__()
-        self.writer = tqdm.tqdm(iterator, ncols=80) if get_global_rank() <= 0 else iterator
+        self.writer = tqdm.tqdm(iterator, ncols=80) if is_master() else iterator
         self._length = len(iterator)
         liblog._set_tqdm_handler()
 
@@ -128,14 +128,14 @@ class TQDMReporter(Reporter):
 
     def add_text(self,
                  text: str):
-        if get_global_rank() > 0:
+        if is_master():
             self.writer.write(text)
 
     def after_epoch(self,
                     data: Mapping):
         reportable = {}
         results = super(TQDMReporter, self).after_iteration(data)
-        if get_global_rank() > 0:
+        if is_master():
             for k, v in results.items():
                 if self._is_scalar(v):
                     reportable[k] = self.to_serializable(v)
