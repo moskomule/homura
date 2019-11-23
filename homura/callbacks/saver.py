@@ -22,10 +22,7 @@ class WeightSave(Callback):
                  save_path: str or Path,
                  last_only: bool = False):
 
-        postfix = ""
-        if len(get_git_hash()) > 0:
-            postfix = "-" + get_git_hash()
-        self.save_path = Path(save_path) / (BASIC_DIR_NAME + postfix)
+        self.save_path = Path(save_path) / BASIC_DIR_NAME
         self.last_only = last_only
 
         if not self.save_path.exists():

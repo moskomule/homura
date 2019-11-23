@@ -158,8 +158,9 @@ class TensorboardReporter(Reporter):
         super(TensorboardReporter, self).__init__()
         from torch.utils import tensorboard
 
-        Path(save_dir).mkdir(exist_ok=True, parents=True)
-        self.writer = tensorboard.SummaryWriter(save_dir)
+        save_dir = Path(save_dir)
+        save_dir.mkdir(exist_ok=True, parents=True)
+        self.writer = tensorboard.SummaryWriter(save_dir / BASIC_DIR_NAME)
         self._report_freq = report_freq
         self._use_epoch = is_global_step_epoch
 
@@ -201,8 +202,9 @@ class IOReporter(Reporter):
     def __init__(self,
                  save_dir: Optional[str or Path]):
         super(IOReporter, self).__init__()
-        Path(save_dir).mkdir(exist_ok=True, parents=True)
-        self.save_dir = Path(save_dir)
+        save_dir = Path(save_dir)
+        save_dir.mkdir(exist_ok=True, parents=True)
+        self.save_dir = Path(save_dir / BASIC_DIR_NAME)
 
     def after_iteration(self,
                         data: Mapping):

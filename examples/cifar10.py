@@ -15,9 +15,13 @@ def main():
     train_loader, test_loader = cifar10_loaders(args.batch_size)
     optimizer = optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
-    tq = reporters.TQDMReporter(range(200))
-    c = [callbacks.AccuracyCallback(), callbacks.LossCallback(), reporters.IOReporter("."),
-         reporters.TensorboardReporter("."), tq]
+    tq = reporters.TQDMReporter(range(args.epochs))
+    c = [callbacks.AccuracyCallback(),
+         callbacks.LossCallback(),
+         reporters.IOReporter("."),
+         reporters.TensorboardReporter("."),
+         callbacks.WeightSave("."),
+         tq]
 
     with trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=c,
                                     scheduler=scheduler) as trainer:
@@ -32,6 +36,7 @@ if __name__ == '__main__':
     p = miniargs.ArgumentParser()
     p.add_int("--batch_size", default=128)
     p.add_str("--model", choices=["resnet20", "wrn28_10"])
+    p.add_int("--epochs", default=200)
 
     args = p.parse()
     main()

@@ -84,8 +84,8 @@ class MetricCallback(Callback):
         key = self._get_key_name(mode)
         if self._metrics_history.get(key) is None:
             self._metrics_history[key] = [0]
-        else:
-            self._metrics_history[key].append(0)
+        # else:
+        #     self._metrics_history[key].append(0)
 
     def after_epoch(self,
                     data: Mapping):
