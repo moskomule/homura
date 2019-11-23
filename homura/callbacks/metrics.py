@@ -122,10 +122,11 @@ class MetricCallback(Callback):
 
         history = {}
         for k, v in self._metrics_history.items():
+            name = "_".join(k.split("_")[1:])
             if torch.is_tensor(v[0]):
-                history[k.split("_")[1]] = torch.tensor(v).tolist() if v[0].numel() == 1 else torch.stack(v).tolist()
+                history[name] = torch.tensor(v).tolist() if v[0].numel() == 1 else torch.stack(v).tolist()
             else:
-                history[k.split("_")[1]] = v
+                history[name] = v
 
         return history
 
