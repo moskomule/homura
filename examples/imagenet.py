@@ -18,7 +18,8 @@ def main():
     scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
     tq = reporters.TQDMReporter(range(args.epochs))
     c = [callbacks.AccuracyCallback(), callbacks.AccuracyCallback(k=5),
-         callbacks.LossCallback(), tq, reporters.TensorboardReporter(".")]
+         callbacks.LossCallback(), tq, reporters.TensorboardReporter("."),
+         reporters.IOReporter(".")]
     _train_loader, _test_loader = imagenet_loaders(args.root, args.batch_size, distributed=args.distributed,
                                                    num_train_samples=args.batch_size * 10 if args.debug else None,
                                                    num_test_samples=args.batch_size * 10 if args.debug else None)
