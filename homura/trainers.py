@@ -131,9 +131,7 @@ class TrainerBase(metaclass=ABCMeta):
         _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,
                      SCHEDULER: self.scheduler,
-                     TRAINER: self,
-                     EPOCH: self.epoch,
-                     ITERATION: self.step}
+                     TRAINER: self}
         self._iteration_map = Map(**_map_base.copy())
         self._epoch_map = Map(**_map_base.copy())
         self._all_map = Map(**_map_base.copy())
@@ -207,7 +205,7 @@ class TrainerBase(metaclass=ABCMeta):
         :return:
         """
 
-        self._iteration_map.update({MODE: mode})
+        self._iteration_map.update({EPOCH: self.epoch, ITERATION: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
         results = self.iteration(data)
@@ -245,7 +243,9 @@ class TrainerBase(metaclass=ABCMeta):
               data_loader: Iterable or DataLoader,
               mode: str):
 
-        self._epoch_map.update({MODE: mode,
+        self._epoch_map.update({EPOCH: self.epoch,
+                                ITERATION: self.step,
+                                MODE: mode,
                                 ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
             self._callbacks.before_epoch(self._epoch_map)
@@ -336,6 +336,7 @@ class TrainerBase(metaclass=ABCMeta):
 
     def exit(self):
         with torch.no_grad():
+            self._all_map.update({EPOCH: self.epoch, ITERATION: self.step})
             self._callbacks.after_all(self._all_map)
             self._callbacks.close()
 
