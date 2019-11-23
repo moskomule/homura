@@ -2,7 +2,7 @@ from typing import Tuple
 
 import torch
 
-from homura import is_faiss_available
+from homura.utils import is_faiss_available
 
 
 def _tensor_to_ptr(input: torch.Tensor):

@@ -8,7 +8,8 @@ import tqdm
 from torch.utils import tensorboard
 from torchvision.utils import save_image as _save_image
 
-from homura import get_global_rank, liblog
+from homura import liblog
+from homura.utils import get_global_rank
 from homura.utils._vocabulary import *
 from .base import Callback, CallbackList
 from .metrics import MetricCallback

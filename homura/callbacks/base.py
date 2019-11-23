@@ -3,7 +3,7 @@ from collections import ChainMap
 from collections.abc import Mapping
 from typing import Iterable
 
-from homura import get_global_rank
+from homura.utils import get_global_rank
 
 
 class _Callback(metaclass=ABCMeta):
