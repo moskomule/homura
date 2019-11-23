@@ -66,7 +66,7 @@ def test_tqdm_reporters():
             t.test(loader)
 
 
-@pytest.mark.parametrize("c", [TensorboardReporter("."), IOReporter(".")])
+@pytest.mark.parametrize("c", [IOReporter(".")])
 def test_tb_reporters(c):
     with SupervisedTrainer(model, SGD(lr=0.1), nn.CrossEntropyLoss(),
                            callbacks=[AccuracyCallback(), c]) as t:

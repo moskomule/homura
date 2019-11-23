@@ -120,7 +120,7 @@ class MetricCallback(Callback):
 
         """
 
-        return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
+        return {k.split("_")[1]: torch.tensor(v).tolist() for k, v in self._metrics_history.items()}
 
     def reduce(self,
                tensor: torch.Tensor):

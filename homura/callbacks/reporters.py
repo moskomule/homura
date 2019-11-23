@@ -88,6 +88,15 @@ class Reporter(_ReporterBase):
     def _is_images(t: torch.Tensor) -> bool:
         return (t.dim() == 3) or (t.dim() == 4 and t.size(1) in (1, 3))
 
+    @staticmethod
+    def to_serializable(tensor: Vector):
+        if torch.is_tensor(tensor):
+            if tensor.numel() == 1:
+                return tensor.item()
+            else:
+                return tensor.tolist()
+        return tensor
+
 
 class TQDMReporter(Reporter):
     """ Reporter with TQDM
@@ -124,9 +133,9 @@ class TQDMReporter(Reporter):
         results = super(TQDMReporter, self).after_iteration(data)
         for k, v in results.items():
             if self._is_scalar(v):
-                reportable[k] = v.item() if torch.is_tensor(v) else v
+                reportable[k] = self.to_serializable(v)
             elif isinstance(v, dict):
-                reportable.update(v)
+                reportable.update({k: self.to_serializable(e) for k, e in v.items()})
         self.writer.set_postfix(reportable)
 
 
