@@ -80,18 +80,19 @@ class MetricCallback(Callback):
 
     def before_epoch(self,
                      data: Mapping):
+        mode = data[MODE]
+        key = self._get_key_name(mode)
 
-        # first time or before_epoch is not yet called
-        if self._metrics_history == {} or self._last_epoch != {}:
+        # before_all
+        if self._metrics_history.get(key) is None:
+            self._metrics_history[key] = [None]
+            return None
 
-            # initialization
+        # first time at each epoch
+        if self._last_epoch != {}:
+            # initialization for this epoch
             self._last_epoch.clear()
-            mode = data[MODE]
-            key = self._get_key_name(mode)
-            if self._metrics_history.get(key) is None:
-                self._metrics_history[key] = [None]
-            else:
-                self._metrics_history[key].append(None)
+            self._metrics_history[key].append(None)
 
     def after_epoch(self,
                     data: Mapping):
