@@ -1,89 +1,122 @@
 from abc import ABCMeta, abstractmethod
-from pathlib import Path
+from functools import partial as Partial
 from types import MethodType
 from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional
 
 import torch
 from torch import nn
+from torch.optim import Optimizer
+from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from homura import is_distributed
 from homura.liblog import get_logger
-from homura.lr_scheduler import LRScheduler
-from homura.optim import Optimizer
-from .callbacks import Callback
+from .callbacks import Callback, CallbackList, WeightSave
+from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
 from .utils.environment import get_global_rank, get_local_rank, init_distributed
-from .utils.miscs import check_path
-from .utils.runner import Runner
 
-__all__ = ["TrainerBase", "Trainer", "SupervisedTrainer", "DistributedSupervisedTrainer"]
+__all__ = ["TrainerBase", "SupervisedTrainer"]
 
 
-class TrainerBase(Runner, metaclass=ABCMeta):
-    """
+class TrainerBase(metaclass=ABCMeta):
+    """ Train and evaluate model in a given period (an epoch or iterations)
 
-    :param model: nn.Module or dict like {"generator": gen, "discriminator": dis}
-    :param optimizer: homura.optimizer.Optimizer or dict like {"generator": Adam(lr=3e-4)}
-    :param loss_f: loss function or dict of loss functions
-    :param callbacks: callbacks or list of callbacks
-    :param scheduler: homura.scheduler.LRScheduler or dict like {"generator": StepLR(10)}
-    :param update_scheduler_by_epoch: If True, update scheduler every epoch. If False and scheduler is given, scheduler
-        is need to be update by user.
+    :param model: model to be trained in `nn.Module` or `{"name": nn.Module}`
+    :param optimizer: optimizer for the model in `partial`, `torch.optim.Optimizer` or dict of them. For distributed
+    training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.
+    :param loss_f: loss function
+    :param callbacks: callbacks
+    :param scheduler: scheduler for the model in `partial`, `lr_scheduler._LRScheduler` or dict of them
+    :param update_scheduler_by_epoch: `True` if scheduler is updated by epoch, otherwise update by iteration
     :param device:
     :param verb:
     :param use_cudnn_benchmark:
     :param use_cuda_nonblocking:
     :param logger:
+    :param distributed_backend:
+    :param init_method:
+    :param use_sync_bn:
+    :param tqdm_ncols:
     :param kwargs:
     """
 
-    def __init__(self, model: nn.Module or Dict[str, nn.Module],
-                 optimizer: Optional[Optimizer or Dict[str, Optimizer] or torch.optim.Optimizer],
-                 loss_f: Optional[Callable or Dict[str, Callable]], *,
-                 callbacks: Optional[Callback or Iterable[Callable]] = None,
-                 scheduler: Optional[LRScheduler or Dict[LRScheduler]] = None,
+    def __init__(self,
+                 model: nn.Module or Dict[str, nn.Module],
+                 optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]],
+                 loss_f: Optional[Callable or Dict[str, Callable]],
+                 *,
+                 callbacks: Optional[Iterable[Callback]] = None,
+                 scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
-                 verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, **kwargs):
+                 verb=True,
+                 use_cudnn_benchmark=True,
+                 use_cuda_nonblocking=False,
+                 logger=None,
+                 distributed_backend="nccl",
+                 init_method="env://",
+                 use_sync_bn: bool = False,
+                 tqdm_ncols: int = 80,
+                 **kwargs):
 
         if logger is None:
             logger = get_logger(__name__)
-        super(TrainerBase, self).__init__(model, callbacks, device, use_cudnn_benchmark, use_cuda_nonblocking, logger,
-                                          **kwargs)
+        self.logger = logger
 
-        # set optimizer(s)
-        if optimizer is None:
-            self.optimizer = None
-        elif isinstance(optimizer, Optimizer):
-            self.optimizer = optimizer.set_model(self.model.parameters())
-        elif isinstance(optimizer, torch.optim.Optimizer):
-            self.optimizer = optimizer
-        elif isinstance(optimizer, dict):
-            if not isinstance(model, dict):
-                raise TypeError(f"model is not dict but optimizer is dict!")
-            self.optimizer = StepDict(torch.optim.Optimizer)
-            # self.model is nn.ModuleDict, then self.optimizer is StepDict
-            for k, opt in optimizer.items():
-                m = self.model._modules.get(k)
-                if m is None:
-                    raise KeyError(f"No such key {k} in model!")
-                if opt is None:
-                    self.optimizer[k] = None
-                elif isinstance(opt, Optimizer):
-                    self.optimizer[k] = opt.set_model(m.parameters())
-                else:
-                    raise TypeError(f"Unknown type: {type(opt)}")
+        if device is None:
+            self.device = torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU)
         else:
-            raise TypeError(f"Unknown type: {type(optimizer)}")
-        self.logger.debug(f"Use optimizer: {self.optimizer.__class__.__name__}")
+            self.device = device
 
-        # set scheduler(s)
+        if is_distributed():
+            if use_sync_bn:
+                model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
+
+            # just in case `init_distributed` is not called yet
+            init_distributed(distributed_backend, init_method, warning=False)
+            rank = get_local_rank()
+            torch.cuda.set_device(rank)
+            self.device = torch.device(f"{GPU}:{rank}")
+            if get_global_rank() > 0:
+                # to avoid overwriting
+                verb = False
+
+        if isinstance(model, nn.Module):
+            self.model = model
+        elif isinstance(model, dict):
+            self.model = nn.ModuleDict(model)
+        else:
+            raise TypeError(f"Unknown type for `model`. Expected nn.Module or Dict[str, Module] but got {type(model)}")
+
+        if GPU in str(self.device):
+            self.model.to(self.device)
+            torch.backends.cudnn.benchmark = use_cudnn_benchmark
+            self._cuda_nonblocking = use_cuda_nonblocking
+            self.logger.debug(f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, "
+                              f"cuda.nonblocking: {use_cuda_nonblocking}")
+        else:
+            self._cuda_nonblocking = False
+            # usually, this is not expected
+            self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
+
+        if is_distributed():
+            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
+
+        if isinstance(self.model, nn.parallel.DistributedDataParallel) or isinstance(self.model, nn.DataParallel):
+            self.accessible_model = self.model.module
+        else:
+            self.accessible_model = self.model
+
+        self.optimizer = None
+        self.scheduler = None
+        self._callbacks = None
         self.update_scheduler_by_epoch = update_scheduler_by_epoch
-        self.update_scheduler(scheduler, update_scheduler_by_epoch)
-
-        self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
+        self._set_optimizer(optimizer)
+        self._set_scheduler(scheduler)
+        self._set_callbacks(callbacks)
 
         self.loss_f = loss_f
         self._verb = verb
@@ -93,14 +126,24 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self._step = -1
         self._epoch = -1
         self._is_train = True
+        self._tqdm = Partial(tqdm, ncols=tqdm_ncols) if verb else lambda x: x
 
-        _map_base = {MODEL: self.model,
+        _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,
                      SCHEDULER: self.scheduler,
                      TRAINER: self}
         self._iteration_map = Map(**_map_base.copy())
         self._epoch_map = Map(**_map_base.copy())
         self._all_map = Map(**_map_base.copy())
+
+        for k, v in kwargs.items():
+            if hasattr(self, k):
+                raise AttributeError(f"{self} already has {k}")
+            if torch.is_tensor(v):
+                v = v.to(self.device)
+            if isinstance(v, nn.Module):
+                v.to(self.device)
+            setattr(self, k, v)
 
         self._callbacks.before_all(self._all_map)
 
@@ -117,7 +160,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         return self._is_train
 
     @abstractmethod
-    def iteration(self, data: Iterable[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+    def iteration(self,
+                  data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
         """ Iteration part, user can override via duck typing or override_iteration ::
 
             def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
@@ -134,7 +178,8 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         :return: loss, output
         """
 
-    def override_iteration(self, new_iteration: Callable):
+    def override_iteration(self,
+                           new_iteration: Callable):
         """ Override iteration method ::
 
             def new_iteration(trainer, data):
@@ -150,38 +195,22 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         setattr(self, "iteration", MethodType(new_iteration, self))
         self.logger.debug("Override iteration")
 
-    def register_before_iteration(self, name, data):
-        self._iteration_map[name] = data
-
-    def register_after_iteration(self, name, data):
-        self._iteration_map[name] = data
-
-    def register_before_epoch(self, name, data):
-        self._epoch_map[name] = data
-
-    def register_after_epoch(self, name, data):
-        self._epoch_map[name] = data
-
-    def register_before_all(self, name, data):
-        self._all_map[name] = data
-
-    def register_after_all(self, name, data):
-        self._all_map[name] = data
-
     def _iteration(self,
                    data: Tuple[torch.Tensor],
                    mode: str):
-        """ Iteration level training loop for backend
+        """ Iteration level training loop
 
         :param data: should be TensorTuple
         :param mode: train, test or val
         :return:
         """
 
-        self._iteration_map.update({STEP: self.step, MODE: mode})
+        self._iteration_map.update({EPOCH: self.epoch, ITERATION: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
         results = self.iteration(data)
+        if self.is_train and self.scheduler is not None and not self.update_scheduler_by_epoch:
+            self.scheduler.step()
         # backward compatibility
         if isinstance(results, tuple):
             loss, output = TensorTuple(results)
@@ -201,7 +230,7 @@ class TrainerBase(Runner, metaclass=ABCMeta):
     def __enter__(self):
         """
 
-        >>> with Trainer(...) as trainer:
+        >>> with TrainerBase(...) as trainer:
         >>>     trainer.train(...)
 
         """
@@ -212,21 +241,20 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.exit()
 
     def _loop(self,
-              data_loader: DataLoader,
+              data_loader: Iterable or DataLoader,
               mode: str):
-        # handle epoch level training loop
+
         self._epoch_map.update({EPOCH: self.epoch,
-                                STEP: self.step,
+                                ITERATION: self.step,
                                 MODE: mode,
                                 ITER_PER_EPOCH: len(data_loader)})
         with torch.no_grad():
             self._callbacks.before_epoch(self._epoch_map)
 
-        data_loader = tqdm(data_loader, ncols=80) if self._verb else data_loader
-
-        for data in data_loader:
+        for data in self._tqdm(data_loader):
             data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             if self.is_train:
+                # increment step here for `callbacks`
                 self._step += 1
             self._iteration(data, mode)
 
@@ -235,9 +263,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         self.logger.debug(f"epoch {self.epoch} finished")
 
     def train(self,
-              data_loader: DataLoader,
+              data_loader: Iterable or DataLoader,
               mode: str = TRAIN):
-        """ Training loop.
+        """ Training the model for an epoch.
 
         :param data_loader:
         :param mode: Name of this loop. Default is `train`. Passed to callbacks.
@@ -255,9 +283,9 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self.scheduler.step()
 
     def test(self,
-             data_loader: DataLoader,
+             data_loader: Iterable or DataLoader,
              mode: str = TEST):
-        """ Non-training loop.
+        """ Evaluate the model.
 
         :param data_loader:
         :param mode: Name of this loop. Default is `test`. Passed to callbacks.
@@ -272,77 +300,128 @@ class TrainerBase(Runner, metaclass=ABCMeta):
             self._loop(data_loader, mode=mode)
 
     def run(self,
-            epochs: int,
-            train_data: DataLoader,
-            test_data: DataLoader):
-        try:
-            for ep in range(1, epochs + 1):
-                self.train(train_data)
-                self.test(test_data)
-            self.exit()
+            train_loader: Iterable or DataLoader,
+            val_loader: Iterable or DataLoader,
+            total_iterations: int,
+            val_intervals: int):
+        """ Train the model for a given iterations
 
-        except KeyboardInterrupt:
-            print("\ninterrupted")
-        finally:
-            self._callbacks.close()
-            exit()
-
-    def exit(self):
-        with torch.no_grad():
-            self._callbacks.after_all(self._all_map)
-
-    def resume(self,
-               path: str or Path):
-        """ Resume training from saved states by `homura.callbacks.WeightSave`.
-
-        :param path:
+        :param train_loader:
+        :param val_loader:
+        :param total_iterations:
+        :param val_intervals:
         :return:
         """
 
-        path = check_path(path)
-        with path.open('rb') as f:
-            loaded = torch.load(f)
+        class ProxyLoader(object):
+            def __init__(self, loader):
+                self.loader = loader
 
-        self.model.load_state_dict(loaded[MODEL])
-        if loaded.get(OPTIMIZER) is not None:
-            self.optimizer.load_state_dict(loaded[OPTIMIZER])
-        if loaded.get(SCHEDULER) is not None:
-            self.scheduler.load_state_dict(loaded[SCHEDULER])
-        self._step = loaded.get(STEP, 0)
-        self._epoch = loaded.get(EPOCH, 0)
-        self.logger.info(f"Resume training from {self.epoch}th epoch")
+            def __len__(self):
+                return val_intervals
 
-    def update_scheduler(self,
-                         scheduler: LRScheduler,
-                         update_scheduler_by_epoch: bool = True):
-        if scheduler is None:
-            self.scheduler = None
-        elif isinstance(scheduler, LRScheduler) and isinstance(self.optimizer, torch.optim.Optimizer):
-            self.scheduler = scheduler.set_optimizer(self.optimizer)
-        elif isinstance(scheduler, torch.optim.lr_scheduler._LRScheduler):
+            def __iter__(self):
+                counter = 0
+                while True:
+                    for data in self.loader:
+                        if counter == val_intervals:
+                            return  # from python 3.7, this is valid
+                        yield data
+                        counter += 1
+
+        train_loader = ProxyLoader(train_loader)
+
+        for ep in range(total_iterations // val_intervals):
+            self.train(train_loader)
+            self.test(val_loader)
+
+    def exit(self):
+        with torch.no_grad():
+            self._all_map.update({EPOCH: self.epoch, ITERATION: self.step})
+            self._callbacks.after_all(self._all_map)
+            self._callbacks.close()
+
+    def _set_optimizer(self,
+                       optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
+        if isinstance(optimizer, Optimizer) or optimizer is None:
+            self.optimizer = optimizer
+
+        elif isinstance(optimizer, Partial):
+            if not issubclass(optimizer.func, Optimizer):
+                raise TypeError(f"`optimizer.func` is expected to be subclass of `Optimizer`"
+                                f" but got {type(optimizer.func)}")
+            self.optimizer = optimizer(self.model.parameters())
+
+        elif isinstance(optimizer, dict):
+            if not isinstance(self.model, nn.ModuleDict):
+                raise TypeError("When `optimizer` is `dict`, `model` also needs to be "
+                                "`dict` or `nn.ModuleDict`")
+            self.optimizer = StepDict(Optimizer, **optimizer)
+
+        else:
+            raise TypeError(f"Unexpected type {type(optimizer)} for `optimizer`")
+
+    def _set_scheduler(self,
+                       scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]]):
+        if self.optimizer is None:
+            raise TypeError("Optimizer is not set, so scheduler cannot be set")
+
+        if isinstance(scheduler, Scheduler) or scheduler is None:
             self.scheduler = scheduler
+
+        elif isinstance(scheduler, Partial):
+            if not issubclass(scheduler.func, Scheduler):
+                raise TypeError(f"`scheduler.func` is expected to be subclass of `_LRScheduler`"
+                                f" but got {type(scheduler.func)}")
+            self.scheduler = scheduler(self.optimizer)
+
         elif isinstance(scheduler, dict):
             if not isinstance(self.optimizer, StepDict):
-                raise TypeError(f"optimizer is not dict but scheduler is dict!")
-            self.scheduler = StepDict(torch.optim.lr_scheduler._LRScheduler)
-            for k, schdlr in scheduler.items():
-                opt = self.optimizer.get(k)
-                if schdlr is None:
-                    self.scheduler[k] = None
-                elif isinstance(schdlr, LRScheduler):
-                    self.scheduler[k] = schdlr.set_optimizer(opt)
-                else:
-                    raise TypeError(f"Unknown type: {type(schdlr)}")
+                raise TypeError("When `scheduler` is `dict`, `optimizer` is also needs to be `dict`")
+            self.scheduler = StepDict(Scheduler, **scheduler)
+
         else:
-            raise TypeError(f"Unknown type: {type(scheduler)}")
-        self.logger.debug(f"Use scheduler: {self.scheduler.__class__.__name__}")
-        self.update_scheduler_by_epoch = update_scheduler_by_epoch
+            raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
+
+    def _set_callbacks(self,
+                       callbacks: Optional[Iterable[Callback]]):
+
+        if callbacks is None:
+            self._callbacks = Callback()
+            return
+
+        _reporters = []
+        _outers = []
+        _inners = []
+
+        for c in callbacks:
+            if isinstance(c, _ReporterBase):
+                _reporters.append(c)
+            elif isinstance(c, WeightSave):
+                _outers.append(c)
+            elif isinstance(c, Callback):
+                _inners.append(c)
+            else:
+                raise TypeError(f"Element of `callbacks` is expected to be `Callback`, but got `{type(c)}`")
+
+        _inners = CallbackList(_inners)
+        for r in _reporters:
+            r.register_callbacks(_inners)
+        self._callbacks = CallbackList(_reporters + _outers)
 
 
 class SupervisedTrainer(TrainerBase):
-    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
-                 callbacks: Optional[Callback or Iterable[Callable]] = None, scheduler: Optional[LRScheduler] = None,
-                 verb=True, use_cudnn_benchmark=True, data_parallel=False, **kwargs):
+    def __init__(self,
+                 model: nn.Module,
+                 optimizer: Optimizer,
+                 loss_f: Callable,
+                 *,
+                 callbacks: Optional[Callback or Iterable[Callable]] = None,
+                 scheduler: Optional[Scheduler] = None,
+                 verb=True,
+                 use_cudnn_benchmark=True,
+                 data_parallel=False,
+                 **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks, scheduler=scheduler,
@@ -351,7 +430,8 @@ class SupervisedTrainer(TrainerBase):
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
 
-    def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
+    def iteration(self,
+                  data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
         output = self.model(input)
         loss = self.loss_f(output, target)
@@ -359,81 +439,4 @@ class SupervisedTrainer(TrainerBase):
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            if self.scheduler is not None and not self.update_scheduler_by_epoch:
-                self.scheduler.step()
         return Map(loss=loss, output=output)
-
-
-class DistributedSupervisedTrainer(SupervisedTrainer):
-    """ Trainer with distributed functions
-
-    :param model:
-    :param optimizer:
-    :param loss_f:
-    :param callbacks:
-    :param scheduler:
-    :param verb:
-    :param use_cudnn_benchmark:
-    :param backend: "nccl" or "gloo"
-    :param init_method:
-    :param use_sync_bn:
-    :param kwargs:
-    """
-
-    def __init__(self, model: nn.Module, optimizer: Optimizer, loss_f: Callable, *,
-                 callbacks: Callback = None, scheduler: LRScheduler = None,
-                 verb=True, use_cudnn_benchmark=True, backend="nccl", init_method="env://",
-                 use_sync_bn: bool = False, enable_amp=False, **kwargs):
-
-        if use_sync_bn:
-            model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-        if enable_amp:
-            from homura import is_apex_available
-
-            if not is_apex_available:
-                raise RuntimeError("apex not installed")
-
-        init_distributed(backend, init_method, warning=False)
-        rank = get_local_rank()
-        if get_global_rank() > 0:
-            # to avoid overwriting
-            verb = False
-        torch.cuda.set_device(rank)
-
-        super(DistributedSupervisedTrainer, self).__init__(model, optimizer, loss_f, callbacks=callbacks,
-                                                           scheduler=scheduler, verb=verb,
-                                                           use_cudnn_benchmark=use_cudnn_benchmark,
-                                                           use_cuda_nonblocking=True,
-                                                           device=torch.device(GPU, rank), **kwargs)
-
-        self.loss_scaler = None
-        if enable_amp:
-            from apex import amp
-            from apex.parallel import DistributedDataParallel
-
-            self.model, self.optimizer = amp.initialize(self.model, self.optimizer, opt_level="O2")
-            self.model = DistributedDataParallel(self.model, delay_allreduce=True)
-            self.loss_scaler = amp.scale_loss
-        else:
-            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
-
-    def iteration(self, data: Tuple[torch.Tensor]) -> Mapping[str, torch.Tensor]:
-        input, target = data
-        output = self.model(input)
-        loss = self.loss_f(output, target)
-        if self.is_train:
-            self.optimizer.zero_grad()
-            if self.loss_scaler is not None:
-                with self.loss_scaler(loss, self.optimizer) as scaled_loss:
-                    scaled_loss.backward()
-            else:
-                loss.backward()
-            self.optimizer.step()
-
-            if self.scheduler is not None and not self.update_scheduler_by_epoch:
-                self.scheduler.step()
-        return Map(loss=loss, output=output)
-
-
-# alias
-Trainer = SupervisedTrainer

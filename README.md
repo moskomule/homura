@@ -4,14 +4,18 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
+**Notice: homura v2019.11+ introduces backward-incompatible changes**
+
+For older versions, install as `pip install git+https://github.com/moskomule/homura@v0.7` etc.
+
 ## Requirements
 
 ### minimal requirements
 
 ```
 Python>=3.7
-PyTorch>=1.2.0
-torchvision>=0.4.0
+PyTorch>=1.3.1
+torchvision>=0.4.2
 tqdm # automatically installed
 tensorboard # automatically installed
 ```
@@ -19,7 +23,7 @@ tensorboard # automatically installed
 ### optional
 
 ```
-miniargs (to run samples)
+hydra (to run samples)
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
@@ -49,7 +53,8 @@ or
 
 ```console
 git clone https://github.com/moskomule/homura
-cd homura; pip install -e .
+cd homura
+pip install -e .
 ```
 
 
@@ -57,8 +62,7 @@ cd homura; pip install -e .
 
 ## basics
 
-* Device Agnostic
-* Useful features
+`homura` aims abstract (e.g., device-agnostic) simple prototyiping.
 
 ```python
 from homura import optim, lr_scheduler
@@ -66,26 +70,38 @@ from homura import trainers, callbacks, reporters
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
-# model will be registered in the trainer
+# User does not need to care about the device
 resnet = resnet50()
-# optimizer and scheduler will be registered in the trainer, too
+# Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 
-# list of callbacks or reporters can be registered in the trainer
-with reporters.TensorboardReporter([callbacks.AccuracyCallback(), 
-                                    callbacks.LossCallback()]) as reporter:
-    trainer = trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
-                                         callbacks=reporter, scheduler=scheduler)
+# `homura` has callbacks
+c = [callbacks.AccuracyCallback(),
+    reporters.TensorboardReporter(".")]
+with trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
+                                     callbacks=c, scheduler=scheduler) as trainer:
+    # epoch-based training
+    for _ in range(epochs):
+        trainer.train(train_loader)
+        trainer.test(test_loader)
+
+    # otherwise, iteration-based training
+
+    trainer.run(train_loader, test_loader, 
+                total_iterations=1_000, val_intervals=10)
 ```
 
-Now `iteration` of trainer can be updated as follows,
+User can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
 from homura.utils.containers import Map
 
-def iteration(trainer: TrainerBase, data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+trainer = SupervisedTrainer(...)
+
+def iteration(trainer: TrainerBase, 
+              data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
@@ -110,12 +126,6 @@ In most cases, `callbacks.metric_callback_decorator` is useful. The returned val
 
 ```python
 from homura import callbacks
-
-# Note that `iteration` has `user_value`
-
-callbacks.metric_callback_decorator(lambda data: data["user_value"], name='user_value')
-
-# or equivalently,
 
 @callbacks.metric_callback_decorator
 def user_value(data):
@@ -150,37 +160,22 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-### distributed training
+### Distributed training
 
-Easy distributed initializer `homura.init_distributed()` is available.
+Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) for example.
 
 
-## reproductivity
+## Reproducibility
 
 This method makes randomness deterministic in its context.
 
 ```python
-from homura.utils.reproducibility import set_deterministic
+from homura.utils.reproducibility import set_deterministic, set_seed
 with set_deterministic(seed):
     something()
-```
 
-## debugging
-
-```python
->>> debug.module_debugger(nn.Sequential(nn.Linear(10, 5), 
-                                        nn.Linear(5, 1)), 
-                          torch.randn(4, 10))
-
-[homura.debug|2019-02-25 17:57:06|DEBUG] Start forward calculation
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward> name=Sequential(1)
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(2)
-[homura.debug|2019-02-25 17:57:06|DEBUG] forward>   name=Linear(3)
-[homura.debug|2019-02-25 17:57:06|DEBUG] Start backward calculation
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(3)
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward> name=Sequential(1)
-[homura.debug|2019-02-25 17:57:06|DEBUG] backward>   name=Linear(2)
-[homura.debug|2019-02-25 17:57:06|INFO] Finish debugging mode
+with set_seed(seed):
+    other_thing()
 ```
 
 # Examples

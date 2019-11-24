@@ -25,7 +25,6 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -96,7 +95,6 @@
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.modules.html#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -105,11 +103,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -121,11 +118,10 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.modules.functional package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.discretizations">homura.modules.functional.discretizations module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -138,18 +134,16 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.modules.functional package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.discretizations">homura.modules.functional.discretizations module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -248,23 +242,23 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.modules.functional.discretization">
-<span id="homura-modules-functional-discretization-module"></span><h2>homura.modules.functional.discretization module<a class="headerlink" href="#module-homura.modules.functional.discretization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.modules.functional.discretizations">
+<span id="homura-modules-functional-discretizations-module"></span><h2>homura.modules.functional.discretizations module<a class="headerlink" href="#module-homura.modules.functional.discretizations" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="homura.modules.functional.discretization.gumbel_softmax">
-<code class="sig-prename descclassname">homura.modules.functional.discretization.</code><code class="sig-name descname">gumbel_softmax</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">dim: int</em>, <em class="sig-param">temp: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretization.html#gumbel_softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretization.gumbel_softmax" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.functional.discretizations.gumbel_softmax">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">gumbel_softmax</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">dim: int</em>, <em class="sig-param">temp: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#gumbel_softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.gumbel_softmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>gumbel softmax</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.modules.functional.discretization.gumbel_sigmoid">
-<code class="sig-prename descclassname">homura.modules.functional.discretization.</code><code class="sig-name descname">gumbel_sigmoid</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">temp: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretization.html#gumbel_sigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretization.gumbel_sigmoid" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.functional.discretizations.gumbel_sigmoid">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">gumbel_sigmoid</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">temp: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#gumbel_sigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.gumbel_sigmoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>gumbel sigmoid function</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.modules.functional.discretization.straight_through_estimator">
-<code class="sig-prename descclassname">homura.modules.functional.discretization.</code><code class="sig-name descname">straight_through_estimator</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretization.html#straight_through_estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretization.straight_through_estimator" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.functional.discretizations.straight_through_estimator">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">straight_through_estimator</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#straight_through_estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.straight_through_estimator" title="Permalink to this definition">¶</a></dt>
 <dd><p>straight through estimator</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">straight_through_estimator</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="go">tensor([[0., 1., 0.],</span>
@@ -275,8 +269,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="homura.modules.functional.discretization.semantic_hashing">
-<code class="sig-prename descclassname">homura.modules.functional.discretization.</code><code class="sig-name descname">semantic_hashing</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">is_training: bool</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretization.html#semantic_hashing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretization.semantic_hashing" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.modules.functional.discretizations.semantic_hashing">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">semantic_hashing</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em>, <em class="sig-param">is_training: bool</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#semantic_hashing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.semantic_hashing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Semantic hashing</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">semantic_hashing</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># by 0.5</span>
 <span class="go">tensor([[0.3515, 0.0918, 0.7717],</span>
@@ -305,7 +299,7 @@
 <span id="homura-modules-functional-knn-module"></span><h2>homura.modules.functional.knn module<a class="headerlink" href="#module-homura.modules.functional.knn" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="homura.modules.functional.knn.k_nearest_neighbor">
-<code class="sig-prename descclassname">homura.modules.functional.knn.</code><code class="sig-name descname">k_nearest_neighbor</code><span class="sig-paren">(</span><em class="sig-param">keys: torch.Tensor</em>, <em class="sig-param">queries: torch.Tensor</em>, <em class="sig-param">num_neighbors: int</em>, <em class="sig-param">distance: str</em>, <em class="sig-param">*</em>, <em class="sig-param">backend: str = 'torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/knn.html#k_nearest_neighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.knn.k_nearest_neighbor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.modules.functional.knn.</code><code class="sig-name descname">k_nearest_neighbor</code><span class="sig-paren">(</span><em class="sig-param">keys: torch.Tensor</em>, <em class="sig-param">queries: torch.Tensor</em>, <em class="sig-param">num_neighbors: int</em>, <em class="sig-param">distance: str</em>, <em class="sig-param">*</em>, <em class="sig-param">backend: str = 'torch'</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/homura/modules/functional/knn.html#k_nearest_neighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.knn.k_nearest_neighbor" title="Permalink to this definition">¶</a></dt>
 <dd><p>k-Nearest Neighbor search</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -318,7 +312,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>scores, indices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,32 +337,6 @@ one-hot or soft label.</p>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.functional.sinkhorn">
-<span id="homura-modules-functional-sinkhorn-module"></span><h2>homura.modules.functional.sinkhorn module<a class="headerlink" href="#module-homura.modules.functional.sinkhorn" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.modules.functional.sinkhorn.get_coupling">
-<code class="sig-prename descclassname">homura.modules.functional.sinkhorn.</code><code class="sig-name descname">get_coupling</code><span class="sig-paren">(</span><em class="sig-param">source: torch.Tensor</em>, <em class="sig-param">dest: torch.Tensor</em>, <em class="sig-param">cost: torch.Tensor</em>, <em class="sig-param">lam: float = 0.001</em>, <em class="sig-param">num_iteration: int = 1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/sinkhorn.html#get_coupling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.sinkhorn.get_coupling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.modules.functional.sinkhorn.sinkhorn">
-<code class="sig-prename descclassname">homura.modules.functional.sinkhorn.</code><code class="sig-name descname">sinkhorn</code><span class="sig-paren">(</span><em class="sig-param">source: torch.Tensor</em>, <em class="sig-param">dest: torch.Tensor</em>, <em class="sig-param">cost: torch.Tensor</em>, <em class="sig-param">lam: float = 0.001</em>, <em class="sig-param">num_iteration: int = 100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/sinkhorn.html#sinkhorn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.sinkhorn.sinkhorn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Batched sinkhorn iteration from <a class="reference external" href="https://arxiv.org/abs/1907.01729">https://arxiv.org/abs/1907.01729</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>source</strong> – The source histograms of <cite>B x d_1</cite></p></li>
-<li><p><strong>dest</strong> – The destination histograms of <cite>B x d_2</cite></p></li>
-<li><p><strong>cost</strong> – The cost matrix of <cite>d_1 x d_2</cite></p></li>
-</ul>
-</dd>
-</dl>
-<p>:param lam:　The coefficient of the entropy term
-:param num_iteration: The number of iteration of Sinkhorn-Knopp iteration
-:return: distances</p>
 </dd></dl>
 
 </div>

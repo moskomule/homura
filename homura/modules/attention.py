@@ -21,12 +21,13 @@ class KeyValAttention(nn.Module):
         dim of X >= 0,
         dim of Y >= 1
 
-        :param queries: B x X x L
-        :param keys: B x Y x L
-        :param values: B x Y x L
-        :param mask: B x Y x L or None
+        :param queries: B img X img L
+        :param keys: B img Y img L
+        :param values: B img Y img L
+        :param mask: B img Y img L or None
         :return:
         """
+
         raw_attention = queries @ keys.transpose(-2, -1)
         if self._scaling:
             # see Transformer

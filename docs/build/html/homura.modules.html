@@ -25,7 +25,6 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -96,7 +95,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -105,11 +103,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.reporters">homura.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
@@ -128,7 +125,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#homura-modules-zca-module">homura.modules.zca module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
 </ul>
 </li>
@@ -210,11 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretization">homura.modules.functional.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretizations">homura.modules.functional.discretizations module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.sinkhorn">homura.modules.functional.sinkhorn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
 </ul>
 </li>
@@ -238,10 +233,10 @@ dim of Y &gt;= 1</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>queries</strong> – B x X x L</p></li>
-<li><p><strong>keys</strong> – B x Y x L</p></li>
-<li><p><strong>values</strong> – B x Y x L</p></li>
-<li><p><strong>mask</strong> – B x Y x L or None</p></li>
+<li><p><strong>queries</strong> – B img X img L</p></li>
+<li><p><strong>keys</strong> – B img Y img L</p></li>
+<li><p><strong>values</strong> – B img Y img L</p></li>
+<li><p><strong>mask</strong> – B img Y img L or None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -456,7 +451,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="homura-modules-vq-module"></span><h2>homura.modules.vq module<a class="headerlink" href="#module-homura.modules.vq" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.modules.vq.VQModule">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = False</em>, <em class="sig-param">gamma: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = False</em>, <em class="sig-param">gamma: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em>, <em class="sig-param">knn_backend='torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="method">
 <dt id="homura.modules.vq.VQModule.flatten_input">
@@ -478,11 +473,6 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="homura.modules.vq.VQModule.l2_distance">
-<em class="property">static </em><code class="sig-name descname">l2_distance</code><span class="sig-paren">(</span><em class="sig-param">emb: torch.Tensor</em>, <em class="sig-param">encoded: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.l2_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.l2_distance" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="homura.modules.vq.VQModule.lookup">
 <code class="sig-name descname">lookup</code><span class="sig-paren">(</span><em class="sig-param">ids: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.lookup" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -496,8 +486,8 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> – </p></li>
-<li><p><strong>update</strong> – </p></li>
+<li><p><strong>base</strong> – tensor to be updated</p></li>
+<li><p><strong>update</strong> – tensor for updating</p></li>
 <li><p><strong>momentum</strong> – </p></li>
 </ul>
 </dd>
@@ -507,9 +497,6 @@ registered hooks while the latter silently ignores them.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="homura-modules-zca-module">
-<h2>homura.modules.zca module<a class="headerlink" href="#homura-modules-zca-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-homura.modules">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>

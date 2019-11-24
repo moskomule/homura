@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -276,7 +275,7 @@
         <span class="c1"># enc3(input), (enc2(input), enc(input), input)</span>
         <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">rest</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">dec</span><span class="p">,</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decoders</span><span class="p">,</span> <span class="n">rest</span><span class="p">):</span>
-            <span class="c1"># x = dec(enc3(input), enc2(input))</span>
+            <span class="c1"># img = dec(enc3(input), enc2(input))</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>

@@ -1,5 +1,6 @@
 import contextlib
 import random
+from typing import Optional
 
 import numpy
 import torch
@@ -10,7 +11,7 @@ logger = get_logger(__name__)
 
 
 @contextlib.contextmanager
-def set_seed(seed: int = 0):
+def set_seed(seed: Optional[int] = None):
     """ Fix seed of random generator in the given context. Negative seed has no effect ::
 
         >>> with set_seed(0):
@@ -18,10 +19,11 @@ def set_seed(seed: int = 0):
 
     """
 
-    if seed >= 0:
+    if seed is not None:
         random.seed(seed)
         torch.manual_seed(seed)
         numpy.random.seed(seed)
+        logger.info(f"Set seed to {seed}")
     yield
     random.seed()
     new_seed = random.randrange(2 ** 32 - 1)
@@ -31,13 +33,13 @@ def set_seed(seed: int = 0):
 
 
 @contextlib.contextmanager
-def set_deterministic(seed: int = 0):
-    """ Set seed of `torch`, `random` and `numpy` to 0 for making it deterministic. Because of CUDA's limitation, this
+def set_deterministic(seed: Optional[int] = None):
+    """ Set seed of `torch`, `random` and `numpy` to `seed` for making it deterministic. Because of CUDA's limitation, this
     does not make everything deterministic, however.
     """
 
     with set_seed(seed):
-        if seed >= 0:
+        if seed is not None:
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
             logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "

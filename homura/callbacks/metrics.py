@@ -1,4 +1,5 @@
 from collections.abc import Mapping
+from functools import partial
 from typing import Callable, Any
 
 import torch
@@ -27,6 +28,7 @@ class MetricCallback(Callback):
                  logger=None,
                  reduction="average",
                  no_reduce: bool = False):
+
         if metric is not None:
             self.metric_function = metric
         self.metric_name = name
@@ -41,10 +43,12 @@ class MetricCallback(Callback):
             raise RuntimeError(f"`reduction` should be 'average' or 'sum', but got {reduction} instead")
         self.reduction = reduction
 
-    def before_iteration(self, data: Mapping):
+    def before_iteration(self,
+                         data: Mapping):
         self._last_iter.clear()
 
-    def after_iteration(self, data: Mapping):
+    def after_iteration(self,
+                        data: Mapping):
         mode = data[MODE]
         key = self._get_key_name(mode)
         # To avoid calculate same metric multiple times.
@@ -72,17 +76,19 @@ class MetricCallback(Callback):
                 self._metrics_history[key][-1] += self.to_cpu(self.reduce(metric))
         return self._last_iter
 
-    def before_epoch(self, data: Mapping):
+    def before_epoch(self,
+                     data: Mapping):
         # initialization
         self._last_epoch.clear()
         mode = data[MODE]
         key = self._get_key_name(mode)
         if self._metrics_history.get(key) is None:
             self._metrics_history[key] = [0]
-        else:
-            self._metrics_history[key].append(0)
+        # else:
+        #     self._metrics_history[key].append(0)
 
-    def after_epoch(self, data: Mapping):
+    def after_epoch(self,
+                    data: Mapping):
         mode = data[MODE]
         divisor = data[ITER_PER_EPOCH] if self.reduction == "average" else 1
         key = self._get_key_name(mode)
@@ -96,7 +102,8 @@ class MetricCallback(Callback):
             self._last_epoch[key] = self._metrics_history[key][-1]
         return self._last_epoch
 
-    def _get_key_name(self, name):
+    def _get_key_name(self,
+                      name: str):
         return f"{self.metric_name}_{name}"
 
     @property
@@ -113,17 +120,27 @@ class MetricCallback(Callback):
 
         """
 
-        return {k.split("_")[1]: v for k, v in self._metrics_history.items()}
+        history = {}
+        for k, v in self._metrics_history.items():
+            name = "_".join(k.split("_")[1:])
+            if torch.is_tensor(v[0]):
+                history[name] = torch.tensor(v).tolist() if v[0].numel() == 1 else torch.stack(v).tolist()
+            else:
+                history[name] = v
 
-    def reduce(self, tensor):
+        return history
 
-        if is_distributed and not self._no_reduce:
+    def reduce(self,
+               tensor: torch.Tensor):
+
+        if is_distributed() and not self._no_reduce:
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()
         return tensor
 
     @staticmethod
     def to_cpu(tensor):
+        # tensor can be torch.Tensor or Number
         if torch.is_tensor(tensor):
             return tensor.cpu()
         return tensor
@@ -135,14 +152,18 @@ class AccuracyCallback(MetricCallback):
     :param k: report top-k accuracy
     """
 
-    def __init__(self, k: int = 1):
+    def __init__(self,
+                 k: int = 1):
         self.top_k = k
         suffix = f"_top{self.top_k}" if self.top_k != 1 else ""
+        self._accuracy = partial(torch.argmax, dim=1, keepdim=True) if k == 1 \
+            else lambda x: partial(torch.topk, k=k, dim=1)(x)[1]
         super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
 
-    def accuracy(self, data):
+    def accuracy(self,
+                 data: Mapping):
         output, target = data[OUTPUT], data[DATA][1]
-        _, pred_idx = output.topk(self.top_k, dim=1)
+        pred_idx = self._accuracy(output)
         target = target.view(-1, 1).expand_as(pred_idx)
         return (pred_idx == target).float().sum(dim=1).mean()
 
@@ -157,9 +178,10 @@ class LossCallback(MetricCallback):
 
 
 def metric_callback_decorator(_metric: Callable = None,
+                              *,
                               name: str = None,
                               reduction="average"):
-    """ Decorator to create a metrics callback
+    """ Decorator to create a metric callback
 
         >>> @metric_callback_decorator("loss")
         >>> def loss(data):
@@ -172,6 +194,20 @@ def metric_callback_decorator(_metric: Callable = None,
                               reduction=reduction)
 
     return wrapper if _metric is None else wrapper(_metric)
+
+
+def metric_callback_by_name(name: str):
+    """ Construct a metric callback by ``name`` (key) of ``data``.
+
+    :param name:
+    :return:
+    """
+
+    @metric_callback_decorator(name)
+    def f(data):
+        return data[name]
+
+    return f
 
 
 class IOUCallback(MetricCallback):

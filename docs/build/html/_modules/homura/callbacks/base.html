@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -156,40 +155,59 @@
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="k">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterable</span>
 
+<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="k">import</span> <span class="n">get_global_rank</span>
 
-<div class="viewcode-block" id="Callback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback">[docs]</a><span class="k">class</span> <span class="nc">Callback</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">_Callback</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Base class of Callback class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Callback.before_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.after_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.before_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.before_all"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.before_all">[docs]</a>    <span class="k">def</span> <span class="nf">before_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">before_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.after_all"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.after_all">[docs]</a>    <span class="k">def</span> <span class="nf">after_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">after_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="Callback.close"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">_NoOpCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+<div class="viewcode-block" id="Callback"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.Callback">[docs]</a><span class="k">class</span> <span class="nc">Callback</span><span class="p">(</span><span class="n">_Callback</span><span class="p">):</span>
+    <span class="n">master_only</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">master_only</span> <span class="ow">and</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_NoOpCallback</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">_NoOpCallback</span><span class="p">(</span><span class="n">_Callback</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span>
 
@@ -200,7 +218,8 @@
 <span class="sd">    :param callbacks: callbacks</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span> <span class="ow">or</span> <span class="n">Callback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span> <span class="ow">or</span> <span class="n">Callback</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">callbacks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;callbacks is expected to be Callback but None&quot;</span><span class="p">)</span>
 
@@ -211,25 +230,34 @@
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">Callback</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2"> is not callback!&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">callbacks</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CallbackList.before_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">before_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CallbackList.before_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.before_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">before_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">before_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CallbackList.after_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CallbackList.after_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CallbackList.before_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CallbackList.before_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.before_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">before_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CallbackList.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CallbackList.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CallbackList.after_all"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_all">[docs]</a>    <span class="k">def</span> <span class="nf">after_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">])</span></div>
+<div class="viewcode-block" id="CallbackList.before_all"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.before_all">[docs]</a>    <span class="k">def</span> <span class="nf">before_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">before_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CallbackList.after_all"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.after_all">[docs]</a>    <span class="k">def</span> <span class="nf">after_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cat</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">after_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="CallbackList.close"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.base.CallbackList.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
             <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
     <span class="nd">@staticmethod</span>

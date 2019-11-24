@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -156,37 +155,49 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">python_sys</span>
 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">distributed</span>
 <span class="kn">from</span> <span class="nn">torch.cuda</span> <span class="k">import</span> <span class="n">device_count</span>
 
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="k">import</span> <span class="n">get_logger</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;is_accimage_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_apex_available&quot;</span><span class="p">,</span> <span class="s2">&quot;is_distributed&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;enable_accimage&quot;</span><span class="p">,</span> <span class="s2">&quot;init_distributed&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;get_global_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;get_local_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;get_world_size&quot;</span><span class="p">,</span> <span class="s2">&quot;get_num_nodes&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;is_faiss_available&quot;</span><span class="p">]</span>
-
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;homura.env&quot;</span><span class="p">)</span>
-
-<span class="n">is_accimage_available</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;accimage&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="n">is_apex_available</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;apex&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="n">is_faiss_prepared</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">faiss</span>
-
-    <span class="n">is_faiss_available</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">faiss</span><span class="p">,</span> <span class="s1">&#39;StandardGpuResources&#39;</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">is_faiss_available</span> <span class="o">=</span> <span class="kc">False</span>
-
 <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">python_sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
-<span class="n">is_distributed</span> <span class="o">=</span> <span class="s2">&quot;--local_rank&quot;</span> <span class="ow">in</span> <span class="n">args</span>
+
+
+<div class="viewcode-block" id="is_accimage_available"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_accimage_available">[docs]</a><span class="k">def</span> <span class="nf">is_accimage_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;accimage&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="is_apex_available"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_apex_available">[docs]</a><span class="k">def</span> <span class="nf">is_apex_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;apex&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="is_faiss_available"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_faiss_available">[docs]</a><span class="k">def</span> <span class="nf">is_faiss_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">faiss</span>
+
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">faiss</span><span class="p">,</span> <span class="s1">&#39;StandardGpuResources&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_world_size"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_world_size">[docs]</a><span class="k">def</span> <span class="nf">get_world_size</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">python_os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;WORLD_SIZE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="is_distributed"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_distributed">[docs]</a><span class="k">def</span> <span class="nf">is_distributed</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">get_world_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="is_distributed_avaiable"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_distributed_avaiable">[docs]</a><span class="k">def</span> <span class="nf">is_distributed_avaiable</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distributed</span><span class="p">,</span> <span class="s2">&quot;is_available&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">distributed</span><span class="p">,</span> <span class="s2">&quot;is_available&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_decode_bytes</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">get_git_hash</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="get_git_hash"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_git_hash">[docs]</a><span class="k">def</span> <span class="nf">get_git_hash</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">is_git_repo</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--is-inside-work-tree&quot;</span><span class="p">],</span>
                                      <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
@@ -199,17 +210,17 @@
         <span class="k">return</span> <span class="n">_decode_bytes</span><span class="p">(</span><span class="n">git_hash</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No git info available in this directory&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">python_sys</span><span class="o">.</span><span class="n">argv</span>
+<div class="viewcode-block" id="get_args"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_args">[docs]</a><span class="k">def</span> <span class="nf">get_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">python_sys</span><span class="o">.</span><span class="n">argv</span></div>
 
 
-<div class="viewcode-block" id="get_local_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_local_rank">[docs]</a><span class="k">def</span> <span class="nf">get_local_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="get_local_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_local_rank">[docs]</a><span class="k">def</span> <span class="nf">get_local_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="c1"># returns -1 if not distributed, else returns local rank</span>
     <span class="c1"># it works before dist.init_process_group</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">():</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">python_sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
@@ -217,31 +228,28 @@
                 <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_global_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_global_rank">[docs]</a><span class="k">def</span> <span class="nf">get_global_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="get_global_rank"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_global_rank">[docs]</a><span class="k">def</span> <span class="nf">get_global_rank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="c1"># returns -1 if not distributed, else returns global rank</span>
     <span class="c1"># it works before dist.init_process_group</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">():</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">python_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;RANK&quot;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_world_size"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_world_size">[docs]</a><span class="k">def</span> <span class="nf">get_world_size</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">python_os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;WORLD_SIZE&quot;</span><span class="p">])</span></div>
+<div class="viewcode-block" id="is_master"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.is_master">[docs]</a><span class="k">def</span> <span class="nf">is_master</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="get_num_nodes"><a class="viewcode-back" href="../../../homura.utils.html#homura.get_num_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_num_nodes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="get_num_nodes"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.get_num_nodes">[docs]</a><span class="k">def</span> <span class="nf">get_num_nodes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="c1"># assume all nodes have the same number of gpus</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">():</span>
         <span class="k">return</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">get_world_size</span><span class="p">()</span> <span class="o">//</span> <span class="n">device_count</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="init_distributed"><a class="viewcode-back" href="../../../homura.utils.html#homura.init_distributed">[docs]</a><span class="k">def</span> <span class="nf">init_distributed</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="init_distributed"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.init_distributed">[docs]</a><span class="k">def</span> <span class="nf">init_distributed</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span>
                      <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                      <span class="n">warning</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="c1"># A simple initializer of distributed</span>
@@ -251,7 +259,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;`distributed` is not available.&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
             <span class="n">f</span><span class="s2">&quot;For distributed training, use `python -m torch.distributed.launch &quot;</span>
             <span class="n">f</span><span class="s2">&quot;--nproc_per_node={device_count()} </span><span class="si">{args}</span><span class="s2">` ...&quot;</span><span class="p">)</span>
@@ -263,8 +271,8 @@
         <span class="n">distributed</span><span class="o">.</span><span class="n">init_process_group</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">init_method</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="enable_accimage"><a class="viewcode-back" href="../../../homura.utils.html#homura.enable_accimage">[docs]</a><span class="k">def</span> <span class="nf">enable_accimage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">is_accimage_available</span><span class="p">:</span>
+<div class="viewcode-block" id="enable_accimage"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.enable_accimage">[docs]</a><span class="k">def</span> <span class="nf">enable_accimage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_accimage_available</span><span class="p">():</span>
         <span class="kn">import</span> <span class="nn">torchvision</span>
 
         <span class="n">torchvision</span><span class="o">.</span><span class="n">set_image_backend</span><span class="p">(</span><span class="s2">&quot;accimage&quot;</span><span class="p">)</span>

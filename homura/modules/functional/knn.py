@@ -2,7 +2,7 @@ from typing import Tuple
 
 import torch
 
-from homura import is_faiss_available
+from homura.utils import is_faiss_available
 
 
 def _tensor_to_ptr(input: torch.Tensor):
@@ -28,7 +28,7 @@ def _torch_knn(keys: torch.Tensor,
             scores = keys.mm(queries.t())
             scores *= 2
             scores -= (keys.pow(2)).sum(1, keepdim=True)
-            scores -= (queries.pow(2)).sum(1, keepdim=True)
+            scores -= (queries.pow(2)).sum(1).unsqueeze_(0)
         scores, indices = scores.topk(k=num_neighbors, dim=0, largest=True)
         scores = scores.t()
         indices = indices.t()
@@ -41,7 +41,7 @@ def _faiss_knn(keys: torch.Tensor,
                num_neighbors: int,
                distance: str) -> Tuple[torch.Tensor, torch.Tensor]:
     # https://github.com/facebookresearch/XLM/blob/master/src/model/memory/utils.py
-    if not is_faiss_available:
+    if not is_faiss_available():
         raise RuntimeError("faiss_knn requires faiss-gpu")
     import faiss
 
@@ -70,7 +70,7 @@ def k_nearest_neighbor(keys: torch.Tensor,
                        queries: torch.Tensor,
                        num_neighbors: int,
                        distance: str, *,
-                       backend: str = "torch"):
+                       backend: str = "torch") -> Tuple[torch.Tensor, torch.Tensor]:
     """ k-Nearest Neighbor search
 
     :param keys: tensor of (num_keys, dim)
@@ -78,14 +78,14 @@ def k_nearest_neighbor(keys: torch.Tensor,
     :param num_neighbors: `k`
     :param distance: name of distance (`dot_product` or `l2`)
     :param backend: backend (`faiss` or `torch`)
-    :return:
+    :return: scores, indices
     """
     assert backend in ["faiss", "torch"]
-    f = _faiss_knn if backend == "faiss" and is_faiss_available else _torch_knn
+    f = _faiss_knn if backend == "faiss" and is_faiss_available() else _torch_knn
     return f(keys, queries, num_neighbors, distance)
 
 
-if is_faiss_available:
+if is_faiss_available():
     FAISS_RES = faiss.StandardGpuResources()
     FAISS_RES.setDefaultNullStreamAllDevices()
     FAISS_RES.setTempMemory(1200 * 1024 * 1024)

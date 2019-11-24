@@ -3,30 +3,42 @@ import os as python_os
 import subprocess
 import sys as python_sys
 
+from torch import distributed
 from torch.cuda import device_count
 
 from homura.liblog import get_logger
 
-__all__ = ["is_accimage_available", "is_apex_available", "is_distributed",
-           "enable_accimage", "init_distributed",
-           "get_global_rank", "get_local_rank", "get_world_size", "get_num_nodes",
-           "is_faiss_available"]
-
 logger = get_logger("homura.env")
-
-is_accimage_available = importlib.util.find_spec("accimage") is not None
-is_apex_available = importlib.util.find_spec("apex") is not None
-is_faiss_prepared = False
-
-try:
-    import faiss
-
-    is_faiss_available = hasattr(faiss, 'StandardGpuResources')
-except ImportError:
-    is_faiss_available = False
-
 args = " ".join(python_sys.argv)
-is_distributed = "--local_rank" in args
+
+
+def is_accimage_available() -> bool:
+    return importlib.util.find_spec("accimage") is not None
+
+
+def is_apex_available() -> bool:
+    return importlib.util.find_spec("apex") is not None
+
+
+def is_faiss_available() -> bool:
+    try:
+        import faiss
+
+        return hasattr(faiss, 'StandardGpuResources')
+    except ImportError:
+        return False
+
+
+def get_world_size() -> int:
+    return int(python_os.environ.get("WORLD_SIZE", 1))
+
+
+def is_distributed() -> bool:
+    return get_world_size() > 1
+
+
+def is_distributed_avaiable() -> bool:
+    return hasattr(distributed, "is_available") and getattr(distributed, "is_available")
 
 
 def _decode_bytes(b: bytes) -> str:
@@ -56,7 +68,7 @@ def get_args() -> list:
 def get_local_rank() -> int:
     # returns -1 if not distributed, else returns local rank
     # it works before dist.init_process_group
-    if not is_distributed:
+    if not is_distributed():
         return -1
     else:
         for arg in python_sys.argv:
@@ -67,22 +79,19 @@ def get_local_rank() -> int:
 def get_global_rank() -> int:
     # returns -1 if not distributed, else returns global rank
     # it works before dist.init_process_group
-    if not is_distributed:
+    if not is_distributed():
         return -1
     else:
         return int(python_os.environ["RANK"])
 
 
-def get_world_size() -> int:
-    if not is_distributed:
-        return 1
-    else:
-        return int(python_os.environ["WORLD_SIZE"])
+def is_master() -> bool:
+    return get_global_rank() <= 0
 
 
 def get_num_nodes() -> int:
     # assume all nodes have the same number of gpus
-    if not is_distributed:
+    if not is_distributed():
         return 1
     else:
         return get_world_size() // device_count()
@@ -98,7 +107,7 @@ def init_distributed(backend="nccl",
     if not distributed.is_available():
         raise RuntimeError("`distributed` is not available.")
 
-    if not is_distributed:
+    if not is_distributed():
         raise RuntimeError(
             f"For distributed training, use `python -m torch.distributed.launch "
             f"--nproc_per_node={device_count()} {args}` ...")
@@ -111,7 +120,7 @@ def init_distributed(backend="nccl",
 
 
 def enable_accimage() -> None:
-    if is_accimage_available:
+    if is_accimage_available():
         import torchvision
 
         torchvision.set_image_backend("accimage")

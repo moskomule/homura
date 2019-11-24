@@ -123,7 +123,7 @@ class CustomUNet(UNet):
         # enc3(input), (enc2(input), enc(input), input)
         x, *rest = reversed(x)
         for dec, _x in zip(self.decoders, rest):
-            # x = dec(enc3(input), enc2(input))
+            # img = dec(enc3(input), enc2(input))
             x = dec(x, _x)
 
         return self.channel_conv(x)

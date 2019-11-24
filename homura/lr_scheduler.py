@@ -1,81 +1,81 @@
-# lr_schedulers for homura's trainer
+import math
+from functools import partial
 
-from abc import ABCMeta
-
-from torch.optim.lr_scheduler import (StepLR as _StepLR, MultiStepLR as _MultiStepLR, LambdaLR as _LambdaLR,
-                                      ExponentialLR as _ExponentialLR, CosineAnnealingLR as _CosineAnnealingLR,
-                                      CosineAnnealingWarmRestarts as _CosineAnnealingWarmRestarts,
-                                      ReduceLROnPlateau as _ReduceLROnPlateau, _LRScheduler)
-from torch.optim.optimizer import Optimizer
-
-__all__ = ["LRScheduler", "StepLR", "MultiStepLR", "LambdaLR", "ExponentialLR",
-           "CosineAnnealingLR", "ReduceLROnPlateau"]
+from torch.optim import lr_scheduler as _lr_scheduler
 
 
-class LRScheduler(metaclass=ABCMeta):
-    def __init__(self, schdlr_cls, **kwargs):
-        self._schdlr_cls = schdlr_cls
-        self._kwargs = kwargs
-        self._schdlr = None
-
-    def set_optimizer(self, optimizer: Optimizer):
-        self._schdlr = self._schdlr_cls(optimizer, **self._kwargs)
-        return self.scheduler
-
-    @property
-    def scheduler(self) -> _LRScheduler:
-        return self._schdlr
+def StepLR(step_size,
+           gamma=0.1,
+           last_epoch=-1):
+    return partial(_lr_scheduler.StepLR, **locals())
 
 
-class StepLR(LRScheduler):
-    def __init__(self, step_size, gamma=0.1, last_epoch=-1):
-        super(StepLR, self).__init__(_StepLR, step_size=step_size, gamma=gamma, last_epoch=last_epoch)
-
-    __doc__ = _StepLR.__doc__
-
-
-class MultiStepLR(LRScheduler):
-    def __init__(self, milestones, gamma=0.1, last_epoch=-1):
-        super(MultiStepLR, self).__init__(_MultiStepLR, milestones=milestones, gamma=gamma, last_epoch=last_epoch)
-
-    __doc__ = _MultiStepLR.__doc__
+def MultiStepLR(milestones,
+                gamma=0.1,
+                last_epoch=-1):
+    return partial(_lr_scheduler.MultiStepLR, **locals())
 
 
-class LambdaLR(LRScheduler):
-    def __init__(self, lr_lambda, last_epoch=-1):
-        super(LambdaLR, self).__init__(_LambdaLR, lr_lambda=lr_lambda, last_epoch=last_epoch)
-
-    __doc__ = _LambdaLR.__doc__
+def LambdaLR(lr_lambda,
+             last_epoch=-1):
+    return partial(_lr_scheduler.LambdaLR, **locals())
 
 
-class ExponentialLR(LRScheduler):
-    def __init__(self, gamma, last_epoch=-1):
-        super(ExponentialLR, self).__init__(_ExponentialLR, gamma=gamma, last_epoch=last_epoch)
-
-    __doc__ = _ExponentialLR.__doc__
-
-
-class CosineAnnealingLR(LRScheduler):
-    def __init__(self, T_max, eta_min=0, last_epoch=-1):
-        super(CosineAnnealingLR, self).__init__(_CosineAnnealingLR, T_max=T_max, eta_min=eta_min, last_epoch=last_epoch)
-
-    __doc__ = _CosineAnnealingLR.__doc__
+def ExponentialLR(T_max,
+                  eta_min=0,
+                  last_epoch=-1):
+    return partial(_lr_scheduler.ExponentialLR, **locals())
 
 
-class CosineAnnealingWarmRestart(LRScheduler):
-    def __init__(self, T_0, T_mult=1, eta_min=0, last_epoch=-1):
-        super(CosineAnnealingWarmRestart, self).__init__(_CosineAnnealingWarmRestarts, T_0=T_0, T_mult=T_mult,
-                                                         eta_min=eta_min, last_epoch=last_epoch)
+def ReduceLROnPlateau(mode='min',
+                      factor=0.1,
+                      patience=10,
+                      verbose=False,
+                      threshold=1e-4,
+                      threshold_mode='rel',
+                      cooldown=0,
+                      min_lr=0,
+                      eps=1e-8):
+    return partial(_lr_scheduler.ReduceLROnPlateau, **locals())
 
-    __doc__ = _CosineAnnealingWarmRestarts.__doc__
+
+def CosineAnnealingWithWarmup(total_epochs: int,
+                              multiplier: float,
+                              warmup_epochs: int,
+                              min_lr: float = 0,
+                              last_epoch: int = -1):
+    return partial(_CosineAnnealingWithWarmup, **locals())
 
 
-class ReduceLROnPlateau(LRScheduler):
-    def __init__(self, mode='min', factor=0.1, patience=10,
-                 verbose=False, threshold=1e-4, threshold_mode='rel',
-                 cooldown=0, min_lr=0, eps=1e-8):
-        super(ReduceLROnPlateau, self).__init__(_ReduceLROnPlateau, mode=mode, factor=factor, patience=patience,
-                                                verbose=verbose, threshold=threshold, threshold_mode=threshold_mode,
-                                                cooldown=cooldown, min_lr=min_lr, eps=eps)
+def _warmup(multiplier: float,
+            warmup_epochs: int):
+    # Finally (at the warmup_epochs-th epoch), lr becomes base_lr
 
-    __doc__ = _ReduceLROnPlateau.__doc__
+    assert multiplier >= 1
+    mul = 1 / multiplier
+    return lambda epoch: (1 - mul) * epoch / warmup_epochs + mul
+
+
+class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
+    def __init__(self,
+                 optimizer,
+                 total_epochs: int,
+                 multiplier: float,
+                 warmup_epochs: int,
+                 min_lr: float = 0,
+                 last_epoch: int = -1):
+        self.total_epochs = total_epochs
+        self.min_lr = min_lr
+        self.warmup_epochs = warmup_epochs
+        self.warmup = _warmup(multiplier, warmup_epochs)
+        super(_CosineAnnealingWithWarmup, self).__init__(optimizer, last_epoch)
+
+    def get_lr(self):
+        if self.last_epoch < self.warmup_epochs:
+            return [base_lr * self.warmup(self.last_epoch) for base_lr in self.base_lrs]
+
+        else:
+            new_epoch = self.last_epoch - self.warmup_epochs
+            return [self.min_lr + (base_lr - self.min_lr) *
+                    (1 + math.cos(math.pi * new_epoch / (self.total_epochs - self.warmup_epochs))) / 2
+                    for base_lr in self.base_lrs]
