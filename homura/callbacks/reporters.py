@@ -137,7 +137,7 @@ class TQDMReporter(Reporter):
     def after_epoch(self,
                     data: Mapping):
         reportable = {}
-        results = super(TQDMReporter, self).after_iteration(data)
+        results = super(TQDMReporter, self).after_epoch(data)
         if is_master():
             for k, v in results.items():
                 if self._is_scalar(v):
@@ -185,7 +185,7 @@ class TensorboardReporter(Reporter):
 
     def after_epoch(self,
                     data: Mapping):
-        results = super(TensorboardReporter, self).after_iteration(data)
+        results = super(TensorboardReporter, self).after_epoch(data)
         global_step = data[EPOCH if self._use_epoch else ITERATION]
         if self._report_freq is None:
             for k, v in results.items():
