@@ -4,7 +4,7 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
-**Notice: homura v2019.11+ introduces backward-inconpatibale changes**
+**Notice: homura v2019.11+ introduces backward-incompatible changes**
 
 ## Requirements
 
@@ -60,8 +60,7 @@ pip install -e .
 
 ## basics
 
-* Device Agnostic
-* Useful features
+`homura` aims abstract (e.g., device-agnostic) simple prototyiping.
 
 ```python
 from homura import optim, lr_scheduler
@@ -69,23 +68,29 @@ from homura import trainers, callbacks, reporters
 from torchvision.models import resnet50
 from torch.nn import functional as F
 
-# model will be registered in the trainer
+# User does not need to care about the device
 resnet = resnet50()
-
-# optimizer and scheduler will be registered in the trainer, too
+# Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 
-# list of callbacks or reporters can be registered in the trainer
+# `homura` has callbacks
 c = [callbacks.AccuracyCallback(),
     reporters.TensorboardReporter(".")]
 with trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
                                      callbacks=c, scheduler=scheduler) as trainer:
-    trainer.train(...)
-    trainer.test(...)
+    # epoch-based training
+    for _ in range(epochs):
+        trainer.train(train_loader)
+        trainer.test(test_loader)
+
+    # otherwise, iteration-based training
+
+    trainer.run(train_loader, test_loader, 
+                total_iterations=1_000, val_intervals=10)
 ```
 
-Now `iteration` of trainer can be updated as follows,
+User can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
@@ -119,12 +124,6 @@ In most cases, `callbacks.metric_callback_decorator` is useful. The returned val
 
 ```python
 from homura import callbacks
-
-# Note that `iteration` has `user_value`
-
-callbacks.metric_callback_decorator(lambda data: data["user_value"], name='user_value')
-
-# or equivalently,
 
 @callbacks.metric_callback_decorator
 def user_value(data):
