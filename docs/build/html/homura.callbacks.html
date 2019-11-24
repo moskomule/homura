@@ -87,10 +87,10 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.callbacks package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.base">homura.callbacks.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-callbacks-metrics-module">homura.callbacks.metrics module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-callbacks-reporters-module">homura.callbacks.reporters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.reporters">homura.callbacks.reporters module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.callbacks">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
@@ -100,22 +100,22 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-debug-module">homura.debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.debug">homura.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-tasks-module">homura.tasks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.callbacks package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.base">homura.callbacks.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#homura-callbacks-metrics-module">homura.callbacks.metrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#homura-callbacks-reporters-module">homura.callbacks.reporters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.reporters">homura.callbacks.reporters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.callbacks">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
@@ -255,11 +255,257 @@
 </dd></dl>
 
 </div>
-<div class="section" id="homura-callbacks-metrics-module">
-<h2>homura.callbacks.metrics module<a class="headerlink" href="#homura-callbacks-metrics-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.callbacks.metrics">
+<span id="homura-callbacks-metrics-module"></span><h2>homura.callbacks.metrics module<a class="headerlink" href="#module-homura.callbacks.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.callbacks.metrics.AccuracyCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">AccuracyCallback</code><span class="sig-paren">(</span><em class="sig-param">k: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for accuracy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>k</strong> – report top-k accuracy</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.metrics.AccuracyCallback.accuracy">
+<code class="sig-name descname">accuracy</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback.accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.IOUCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">IOUCallback</code><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for IOU (classwise and mean IOU)</p>
+<dl class="method">
+<dt id="homura.callbacks.metrics.IOUCallback.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.IOUCallback.cm">
+<code class="sig-name descname">cm</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#IOUCallback.cm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.IOUCallback.cm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.LossCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">LossCallback</code><a class="reference internal" href="_modules/homura/callbacks/metrics.html#LossCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.LossCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
+<p>Callback for loss function</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.metrics.MetricCallback">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">MetricCallback</code><span class="sig-paren">(</span><em class="sig-param">metric: Callable[[collections.abc.Mapping], Any], name: str, logger=None, reduction='average', no_reduce: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
+<p>Base class of MetricCallback class such as AccuracyCallback</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – metric function: (data) -&gt; float</p></li>
+<li><p><strong>name</strong> – name of the metric</p></li>
+<li><p><strong>logger</strong> – </p></li>
+<li><p><strong>no_reduce</strong> – skip reducing when distributed</p></li>
+<li><p><strong>reduction</strong> – reduction method after every epoch</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.before_epoch">
+<code class="sig-name descname">before_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.before_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.before_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.before_iteration">
+<code class="sig-name descname">before_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: collections.abc.Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.before_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.before_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.history">
+<em class="property">property </em><code class="sig-name descname">history</code><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>History of metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict of histories in {mode: [history]}</p>
+</dd>
+</dl>
+<p>Using this property, history of metrics can be used after a training loop</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># training loop</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">final_result</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
 </div>
-<div class="section" id="homura-callbacks-reporters-module">
-<h2>homura.callbacks.reporters module<a class="headerlink" href="#homura-callbacks-reporters-module" title="Permalink to this headline">¶</a></h2>
+</dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.reduce">
+<code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param">tensor: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.reduce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.metrics.MetricCallback.to_cpu">
+<em class="property">static </em><code class="sig-name descname">to_cpu</code><span class="sig-paren">(</span><em class="sig-param">tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#MetricCallback.to_cpu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.MetricCallback.to_cpu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.callbacks.metrics.metric_callback_by_name">
+<code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">metric_callback_by_name</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#metric_callback_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.metric_callback_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a metric callback by <code class="docutils literal notranslate"><span class="pre">name</span></code> (key) of <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.callbacks.metrics.metric_callback_decorator">
+<code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">metric_callback_decorator</code><span class="sig-paren">(</span><em class="sig-param">_metric: Callable = None</em>, <em class="sig-param">*</em>, <em class="sig-param">name: str = None</em>, <em class="sig-param">reduction='average'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#metric_callback_decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.metric_callback_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to create a metric callback</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@metric_callback_decorator</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.callbacks.reporters">
+<span id="homura-callbacks-reporters-module"></span><h2>homura.callbacks.reporters module<a class="headerlink" href="#module-homura.callbacks.reporters" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.callbacks.reporters.CallImage">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.reporters.</code><code class="sig-name descname">CallImage</code><span class="sig-paren">(</span><em class="sig-param">key: str</em>, <em class="sig-param">report_freq: Optional[int] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#CallImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.CallImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.base.Callback" title="homura.callbacks.base.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.base.Callback</span></code></a></p>
+<p>Fetch image from <cite>data</cite> by <cite>key</cite>.
+If want to report image by epoch, set <cite>report_freq=None</cite> (default)</p>
+<dl class="method">
+<dt id="homura.callbacks.reporters.CallImage.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#CallImage.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.CallImage.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="homura.callbacks.reporters.CallImage.master_only">
+<code class="sig-name descname">master_only</code><em class="property"> = True</em><a class="headerlink" href="#homura.callbacks.reporters.CallImage.master_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.reporters.IOReporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.reporters.</code><code class="sig-name descname">IOReporter</code><span class="sig-paren">(</span><em class="sig-param">save_dir: Optional[str]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#IOReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.IOReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.reporters.Reporter" title="homura.callbacks.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.reporters.Reporter</span></code></a></p>
+<p>Reporter based on IO, i.e., save json files for scalars and image files for images.</p>
+<dl class="method">
+<dt id="homura.callbacks.reporters.IOReporter.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#IOReporter.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.IOReporter.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.reporters.IOReporter.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#IOReporter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.IOReporter.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.reporters.IOReporter.save_image">
+<em class="property">static </em><code class="sig-name descname">save_image</code><span class="sig-paren">(</span><em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">img: torch.Tensor</em>, <em class="sig-param">name: str</em>, <em class="sig-param">idx: int</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/callbacks/reporters.html#IOReporter.save_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.IOReporter.save_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.reporters.Reporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.reporters.</code><code class="sig-name descname">Reporter</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#Reporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.Reporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.reporters._ReporterBase</span></code></p>
+<p>Virtual base class of reporters.
+If <cite>global_rank&gt;0</cite>, i.e., not master node in distributed learning, <cite>_ReporterBase</cite> is used.</p>
+<dl class="attribute">
+<dt id="homura.callbacks.reporters.Reporter.master_only">
+<code class="sig-name descname">master_only</code><em class="property"> = True</em><a class="headerlink" href="#homura.callbacks.reporters.Reporter.master_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.reporters.Reporter.to_serializable">
+<em class="property">static </em><code class="sig-name descname">to_serializable</code><span class="sig-paren">(</span><em class="sig-param">tensor: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#Reporter.to_serializable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.Reporter.to_serializable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.reporters.TQDMReporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.reporters.</code><code class="sig-name descname">TQDMReporter</code><span class="sig-paren">(</span><em class="sig-param">iterator: Iterable</em>, <em class="sig-param">verb: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TQDMReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.reporters.Reporter" title="homura.callbacks.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.reporters.Reporter</span></code></a></p>
+<p>Reporter with TQDM</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>iterator</strong> – iterator to be wrapped.</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t_reporter</span> <span class="o">=</span> <span class="n">TQDMReporter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">t_reporter</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="homura.callbacks.reporters.TQDMReporter.add_text">
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param">text: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TQDMReporter.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TQDMReporter.add_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.reporters.TQDMReporter.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TQDMReporter.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TQDMReporter.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="homura.callbacks.reporters.TQDMReporter.master_only">
+<code class="sig-name descname">master_only</code><em class="property"> = False</em><a class="headerlink" href="#homura.callbacks.reporters.TQDMReporter.master_only" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="homura.callbacks.reporters.TensorboardReporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.reporters.</code><code class="sig-name descname">TensorboardReporter</code><span class="sig-paren">(</span><em class="sig-param">save_dir: Optional[str], report_freq: Optional[int] = None, is_global_step_epoch: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TensorboardReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.callbacks.reporters.Reporter" title="homura.callbacks.reporters.Reporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.reporters.Reporter</span></code></a></p>
+<p>Reporter with Tensorboard</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_dir</strong> – directory where the log is saved</p>
+</dd>
+<dt class="field-even">Report_freq</dt>
+<dd class="field-even"><p>Frequency of reporting in iteration. If <cite>None</cite>, reported by epoch.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="homura.callbacks.reporters.TensorboardReporter.after_epoch">
+<code class="sig-name descname">after_epoch</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TensorboardReporter.after_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TensorboardReporter.after_epoch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.callbacks.reporters.TensorboardReporter.after_iteration">
+<code class="sig-name descname">after_iteration</code><span class="sig-paren">(</span><em class="sig-param">data: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/reporters.html#TensorboardReporter.after_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.reporters.TensorboardReporter.after_iteration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-homura.callbacks.saver">
 <span id="homura-callbacks-saver-module"></span><h2>homura.callbacks.saver module<a class="headerlink" href="#module-homura.callbacks.saver" title="Permalink to this headline">¶</a></h2>
@@ -304,8 +550,8 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.callbacks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.callbacks" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

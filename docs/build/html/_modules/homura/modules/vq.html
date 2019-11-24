@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -157,14 +156,16 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="k">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
 
+<span class="kn">from</span> <span class="nn">.functional</span> <span class="k">import</span> <span class="n">custom_straight_through_estimator</span><span class="p">,</span> <span class="n">k_nearest_neighbor</span> <span class="k">as</span> <span class="n">knn</span>
+
 
 <div class="viewcode-block" id="moving_average_"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.vq.moving_average_">[docs]</a><span class="k">def</span> <span class="nf">moving_average_</span><span class="p">(</span><span class="n">base</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                     <span class="n">update</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                     <span class="n">momentum</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Inplace exponential moving average of `base` tensor</span>
 
-<span class="sd">    :param base:</span>
-<span class="sd">    :param update:</span>
+<span class="sd">    :param base: tensor to be updated</span>
+<span class="sd">    :param update: tensor for updating</span>
 <span class="sd">    :param momentum:</span>
 <span class="sd">    :return: exponential-moving-averaged `base` tensor</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -178,18 +179,21 @@
                  <span class="n">dict_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">update_dict_by_ema</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span>
-                 <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">):</span>
+                 <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+                 <span class="n">knn_backend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">VQModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">emb_dim</span> <span class="o">=</span> <span class="n">emb_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dict_size</span> <span class="o">=</span> <span class="n">dict_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_dict_by_ema</span> <span class="o">=</span> <span class="n">update_dict_by_ema</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
-        <span class="n">embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">emb_dim</span><span class="p">,</span> <span class="n">dict_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_knn_backend</span> <span class="o">=</span> <span class="n">knn_backend</span>
+        <span class="n">embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">dict_size</span><span class="p">,</span> <span class="n">emb_dim</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_dict_by_ema</span><span class="p">:</span>
             <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">gamma</span> <span class="o">&lt;=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_track_num&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dict_size</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_track_num&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dict_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_track_enc&quot;</span><span class="p">,</span> <span class="n">embed</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;embed&quot;</span><span class="p">,</span> <span class="n">embed</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -197,33 +201,20 @@
 
 <div class="viewcode-block" id="VQModule.forward"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.vq.VQModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="n">flatten</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten_input</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-
+        <span class="n">flatten</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten_input</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>  <span class="c1"># `? img emb_dim`</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">distance</span> <span class="o">=</span> <span class="n">VQModule</span><span class="o">.</span><span class="n">l2_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="p">,</span> <span class="n">flatten</span><span class="p">)</span>
-            <span class="c1"># ids.size() == (?, 1)</span>
-            <span class="n">ids</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">knn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="p">,</span> <span class="n">flatten</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">,</span>
+                         <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_knn_backend</span><span class="p">)</span>  <span class="c1"># `dict_size img emb_dim`, `? img emb_dim`</span>
             <span class="n">_input_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
             <span class="n">_input_size</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">_input_size</span><span class="p">)</span>
 
         <span class="n">vqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_dict_by_ema</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ema</span><span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ema_update</span><span class="p">(</span><span class="n">flatten</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="n">vqs</span> <span class="o">=</span> <span class="n">vqs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">vqs</span> <span class="o">+</span> <span class="nb">input</span> <span class="o">-</span> <span class="nb">input</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">ids</span></div>
-
-<div class="viewcode-block" id="VQModule.l2_distance"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.vq.VQModule.l2_distance">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">l2_distance</span><span class="p">(</span><span class="n">emb</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-                    <span class="n">encoded</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="c1"># emb: emb_dim x dict_size</span>
-        <span class="c1"># encoded: ? x emb_dim</span>
-        <span class="c1"># expected: ? x dict_size</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">emb</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="o">+</span> <span class="n">encoded</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">encoded</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">emb</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">custom_straight_through_estimator</span><span class="p">(</span><span class="n">vqs</span><span class="p">,</span> <span class="nb">input</span><span class="p">),</span> <span class="n">ids</span></div>
 
 <div class="viewcode-block" id="VQModule.flatten_input"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.vq.VQModule.flatten_input">[docs]</a>    <span class="k">def</span> <span class="nf">flatten_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                       <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -234,17 +225,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="k">def</span> <span class="nf">_ema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-             <span class="n">flatten</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-             <span class="n">ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_ema_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">flatten</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                    <span class="n">ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="c1"># update of codebook is during backward</span>
-            <span class="c1"># onehot_ids.size() == (?, dict_size)</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># `? img dict_size`</span>
             <span class="n">onehot_ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">([</span><span class="n">ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
             <span class="n">onehot_ids</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">moving_average_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_track_num</span><span class="p">,</span> <span class="n">onehot_ids</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
-            <span class="n">moving_average_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_track_enc</span><span class="p">,</span> <span class="n">flatten</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">onehot_ids</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="c1"># `dict_size`</span>
+            <span class="n">moving_average_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_track_num</span><span class="p">,</span> <span class="n">onehot_ids</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_track_num</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="c1"># `dict_size img emb_dim`</span>
+            <span class="n">moving_average_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_track_enc</span><span class="p">,</span> <span class="n">onehot_ids</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">flatten</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
 
             <span class="c1"># following sonnet&#39;s implementation</span>
             <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_size</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track_num</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -252,7 +244,7 @@
 
 <div class="viewcode-block" id="VQModule.lookup"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.vq.VQModule.lookup">[docs]</a>    <span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="o">.</span><span class="n">t</span><span class="p">())</span></div></div>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

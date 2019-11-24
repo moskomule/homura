@@ -174,10 +174,7 @@
                  <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">,</span>
                  <span class="n">last_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 
-        <span class="n">postfix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_git_hash</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">postfix</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">get_git_hash</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">BASIC_DIR_NAME</span> <span class="o">+</span> <span class="n">postfix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">BASIC_DIR_NAME</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_only</span> <span class="o">=</span> <span class="n">last_only</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>

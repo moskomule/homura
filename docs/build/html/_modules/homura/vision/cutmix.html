@@ -25,7 +25,6 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -208,8 +207,8 @@
            <span class="n">indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot; CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features</span>
 
-<span class="sd">    :param input: The input tensor (B x C x H x W)</span>
-<span class="sd">    :param target: The target tensor (B x C) is assumed to be onehot.</span>
+<span class="sd">    :param input: The input tensor (B img C img H img W)</span>
+<span class="sd">    :param target: The target tensor (B img C) is assumed to be onehot.</span>
 <span class="sd">    :param gamma:</span>
 <span class="sd">    :param indices:</span>
 <span class="sd">    :return:</span>
