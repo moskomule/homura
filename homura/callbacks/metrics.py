@@ -80,17 +80,18 @@ class MetricCallback(Callback):
 
     def before_epoch(self,
                      data: Mapping):
+        mode = data[MODE]
+        key = self._get_key_name(mode)
 
-        # first time or before_epoch is not yet called
-        if self._metrics_history == {} or self._last_epoch != {}:
+        # before_all
+        if self._metrics_history.get(key) is None:
+            self._metrics_history[key] = [None]
 
-            # initialization
+        # first time at each epoch
+        if self._last_epoch != {}:
+            # initialization for this epoch
             self._last_epoch.clear()
-            mode = data[MODE]
-            key = self._get_key_name(mode)
-            if self._metrics_history.get(key) is None:
-                self._metrics_history[key] = [None]
-            else:
+            if self._metrics_history[key][-1] is not None:
                 self._metrics_history[key].append(None)
 
     def after_epoch(self,
@@ -98,7 +99,7 @@ class MetricCallback(Callback):
         mode = data[MODE]
         divisor = data[ITER_PER_EPOCH] if self.reduction == "average" else 1
         key = self._get_key_name(mode)
-        # if once this method is called, self._last_epoch is not None
+        # if once this method is called, self._last_epoch[key] is not None
         if self._last_epoch.get(key) is None:
             if isinstance(self._metrics_history[key][-1], Mapping):
                 self._metrics_history[key][-1] = {k: v / divisor
