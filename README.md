@@ -6,6 +6,8 @@
 
 **Notice: homura v2019.11+ introduces backward-incompatible changes**
 
+For older versions, install as `pip install git+https://github.com/moskomule/homura@v0.7` etc.
+
 ## Requirements
 
 ### minimal requirements
