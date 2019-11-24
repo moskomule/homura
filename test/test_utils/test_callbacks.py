@@ -3,7 +3,7 @@ import torch
 from torch import nn
 
 from homura import callbacks
-from homura.callbacks import AccuracyCallback, TQDMReporter, IOReporter
+from homura.callbacks import AccuracyCallback, TQDMReporter, IOReporter, TensorboardReporter
 from homura.optim import SGD
 from homura.trainers import SupervisedTrainer
 
@@ -66,7 +66,7 @@ def test_tqdm_reporters():
             t.test(loader)
 
 
-@pytest.mark.parametrize("c", [IOReporter(".")])
+@pytest.mark.parametrize("c", [IOReporter("."), TensorboardReporter(".")])
 def test_tb_reporters(c):
     with SupervisedTrainer(model, SGD(lr=0.1), nn.CrossEntropyLoss(),
                            callbacks=[AccuracyCallback(), c]) as t:

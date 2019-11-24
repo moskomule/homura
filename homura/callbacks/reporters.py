@@ -211,9 +211,9 @@ class IOReporter(Reporter):
     def __init__(self,
                  save_dir: Optional[str or Path]):
         super(IOReporter, self).__init__()
-        save_dir = Path(save_dir)
+        save_dir = Path(save_dir) / BASIC_DIR_NAME
         save_dir.mkdir(exist_ok=True, parents=True)
-        self.save_dir = Path(save_dir / BASIC_DIR_NAME)
+        self.save_dir = save_dir
 
     def after_iteration(self,
                         data: Mapping):
