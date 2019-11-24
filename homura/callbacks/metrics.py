@@ -67,25 +67,31 @@ class MetricCallback(Callback):
 
             if isinstance(metric, Mapping):
                 # first time
-                if self._metrics_history[key][-1] == 0:
+                if self._metrics_history[key][-1] is None:
                     self._metrics_history[key][-1] = {k: self.to_cpu(self.reduce(metric[k])) for k in metric.keys()}
                 else:
                     self._metrics_history[key][-1] = {k: v + self.to_cpu(self.reduce(metric[k]))
                                                       for k, v in self._metrics_history[key][-1].items()}
             else:
+                if self._metrics_history[key][-1] is None:
+                    self._metrics_history[key][-1] = 0
                 self._metrics_history[key][-1] += self.to_cpu(self.reduce(metric))
         return self._last_iter
 
     def before_epoch(self,
                      data: Mapping):
-        # initialization
-        self._last_epoch.clear()
-        mode = data[MODE]
-        key = self._get_key_name(mode)
-        if self._metrics_history.get(key) is None:
-            self._metrics_history[key] = [0]
-        # else:
-        #     self._metrics_history[key].append(0)
+
+        # first time or before_epoch is not yet called
+        if self._metrics_history == {} or self._last_epoch != {}:
+
+            # initialization
+            self._last_epoch.clear()
+            mode = data[MODE]
+            key = self._get_key_name(mode)
+            if self._metrics_history.get(key) is None:
+                self._metrics_history[key] = [None]
+            else:
+                self._metrics_history[key].append(None)
 
     def after_epoch(self,
                     data: Mapping):
