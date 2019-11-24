@@ -159,12 +159,12 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-### distributed training
+### Distributed training
 
-Easy distributed initializer `homura.init_distributed()` is available.
+Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) for example.
 
 
-## reproductivity
+## Reproducibility
 
 This method makes randomness deterministic in its context.
 

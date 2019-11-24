@@ -178,6 +178,7 @@ class LossCallback(MetricCallback):
 
 
 def metric_callback_decorator(_metric: Callable = None,
+                              *,
                               name: str = None,
                               reduction="average"):
     """ Decorator to create a metric callback

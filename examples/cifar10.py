@@ -15,7 +15,7 @@ def main():
     train_loader, test_loader = cifar10_loaders(args.batch_size)
     optimizer = optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
-    tq = reporters.TQDMReporter(range(args.epochs))
+    tq = reporters.TQDMReporter(range(args.epochs), verb=True)
     c = [callbacks.AccuracyCallback(),
          callbacks.LossCallback(),
          reporters.IOReporter("."),

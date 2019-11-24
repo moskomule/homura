@@ -112,10 +112,13 @@ class TQDMReporter(Reporter):
     master_only = False
 
     def __init__(self,
-                 iterator: Iterable):
+                 iterator: Iterable,
+                 verb: bool = False):
 
         super(TQDMReporter, self).__init__()
         self.writer = tqdm.tqdm(iterator, ncols=80) if is_master() else iterator
+        self._verb = verb
+        self._logger = liblog.get_logger(__name__)
         self._length = len(iterator)
         liblog._set_tqdm_handler()
 
@@ -142,6 +145,12 @@ class TQDMReporter(Reporter):
                 elif isinstance(v, dict):
                     reportable.update({k: self.to_serializable(e) for k, e in v.items()})
             self.writer.set_postfix(reportable)
+            if self._verb:
+                log = ""
+                for k, v in reportable.items():
+                    v = f"{v:.4f}" if isinstance(v, Number) else v
+                    log += f"{k}={v}, "
+                self._logger.info(log[:-2])
 
 
 class TensorboardReporter(Reporter):
@@ -235,7 +244,8 @@ class IOReporter(Reporter):
 
 
 class CallImage(Callback):
-    """ Fetch image from `data`. If want to report image by epoch, set `report_freq=None` (default)
+    """ Fetch image from `data` by `key`.
+    If want to report image by epoch, set `report_freq=None` (default)
     """
 
     master_only = True
