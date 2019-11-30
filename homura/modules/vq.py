@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .ema import exponential_moving_average_
+from .emanet import exponential_moving_average_
 from .functional import custom_straight_through_estimator, k_nearest_neighbor as knn
 
 
