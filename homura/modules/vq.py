@@ -4,21 +4,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from .ema import exponential_moving_average_
 from .functional import custom_straight_through_estimator, k_nearest_neighbor as knn
-
-
-def moving_average_(base: torch.Tensor,
-                    update: torch.Tensor,
-                    momentum: float) -> torch.Tensor:
-    """ Inplace exponential moving average of `base` tensor
-
-    :param base: tensor to be updated
-    :param update: tensor for updating
-    :param momentum:
-    :return: exponential-moving-averaged `base` tensor
-    """
-
-    return base.mul_(momentum).add_(1 - momentum, update)
 
 
 class VQModule(nn.Module):
@@ -82,9 +69,9 @@ class VQModule(nn.Module):
             onehot_ids = ids.new_zeros([ids.size(0), self.dict_size], dtype=torch.float)
             onehot_ids.scatter_(1, ids, 1)
             # `dict_size`
-            moving_average_(self._track_num, onehot_ids.sum(dim=0).view_as(self._track_num), self.gamma)
+            exponential_moving_average_(self._track_num, onehot_ids.sum(dim=0).view_as(self._track_num), self.gamma)
             # `dict_size img emb_dim`
-            moving_average_(self._track_enc, onehot_ids.t().matmul(flatten), self.gamma)
+            exponential_moving_average_(self._track_enc, onehot_ids.t().matmul(flatten), self.gamma)
 
             # following sonnet's implementation
             factor = 1 + (self.epsilon * self.dict_size) / self._track_num.sum()

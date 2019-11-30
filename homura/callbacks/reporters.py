@@ -180,7 +180,7 @@ class TensorboardReporter(Reporter):
         for k, v in results.items():
             if self._report_freq is not None and data[ITERATION] % self._report_freq == 0:
                 self._report_values(k, v, global_step)
-            elif self._is_images(v):
+            elif torch.is_tensor(v) and self._is_images(v):
                 self.writer.add_images(k, v, global_step)
 
     def after_epoch(self,
@@ -220,7 +220,7 @@ class IOReporter(Reporter):
         # save image
         results = super(IOReporter, self).after_iteration(data)
         for k, v in results.items():
-            if self._is_images(v):
+            if torch.is_tensor(v) and self._is_images(v):
                 self.save_image(self.save_dir, v, k, data[EPOCH])
 
     def close(self):
