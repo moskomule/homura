@@ -126,7 +126,8 @@ class TrainerBase(metaclass=ABCMeta):
         self._step = -1
         self._epoch = -1
         self._is_train = True
-        self._tqdm = Partial(tqdm, ncols=tqdm_ncols) if verb else lambda x: x
+        # to nest, leave=False (https://github.com/tqdm/tqdm/blob/master/examples/simple_examples.py#L19)
+        self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False) if verb else lambda x: x
 
         _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,

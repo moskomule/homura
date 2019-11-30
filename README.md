@@ -18,12 +18,12 @@ PyTorch>=1.3.1
 torchvision>=0.4.2
 tqdm # automatically installed
 tensorboard # automatically installed
+hydra-core # automatically installed
 ```
 
 ### optional
 
 ```
-hydra (to run samples)
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
