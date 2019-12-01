@@ -4,18 +4,29 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .emanet import exponential_moving_average_
+from .ema import exponential_moving_average_
 from .functional import custom_straight_through_estimator, k_nearest_neighbor as knn
 
 
 class VQModule(nn.Module):
+    """ Vector Quantization module used in VQ-VAE [van den Oord et al. 17]
+
+    :param emb_dim:
+    :param dict_size:
+    :param update_dict_by_ema:
+    :param momentum:
+    :param epsilon:
+    :param knn_backend:
+    """
+
     def __init__(self,
                  emb_dim: int,
                  dict_size: int,
-                 update_dict_by_ema: bool = False,
-                 gamma: float = 0.99,
+                 update_dict_by_ema: bool = True,
+                 momentum: float = 0.99,
                  epsilon: float = 1e-5,
                  knn_backend="torch"):
+
         super(VQModule, self).__init__()
 
         self.emb_dim = emb_dim
@@ -26,8 +37,8 @@ class VQModule(nn.Module):
         embed = torch.randn(dict_size, emb_dim)
 
         if self.update_dict_by_ema:
-            assert 0 <= gamma <= 1
-            self.gamma = gamma
+            assert 0 <= momentum <= 1
+            self.gamma = momentum
             self.register_buffer("_track_num", torch.zeros(dict_size, 1))
             self.register_buffer("_track_enc", embed.clone())
             self.register_buffer("embed", embed)
