@@ -62,8 +62,8 @@ def _faiss_knn(keys: torch.Tensor,
     i_ptr = _tensor_to_ptr(indices)
 
     faiss.bruteForceKnn(FAISS_RES, metric,
-                        k_ptr, keys.size(0),
-                        q_ptr, queries.size(0),
+                        k_ptr, True, keys.size(0),
+                        q_ptr, True, queries.size(0),
                         queries.size(1), num_neighbors, s_ptr, i_ptr)
     return scores, indices
 
