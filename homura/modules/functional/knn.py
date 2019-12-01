@@ -6,6 +6,8 @@ from homura.utils import is_faiss_available
 
 
 def _tensor_to_ptr(input: torch.Tensor):
+    import faiss
+
     assert input.is_contiguous()
     assert input.dtype in [torch.float32, torch.int64]
     if input.dtype is torch.float32:
@@ -86,6 +88,8 @@ def k_nearest_neighbor(keys: torch.Tensor,
 
 
 if is_faiss_available():
+    import faiss
+
     FAISS_RES = faiss.StandardGpuResources()
     FAISS_RES.setDefaultNullStreamAllDevices()
     FAISS_RES.setTempMemory(1200 * 1024 * 1024)
