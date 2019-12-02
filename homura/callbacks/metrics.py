@@ -210,7 +210,7 @@ def metric_callback_by_name(name: str):
     :return:
     """
 
-    @metric_callback_decorator(name)
+    @metric_callback_decorator(name=name)
     def f(data):
         return data[name]
 
