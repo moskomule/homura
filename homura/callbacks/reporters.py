@@ -172,7 +172,7 @@ class TensorboardReporter(Reporter):
         self.writer = tensorboard.SummaryWriter(save_dir / BASIC_DIR_NAME)
         self._report_freq = report_freq
         self._use_epoch = is_global_step_epoch
-        self.writer.add_text("exec", ''.join(get_args()))
+        self.writer.add_text("exec", ' '.join(get_args()))
 
     def after_iteration(self,
                         data: Mapping):
@@ -226,7 +226,7 @@ class IOReporter(Reporter):
 
     def close(self):
         # save text
-        history = {"exec": ''.join(get_args())}
+        history = {"exec": ' '.join(get_args())}
         if hasattr(self.callbacks, "callbacks"):
             for c in self.callbacks.callbacks:
                 if isinstance(c, MetricCallback):
