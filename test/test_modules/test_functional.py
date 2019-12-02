@@ -54,9 +54,9 @@ def test_semantic_hashing():
 def test_cross_entropy():
     input = torch.randn(1, 10)
     target = torch.tensor([4]).long()
-    onetho_target = torch.zeros(1, 10)
-    onetho_target[0, 4] = 1
-    output = HF.cross_entropy_with_softlabels(input, onetho_target)
+    onehot_target = torch.zeros(1, 10)
+    onehot_target[0, 4] = 1
+    output = HF.cross_entropy_with_softlabels(input, onehot_target)
     expected = F.cross_entropy(input, target)
     assert output.item() == approx(expected.item())
 
