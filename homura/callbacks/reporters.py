@@ -8,7 +8,7 @@ import tqdm
 from torchvision.utils import save_image as _save_image
 
 from homura import liblog
-from homura.utils import is_master
+from homura.utils import is_master, get_args
 from homura.utils._vocabulary import *
 from .base import Callback, CallbackList
 from .metrics import MetricCallback
@@ -172,6 +172,7 @@ class TensorboardReporter(Reporter):
         self.writer = tensorboard.SummaryWriter(save_dir / BASIC_DIR_NAME)
         self._report_freq = report_freq
         self._use_epoch = is_global_step_epoch
+        self.writer.add_text("exec", ''.join(get_args()))
 
     def after_iteration(self,
                         data: Mapping):
@@ -225,7 +226,7 @@ class IOReporter(Reporter):
 
     def close(self):
         # save text
-        history = {}
+        history = {"exec": ''.join(get_args())}
         if hasattr(self.callbacks, "callbacks"):
             for c in self.callbacks.callbacks:
                 if isinstance(c, MetricCallback):
