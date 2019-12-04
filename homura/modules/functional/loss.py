@@ -1,6 +1,6 @@
 import torch
 
-__all__ = ["cross_entropy_with_softlabels", "reversable_kl_div"]
+__all__ = ["cross_entropy_with_softlabels"]
 
 
 def _reduction(input: torch.Tensor, reduction: str) -> torch.Tensor:
@@ -29,21 +29,3 @@ def cross_entropy_with_softlabels(input: torch.Tensor,
     if input.size() != target.size():
         raise RuntimeError(f"Input size ({input.size()}) and target size ({target.size()}) should be same!")
     return _reduction(-(input.log_softmax(dim=dim) * target).sum(dim=dim), reduction)
-
-
-def reversable_kl_div(input: torch.Tensor,
-                      target: torch.Tensor,
-                      dim: int = 1,
-                      reduction: str = "mean") -> torch.Tensor:
-    """ KL divergence that is differentiable w.r.t. both inputs and targets.
-
-    :param input: Tensor of `BxCx(optional dimensions)`
-    :param target: Tensor of `BxCx(optional dimensions)`
-    :param reduction:
-    :return:
-    """
-
-    if input.size() != target.size():
-        raise RuntimeError(f"Input size ({input.size()}) and target size ({target.size()}) should be same!")
-    log = input.log_softmax(dim=dim) - target.log()
-    return _reduction((input * log).sum(dim=dim), reduction)
