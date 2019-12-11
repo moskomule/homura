@@ -65,6 +65,10 @@ def get_args() -> list:
     return python_sys.argv
 
 
+def get_environ(name: str) -> str:
+    return python_os.environ[name]
+
+
 def get_local_rank() -> int:
     # returns -1 if not distributed, else returns local rank
     # it works before dist.init_process_group

@@ -341,6 +341,19 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.after_all(self._all_map)
             self._callbacks.close()
 
+    def state_dict(self) -> Mapping:
+        return {'step': self.step,
+                'epoch': self.epoch}
+
+    def load_state_dict(self,
+                        state_dict: Mapping):
+
+        # check kwargs in __init__
+        # use weakref to track objects?
+        # check if picklable or not
+
+        raise NotImplementedError
+
     def _set_optimizer(self,
                        optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
         if isinstance(optimizer, Optimizer) or optimizer is None:
