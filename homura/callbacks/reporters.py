@@ -167,9 +167,9 @@ class TensorboardReporter(Reporter):
         super(TensorboardReporter, self).__init__()
         from torch.utils import tensorboard
 
-        save_dir = Path(save_dir)
+        save_dir = Path(save_dir) / BASIC_DIR_NAME
         save_dir.mkdir(exist_ok=True, parents=True)
-        self.writer = tensorboard.SummaryWriter(save_dir / BASIC_DIR_NAME)
+        self.writer = tensorboard.SummaryWriter(save_dir)
         self._report_freq = report_freq
         self._use_epoch = is_global_step_epoch
         self.writer.add_text("exec", ' '.join(get_args()))
