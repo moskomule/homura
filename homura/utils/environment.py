@@ -1,3 +1,5 @@
+# get information on the environment
+
 import importlib.util
 import os as python_os
 import subprocess
@@ -31,27 +33,18 @@ def is_faiss_available() -> bool:
         return False
 
 
-def get_world_size() -> int:
-    if is_horovod_available():
-        import horovod.torch as hvd
-
-        return hvd.size()
-    return int(python_os.environ.get("WORLD_SIZE", 1))
+def is_distributed_avaiable() -> bool:
+    return (hasattr(distributed, "is_available") and getattr(distributed, "is_available")) or is_horovod_available()
 
 
 def is_distributed() -> bool:
     return get_world_size() > 1
 
 
-def is_distributed_avaiable() -> bool:
-    return (hasattr(distributed, "is_available") and getattr(distributed, "is_available")) or is_horovod_available()
-
-
-def _decode_bytes(b: bytes) -> str:
-    return b.decode("ascii")[:-1]
-
-
 def get_git_hash() -> str:
+    def _decode_bytes(b: bytes) -> str:
+        return b.decode("ascii")[:-1]
+
     try:
         is_git_repo = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"],
                                      stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout
@@ -115,11 +108,22 @@ def get_num_nodes() -> int:
         return get_world_size() // device_count()
 
 
+def get_world_size() -> int:
+    if is_horovod_available():
+        import horovod.torch as hvd
+
+        return hvd.size()
+    return int(python_os.environ.get("WORLD_SIZE", 1))
+
+
 def init_distributed(use_horovod: bool = False, *,
                      backend="nccl",
                      init_method="env://",
                      warning=True):
     # A simple initializer of distributed
+
+    if not is_distributed_avaiable():
+        raise RuntimeError('Distributed training is not available on this machine')
 
     if use_horovod:
         if is_horovod_available():
@@ -130,10 +134,6 @@ def init_distributed(use_horovod: bool = False, *,
             raise RuntimeError('horovod is not available!')
 
     else:
-        from torch import distributed
-
-        if not distributed.is_available():
-            raise RuntimeError("`distributed` is not available.")
 
         if not is_distributed():
             raise RuntimeError(

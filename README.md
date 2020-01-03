@@ -38,7 +38,7 @@ If `horovod` is available, `homura` tries to use it for distributed training. To
 pytest .
 ```
 
-## install
+## Installation
 
 ```console
 pip install git+https://github.com/moskomule/homura
@@ -55,7 +55,7 @@ pip install -e .
 
 # APIs
 
-## basics
+## Basics
 
 `homura` aims abstract (e.g., device-agnostic) simple prototyiping.
 
@@ -155,9 +155,9 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-### Distributed training
+## Distributed training
 
-Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) for example.
+Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) as an example.
 
 
 ## Reproducibility
