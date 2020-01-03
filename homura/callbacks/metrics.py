@@ -9,7 +9,7 @@ from homura.liblog import get_logger
 from homura.metrics import confusion_matrix
 from .base import Callback
 from ..utils._vocabulary import *
-from ..utils.environment import is_distributed
+from ..utils.environment import is_distributed, is_horovod_available
 
 
 class MetricCallback(Callback):
@@ -141,6 +141,12 @@ class MetricCallback(Callback):
                tensor: torch.Tensor):
 
         if is_distributed() and not self._no_reduce:
+            if is_horovod_available():
+                import horovod.torch as hvd
+
+                # hvd's all_reduce applies average
+                return hvd.all_reduce(tensor)
+            # pytorch's all_reduce does not applies average
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()
         return tensor

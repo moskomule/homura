@@ -12,12 +12,14 @@ logger = get_logger("homura.env")
 args = " ".join(python_sys.argv)
 
 
+# Utility functions that useful libraries are available or not
 def is_accimage_available() -> bool:
     return importlib.util.find_spec("accimage") is not None
 
 
-def is_apex_available() -> bool:
-    return importlib.util.find_spec("apex") is not None
+def is_horovod_available() -> bool:
+    disable_horovod = int(python_os.environ.get("HOMURA_DISABLE_HOROVOD", 0))
+    return (importlib.util.find_spec("horovod") is not None) and (disable_horovod == 0)
 
 
 def is_faiss_available() -> bool:
@@ -30,6 +32,10 @@ def is_faiss_available() -> bool:
 
 
 def get_world_size() -> int:
+    if is_horovod_available():
+        import horovod.torch as hvd
+
+        return hvd.size()
     return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
@@ -38,7 +44,7 @@ def is_distributed() -> bool:
 
 
 def is_distributed_avaiable() -> bool:
-    return hasattr(distributed, "is_available") and getattr(distributed, "is_available")
+    return (hasattr(distributed, "is_available") and getattr(distributed, "is_available")) or is_horovod_available()
 
 
 def _decode_bytes(b: bytes) -> str:
@@ -75,6 +81,10 @@ def get_local_rank() -> int:
     if not is_distributed():
         return -1
     else:
+        if is_horovod_available():
+            import horovod.torch as hvd
+
+            return hvd.local_rank()
         for arg in python_sys.argv:
             if "--local_rank" in arg:
                 return int(arg.split("=")[1])
@@ -86,6 +96,10 @@ def get_global_rank() -> int:
     if not is_distributed():
         return -1
     else:
+        if is_horovod_available():
+            import horovod.torch as hvd
+
+            return hvd.rank()
         return int(python_os.environ["RANK"])
 
 
@@ -101,26 +115,36 @@ def get_num_nodes() -> int:
         return get_world_size() // device_count()
 
 
-def init_distributed(backend="nccl",
-                     init_method="env://", *,
+def init_distributed(use_horovod: bool = False, *,
+                     backend="nccl",
+                     init_method="env://",
                      warning=True):
     # A simple initializer of distributed
 
-    from torch import distributed
+    if use_horovod:
+        if is_horovod_available():
+            import horovod.torch as hvd
 
-    if not distributed.is_available():
-        raise RuntimeError("`distributed` is not available.")
+            hvd.init()
+        else:
+            raise RuntimeError('horovod is not available!')
 
-    if not is_distributed():
-        raise RuntimeError(
-            f"For distributed training, use `python -m torch.distributed.launch "
-            f"--nproc_per_node={device_count()} {args}` ...")
-
-    if distributed.is_initialized():
-        if warning:
-            logger.warn("`distributed` is already initialized, so skipped.")
     else:
-        distributed.init_process_group(backend=backend, init_method=init_method)
+        from torch import distributed
+
+        if not distributed.is_available():
+            raise RuntimeError("`distributed` is not available.")
+
+        if not is_distributed():
+            raise RuntimeError(
+                f"For distributed training, use `python -m torch.distributed.launch "
+                f"--nproc_per_node={device_count()} {args}` ...")
+
+        if distributed.is_initialized():
+            if warning:
+                logger.warn("`distributed` is already initialized, so skipped.")
+        else:
+            distributed.init_process_group(backend=backend, init_method=init_method)
 
 
 def enable_accimage() -> None:

@@ -27,15 +27,10 @@ hydra-core # automatically installed
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
+horovad (for easier distributed training)
 ```
 
-To enable distributed training using auto mixed precision (AMP), install apex.
-
-```
-git clone https://github.com/NVIDIA/apex.git
-cd apex
-python setup.py install --cuda_ext --cpp_ext
-```
+If `horovod` is available, `homura` tries to use it for distributed training. To disable `horovod` and use `pytorch.distributed` instead, set `HOMURA_DISABLE_HOROVOD=1`.
 
 ### test
 

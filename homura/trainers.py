@@ -10,7 +10,7 @@ from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from homura import is_distributed
+from homura import is_distributed, is_horovod_available
 from homura.liblog import get_logger
 from .callbacks import Callback, CallbackList, WeightSave
 from .callbacks.reporters import _ReporterBase
@@ -35,6 +35,7 @@ class TrainerBase(metaclass=ABCMeta):
     :param verb:
     :param use_cudnn_benchmark:
     :param use_cuda_nonblocking:
+    :param use_horovod:
     :param logger:
     :param distributed_backend:
     :param init_method:
@@ -52,9 +53,10 @@ class TrainerBase(metaclass=ABCMeta):
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
-                 verb=True,
-                 use_cudnn_benchmark=True,
-                 use_cuda_nonblocking=False,
+                 verb: bool = True,
+                 use_cudnn_benchmark: bool = True,
+                 use_cuda_nonblocking: bool = False,
+                 use_horovod: bool = False,
                  logger=None,
                  distributed_backend="nccl",
                  init_method="env://",
@@ -71,15 +73,17 @@ class TrainerBase(metaclass=ABCMeta):
         else:
             self.device = device
 
+        if use_horovod and not is_horovod_available():
+            raise RuntimeError('horovod is not available!')
+
         if is_distributed():
             if use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
             # just in case `init_distributed` is not called yet
-            init_distributed(distributed_backend, init_method, warning=False)
+            init_distributed(use_horovod, backend=distributed_backend, init_method=init_method, warning=False)
             rank = get_local_rank()
             torch.cuda.set_device(rank)
-            self.device = torch.device(f"{GPU}:{rank}")
             if get_global_rank() > 0:
                 # to avoid overwriting
                 verb = False
@@ -102,7 +106,7 @@ class TrainerBase(metaclass=ABCMeta):
             # usually, this is not expected
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
-        if is_distributed():
+        if not use_horovod and is_distributed():
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
 
         if isinstance(self.model, nn.parallel.DistributedDataParallel) or isinstance(self.model, nn.DataParallel):
@@ -117,6 +121,14 @@ class TrainerBase(metaclass=ABCMeta):
         self._set_optimizer(optimizer)
         self._set_scheduler(scheduler)
         self._set_callbacks(callbacks)
+
+        if use_horovod:
+            import horovod.torch as hvd
+
+            hvd.broadcast_parameters(self.model.state_dict(), root_rank=0)
+            hvd.broadcast_optimizer_state(self.optimizer, root_rank=0)
+            self.optimizer = hvd.DistributedOptimizer(self.optimizer,
+                                                      named_parameters=self.model.named_parameters())
 
         self.loss_f = loss_f
         self._verb = verb

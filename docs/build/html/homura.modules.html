@@ -80,8 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -92,6 +91,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.ema">homura.modules.ema module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.ema">homura.modules.ema module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
@@ -371,6 +372,59 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-homura.modules.ema">
+<span id="homura-modules-ema-module"></span><h2>homura.modules.ema module<a class="headerlink" href="#module-homura.modules.ema" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="homura.modules.ema.EMANet">
+<em class="property">class </em><code class="sig-prename descclassname">homura.modules.ema.</code><code class="sig-name descname">EMANet</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">momentum: float</em>, <em class="sig-param">wrap_model: bool = False</em>, <em class="sig-param">weight_decay: Optional[float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMANet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.EMANet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Tracking exponential moving average of a given model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to be tracked</p></li>
+<li><p><strong>momentum</strong> – momentum for EMA</p></li>
+<li><p><strong>wrap_model</strong> – If True, <cite>forward</cite> returns outputs of the original model during training.</p></li>
+</ul>
+</dd>
+</dl>
+<p>If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
+:param weight_decay: If a float value is given, apply weight decay to the original model</p>
+<dl class="method">
+<dt id="homura.modules.ema.EMANet.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">*inputs: torch.Tensor</em>, <em class="sig-param">update_buffers: bool = True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMANet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.EMANet.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="homura.modules.ema.exponential_moving_average_">
+<code class="sig-prename descclassname">homura.modules.ema.</code><code class="sig-name descname">exponential_moving_average_</code><span class="sig-paren">(</span><em class="sig-param">base: torch.Tensor</em>, <em class="sig-param">update: torch.Tensor</em>, <em class="sig-param">momentum: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/ema.html#exponential_moving_average_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.exponential_moving_average_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace exponential moving average of <cite>base</cite> tensor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – tensor to be updated</p></li>
+<li><p><strong>update</strong> – tensor for updating</p></li>
+<li><p><strong>momentum</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>exponential-moving-averaged <cite>base</cite> tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-homura.modules.miscs">
 <span id="homura-modules-miscs-module"></span><h2>homura.modules.miscs module<a class="headerlink" href="#module-homura.modules.miscs" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -451,8 +505,21 @@ registered hooks while the latter silently ignores them.</p>
 <span id="homura-modules-vq-module"></span><h2>homura.modules.vq module<a class="headerlink" href="#module-homura.modules.vq" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.modules.vq.VQModule">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = False</em>, <em class="sig-param">gamma: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em>, <em class="sig-param">knn_backend='torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = True</em>, <em class="sig-param">momentum: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em>, <em class="sig-param">knn_backend='torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Vector Quantization module used in VQ-VAE [van den Oord et al. 17]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emb_dim</strong> – </p></li>
+<li><p><strong>dict_size</strong> – </p></li>
+<li><p><strong>update_dict_by_ema</strong> – </p></li>
+<li><p><strong>momentum</strong> – </p></li>
+<li><p><strong>epsilon</strong> – </p></li>
+<li><p><strong>knn_backend</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="homura.modules.vq.VQModule.flatten_input">
 <code class="sig-name descname">flatten_input</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.flatten_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.flatten_input" title="Permalink to this definition">¶</a></dt>
@@ -477,24 +544,6 @@ registered hooks while the latter silently ignores them.</p>
 <code class="sig-name descname">lookup</code><span class="sig-paren">(</span><em class="sig-param">ids: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.lookup" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.modules.vq.moving_average_">
-<code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">moving_average_</code><span class="sig-paren">(</span><em class="sig-param">base: torch.Tensor</em>, <em class="sig-param">update: torch.Tensor</em>, <em class="sig-param">momentum: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#moving_average_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.moving_average_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inplace exponential moving average of <cite>base</cite> tensor</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> – tensor to be updated</p></li>
-<li><p><strong>update</strong> – tensor for updating</p></li>
-<li><p><strong>momentum</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>exponential-moving-averaged <cite>base</cite> tensor</p>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
