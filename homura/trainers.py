@@ -309,7 +309,7 @@ class TrainerBase(metaclass=ABCMeta):
 
     def run(self,
             train_loader: Iterable or DataLoader,
-            val_loaders: Dict[Iterable or DataLoader],
+            val_loaders: Iterable or DataLoader or Dict[str, Iterable or DataLoader],
             total_iterations: int,
             val_intervals: int):
 
