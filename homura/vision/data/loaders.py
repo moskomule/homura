@@ -4,6 +4,7 @@ from typing import Iterable, Union, Optional
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import datasets, transforms
 
+import homura
 from .custom_dataset import transformable_random_split
 from .folder import ImageFolder
 
@@ -76,8 +77,10 @@ class BaseLoaders(object):
 
         train_sampler, test_sampler, val_sampler = None, None, None
         if self._distributed:
-            train_sampler = DistributedSampler(train_set)
-            test_sampler = DistributedSampler(test_set)
+            train_sampler = DistributedSampler(train_set, num_replicas=homura.get_world_size(),
+                                               rank=homura.get_global_rank())
+            test_sampler = DistributedSampler(test_set, num_replicas=homura.get_world_size(),
+                                              rank=homura.get_global_rank())
             if val_size > 0:
                 val_sampler = DistributedSampler(val_set)
 
@@ -152,7 +155,7 @@ def mnist_loaders(batch_size: int,
     :param replacement: sampling with replacement
     :param num_train_samples: number of data sampled when `replacement` is True
     :param force_download:
-    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loaders)
     """
 
     return _base_mnists_loaders(datasets.MNIST, batch_size, num_workers, root, data_augmentation, val_size, replacement,
@@ -203,7 +206,7 @@ def cifar10_loaders(batch_size: int,
     :param replacement: sampling with replacement
     :param num_train_samples: number of data sampled when `replacement` is True
     :param force_download:
-    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loaders)
     """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),
@@ -237,7 +240,7 @@ def cifar100_loaders(batch_size: int,
     :param replacement: sampling with replacement
     :param num_train_samples: number of data sampled when `replacement` is True
     :param force_download:
-    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loader)
+    :return: (train_loader, test_loader) if `val_size==0` else (train_loader, test_loader, val_loaders)
     """
     if data_augmentation is None:
         data_augmentation = [transforms.RandomCrop(32, padding=4),

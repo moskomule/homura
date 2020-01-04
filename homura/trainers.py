@@ -16,7 +16,7 @@ from .callbacks import Callback, CallbackList, WeightSave
 from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
-from .utils.environment import get_global_rank, get_local_rank, init_distributed
+from .utils.environment import get_global_rank, get_local_rank
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
 
@@ -58,8 +58,6 @@ class TrainerBase(metaclass=ABCMeta):
                  use_cuda_nonblocking: bool = False,
                  use_horovod: bool = False,
                  logger=None,
-                 distributed_backend="nccl",
-                 init_method="env://",
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 80,
                  **kwargs):
@@ -80,8 +78,6 @@ class TrainerBase(metaclass=ABCMeta):
             if use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
-            # just in case `init_distributed` is not called yet
-            init_distributed(use_horovod, backend=distributed_backend, init_method=init_method, warning=False)
             rank = get_local_rank()
             torch.cuda.set_device(rank)
             if get_global_rank() > 0:
@@ -313,13 +309,14 @@ class TrainerBase(metaclass=ABCMeta):
 
     def run(self,
             train_loader: Iterable or DataLoader,
-            val_loader: Iterable or DataLoader,
+            val_loaders: Dict[Iterable or DataLoader],
             total_iterations: int,
             val_intervals: int):
+
         """ Train the model for a given iterations
 
         :param train_loader:
-        :param val_loader:
+        :param val_loaders:
         :param total_iterations:
         :param val_intervals:
         :return:
@@ -342,10 +339,14 @@ class TrainerBase(metaclass=ABCMeta):
                         counter += 1
 
         train_loader = ProxyLoader(train_loader)
+        if not isinstance(val_loaders, Dict) and (isinstance(val_loaders, Iterable) or
+                                                  isinstance(val_loaders, DataLoader)):
+            val_loaders = {'val': val_loaders}
 
         for ep in range(total_iterations // val_intervals):
             self.train(train_loader)
-            self.test(val_loader)
+            for name, loader in val_loaders.items():
+                self.test(loader, name)
 
     def exit(self):
         with torch.no_grad():

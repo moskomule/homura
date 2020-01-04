@@ -130,6 +130,7 @@ def init_distributed(use_horovod: bool = False, *,
             import horovod.torch as hvd
 
             hvd.init()
+            logger.debug("init horovod")
         else:
             raise RuntimeError('horovod is not available!')
 
@@ -145,6 +146,7 @@ def init_distributed(use_horovod: bool = False, *,
                 logger.warn("`distributed` is already initialized, so skipped.")
         else:
             distributed.init_process_group(backend=backend, init_method=init_method)
+        logger.debug("init distributed")
 
 
 def enable_accimage() -> None:
