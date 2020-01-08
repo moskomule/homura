@@ -7,7 +7,7 @@ import torch
 from torch import nn
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
 from homura import is_distributed, is_horovod_available
@@ -289,6 +289,9 @@ class TrainerBase(metaclass=ABCMeta):
 
         if self.scheduler is not None and self.update_scheduler_by_epoch:
             self.scheduler.step()
+
+        if isinstance(data_loader, DataLoader) and isinstance(data_loader.sampler, DistributedSampler):
+            data_loader.sampler.set_epoch(self.epoch)
 
     def test(self,
              data_loader: Iterable or DataLoader,
