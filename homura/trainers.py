@@ -348,6 +348,9 @@ class TrainerBase(metaclass=ABCMeta):
 
         for ep in range(total_iterations // val_intervals):
             self.train(train_loader)
+            if isinstance(train_loader.loader, DataLoader) \
+                and isinstance(train_loader.loader.sampler, DistributedSampler):
+                train_loader.loader.sampler.set_epoch(self.epoch)
             for name, loader in val_loaders.items():
                 self.test(loader, name)
 
