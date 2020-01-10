@@ -389,7 +389,7 @@ class TrainerBase(metaclass=ABCMeta):
                 raise TypeError("When `optimizer` is `dict`, `model` also needs to be "
                                 "`dict` or `nn.ModuleDict`")
             if isinstance(list(optimizer.values())[0], Partial):
-                optimizer = {k: v(self.model[k]) for k, v in optimizer.items()}
+                optimizer = {k: v(self.model[k].parameters()) for k, v in optimizer.items()}
             self.optimizer = StepDict(Optimizer, **optimizer)
 
         else:
