@@ -70,8 +70,9 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
             mul = 1 / multiplier
             return lambda epoch: (1 - mul) * epoch / warmup_epochs + mul
 
+        warmup = _warmup(self.multiplier, self.warmup_epochs)
         if self.last_epoch < self.warmup_epochs:
-            return [base_lr * _warmup(self.multiplier, self.warmup_epochs) for base_lr in self.base_lrs]
+            return [base_lr * warmup(self.last_epoch) for base_lr in self.base_lrs]
 
         else:
             new_epoch = self.last_epoch - self.warmup_epochs
