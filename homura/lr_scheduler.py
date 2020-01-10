@@ -57,6 +57,7 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
                  last_epoch: int = -1):
         self.total_epochs = total_epochs
         self.min_lr = min_lr
+        self.multiplier = multiplier
         self.warmup_epochs = warmup_epochs
         super(_CosineAnnealingWithWarmup, self).__init__(optimizer, last_epoch)
 
@@ -70,7 +71,7 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
             return lambda epoch: (1 - mul) * epoch / warmup_epochs + mul
 
         if self.last_epoch < self.warmup_epochs:
-            return [base_lr * _warmup(self.last_epoch, self.warmup_epochs) for base_lr in self.base_lrs]
+            return [base_lr * _warmup(self.multiplier, self.warmup_epochs) for base_lr in self.base_lrs]
 
         else:
             new_epoch = self.last_epoch - self.warmup_epochs
