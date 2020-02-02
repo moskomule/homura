@@ -397,7 +397,7 @@ class TrainerBase(metaclass=ABCMeta):
 
     def _set_scheduler(self,
                        scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]]):
-        if self.optimizer is None:
+        if scheduler is not None and self.optimizer is None:
             raise TypeError("Optimizer is not set, so scheduler cannot be set")
 
         if isinstance(scheduler, Scheduler) or scheduler is None:
