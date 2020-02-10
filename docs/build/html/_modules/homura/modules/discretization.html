@@ -78,8 +78,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
@@ -151,9 +150,9 @@
             
   <h1>Source code for homura.modules.discretization</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 
-<span class="kn">from</span> <span class="nn">.functional</span> <span class="k">import</span> <span class="p">(</span><span class="n">gumbel_sigmoid</span><span class="p">,</span> <span class="n">straight_through_estimator</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.functional</span> <span class="kn">import</span> <span class="p">(</span><span class="n">gumbel_sigmoid</span><span class="p">,</span> <span class="n">straight_through_estimator</span><span class="p">,</span>
                          <span class="n">semantic_hashing</span><span class="p">,</span> <span class="n">gumbel_softmax</span><span class="p">,</span> <span class="n">to_onehot</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GumbelSigmoid&quot;</span><span class="p">,</span> <span class="s2">&quot;GumbelSoftmax&quot;</span><span class="p">,</span> <span class="s2">&quot;StraightThroughEstimator&quot;</span><span class="p">,</span> <span class="s2">&quot;SemanticHashing&quot;</span><span class="p">]</span>
@@ -163,7 +162,7 @@
     <span class="sd">&quot;&quot;&quot; This module outputs `gumbel_sigmoid` while training and `input.sigmoid() &gt;= threshold` while evaluation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
                  <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GumbelSigmoid</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -178,7 +177,7 @@
 
 
 <div class="viewcode-block" id="StraightThroughEstimator"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.discretization.StraightThroughEstimator">[docs]</a><span class="k">class</span> <span class="nc">StraightThroughEstimator</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StraightThroughEstimator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="StraightThroughEstimator.forward"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.discretization.StraightThroughEstimator.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
@@ -186,7 +185,7 @@
 
 
 <div class="viewcode-block" id="SemanticHashing"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.discretization.SemanticHashing">[docs]</a><span class="k">class</span> <span class="nc">SemanticHashing</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SemanticHashing</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SemanticHashing.forward"><a class="viewcode-back" href="../../../homura.modules.html#homura.modules.discretization.SemanticHashing.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -197,7 +196,7 @@
     <span class="sd">&quot;&quot;&quot; This module outputs `gumbel_softmax` while training and argmax in onehot fashion while evaluation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GumbelSoftmax</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>

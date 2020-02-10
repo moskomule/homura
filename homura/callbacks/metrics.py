@@ -9,7 +9,7 @@ from homura.liblog import get_logger
 from homura.metrics import confusion_matrix
 from .base import Callback
 from ..utils._vocabulary import *
-from ..utils.environment import is_distributed
+from ..utils.environment import is_distributed, is_horovod_available
 
 
 class MetricCallback(Callback):
@@ -141,6 +141,12 @@ class MetricCallback(Callback):
                tensor: torch.Tensor):
 
         if is_distributed() and not self._no_reduce:
+            if is_horovod_available():
+                import horovod.torch as hvd
+
+                # hvd's all_reduce applies average
+                return hvd.all_reduce(tensor)
+            # pytorch's all_reduce does not applies average
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()
         return tensor
@@ -157,19 +163,22 @@ class AccuracyCallback(MetricCallback):
     """ Callback for accuracy
 
     :param k: report top-k accuracy
+    :param target_index: index of `target` in `data`
     """
 
     def __init__(self,
-                 k: int = 1):
+                 k: int = 1,
+                 target_index: int = 1):
         self.top_k = k
         suffix = f"_top{self.top_k}" if self.top_k != 1 else ""
         self._accuracy = partial(torch.argmax, dim=1, keepdim=True) if k == 1 \
             else lambda x: partial(torch.topk, k=k, dim=1)(x)[1]
+        self.target_index = target_index
         super(AccuracyCallback, self).__init__(metric=self.accuracy, name=f"accuracy{suffix}")
 
     def accuracy(self,
                  data: Mapping):
-        output, target = data[OUTPUT], data[DATA][1]
+        output, target = data[OUTPUT], data[DATA][self.target_index]
         pred_idx = self._accuracy(output)
         target = target.view(-1, 1).expand_as(pred_idx)
         return (pred_idx == target).float().sum(dim=1).mean()
@@ -210,7 +219,7 @@ def metric_callback_by_name(name: str):
     :return:
     """
 
-    @metric_callback_decorator(name)
+    @metric_callback_decorator(name=name)
     def f(data):
         return data[name]
 

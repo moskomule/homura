@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="homura.callbacks package" href="homura.callbacks.html" />
-    <link rel="prev" title="Indices and tables" href="index.html" /> 
+    <link rel="prev" title="&lt;no title&gt;" href="usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,8 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -210,6 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.attention">homura.modules.attention module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.ema">homura.modules.ema module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.vq">homura.modules.vq module</a></li>
@@ -250,7 +250,6 @@
 </li>
 <li class="toctree-l5"><a class="reference internal" href="homura.vision.models.segmentation.html">homura.vision.models.segmentation package</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="homura.vision.models.segmentation.html#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation.msdnet">homura.vision.models.segmentation.msdnet module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation.unet">homura.vision.models.segmentation.unet module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation">Module contents</a></li>
 </ul>
@@ -361,21 +360,51 @@
 <span id="homura-tasks-module"></span><h2>homura.tasks module<a class="headerlink" href="#module-homura.tasks" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.tasks.TaskBase">
-<em class="property">class </em><code class="sig-prename descclassname">homura.tasks.</code><code class="sig-name descname">TaskBase</code><span class="sig-paren">(</span><em class="sig-param">config: omegaconf.omegaconf.OmegaConf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.tasks.</code><code class="sig-name descname">TaskBase</code><span class="sig-paren">(</span><em class="sig-param">config: omegaconf.omegaconf.OmegaConf</em>, <em class="sig-param">logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="homura.tasks.TaskBase.eval">
-<code class="sig-name descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.eval" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_callbacks">
+<em class="property">classmethod </em><code class="sig-name descname">register_callbacks</code><span class="sig-paren">(</span><em class="sig-param">name: str, callback_cls: Callable[[Any], homura.callbacks.base.Callback]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_callbacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_callbacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_data_loader">
+<em class="property">classmethod </em><code class="sig-name descname">register_data_loader</code><span class="sig-paren">(</span><em class="sig-param">name: str, data_loader_cls: Callable[[Any], Dict]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_data_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_data_loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_loss_f">
+<em class="property">classmethod </em><code class="sig-name descname">register_loss_f</code><span class="sig-paren">(</span><em class="sig-param">name: str, loss_f: Callable[[Any], torch.Tensor]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_loss_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_loss_f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_model">
+<em class="property">classmethod </em><code class="sig-name descname">register_model</code><span class="sig-paren">(</span><em class="sig-param">name: str, model_cls: Callable[[Any], torch.nn.modules.module.Module]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_optimizer">
+<em class="property">classmethod </em><code class="sig-name descname">register_optimizer</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">optim_cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_optimizer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="homura.tasks.TaskBase.register_scheduler">
+<em class="property">classmethod </em><code class="sig-name descname">register_scheduler</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">scheduler_cls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.register_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.register_scheduler" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.tasks.TaskBase.resume">
-<code class="sig-name descname">resume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.resume" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resume</code><span class="sig-paren">(</span><em class="sig-param">path: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.resume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.tasks.TaskBase.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.run" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -385,7 +414,7 @@
 
 <dl class="method">
 <dt id="homura.tasks.TaskBase.tune">
-<code class="sig-name descname">tune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.tune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.tune" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">tune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/tasks.html#TaskBase.tune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.tasks.TaskBase.tune" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -395,7 +424,7 @@
 <span id="homura-trainers-module"></span><h2>homura.trainers module<a class="headerlink" href="#module-homura.trainers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.trainers.TrainerBase">
-<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">TrainerBase</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module, optimizer: Optional[functools.partial], loss_f: Optional[Callable], *, callbacks: Optional[Iterable[homura.callbacks.base.Callback]] = None, scheduler: Optional[functools.partial] = None, update_scheduler_by_epoch: bool = True, device: Optional[torch.device] = None, verb=True, use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger=None, distributed_backend='nccl', init_method='env://', use_sync_bn: bool = False, tqdm_ncols: int = 80, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">TrainerBase</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module, optimizer: Optional[functools.partial], loss_f: Optional[Callable], *, callbacks: Optional[Iterable[homura.callbacks.base.Callback]] = None, scheduler: Optional[functools.partial] = None, update_scheduler_by_epoch: bool = True, device: Optional[torch.device] = None, verb: bool = True, use_cudnn_benchmark: bool = True, use_cuda_nonblocking: bool = False, use_horovod: bool = False, logger=None, use_sync_bn: bool = False, tqdm_ncols: int = 80, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Train and evaluate model in a given period (an epoch or iterations)</p>
 <dl class="field-list simple">
@@ -415,6 +444,7 @@
 :param verb:
 :param use_cudnn_benchmark:
 :param use_cuda_nonblocking:
+:param use_horovod:
 :param logger:
 :param distributed_backend:
 :param init_method:
@@ -462,6 +492,11 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="homura.trainers.TrainerBase.load_state_dict">
+<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param">state_dict: Mapping</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.load_state_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="homura.trainers.TrainerBase.override_iteration">
 <code class="sig-name descname">override_iteration</code><span class="sig-paren">(</span><em class="sig-param">new_iteration: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.override_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.override_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override iteration method</p>
@@ -485,13 +520,13 @@
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">train_loader: Iterable</em>, <em class="sig-param">val_loader: Iterable</em>, <em class="sig-param">total_iterations: int</em>, <em class="sig-param">val_intervals: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">train_loader: Iterable</em>, <em class="sig-param">val_loaders: Iterable</em>, <em class="sig-param">total_iterations: int</em>, <em class="sig-param">val_intervals: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train the model for a given iterations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_loader</strong> – </p></li>
-<li><p><strong>val_loader</strong> – </p></li>
+<li><p><strong>val_loaders</strong> – </p></li>
 <li><p><strong>total_iterations</strong> – </p></li>
 <li><p><strong>val_intervals</strong> – </p></li>
 </ul>
@@ -501,6 +536,11 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="method">
+<dt id="homura.trainers.TrainerBase.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Mapping<a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="homura.trainers.TrainerBase.step">
@@ -588,7 +628,7 @@
         <a href="homura.callbacks.html" class="btn btn-neutral float-right" title="homura.callbacks package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

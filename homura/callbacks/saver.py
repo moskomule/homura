@@ -22,7 +22,7 @@ class WeightSave(Callback):
                  save_path: str or Path,
                  last_only: bool = False):
 
-        self.save_path = Path(save_path) / BASIC_DIR_NAME
+        self.save_path = Path(save_path) / UNIQUE_ID
         self.last_only = last_only
 
         if not self.save_path.exists():

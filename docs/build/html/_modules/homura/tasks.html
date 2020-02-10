@@ -78,8 +78,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
@@ -150,50 +149,77 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.tasks</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="k">import</span> <span class="n">OmegaConf</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 
-<span class="kn">from</span> <span class="nn">.trainers</span> <span class="k">import</span> <span class="n">TrainerBase</span>
+<span class="kn">from</span> <span class="nn">homura.callbacks</span> <span class="kn">import</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">.trainers</span> <span class="kn">import</span> <span class="n">TrainerBase</span>
 
 
 <div class="viewcode-block" id="TaskBase"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase">[docs]</a><span class="k">class</span> <span class="nc">TaskBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="n">_MODELS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_OPTIMIZERS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_SCHEDULERS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_LOSS_F</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_CALLBACKS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_DATA_LOADERS</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">config</span><span class="p">:</span> <span class="n">OmegaConf</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">config</span><span class="p">:</span> <span class="n">OmegaConf</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span> <span class="o">=</span> <span class="n">TrainerBase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
 
     <span class="k">def</span> <span class="nf">_init_trainer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_model</span><span class="p">(),</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer</span><span class="p">(),</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss_f</span><span class="p">())</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss_f</span><span class="p">(),</span>
+                                     <span class="n">callbacks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_callbacks</span><span class="p">(),</span>
+                                     <span class="n">scheduler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduler</span><span class="p">(),</span>
+                                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">trainer</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">model</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MODELS</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">cfg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
-
-    <span class="k">def</span> <span class="nf">_get_loaders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">optimizer</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_get_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">scheduler</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_get_loss_f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span>
 
-<div class="viewcode-block" id="TaskBase.run"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_get_loaders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="TaskBase.run"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.run">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="TaskBase.tune"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.tune">[docs]</a>    <span class="k">def</span> <span class="nf">tune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TaskBase.tune"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.tune">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">tune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="TaskBase.eval"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TaskBase.eval"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.eval">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span></div>
 
 <div class="viewcode-block" id="TaskBase.save"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -203,13 +229,62 @@
               <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">_loaded</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">stated_dict</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+                                                         <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+                                                         <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">stated_dict</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">e</span>
 
-<div class="viewcode-block" id="TaskBase.resume"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span></div></div>
+<div class="viewcode-block" id="TaskBase.resume"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="o">...</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_register</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1"> is already registered!&#39;</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+<div class="viewcode-block" id="TaskBase.register_model"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_model">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                       <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="n">model_cls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_MODELS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model_cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaskBase.register_optimizer"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_optimizer">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_optimizer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                           <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">optim_cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_OPTIMIZERS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">optim_cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaskBase.register_scheduler"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_scheduler">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_scheduler</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                           <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">scheduler_cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_SCHEDULERS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">scheduler_cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaskBase.register_loss_f"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_loss_f">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_loss_f</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="n">loss_f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_LOSS_F</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaskBase.register_callbacks"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_callbacks">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_callbacks</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                           <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">callback_cls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Callback</span><span class="p">]):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_CALLBACKS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">callback_cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaskBase.register_data_loader"><a class="viewcode-back" href="../../homura.html#homura.tasks.TaskBase.register_data_loader">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">register_data_loader</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                             <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                             <span class="n">data_loader_cls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_DATA_LOADERS</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data_loader_cls</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

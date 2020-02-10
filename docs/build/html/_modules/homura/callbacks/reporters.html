@@ -78,8 +78,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
@@ -151,19 +150,19 @@
             
   <h1>Source code for homura.callbacks.reporters</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="k">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
-<span class="kn">from</span> <span class="nn">torchvision.utils</span> <span class="k">import</span> <span class="n">save_image</span> <span class="k">as</span> <span class="n">_save_image</span>
+<span class="kn">from</span> <span class="nn">torchvision.utils</span> <span class="kn">import</span> <span class="n">save_image</span> <span class="k">as</span> <span class="n">_save_image</span>
 
-<span class="kn">from</span> <span class="nn">homura</span> <span class="k">import</span> <span class="n">liblog</span>
-<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="k">import</span> <span class="n">is_master</span>
-<span class="kn">from</span> <span class="nn">homura.utils._vocabulary</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">CallbackList</span>
-<span class="kn">from</span> <span class="nn">.metrics</span> <span class="k">import</span> <span class="n">MetricCallback</span>
+<span class="kn">from</span> <span class="nn">homura</span> <span class="kn">import</span> <span class="n">liblog</span>
+<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="kn">import</span> <span class="n">is_master</span><span class="p">,</span> <span class="n">get_args</span>
+<span class="kn">from</span> <span class="nn">homura.utils._vocabulary</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">CallbackList</span>
+<span class="kn">from</span> <span class="nn">.metrics</span> <span class="kn">import</span> <span class="n">MetricCallback</span>
 
 <span class="n">Callbacks</span> <span class="o">=</span> <span class="n">Callback</span> <span class="ow">or</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span>
 <span class="n">Vector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="ow">or</span> <span class="n">List</span><span class="p">[</span><span class="n">Number</span><span class="p">]</span> <span class="ow">or</span> <span class="n">Number</span>
@@ -172,7 +171,7 @@
 <span class="k">class</span> <span class="nc">_ReporterBase</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
     <span class="c1"># Actual base class for reporters, but users do not inherit class</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">register_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -216,14 +215,14 @@
 
     <span class="n">master_only</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">master_only</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_master</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">_ReporterBase</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Reporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -263,7 +262,7 @@
     <span class="c1"># to enable __iter__ and __len__</span>
     <span class="n">master_only</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">iterator</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
                  <span class="n">verb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 
@@ -274,11 +273,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
         <span class="n">liblog</span><span class="o">.</span><span class="n">_set_tqdm_handler</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">i</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
 
 <div class="viewcode-block" id="TQDMReporter.add_text"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.reporters.TQDMReporter.add_text">[docs]</a>    <span class="k">def</span> <span class="nf">add_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -289,7 +288,7 @@
 <div class="viewcode-block" id="TQDMReporter.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.reporters.TQDMReporter.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="n">reportable</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TQDMReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TQDMReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">is_master</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_scalar</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -300,8 +299,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verb</span><span class="p">:</span>
                 <span class="n">log</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reportable</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{v:.4f}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
-                    <span class="n">log</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">=</span><span class="si">{v}</span><span class="s2">, &quot;</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{v:.4f}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
+                    <span class="n">log</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">=</span><span class="si">{v}</span><span class="s2">, &quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span></div></div>
 
 
@@ -312,18 +311,19 @@
 <span class="sd">    :report_freq: Frequency of reporting in iteration. If `None`, reported by epoch.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">save_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">],</span>
                  <span class="n">report_freq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_global_step_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TensorboardReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="kn">from</span> <span class="nn">torch.utils</span> <span class="k">import</span> <span class="n">tensorboard</span>
+        <span class="kn">from</span> <span class="nn">torch.utils</span> <span class="kn">import</span> <span class="n">tensorboard</span>
 
-        <span class="n">save_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+        <span class="n">save_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">BASIC_DIR_NAME</span>
         <span class="n">save_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">SummaryWriter</span><span class="p">(</span><span class="n">save_dir</span> <span class="o">/</span> <span class="n">BASIC_DIR_NAME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">tensorboard</span><span class="o">.</span><span class="n">SummaryWriter</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="o">=</span> <span class="n">report_freq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_epoch</span> <span class="o">=</span> <span class="n">is_global_step_epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot;exec&quot;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_args</span><span class="p">()))</span>
 
 <div class="viewcode-block" id="TensorboardReporter.after_iteration"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.reporters.TensorboardReporter.after_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">after_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
@@ -332,12 +332,12 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="n">ITERATION</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_report_values</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">global_step</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_images</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_images</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">add_images</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">global_step</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TensorboardReporter.after_epoch"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.reporters.TensorboardReporter.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TensorboardReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TensorboardReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">global_step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_epoch</span> <span class="k">else</span> <span class="n">ITERATION</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_freq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -360,7 +360,7 @@
     <span class="sd">&quot;&quot;&quot; Reporter based on IO, i.e., save json files for scalars and image files for images.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">save_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">IOReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">save_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">BASIC_DIR_NAME</span>
@@ -372,12 +372,12 @@
         <span class="c1"># save image</span>
         <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">IOReporter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">after_iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_images</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_images</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">EPOCH</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="IOReporter.close"><a class="viewcode-back" href="../../../homura.callbacks.html#homura.callbacks.reporters.IOReporter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># save text</span>
-        <span class="n">history</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;exec&quot;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_args</span><span class="p">())}</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">,</span> <span class="s2">&quot;callbacks&quot;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">MetricCallback</span><span class="p">):</span>
@@ -391,7 +391,7 @@
                    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                    <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;images&quot;</span> <span class="o">/</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">-</span><span class="si">{idx}</span><span class="s2">.png&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;images&quot;</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">-</span><span class="si">{idx}</span><span class="s2">.png&quot;</span>
         <span class="n">_save_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div></div>
 
 
@@ -402,7 +402,7 @@
 
     <span class="n">master_only</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">report_freq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
@@ -412,7 +412,7 @@
                         <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">ITERATION</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;key for image `</span><span class="si">{self.key}</span><span class="s2">` is not found in `data`&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;key for image `</span><span class="si">{self.key}</span><span class="s2">` is not found in `data`&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_freq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># epochwise, because `data` of `after_epoch` does not have images</span>
             <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">ITERATION</span><span class="p">]</span> <span class="o">%</span> <span class="n">data</span><span class="p">[</span><span class="n">ITER_PER_EPOCH</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="n">ITER_PER_EPOCH</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>

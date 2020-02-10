@@ -79,8 +79,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
@@ -326,6 +325,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.modules.html#homura.modules.ema.EMANet">EMANet (class in homura.modules.ema)</a>
+</li>
       <li><a href="homura.utils.html#homura.utils.environment.enable_accimage">enable_accimage() (in module homura.utils.environment)</a>
 </li>
       <li><a href="homura.html#homura.liblog.enable_default_handler">enable_default_handler() (in module homura.liblog)</a>
@@ -339,6 +340,8 @@
       <li><a href="homura.html#homura.tasks.TaskBase.eval">eval() (homura.tasks.TaskBase method)</a>
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.exit">exit() (homura.trainers.TrainerBase method)</a>
+</li>
+      <li><a href="homura.modules.html#homura.modules.ema.exponential_moving_average_">exponential_moving_average_() (in module homura.modules.ema)</a>
 </li>
       <li><a href="homura.html#homura.lr_scheduler.ExponentialLR">ExponentialLR() (in module homura.lr_scheduler)</a>
 </li>
@@ -373,6 +376,8 @@
 </li>
         <li><a href="homura.modules.html#homura.modules.discretization.StraightThroughEstimator.forward">(homura.modules.discretization.StraightThroughEstimator method)</a>
 </li>
+        <li><a href="homura.modules.html#homura.modules.ema.EMANet.forward">(homura.modules.ema.EMANet method)</a>
+</li>
         <li><a href="homura.modules.html#homura.modules.regularizer.WSConv2d.forward">(homura.modules.regularizer.WSConv2d method)</a>
 </li>
         <li><a href="homura.modules.html#homura.modules.vq.VQModule.forward">(homura.modules.vq.VQModule method)</a>
@@ -404,6 +409,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.utils.html#homura.utils.environment.get_args">get_args() (in module homura.utils.environment)</a>
 </li>
+      <li><a href="homura.utils.html#homura.utils.environment.get_environ">get_environ() (in module homura.utils.environment)</a>
+</li>
       <li><a href="homura.utils.html#homura.utils.environment.get_git_hash">get_git_hash() (in module homura.utils.environment)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.get_global_rank">get_global_rank() (in module homura.utils.environment)</a>
@@ -412,10 +419,10 @@
 </li>
       <li><a href="homura.html#homura.liblog.get_logger">get_logger() (in module homura.liblog)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.environment.get_num_nodes">get_num_nodes() (in module homura.utils.environment)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.utils.html#homura.utils.environment.get_num_nodes">get_num_nodes() (in module homura.utils.environment)</a>
+</li>
       <li><a href="homura.html#homura.liblog.get_verb_level">get_verb_level() (in module homura.liblog)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.get_world_size">get_world_size() (in module homura.utils.environment)</a>
@@ -466,6 +473,8 @@
 </li>
       <li><a href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization (module)</a>
 </li>
+      <li><a href="homura.modules.html#module-homura.modules.ema">homura.modules.ema (module)</a>
+</li>
       <li><a href="homura.modules.functional.html#module-homura.modules.functional">homura.modules.functional (module)</a>
 </li>
       <li><a href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert (module)</a>
@@ -484,10 +493,10 @@
 </li>
       <li><a href="homura.modules.html#module-homura.modules.vq">homura.modules.vq (module)</a>
 </li>
-      <li><a href="homura.html#module-homura.optim">homura.optim (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.html#module-homura.optim">homura.optim (module)</a>
+</li>
       <li><a href="homura.html#module-homura.tasks">homura.tasks (module)</a>
 </li>
       <li><a href="homura.html#module-homura.trainers">homura.trainers (module)</a>
@@ -534,8 +543,6 @@
 </li>
       <li><a href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation">homura.vision.models.segmentation (module)</a>
 </li>
-      <li><a href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation.msdnet">homura.vision.models.segmentation.msdnet (module)</a>
-</li>
       <li><a href="homura.vision.models.segmentation.html#module-homura.vision.models.segmentation.unet">homura.vision.models.segmentation.unet (module)</a>
 </li>
       <li><a href="homura.vision.transforms.html#module-homura.vision.transforms">homura.vision.transforms (module)</a>
@@ -574,13 +581,13 @@
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.is_accimage_available">is_accimage_available() (in module homura.utils.environment)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.environment.is_apex_available">is_apex_available() (in module homura.utils.environment)</a>
-</li>
       <li><a href="homura.utils.html#homura.utils.environment.is_distributed">is_distributed() (in module homura.utils.environment)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.is_distributed_avaiable">is_distributed_avaiable() (in module homura.utils.environment)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.is_faiss_available">is_faiss_available() (in module homura.utils.environment)</a>
+</li>
+      <li><a href="homura.utils.html#homura.utils.environment.is_horovod_available">is_horovod_available() (in module homura.utils.environment)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.environment.is_master">is_master() (in module homura.utils.environment)</a>
 </li>
@@ -616,8 +623,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.html#homura.lr_scheduler.LambdaLR">LambdaLR() (in module homura.lr_scheduler)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.StepDict.load_state_dict">load_state_dict() (homura.utils.containers.StepDict method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.load_state_dict">load_state_dict() (homura.trainers.TrainerBase method)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.containers.StepDict.load_state_dict">(homura.utils.containers.StepDict method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.modules.html#homura.modules.vq.VQModule.lookup">lookup() (homura.modules.vq.VQModule method)</a>
@@ -646,12 +657,12 @@
       </ul></li>
       <li><a href="homura.vision.data.html#homura.vision.data.statistics.PerChannelStatistics.mean">mean() (homura.vision.data.statistics.PerChannelStatistics property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.metrics.html#homura.metrics.segmentation.mean_iou">mean_iou() (in module homura.metrics.segmentation)</a>
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.metric_callback_by_name">metric_callback_by_name() (in module homura.callbacks.metrics)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.metric_callback_decorator">metric_callback_decorator() (in module homura.callbacks.metrics)</a>
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.MetricCallback">MetricCallback (class in homura.callbacks.metrics)</a>
@@ -661,12 +672,6 @@
       <li><a href="homura.vision.data.html#homura.vision.data.loaders.mnist_loaders">mnist_loaders() (in module homura.vision.data.loaders)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.debug.module_debugger">module_debugger() (in module homura.utils.debug)</a>
-</li>
-      <li><a href="homura.modules.html#homura.modules.vq.moving_average_">moving_average_() (in module homura.modules.vq)</a>
-</li>
-      <li><a href="homura.vision.models.segmentation.html#homura.vision.models.segmentation.msdnet.msdnet25">msdnet25() (in module homura.vision.models.segmentation.msdnet)</a>
-</li>
-      <li><a href="homura.vision.models.segmentation.html#homura.vision.models.segmentation.msdnet.msdnet50">msdnet50() (in module homura.vision.models.segmentation.msdnet)</a>
 </li>
       <li><a href="homura.html#homura.lr_scheduler.MultiStepLR">MultiStepLR() (in module homura.lr_scheduler)</a>
 </li>
@@ -720,12 +725,24 @@
 </li>
       <li><a href="homura.html#homura.lr_scheduler.ReduceLROnPlateau">ReduceLROnPlateau() (in module homura.lr_scheduler)</a>
 </li>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_callbacks">register_callbacks() (homura.tasks.TaskBase class method)</a>
+</li>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_data_loader">register_data_loader() (homura.tasks.TaskBase class method)</a>
+</li>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_loss_f">register_loss_f() (homura.tasks.TaskBase class method)</a>
+</li>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_model">register_model() (homura.tasks.TaskBase class method)</a>
+</li>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_optimizer">register_optimizer() (homura.tasks.TaskBase class method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.html#homura.tasks.TaskBase.register_scheduler">register_scheduler() (homura.tasks.TaskBase class method)</a>
+</li>
       <li><a href="homura.callbacks.html#homura.callbacks.reporters.Reporter">Reporter (class in homura.callbacks.reporters)</a>
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.ResNet">ResNet (class in homura.vision.models.classification.resnet)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.resnet110">resnet110() (in module homura.vision.models.classification.resnet)</a>
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.resnet20">resnet20() (in module homura.vision.models.classification.resnet)</a>
@@ -770,12 +787,16 @@
 </li>
       <li><a href="homura.html#homura.optim.SGD">SGD() (in module homura.optim)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.metrics.html#homura.metrics.commons.specificity">specificity() (in module homura.metrics.commons)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.StepDict.state_dict">state_dict() (homura.utils.containers.StepDict method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="homura.html#homura.trainers.TrainerBase.state_dict">state_dict() (homura.trainers.TrainerBase method)</a>
+
+      <ul>
+        <li><a href="homura.utils.html#homura.utils.containers.StepDict.state_dict">(homura.utils.containers.StepDict method)</a>
 </li>
+      </ul></li>
       <li><a href="homura.vision.data.html#homura.vision.data.statistics.PerChannelStatistics.stdev">stdev() (homura.vision.data.statistics.PerChannelStatistics property)</a>
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.step">step() (homura.trainers.TrainerBase property)</a>

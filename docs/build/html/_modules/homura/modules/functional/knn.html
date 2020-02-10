@@ -78,8 +78,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
@@ -150,14 +149,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.modules.functional.knn</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="k">import</span> <span class="n">is_faiss_available</span>
+<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="kn">import</span> <span class="n">is_faiss_available</span>
 
 
 <span class="k">def</span> <span class="nf">_tensor_to_ptr</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">faiss</span>
+
     <span class="k">assert</span> <span class="nb">input</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">()</span>
     <span class="k">assert</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
@@ -212,8 +213,8 @@
     <span class="n">i_ptr</span> <span class="o">=</span> <span class="n">_tensor_to_ptr</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
 
     <span class="n">faiss</span><span class="o">.</span><span class="n">bruteForceKnn</span><span class="p">(</span><span class="n">FAISS_RES</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span>
-                        <span class="n">k_ptr</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-                        <span class="n">q_ptr</span><span class="p">,</span> <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">k_ptr</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">q_ptr</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
                         <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">s_ptr</span><span class="p">,</span> <span class="n">i_ptr</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">scores</span><span class="p">,</span> <span class="n">indices</span>
 
@@ -238,6 +239,8 @@
 
 
 <span class="k">if</span> <span class="n">is_faiss_available</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">faiss</span>
+
     <span class="n">FAISS_RES</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">StandardGpuResources</span><span class="p">()</span>
     <span class="n">FAISS_RES</span><span class="o">.</span><span class="n">setDefaultNullStreamAllDevices</span><span class="p">()</span>
     <span class="n">FAISS_RES</span><span class="o">.</span><span class="n">setTempMemory</span><span class="p">(</span><span class="mi">1200</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>

@@ -8,7 +8,7 @@ import tqdm
 from torchvision.utils import save_image as _save_image
 
 from homura import liblog
-from homura.utils import is_master
+from homura.utils import is_master, get_args
 from homura.utils._vocabulary import *
 from .base import Callback, CallbackList
 from .metrics import MetricCallback
@@ -167,11 +167,12 @@ class TensorboardReporter(Reporter):
         super(TensorboardReporter, self).__init__()
         from torch.utils import tensorboard
 
-        save_dir = Path(save_dir)
+        save_dir = Path(save_dir) / BASIC_DIR_NAME
         save_dir.mkdir(exist_ok=True, parents=True)
-        self.writer = tensorboard.SummaryWriter(save_dir / BASIC_DIR_NAME)
+        self.writer = tensorboard.SummaryWriter(save_dir)
         self._report_freq = report_freq
         self._use_epoch = is_global_step_epoch
+        self.writer.add_text("exec", ' '.join(get_args()))
 
     def after_iteration(self,
                         data: Mapping):
@@ -180,7 +181,7 @@ class TensorboardReporter(Reporter):
         for k, v in results.items():
             if self._report_freq is not None and data[ITERATION] % self._report_freq == 0:
                 self._report_values(k, v, global_step)
-            elif self._is_images(v):
+            elif torch.is_tensor(v) and self._is_images(v):
                 self.writer.add_images(k, v, global_step)
 
     def after_epoch(self,
@@ -220,12 +221,12 @@ class IOReporter(Reporter):
         # save image
         results = super(IOReporter, self).after_iteration(data)
         for k, v in results.items():
-            if self._is_images(v):
+            if torch.is_tensor(v) and self._is_images(v):
                 self.save_image(self.save_dir, v, k, data[EPOCH])
 
     def close(self):
         # save text
-        history = {}
+        history = {"exec": ' '.join(get_args())}
         if hasattr(self.callbacks, "callbacks"):
             for c in self.callbacks.callbacks:
                 if isinstance(c, MetricCallback):

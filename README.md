@@ -18,24 +18,19 @@ PyTorch>=1.3.1
 torchvision>=0.4.2
 tqdm # automatically installed
 tensorboard # automatically installed
+hydra-core # automatically installed
 ```
 
 ### optional
 
 ```
-hydra (to run samples)
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
+horovad (for easier distributed training)
 ```
 
-To enable distributed training using auto mixed precision (AMP), install apex.
-
-```
-git clone https://github.com/NVIDIA/apex.git
-cd apex
-python setup.py install --cuda_ext --cpp_ext
-```
+If `horovod` is available, `homura` tries to use it for distributed training. To disable `horovod` and use `pytorch.distributed` instead, set `HOMURA_DISABLE_HOROVOD=1`.
 
 ### test
 
@@ -43,7 +38,7 @@ python setup.py install --cuda_ext --cpp_ext
 pytest .
 ```
 
-## install
+## Installation
 
 ```console
 pip install git+https://github.com/moskomule/homura
@@ -60,7 +55,7 @@ pip install -e .
 
 # APIs
 
-## basics
+## Basics
 
 `homura` aims abstract (e.g., device-agnostic) simple prototyiping.
 
@@ -160,9 +155,9 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-### Distributed training
+## Distributed training
 
-Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) for example.
+Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) as an example.
 
 
 ## Reproducibility

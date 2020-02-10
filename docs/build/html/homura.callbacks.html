@@ -80,8 +80,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.callbacks package</a><ul>
@@ -258,12 +257,15 @@
 <span id="homura-callbacks-metrics-module"></span><h2>homura.callbacks.metrics module<a class="headerlink" href="#module-homura.callbacks.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="homura.callbacks.metrics.AccuracyCallback">
-<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">AccuracyCallback</code><span class="sig-paren">(</span><em class="sig-param">k: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.callbacks.metrics.</code><code class="sig-name descname">AccuracyCallback</code><span class="sig-paren">(</span><em class="sig-param">k: int = 1</em>, <em class="sig-param">target_index: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/callbacks/metrics.html#AccuracyCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.callbacks.metrics.AccuracyCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.callbacks.metrics.MetricCallback" title="homura.callbacks.metrics.MetricCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.callbacks.metrics.MetricCallback</span></code></a></p>
 <p>Callback for accuracy</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>k</strong> – report top-k accuracy</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> – report top-k accuracy</p></li>
+<li><p><strong>target_index</strong> – index of <cite>target</cite> in <cite>data</cite></p></li>
+</ul>
 </dd>
 </dl>
 <dl class="method">

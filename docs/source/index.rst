@@ -10,8 +10,11 @@ Welcome to homura's documentation!
 homura is a library for DL research.
 
 .. toctree::
+
    :maxdepth: 2
    :caption: Contents:
+
+   usage
 
    homura
    homura.callbacks

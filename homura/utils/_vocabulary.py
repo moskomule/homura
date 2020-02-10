@@ -1,4 +1,4 @@
-import os
+import uuid
 from datetime import datetime
 
 # vocabularies
@@ -15,8 +15,9 @@ TEST = "test"
 TRAIN = "train"
 TRAINER = "trainer"
 ITERATION = "iteration"
-NOW = datetime.now().strftime("%b%d-%H-%M-%S")
-BASIC_DIR_NAME = NOW + f"{os.getpid():0>5}"
+NOW = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+UNIQUE_ID = str(uuid.uuid4()).split("-")[0]
+BASIC_DIR_NAME = NOW + '-' + UNIQUE_ID
 DATA = "data"
 GPU = "cuda"
 CPU = "cpu"

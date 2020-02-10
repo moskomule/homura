@@ -12,7 +12,8 @@ __all__ = ["resnet20", "resnet32", "resnet56", "resnet110",
            "ResNet", "PreActResNet"]
 
 
-def initialization(module: nn.Module, use_zero_init: bool):
+def initialization(module: nn.Module,
+                   use_zero_init: bool):
     init_parameters(module)
     if use_zero_init:
         # Zero-initialize the last BN in each residual branch,
@@ -86,6 +87,7 @@ class PreActBasicBlock(BasicBlock):
 class ResNet(nn.Module):
     """ResNet for CIFAR data. For ImageNet classification, use `torchvision`'s.
     """
+
     def __init__(self, block, n_size, num_classes=10):
         super(ResNet, self).__init__()
         self.inplane = 16

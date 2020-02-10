@@ -4,31 +4,29 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from .ema import exponential_moving_average_
 from .functional import custom_straight_through_estimator, k_nearest_neighbor as knn
 
 
-def moving_average_(base: torch.Tensor,
-                    update: torch.Tensor,
-                    momentum: float) -> torch.Tensor:
-    """ Inplace exponential moving average of `base` tensor
+class VQModule(nn.Module):
+    """ Vector Quantization module used in VQ-VAE [van den Oord et al. 17]
 
-    :param base: tensor to be updated
-    :param update: tensor for updating
+    :param emb_dim:
+    :param dict_size:
+    :param update_dict_by_ema:
     :param momentum:
-    :return: exponential-moving-averaged `base` tensor
+    :param epsilon:
+    :param knn_backend:
     """
 
-    return base.mul_(momentum).add_(1 - momentum, update)
-
-
-class VQModule(nn.Module):
     def __init__(self,
                  emb_dim: int,
                  dict_size: int,
-                 update_dict_by_ema: bool = False,
-                 gamma: float = 0.99,
+                 update_dict_by_ema: bool = True,
+                 momentum: float = 0.99,
                  epsilon: float = 1e-5,
                  knn_backend="torch"):
+
         super(VQModule, self).__init__()
 
         self.emb_dim = emb_dim
@@ -39,8 +37,8 @@ class VQModule(nn.Module):
         embed = torch.randn(dict_size, emb_dim)
 
         if self.update_dict_by_ema:
-            assert 0 <= gamma <= 1
-            self.gamma = gamma
+            assert 0 <= momentum <= 1
+            self.gamma = momentum
             self.register_buffer("_track_num", torch.zeros(dict_size, 1))
             self.register_buffer("_track_enc", embed.clone())
             self.register_buffer("embed", embed)
@@ -82,9 +80,9 @@ class VQModule(nn.Module):
             onehot_ids = ids.new_zeros([ids.size(0), self.dict_size], dtype=torch.float)
             onehot_ids.scatter_(1, ids, 1)
             # `dict_size`
-            moving_average_(self._track_num, onehot_ids.sum(dim=0).view_as(self._track_num), self.gamma)
+            exponential_moving_average_(self._track_num, onehot_ids.sum(dim=0).view_as(self._track_num), self.gamma)
             # `dict_size img emb_dim`
-            moving_average_(self._track_enc, onehot_ids.t().matmul(flatten), self.gamma)
+            exponential_moving_average_(self._track_enc, onehot_ids.t().matmul(flatten), self.gamma)
 
             # following sonnet's implementation
             factor = 1 + (self.epsilon * self.dict_size) / self._track_num.sum()

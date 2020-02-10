@@ -9,7 +9,9 @@ from homura.vision.data import imagenet_loaders, prefetcher
 
 def main():
     if args.distributed:
-        init_distributed()
+        init_distributed(use_horovod=args.use_horovod,
+                         backend=args.backend,
+                         init_method=args.init_method)
     if args.enable_accimage:
         enable_accimage()
 
@@ -17,17 +19,26 @@ def main():
     optimizer = optim.SGD(lr=1e-1 * args.batch_size * get_num_nodes() / 256, momentum=0.9, weight_decay=1e-4)
     scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
     tq = reporters.TQDMReporter(range(args.epochs))
-    c = [callbacks.AccuracyCallback(), callbacks.AccuracyCallback(k=5),
-         callbacks.LossCallback(), tq, reporters.TensorboardReporter("."),
+    c = [callbacks.AccuracyCallback(),
+         callbacks.AccuracyCallback(k=5),
+         callbacks.LossCallback(),
+         tq,
+         reporters.TensorboardReporter("."),
          reporters.IOReporter(".")]
-    _train_loader, _test_loader = imagenet_loaders(args.root, args.batch_size, distributed=args.distributed,
+    _train_loader, _test_loader = imagenet_loaders(args.root,
+                                                   args.batch_size,
+                                                   distributed=args.distributed,
                                                    num_train_samples=args.batch_size * 10 if args.debug else None,
                                                    num_test_samples=args.batch_size * 10 if args.debug else None)
 
     use_multi_gpus = not args.distributed and torch.cuda.device_count() > 1
-    with SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=c, scheduler=scheduler,
-                           data_parallel=use_multi_gpus, distributed_backend=args.backend,
-                           init_method=args.init_method) as trainer:
+    with SupervisedTrainer(model,
+                           optimizer,
+                           F.cross_entropy,
+                           callbacks=c,
+                           scheduler=scheduler,
+                           data_parallel=use_multi_gpus,
+                           use_horovod=args.use_horovod) as trainer:
 
         for epoch in tq:
             if args.use_prefetcher:
@@ -49,6 +60,7 @@ if __name__ == '__main__':
 
     p = miniargs.ArgumentParser()
     p.add_str("root")
+    p.add_true("--use_horovod")
     p.add_int("--epochs", default=90)
     p.add_int("--batch_size", default=256)
     p.add_true("--distributed")
@@ -59,6 +71,7 @@ if __name__ == '__main__':
     p.add_true("--use_prefetcher")
     p.add_true("--debug", help="Use less images and less epochs")
     args, _else = p.parse(return_unknown=True)
+    args.distributed = args.use_horovod or args.distributed
 
     print(args)
     main()
