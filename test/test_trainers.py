@@ -30,11 +30,6 @@ def test_dict_model():
         trainer.train(loader)
         trainer.test(loader)
 
-    with pytest.raises(RuntimeError):
-        optimizer = {"generator": optim.SGD(lr=0.1),
-                     "discriminator": None}
-        trainer = Trainer(model, optimizer, F.cross_entropy)
-
 
 def test_basic_trainer():
     model = nn.Linear(10, 10)

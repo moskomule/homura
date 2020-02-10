@@ -158,7 +158,7 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">_LRScheduler</span> <span class="k">as</span> <span class="n">Scheduler</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DistributedSampler</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">homura</span> <span class="kn">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">is_horovod_available</span>
@@ -167,7 +167,7 @@
 <span class="kn">from</span> <span class="nn">.callbacks.reporters</span> <span class="kn">import</span> <span class="n">_ReporterBase</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="kn">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
-<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="kn">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span><span class="p">,</span> <span class="n">init_distributed</span>
+<span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="kn">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">]</span>
 
@@ -209,8 +209,6 @@
                  <span class="n">use_cuda_nonblocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">use_horovod</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">distributed_backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span>
-                 <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span>
                  <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">tqdm_ncols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -231,8 +229,6 @@
             <span class="k">if</span> <span class="n">use_sync_bn</span><span class="p">:</span>
                 <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">SyncBatchNorm</span><span class="o">.</span><span class="n">convert_sync_batchnorm</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
-            <span class="c1"># just in case `init_distributed` is not called yet</span>
-            <span class="n">init_distributed</span><span class="p">(</span><span class="n">use_horovod</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">distributed_backend</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">init_method</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">rank</span> <span class="o">=</span> <span class="n">get_local_rank</span><span class="p">()</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -443,7 +439,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler_by_epoch</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_loader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_loader</span><span class="o">.</span><span class="n">sampler</span><span class="p">,</span> <span class="n">DistributedSampler</span><span class="p">):</span>
+            <span class="n">data_loader</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TrainerBase.test"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
              <span class="n">data_loader</span><span class="p">:</span> <span class="n">Iterable</span> <span class="ow">or</span> <span class="n">DataLoader</span><span class="p">,</span>
@@ -464,13 +463,14 @@
 
 <div class="viewcode-block" id="TrainerBase.run"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">train_loader</span><span class="p">:</span> <span class="n">Iterable</span> <span class="ow">or</span> <span class="n">DataLoader</span><span class="p">,</span>
-            <span class="n">val_loader</span><span class="p">:</span> <span class="n">Iterable</span> <span class="ow">or</span> <span class="n">DataLoader</span><span class="p">,</span>
+            <span class="n">val_loaders</span><span class="p">:</span> <span class="n">Iterable</span> <span class="ow">or</span> <span class="n">DataLoader</span> <span class="ow">or</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span> <span class="ow">or</span> <span class="n">DataLoader</span><span class="p">],</span>
             <span class="n">total_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">val_intervals</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+
         <span class="sd">&quot;&quot;&quot; Train the model for a given iterations</span>
 
 <span class="sd">        :param train_loader:</span>
-<span class="sd">        :param val_loader:</span>
+<span class="sd">        :param val_loaders:</span>
 <span class="sd">        :param total_iterations:</span>
 <span class="sd">        :param val_intervals:</span>
 <span class="sd">        :return:</span>
@@ -493,10 +493,17 @@
                         <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="n">train_loader</span> <span class="o">=</span> <span class="n">ProxyLoader</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val_loaders</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val_loaders</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span>
+                                                  <span class="nb">isinstance</span><span class="p">(</span><span class="n">val_loaders</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">)):</span>
+            <span class="n">val_loaders</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;val&#39;</span><span class="p">:</span> <span class="n">val_loaders</span><span class="p">}</span>
 
         <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_iterations</span> <span class="o">//</span> <span class="n">val_intervals</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">train_loader</span><span class="o">.</span><span class="n">loader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">train_loader</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">sampler</span><span class="p">,</span> <span class="n">DistributedSampler</span><span class="p">):</span>
+                <span class="n">train_loader</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">val_loaders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TrainerBase.exit"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
@@ -532,6 +539,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;When `optimizer` is `dict`, `model` also needs to be &quot;</span>
                                 <span class="s2">&quot;`dict` or `nn.ModuleDict`&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Partial</span><span class="p">):</span>
+                <span class="n">optimizer</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">StepDict</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">optimizer</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -539,7 +548,7 @@
 
     <span class="k">def</span> <span class="nf">_set_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                        <span class="n">scheduler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Partial</span> <span class="ow">or</span> <span class="n">Scheduler</span> <span class="ow">or</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Scheduler</span><span class="p">]]):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Optimizer is not set, so scheduler cannot be set&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">Scheduler</span><span class="p">)</span> <span class="ow">or</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
