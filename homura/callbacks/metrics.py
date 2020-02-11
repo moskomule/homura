@@ -140,6 +140,8 @@ class MetricCallback(Callback):
     def reduce(self,
                tensor: torch.Tensor):
 
+        if not torch.is_tensor(tensor):
+            return tensor
         if is_distributed() and not self._no_reduce:
             if is_horovod_available():
                 import horovod.torch as hvd
