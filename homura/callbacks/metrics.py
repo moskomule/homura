@@ -145,7 +145,7 @@ class MetricCallback(Callback):
                 import horovod.torch as hvd
 
                 # hvd's all_reduce applies average
-                return hvd.all_reduce(tensor)
+                return hvd.allreduce(tensor)
             # pytorch's all_reduce does not applies average
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()
