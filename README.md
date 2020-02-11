@@ -52,6 +52,13 @@ cd homura
 pip install -e .
 ```
 
+### horovod installation
+
+```
+conda install gxx_linux-64
+pip install horovod
+```
+
 
 # APIs
 

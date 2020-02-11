@@ -13,6 +13,7 @@ from tqdm import tqdm
 from homura import is_distributed, is_horovod_available
 from homura.liblog import get_logger
 from .callbacks import Callback, CallbackList, WeightSave
+from .callbacks.base import _NoOpCallback
 from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
@@ -435,6 +436,8 @@ class TrainerBase(metaclass=ABCMeta):
                 _outers.append(c)
             elif isinstance(c, Callback):
                 _inners.append(c)
+            elif isinstance(c, _NoOpCallback):
+                pass
             else:
                 raise TypeError(f"Element of `callbacks` is expected to be `Callback`, but got `{type(c)}`")
 
