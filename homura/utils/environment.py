@@ -12,6 +12,7 @@ from homura.liblog import get_logger
 
 logger = get_logger("homura.env")
 args = " ".join(python_sys.argv)
+_DISTRIBUTED_FLAG = False
 
 
 # Utility functions that useful libraries are available or not
@@ -20,7 +21,7 @@ def is_accimage_available() -> bool:
 
 
 def is_horovod_available() -> bool:
-    disable_horovod = int(python_os.environ.get("HOMURA_DISABLE_HOROVOD", 0))
+    disable_horovod = int(get_environ("HOMURA_DISABLE_HOROVOD", 0))
     return (importlib.util.find_spec("horovod") is not None) and (disable_horovod == 0)
 
 
@@ -33,7 +34,7 @@ def is_faiss_available() -> bool:
         return False
 
 
-def is_distributed_avaiable() -> bool:
+def is_distributed_available() -> bool:
     return (hasattr(distributed, "is_available") and getattr(distributed, "is_available")) or is_horovod_available()
 
 
@@ -64,8 +65,9 @@ def get_args() -> list:
     return python_sys.argv
 
 
-def get_environ(name: str) -> str:
-    return python_os.environ[name]
+def get_environ(name: str,
+                default) -> str:
+    return python_os.environ.get(name, default)
 
 
 def get_local_rank() -> int:
@@ -86,14 +88,11 @@ def get_local_rank() -> int:
 def get_global_rank() -> int:
     # returns -1 if not distributed, else returns global rank
     # it works before dist.init_process_group
-    if not is_distributed():
-        return -1
-    else:
-        if is_horovod_available():
-            import horovod.torch as hvd
+    if _DISTRIBUTED_FLAG and is_horovod_available():
+        import horovod.torch as hvd
 
-            return hvd.rank()
-        return int(python_os.environ["RANK"])
+        return hvd.rank()
+    return int(get_environ('RANK', -1))
 
 
 def is_master() -> bool:
@@ -109,7 +108,7 @@ def get_num_nodes() -> int:
 
 
 def get_world_size() -> int:
-    if is_horovod_available():
+    if _DISTRIBUTED_FLAG and is_horovod_available():
         import horovod.torch as hvd
 
         return hvd.size()
@@ -122,9 +121,11 @@ def init_distributed(use_horovod: bool = False, *,
                      warning=True):
     # A simple initializer of distributed
 
-    if not is_distributed_avaiable():
+    if not is_distributed_available():
         raise RuntimeError('Distributed training is not available on this machine')
 
+    global _DISTRIBUTED_FLAG
+    _DISTRIBUTED_FLAG = True
     if use_horovod:
         if is_horovod_available():
             import horovod.torch as hvd
@@ -143,7 +144,7 @@ def init_distributed(use_horovod: bool = False, *,
 
         if distributed.is_initialized():
             if warning:
-                logger.warn("`distributed` is already initialized, so skipped.")
+                logger.warn("`distributed` is already initialized. Skipped.")
         else:
             distributed.init_process_group(backend=backend, init_method=init_method)
         logger.debug("init distributed")
