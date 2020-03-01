@@ -14,8 +14,8 @@ For older versions, install as `pip install git+https://github.com/moskomule/hom
 
 ```
 Python>=3.7
-PyTorch>=1.3.1
-torchvision>=0.4.2
+PyTorch>=1.4.0
+torchvision>=0.5.0
 tqdm # automatically installed
 tensorboard # automatically installed
 hydra-core # automatically installed

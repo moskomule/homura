@@ -261,7 +261,7 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.before_epoch(self._epoch_map)
 
         for data in self._tqdm(data_loader):
-            data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
+            data = self.data_handle(data)
             if self.is_train:
                 # increment step here for `callbacks`
                 self._step += 1
@@ -270,6 +270,15 @@ class TrainerBase(metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.after_epoch(self._epoch_map)
         self.logger.debug(f"epoch {self.epoch} finished")
+
+    def data_handle(self,
+                    data: tuple) -> TensorTuple:
+        """ Handle data sampled from dataloader.
+
+        :param data:
+        :return: TensorTuple
+        """
+        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
 
     def train(self,
               data_loader: Iterable or DataLoader,
