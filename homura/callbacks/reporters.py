@@ -121,6 +121,7 @@ class TQDMReporter(Reporter):
         self._logger = liblog.get_logger(__name__)
         self._length = len(iterator)
         liblog._set_tqdm_handler()
+        liblog._set_tqdm_print()
 
     def __iter__(self):
         for i in self.writer:
