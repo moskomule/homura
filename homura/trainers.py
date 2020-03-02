@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
 from homura import is_distributed, is_horovod_available
-from homura.liblog import get_logger
+from homura.liblog import get_logger, _set_tqdm_print
 from .callbacks import Callback, CallbackList, WeightSave
 from .callbacks.base import _NoOpCallback
 from .callbacks.reporters import _ReporterBase
@@ -136,7 +136,10 @@ class TrainerBase(metaclass=ABCMeta):
         self._epoch = -1
         self._is_train = True
         # to nest, leave=False (https://github.com/tqdm/tqdm/blob/master/examples/simple_examples.py#L19)
-        self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False) if verb else lambda x: x
+        self._tqdm = lambda x: x
+        if verb:
+            self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
+            _set_tqdm_print()
 
         _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,
