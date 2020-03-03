@@ -138,9 +138,10 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
 def _set_tqdm_print():
     # override print
     from tqdm import tqdm
+    import builtins
     from .utils.environment import get_global_rank
 
     def no_print(*values, sep=' ', end='\n', file=None):
         pass
 
-    __builtins__.print = tqdm.write if get_global_rank() <= 0 else no_print
+    builtins.print = tqdm.write if get_global_rank() <= 0 else no_print
