@@ -141,7 +141,11 @@ def _set_tqdm_print():
     import builtins
     from .utils.environment import get_global_rank
 
-    def no_print(*values, sep=' ', end='\n', file=None):
+    def no_print(*values, **kwargs):
         pass
 
-    builtins.print = tqdm.write if get_global_rank() <= 0 else no_print
+    def tqdm_print(*values, sep=' ', end='\n', file=None):
+        s = sep.join([str(v) for v in values])
+        tqdm.write(s, end=end, file=file)
+
+    builtins.print = tqdm_print if get_global_rank() <= 0 else no_print
