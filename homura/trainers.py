@@ -221,17 +221,13 @@ class TrainerBase(metaclass=ABCMeta):
         self._iteration_map.update({EPOCH: self.epoch, ITERATION: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
+
+        data = self.data_handler_before_iter(data)
         results = self.iteration(data)
         if self.is_train and self.scheduler is not None and not self.update_scheduler_by_epoch:
             self.scheduler.step()
-        # backward compatibility
-        if isinstance(results, tuple):
-            loss, output = TensorTuple(results)
-            results = dict(loss=loss, output=output)
-            self._iteration_map.update(**results)
-        else:
-            self._iteration_map.update(**results)
-        self._iteration_map[DATA] = self.output_data_handle(data)
+        self._iteration_map.update(**results)
+        self._iteration_map[DATA] = self.data_handler_after_iter(data)
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
         # clean up
@@ -264,7 +260,6 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.before_epoch(self._epoch_map)
 
         for data in self._tqdm(data_loader):
-            data = self.input_data_handle(data)
             if self.is_train:
                 # increment step here for `callbacks`
                 self._step += 1
@@ -274,17 +269,23 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.after_epoch(self._epoch_map)
         self.logger.debug(f"epoch {self.epoch} finished")
 
-    def input_data_handle(self,
-                          data: tuple) -> TensorTuple:
-        """ Handle data sampled from dataloader.
+    def data_handler_before_iter(self,
+                                 data: tuple) -> TensorTuple:
+        """ Handle data sampled from dataloader before `iteration`.
+        By default, `data` is expected to be a tuple of tensors,
+        so wrap it with TensorTuple and send it to `self.device`
 
-        :param data:
-        :return: TensorTuple
         """
+
         return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
 
-    def output_data_handle(self,
-                           data: tuple):
+    def data_handler_after_iter(self,
+                                data: tuple):
+        """ Handle data sampled from dataloader after `iteration`.
+        By default, just returns the input.
+
+        """
+
         return data
 
     def train(self,
@@ -378,8 +379,8 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.close()
 
     def state_dict(self) -> Mapping:
-        return {'step': self.step,
-                'epoch': self.epoch}
+        # check what is need to be saved
+        raise NotImplementedError
 
     def load_state_dict(self,
                         state_dict: Mapping):
