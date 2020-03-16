@@ -430,7 +430,12 @@ class TrainerBase(metaclass=ABCMeta):
         elif isinstance(scheduler, dict):
             if not isinstance(self.optimizer, StepDict):
                 raise TypeError("When `scheduler` is `dict`, `optimizer` is also needs to be `dict`")
-            self.scheduler = StepDict(Scheduler, **scheduler)
+            _scheduler = {}
+            for k, v in scheduler.items():
+                if isinstance(v, Partial):
+                    v = v(self.optimizer[k])
+                _scheduler[k] = v
+            self.scheduler = StepDict(Scheduler, **_scheduler)
 
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")

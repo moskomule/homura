@@ -114,7 +114,7 @@ class StepDict(dict):
 
     def step(self):
         for v in self.values():
-            if v is not None:
+            if hasattr(v, 'step'):
                 v.step()
 
     def state_dict(self):
