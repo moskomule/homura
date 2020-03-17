@@ -59,13 +59,15 @@ def timeit(func: Optional[Callable] = None,
                     times[i] = time.perf_counter() - t1
 
             total_time = time.perf_counter() - t0
-            logger.info(f"{func.__name__} requires {statistics.mean(times):g}s per iteration")
+            mean = statistics.mean(times)
+            std = statistics.stdev(times)
+            logger.info(f"{func.__name__} requires {mean:.4e}±{std:.4e} sec/iteration")
             return {"total_time": total_time,
                     "mean": total_time / num_iters,
                     "median": statistics.median(times),
                     "min": min(times),
                     "max": max(times),
-                    "std": statistics.stdev(times)}
+                    "std": std}
 
         return _timeit
 
