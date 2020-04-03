@@ -1,3 +1,5 @@
+import contextlib
+import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
@@ -480,6 +482,7 @@ class SupervisedTrainer(TrainerBase):
                  verb=True,
                  use_cudnn_benchmark=True,
                  data_parallel=False,
+                 use_amp=True,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -489,13 +492,37 @@ class SupervisedTrainer(TrainerBase):
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
 
+        self._use_amp = use_amp
+        if use_amp:
+            if not hasattr(torch.cuda, 'amp'):
+                warnings.warn('amp is not available')
+                self._use_amp = False
+            else:
+                self.scaler = torch.cuda.amp.GradScaler()
+
     def iteration(self,
                   data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
-        output = self.model(input)
-        loss = self.loss_f(output, target)
+        with self._cast_if_necessary():
+            output = self.model(input)
+            loss = self.loss_f(output, target)
         if self.is_train:
             self.optimizer.zero_grad()
-            loss.backward()
-            self.optimizer.step()
+            if self._use_amp:
+                self.scaler(loss).backward()
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+            else:
+                loss.backward()
+                self.optimizer.step()
         return Map(loss=loss, output=output)
+
+    @contextlib.contextmanager
+    def _cast_if_necessary(self):
+        if self._use_amp:
+            with torch.cuda.amp.autocast():
+                yield
+
+        else:
+            # nothing
+            yield
