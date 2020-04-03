@@ -503,7 +503,8 @@ class SupervisedTrainer(TrainerBase):
     def iteration(self,
                   data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
-        with self._cast_if_necessary():
+        context = torch.cuda.amp.autocast if self._use_amp else contextlib.nullcontext
+        with context():
             output = self.model(input)
             loss = self.loss_f(output, target)
         if self.is_train:
@@ -516,13 +517,3 @@ class SupervisedTrainer(TrainerBase):
                 loss.backward()
                 self.optimizer.step()
         return Map(loss=loss, output=output)
-
-    @contextlib.contextmanager
-    def _cast_if_necessary(self):
-        if self._use_amp:
-            with torch.cuda.amp.autocast():
-                yield
-
-        else:
-            # nothing
-            yield
