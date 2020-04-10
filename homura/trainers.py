@@ -113,12 +113,13 @@ class TrainerBase(metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        self.optimizer = None
-        self.scheduler = None
-        self._callbacks = None
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self._callbacks = callbacks
         self.update_scheduler_by_epoch = update_scheduler_by_epoch
-        self._set_optimizer(optimizer)
-        self._set_scheduler(scheduler)
+
+        self.set_optimizer()
+        self.set_scheduler()
         self._set_callbacks(callbacks)
 
         if use_horovod:
@@ -393,8 +394,16 @@ class TrainerBase(metaclass=ABCMeta):
 
         raise NotImplementedError
 
-    def _set_optimizer(self,
-                       optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
+    def set_optimizer(self):
+        """ Set optimizer(s) for model(s). You can override as ::
+
+        class YourTrainer(TrainerBase):
+            def set_optimizer(self):
+                self.optimizer = torch.optim.SGD(self.model.parameters())
+
+        """
+
+        optimizer = self.optimizer
         if isinstance(optimizer, Optimizer) or optimizer is None:
             self.optimizer = optimizer
 
@@ -415,8 +424,16 @@ class TrainerBase(metaclass=ABCMeta):
         else:
             raise TypeError(f"Unexpected type {type(optimizer)} for `optimizer`")
 
-    def _set_scheduler(self,
-                       scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]]):
+    def set_scheduler(self):
+        """ Set scheduler(s) for optimizer(s). You can override as ::
+
+                class YourTrainer(TrainerBase):
+                    def set_scheduler(self):
+                        self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)
+
+        """
+
+        scheduler = self.scheduler
         if scheduler is not None and self.optimizer is None:
             raise TypeError("Optimizer is not set, so scheduler cannot be set")
 
