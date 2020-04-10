@@ -1,0 +1,4 @@
+batch_size: 128
+epochs: 200
+model: resnet20
+bn_no_wd: false
