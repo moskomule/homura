@@ -6,7 +6,7 @@ use_prefetcher: false
 debug: false
 
 distributed:
-  on: false
+  enable: false
   use_horovod: false
   init_method: "env://"
   backend: "nccl"

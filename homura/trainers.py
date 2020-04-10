@@ -499,7 +499,7 @@ class SupervisedTrainer(TrainerBase):
                  verb=True,
                  use_cudnn_benchmark=True,
                  data_parallel=False,
-                 use_amp=True,
+                 use_amp=False,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")

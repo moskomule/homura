@@ -15,14 +15,14 @@ def _handle_argparse():
     import re
 
     original_argv = sys.argv
-    hydra_pattern = re.compile(r'[^=]+=[^=]+')
+    hydra_pattern = re.compile(r'[^-|^=]+=[^=]+')
     non_hydra_argv = [k for k in original_argv if re.match(hydra_pattern, k) is not None]
     sys.argv = [original_argv[0]] + non_hydra_argv
 
 
 @hydra.main("config/imagenet.yaml")
 def main(cfg):
-    if cfg.distributed.on:
+    if cfg.distributed.enable:
         init_distributed(use_horovod=cfg.distributed.use_horovod,
                          backend=cfg.distributed.backend,
                          init_method=cfg.distributed.init_method)
@@ -41,18 +41,18 @@ def main(cfg):
          reporters.IOReporter(".")]
     _train_loader, _test_loader = imagenet_loaders(cfg.root,
                                                    cfg.batch_size,
-                                                   distributed=cfg.distributed,
+                                                   distributed=cfg.distributed.enable,
                                                    num_train_samples=cfg.batch_size * 10 if cfg.debug else None,
                                                    num_test_samples=cfg.batch_size * 10 if cfg.debug else None)
 
-    use_multi_gpus = not cfg.distributed and torch.cuda.device_count() > 1
+    use_multi_gpus = not cfg.distributed.enable and torch.cuda.device_count() > 1
     with SupervisedTrainer(model,
                            optimizer,
                            F.cross_entropy,
                            callbacks=c,
                            scheduler=scheduler,
                            data_parallel=use_multi_gpus,
-                           use_horovod=cfg.use_horovod) as trainer:
+                           use_horovod=cfg.distributed.use_horovod) as trainer:
 
         for epoch in tq:
             if cfg.use_prefetcher:
@@ -70,5 +70,7 @@ if __name__ == '__main__':
 
     # to suppress annoying warnings from PIL
     warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
+    import sys
+
     _handle_argparse()
     main()

@@ -80,9 +80,7 @@ def get_local_rank() -> int:
             import horovod.torch as hvd
 
             return hvd.local_rank()
-        for arg in python_sys.argv:
-            if "--local_rank" in arg:
-                return int(arg.split("=")[1])
+        return int(get_environ('LOCAL_RANK', 0))
 
 
 def get_global_rank() -> int:
