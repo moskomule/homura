@@ -8,7 +8,8 @@ class DataPrefetcher(object):
     """ prefetch data
     """
 
-    def __init__(self, loader: DataLoader):
+    def __init__(self,
+                 loader: DataLoader):
         self._cuda_available = torch.cuda.is_available()
         self._length = len(loader)
         self.loader = iter(loader)

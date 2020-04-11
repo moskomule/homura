@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 
 from homura import optim, lr_scheduler, callbacks, reporters, trainers
-from homura.vision.data.loaders import cifar10_loaders
+from homura.vision.data import vision_loaders
 from homura.vision.models.classification import resnet20, wrn28_10
 
 
@@ -15,7 +15,7 @@ def main(cfg):
                     "wrn28_10": 5e-4}[cfg.model]
     lr_decay = {"resnet20": 0.1,
                 "wrn28_10": 0.2}[cfg.model]
-    train_loader, test_loader = cifar10_loaders(cfg.batch_size)
+    train_loader, test_loader = vision_loaders("cifar10", cfg.batch_size)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
     tq = reporters.TQDMReporter(range(cfg.epochs), verb=True)
