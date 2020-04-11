@@ -7,7 +7,7 @@ from homura.vision.data.loaders import cifar10_loaders
 from homura.vision.models.classification import resnet20, wrn28_10
 
 
-@hydra.main('config/cifar10.py')
+@hydra.main('config/cifar10.yaml')
 def main(cfg):
     model = {"resnet20": resnet20,
              "wrn28_10": wrn28_10}[cfg.model](num_classes=10)
