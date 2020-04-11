@@ -10,7 +10,7 @@ def test_map():
     for k, v in map.items():
         assert map[k] == getattr(map, k)
 
-    for k in ["update", "keys", "items", "values", "clear", "copy", "get", "pop"]:
+    for k in ["update", "key", "items", "value", "clear", "copy", "get", "pop"]:
         with pytest.raises(KeyError):
             setattr(map, k, 1)
 

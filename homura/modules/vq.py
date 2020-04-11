@@ -2,7 +2,7 @@ import torch
 from torch import nn, distributed
 from torch.nn import functional as F
 
-from homura import is_faiss_available, is_distributed, is_horovod_available
+from homura.utils import is_faiss_available, is_distributed, is_horovod_available
 from .ema import exponential_moving_average_
 from .functional import custom_straight_through_estimator, k_nearest_neighbor as knn
 

@@ -113,7 +113,7 @@ def iteration(trainer: TrainerBase,
         loss.backward()
         trainer.optimizer.step()
     # iteration returns at least (loss, output)
-    # registered values can be called in callbacks
+    # registered value can be called in callbacks
     results.user_value = user_value
     return results
 
