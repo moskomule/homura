@@ -15,7 +15,11 @@ def vision_loaders(name: str,
                    num_workers: int = -1,
                    non_training_bs_factor=2,
                    distributed: bool = False,
-                   return_num_classes: bool = False) -> Tuple:
+                   drop_last: bool = False,
+                   pin_memory: bool = True,
+                   return_num_classes: bool = False,
+                   test_batch_size: Optional[int] = None
+                   ) -> Tuple:
     """ Get data loaders for registered vision datasets. homura expects datasets are in `~/.torch/data/DATASET_NAME`.
     Link path if necessary, e.g. `ln -s /original/path $HOME/.torch`. Datasets can be registered
     using `homura.vision.register_dataset`
@@ -37,7 +41,9 @@ def vision_loaders(name: str,
     if name not in _DATASETS.keys():
         raise RuntimeError(f'Unknown dataset name {name}.')
     dataset = _DATASETS[name]
-    train_set, test_set = dataset.customize(train_da, test_da, norm, download)
+    train_set, test_set = dataset.instantiate(train_da, test_da, norm, download)
+    if test_batch_size is None:
+        test_batch_size = non_training_bs_factor * batch_size
     if val_size > 0:
         train_set, val_set = _split_dataset(train_set, val_size)
         val_set.transform = test_set.transform
@@ -52,17 +58,15 @@ def vision_loaders(name: str,
     else:
         samplers[0] = RandomSampler(train_set, True)
 
-    train_loader = DataLoader(train_set, batch_size,
-                              sampler=samplers[0],
-                              num_workers=num_workers, pin_memory=True)
-    test_loader = DataLoader(test_set, non_training_bs_factor * batch_size, sampler=samplers[2],
-                             num_workers=num_workers, pin_memory=True)
+    shared_kwargs = dict(drop_last=drop_last, num_workers=num_workers, pin_memory=pin_memory,
+                         collate_fn=dataset.collate_fn)
+    train_loader = DataLoader(train_set, batch_size, sampler=samplers[0], **shared_kwargs)
+    test_loader = DataLoader(test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
     ret = [train_loader, test_loader]
     if val_size > 0:
         if distributed:
             samplers[1] = DistributedSampler(test_set, **kwargs)
-        val_loader = DataLoader(val_set, non_training_bs_factor * batch_size, sampler=samplers[1],
-                                num_workers=num_workers, pin_memory=True)
+        val_loader = DataLoader(val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
         ret.append(val_loader)
 
     if return_num_classes:
