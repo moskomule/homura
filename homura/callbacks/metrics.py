@@ -1,3 +1,4 @@
+import warnings
 from collections.abc import Mapping
 from functools import partial
 from typing import Callable, Any
@@ -36,7 +37,6 @@ class MetricCallback(Callback):
         self._last_epoch = {}
         self._metrics_history = {}
         self._logger = get_logger(__name__) if logger is None else logger
-        self._warning_flag = True
         self._no_reduce = no_reduce
 
         if reduction not in ("average", "sum"):
@@ -59,9 +59,8 @@ class MetricCallback(Callback):
 
             if metric is None:
                 metric = 0
-                if self._warning_flag:
-                    self._logger.warning(f"{self.metric_function.__name__} get None and convert it to 0")
-                    self._warning_flag = False
+                # warnings.warn warns once
+                warnings.warn(f"{self.metric_function.__name__} get None and convert it to 0")
 
             self._last_iter[key] = metric
 
@@ -140,12 +139,14 @@ class MetricCallback(Callback):
     def reduce(self,
                tensor: torch.Tensor):
 
+        if not torch.is_tensor(tensor):
+            return tensor
         if is_distributed() and not self._no_reduce:
             if is_horovod_available():
                 import horovod.torch as hvd
 
                 # hvd's all_reduce applies average
-                return hvd.all_reduce(tensor)
+                return hvd.allreduce(tensor)
             # pytorch's all_reduce does not applies average
             distributed.all_reduce(tensor, op=distributed.ReduceOp.SUM)
             return tensor / distributed.get_world_size()

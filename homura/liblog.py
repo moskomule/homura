@@ -133,3 +133,19 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
         formatter = _create_default_formatter()
     th.setFormatter(formatter)
     _get_root_logger().addHandler(th)
+
+
+def _set_tqdm_print():
+    # override print
+    from tqdm import tqdm
+    import builtins
+    from .utils.environment import get_global_rank
+
+    def no_print(*values, **kwargs):
+        pass
+
+    def tqdm_print(*values, sep=' ', end='\n', file=None):
+        s = sep.join([str(v) for v in values])
+        tqdm.write(s, end=end, file=file)
+
+    builtins.print = tqdm_print if get_global_rank() <= 0 else no_print

@@ -17,7 +17,7 @@ def test_vqmodule(ema_update, dim):
     vq = VQModule(10, 10, ema_update)
     for _ in range(2):
         ff = f(input)
-        output, ids = vq(ff)
+        output, loss, ids = vq(ff)
         output.mean().backward()
         vq.zero_grad()
     if dim == 2:

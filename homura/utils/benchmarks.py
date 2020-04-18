@@ -1,9 +1,9 @@
 import functools
+import statistics
 import time
 from contextlib import contextmanager
 from typing import Optional, Callable, Dict
 
-import numpy as np
 import torch
 
 from homura.liblog import get_logger
@@ -28,6 +28,7 @@ def timeit(func: Optional[Callable] = None,
     >>> @timeit(num_iters=100, warmup_iters=100)
     >>> def mm(a, b):
     >>>     return a @ b
+    >>> mm(a, b)
     [homura.utils.benchmarks|2019-11-24 06:40:46|INFO] f requires 0.000021us per iteration
     """
 
@@ -58,14 +59,15 @@ def timeit(func: Optional[Callable] = None,
                     times[i] = time.perf_counter() - t1
 
             total_time = time.perf_counter() - t0
-            logger.info(f"{func.__name__} requires {total_time / num_iters:3f}us per iteration")
-            times = np.array(times)
+            mean = statistics.mean(times)
+            std = statistics.stdev(times)
+            logger.info(f"{func.__name__} requires {mean:.4e}±{std:.4e} sec/iteration")
             return {"total_time": total_time,
                     "mean": total_time / num_iters,
-                    "median": np.median(times),
-                    "min": np.min(times),
-                    "max": np.max(times),
-                    "std": np.std(times)}
+                    "median": statistics.median(times),
+                    "min": min(times),
+                    "max": max(times),
+                    "std": std}
 
         return _timeit
 

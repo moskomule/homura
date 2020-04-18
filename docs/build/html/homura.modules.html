@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -84,18 +84,17 @@
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.language.html">homura.language package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.modules package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.ema">homura.modules.ema module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-attention-module">homura.modules.attention module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-discretization-module">homura.modules.discretization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-ema-module">homura.modules.ema module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-miscs-module">homura.modules.miscs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-modules-vq-module">homura.modules.vq module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -103,12 +102,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-liblog-module">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -119,14 +117,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.attention">homura.modules.attention module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.conditional_batchnorm">homura.modules.conditional_batchnorm module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.discretization">homura.modules.discretization module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.ema">homura.modules.ema module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.miscs">homura.modules.miscs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.regularizer">homura.modules.regularizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules.vq">homura.modules.vq module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.modules">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-attention-module">homura.modules.attention module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-discretization-module">homura.modules.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-ema-module">homura.modules.ema module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-miscs-module">homura.modules.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-modules-vq-module">homura.modules.vq module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
@@ -206,12 +202,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.discretizations">homura.modules.functional.discretizations module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-homura.modules.functional">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-attention-module">homura.modules.functional.attention module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-convert-module">homura.modules.functional.convert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-discretizations-module">homura.modules.functional.discretizations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-grad-approximation-module">homura.modules.functional.grad_approximation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-knn-module">homura.modules.functional.knn module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#homura-modules-functional-loss-module">homura.modules.functional.loss module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.functional.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -220,335 +217,23 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.modules.attention">
-<span id="homura-modules-attention-module"></span><h2>homura.modules.attention module<a class="headerlink" href="#module-homura.modules.attention" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.attention.KeyValAttention">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.attention.</code><code class="sig-name descname">KeyValAttention</code><span class="sig-paren">(</span><em class="sig-param">scaling: bool = False</em>, <em class="sig-param">dropout_ratio: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="method">
-<dt id="homura.modules.attention.KeyValAttention.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">queries: torch.Tensor</em>, <em class="sig-param">keys: torch.Tensor</em>, <em class="sig-param">values: torch.Tensor</em>, <em class="sig-param">mask=None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>dim of X &gt;= 0,
-dim of Y &gt;= 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>queries</strong> – B img X img L</p></li>
-<li><p><strong>keys</strong> – B img Y img L</p></li>
-<li><p><strong>values</strong> – B img Y img L</p></li>
-<li><p><strong>mask</strong> – B img Y img L or None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="homura-modules-attention-module">
+<h2>homura.modules.attention module<a class="headerlink" href="#homura-modules-attention-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.modules.conditional_batchnorm">
-<span id="homura-modules-conditional-batchnorm-module"></span><h2>homura.modules.conditional_batchnorm module<a class="headerlink" href="#module-homura.modules.conditional_batchnorm" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.conditional_batchnorm.</code><code class="sig-name descname">CategoricalConditionalBatchNorm</code><span class="sig-paren">(</span><em class="sig-param">num_features</em>, <em class="sig-param">num_classes</em>, <em class="sig-param">eps=1e-05</em>, <em class="sig-param">momentum=0.1</em>, <em class="sig-param">affine=True</em>, <em class="sig-param">track_running_stats=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.batchnorm._BatchNorm</span></code></p>
-<p>(Categorical) conditional batch normalization, proposed in
-V. Dumoulin, J. Shlens, and M. Kudlur, “A learned representation for artistic style”,
-<a class="reference external" href="https://arxiv.org/abs/1610.07629">https://arxiv.org/abs/1610.07629</a> (In this paper, conditional <em>instance</em> normalization is used)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>num_features</strong> – </p></li>
-<li><p><strong>num_classes</strong> – </p></li>
-<li><p><strong>eps</strong> – </p></li>
-<li><p><strong>momentum</strong> – </p></li>
-<li><p><strong>affine</strong> – </p></li>
-<li><p><strong>track_running_stats</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">inputs: torch.Tensor</em>, <em class="sig-param">categories: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/conditional_batchnorm.html#CategoricalConditionalBatchNorm.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.conditional_batchnorm.CategoricalConditionalBatchNorm.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="homura-modules-discretization-module">
+<h2>homura.modules.discretization module<a class="headerlink" href="#homura-modules-discretization-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="homura-modules-ema-module">
+<h2>homura.modules.ema module<a class="headerlink" href="#homura-modules-ema-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.modules.discretization">
-<span id="homura-modules-discretization-module"></span><h2>homura.modules.discretization module<a class="headerlink" href="#module-homura.modules.discretization" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.discretization.GumbelSigmoid">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.discretization.</code><code class="sig-name descname">GumbelSigmoid</code><span class="sig-paren">(</span><em class="sig-param">temp: float = 0.1</em>, <em class="sig-param">threshold: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>This module outputs <cite>gumbel_sigmoid</cite> while training and <cite>input.sigmoid() &gt;= threshold</cite> while evaluation</p>
-<dl class="method">
-<dt id="homura.modules.discretization.GumbelSigmoid.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="homura-modules-miscs-module">
+<h2>homura.modules.miscs module<a class="headerlink" href="#homura-modules-miscs-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.modules.discretization.GumbelSoftmax">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.discretization.</code><code class="sig-name descname">GumbelSoftmax</code><span class="sig-paren">(</span><em class="sig-param">dim: int</em>, <em class="sig-param">temp: float = 0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>This module outputs <cite>gumbel_softmax</cite> while training and argmax in onehot fashion while evaluation</p>
-<dl class="method">
-<dt id="homura.modules.discretization.GumbelSoftmax.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSoftmax.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSoftmax.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="homura-modules-vq-module">
+<h2>homura.modules.vq module<a class="headerlink" href="#homura-modules-vq-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.modules.discretization.StraightThroughEstimator">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.discretization.</code><code class="sig-name descname">StraightThroughEstimator</code><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="method">
-<dt id="homura.modules.discretization.StraightThroughEstimator.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.modules.discretization.SemanticHashing">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.discretization.</code><code class="sig-name descname">SemanticHashing</code><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="method">
-<dt id="homura.modules.discretization.SemanticHashing.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.ema">
-<span id="homura-modules-ema-module"></span><h2>homura.modules.ema module<a class="headerlink" href="#module-homura.modules.ema" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.ema.EMANet">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.ema.</code><code class="sig-name descname">EMANet</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">momentum: float</em>, <em class="sig-param">wrap_model: bool = False</em>, <em class="sig-param">weight_decay: Optional[float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMANet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.EMANet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>Tracking exponential moving average of a given model</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – model to be tracked</p></li>
-<li><p><strong>momentum</strong> – momentum for EMA</p></li>
-<li><p><strong>wrap_model</strong> – If True, <cite>forward</cite> returns outputs of the original model during training.</p></li>
-</ul>
-</dd>
-</dl>
-<p>If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
-:param weight_decay: If a float value is given, apply weight decay to the original model</p>
-<dl class="method">
-<dt id="homura.modules.ema.EMANet.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">*inputs: torch.Tensor</em>, <em class="sig-param">update_buffers: bool = True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMANet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.EMANet.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.modules.ema.exponential_moving_average_">
-<code class="sig-prename descclassname">homura.modules.ema.</code><code class="sig-name descname">exponential_moving_average_</code><span class="sig-paren">(</span><em class="sig-param">base: torch.Tensor</em>, <em class="sig-param">update: torch.Tensor</em>, <em class="sig-param">momentum: float</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/ema.html#exponential_moving_average_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.exponential_moving_average_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inplace exponential moving average of <cite>base</cite> tensor</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> – tensor to be updated</p></li>
-<li><p><strong>update</strong> – tensor for updating</p></li>
-<li><p><strong>momentum</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>exponential-moving-averaged <cite>base</cite> tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.miscs">
-<span id="homura-modules-miscs-module"></span><h2>homura.modules.miscs module<a class="headerlink" href="#module-homura.modules.miscs" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.modules.miscs.straight_backprop">
-<code class="sig-prename descclassname">homura.modules.miscs.</code><code class="sig-name descname">straight_backprop</code><span class="sig-paren">(</span><em class="sig-param">function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/miscs.html#straight_backprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.miscs.straight_backprop" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function whose <cite>derivative</cite> is as linear</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span> <span class="o">=</span> <span class="n">straight_backprop</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">straight_backprop_relu</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>function</strong> – original function</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>modified function</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.regularizer">
-<span id="homura-modules-regularizer-module"></span><h2>homura.modules.regularizer module<a class="headerlink" href="#module-homura.modules.regularizer" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.regularizer.WSConv2d">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.regularizer.</code><code class="sig-name descname">WSConv2d</code><span class="sig-paren">(</span><em class="sig-param">in_channels</em>, <em class="sig-param">out_channels</em>, <em class="sig-param">kernel_size</em>, <em class="sig-param">stride=1</em>, <em class="sig-param">padding=0</em>, <em class="sig-param">dilation=1</em>, <em class="sig-param">groups=1</em>, <em class="sig-param">bias=True</em>, <em class="sig-param">padding_mode='zeros'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.conv.Conv2d</span></code></p>
-<p><cite>nn.Conv2d</cite> with weight standardization</p>
-<dl class="method">
-<dt id="homura.modules.regularizer.WSConv2d.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/regularizer.html#WSConv2d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.WSConv2d.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.modules.regularizer.convert_ws">
-<code class="sig-prename descclassname">homura.modules.regularizer.</code><code class="sig-name descname">convert_ws</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em><span class="sig-paren">)</span> &#x2192; torch.nn.modules.module.Module<a class="reference internal" href="_modules/homura/modules/regularizer.html#convert_ws"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.convert_ws" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the given model’s <cite>nn.Conv2d</cite> to weight standardized <cite>Conv2d</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>model</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.modules.regularizer.weight_standardization">
-<code class="sig-prename descclassname">homura.modules.regularizer.</code><code class="sig-name descname">weight_standardization</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module</em>, <em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/regularizer.html#weight_standardization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.regularizer.weight_standardization" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>forward</cite> of weight initialization. Currently only supports <cite>nn.Conv2d</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – </p></li>
-<li><p><strong>input</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules.vq">
-<span id="homura-modules-vq-module"></span><h2>homura.modules.vq module<a class="headerlink" href="#module-homura.modules.vq" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.modules.vq.VQModule">
-<em class="property">class </em><code class="sig-prename descclassname">homura.modules.vq.</code><code class="sig-name descname">VQModule</code><span class="sig-paren">(</span><em class="sig-param">emb_dim: int</em>, <em class="sig-param">dict_size: int</em>, <em class="sig-param">update_dict_by_ema: bool = True</em>, <em class="sig-param">momentum: float = 0.99</em>, <em class="sig-param">epsilon: float = 1e-05</em>, <em class="sig-param">knn_backend='torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>Vector Quantization module used in VQ-VAE [van den Oord et al. 17]</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>emb_dim</strong> – </p></li>
-<li><p><strong>dict_size</strong> – </p></li>
-<li><p><strong>update_dict_by_ema</strong> – </p></li>
-<li><p><strong>momentum</strong> – </p></li>
-<li><p><strong>epsilon</strong> – </p></li>
-<li><p><strong>knn_backend</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="homura.modules.vq.VQModule.flatten_input">
-<code class="sig-name descname">flatten_input</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.flatten_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.flatten_input" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.modules.vq.VQModule.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="homura.modules.vq.VQModule.lookup">
-<code class="sig-name descname">lookup</code><span class="sig-paren">(</span><em class="sig-param">ids: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/vq.html#VQModule.lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.vq.VQModule.lookup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.modules">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

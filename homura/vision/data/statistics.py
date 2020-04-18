@@ -4,9 +4,8 @@ from typing import Sequence
 
 import torch
 from PIL import Image
+from torchvision.datasets.folder import IMG_EXTENSIONS
 from torchvision.transforms.functional import to_tensor
-
-from .folder import ImageFolder
 
 
 class PerChannelStatistics(object):
@@ -47,7 +46,7 @@ class PerChannelStatistics(object):
             raise FileNotFoundError
 
         image_paths = []
-        for ext in ImageFolder.IMG_EXTENSIONS:
+        for ext in IMG_EXTENSIONS:
             # *.jpg ...
             # in `root`
             image_paths += list(root.glob(f"*.{ext}"))

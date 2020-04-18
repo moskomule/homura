@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -84,28 +84,29 @@
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.language.html">homura.language package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.utils package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.benchmarks">homura.utils.benchmarks module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.debug">homura.utils.debug module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.environment">homura.utils.environment module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-backends-module">homura.utils.backends module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-benchmarks-module">homura.utils.benchmarks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-containers-module">homura.utils.containers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-debug-module">homura.utils.debug module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-environment-module">homura.utils.environment module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-utils-reproducibility-module">homura.utils.reproducibility module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-liblog-module">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -114,12 +115,13 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.benchmarks">homura.utils.benchmarks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.debug">homura.utils.debug module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.environment">homura.utils.environment module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-backends-module">homura.utils.backends module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-benchmarks-module">homura.utils.benchmarks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-containers-module">homura.utils.containers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-debug-module">homura.utils.debug module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-environment-module">homura.utils.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-utils-reproducibility-module">homura.utils.reproducibility module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
@@ -194,217 +196,26 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.utils.benchmarks">
-<span id="homura-utils-benchmarks-module"></span><h2>homura.utils.benchmarks module<a class="headerlink" href="#module-homura.utils.benchmarks" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.utils.benchmarks.timeit">
-<code class="sig-prename descclassname">homura.utils.benchmarks.</code><code class="sig-name descname">timeit</code><span class="sig-paren">(</span><em class="sig-param">func: Optional[Callable] = None</em>, <em class="sig-param">num_iters: Optional[int] = 100</em>, <em class="sig-param">warmup_iters: Optional[int] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/benchmarks.html#timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.benchmarks.timeit" title="Permalink to this definition">¶</a></dt>
-<dd><p>A simple</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@timeit</span><span class="p">(</span><span class="n">num_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">warmup_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">mm</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">@</span> <span class="n">b</span>
-<span class="go">[homura.utils.benchmarks|2019-11-24 06:40:46|INFO] f requires 0.000021us per iteration</span>
-</pre></div>
+<div class="section" id="homura-utils-backends-module">
+<h2>homura.utils.backends module<a class="headerlink" href="#homura-utils-backends-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
+<div class="section" id="homura-utils-benchmarks-module">
+<h2>homura.utils.benchmarks module<a class="headerlink" href="#homura-utils-benchmarks-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.utils.containers">
-<span id="homura-utils-containers-module"></span><h2>homura.utils.containers module<a class="headerlink" href="#module-homura.utils.containers" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="homura.utils.containers.Map">
-<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
-<p>dict like object but: stored values can be subscribed and attributed.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span>
-</pre></div>
+<div class="section" id="homura-utils-containers-module">
+<h2>homura.utils.containers module<a class="headerlink" href="#homura-utils-containers-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<dl class="method">
-<dt id="homura.utils.containers.Map.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a shallow copy of D<a class="reference internal" href="_modules/homura/utils/containers.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.Map.deepcopy">
-<code class="sig-name descname">deepcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.deepcopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.deepcopy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.Map.keys">
-<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D's keys<a class="reference internal" href="_modules/homura/utils/containers.html#Map.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.Map.to">
-<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">device: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#Map.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.to" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move stored tensors to a given device</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.Map.values">
-<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D's values<a class="reference internal" href="_modules/homura/utils/containers.html#Map.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.Map.values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.utils.containers.TensorTuple">
-<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">TensorTuple</code><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>Tuple for tensors.</p>
-<dl class="method">
-<dt id="homura.utils.containers.TensorTuple.to">
-<code class="sig-name descname">to</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#TensorTuple.to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.TensorTuple.to" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="homura.utils.containers.StepDict">
-<em class="property">class </em><code class="sig-prename descclassname">homura.utils.containers.</code><code class="sig-name descname">StepDict</code><span class="sig-paren">(</span><em class="sig-param">_type</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
-<p>Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>_type</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="homura.utils.containers.StepDict.load_state_dict">
-<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param">state_dicts: dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.load_state_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.StepDict.state_dict">
-<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.state_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.StepDict.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="homura.utils.containers.StepDict.zero_grad">
-<code class="sig-name descname">zero_grad</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/containers.html#StepDict.zero_grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.containers.StepDict.zero_grad" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="homura-utils-debug-module">
+<h2>homura.utils.debug module<a class="headerlink" href="#homura-utils-debug-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.utils.debug">
-<span id="homura-utils-debug-module"></span><h2>homura.utils.debug module<a class="headerlink" href="#module-homura.utils.debug" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.utils.debug.module_debugger">
-<code class="sig-prename descclassname">homura.utils.debug.</code><code class="sig-name descname">module_debugger</code><span class="sig-paren">(</span><em class="sig-param">model: torch.nn.modules.module.Module, input: Tuple[torch.Tensor], target: Optional[Tuple[torch.Tensor]] = None, loss: Optional[Callable] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/debug.html#module_debugger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.debug.module_debugger" title="Permalink to this definition">¶</a></dt>
-<dd><p>log all modules connected with forward and backward calculation</p>
-</dd></dl>
-
+<div class="section" id="homura-utils-environment-module">
+<h2>homura.utils.environment module<a class="headerlink" href="#homura-utils-environment-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.utils.environment">
-<span id="homura-utils-environment-module"></span><h2>homura.utils.environment module<a class="headerlink" href="#module-homura.utils.environment" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.utils.environment.enable_accimage">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">enable_accimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/homura/utils/environment.html#enable_accimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.enable_accimage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_args">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="_modules/homura/utils/environment.html#get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_environ">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_environ</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/homura/utils/environment.html#get_environ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_environ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_git_hash">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_git_hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/homura/utils/environment.html#get_git_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_git_hash" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_global_rank">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_global_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_global_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_global_rank" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_local_rank">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_local_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_local_rank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_local_rank" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_num_nodes">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_num_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_num_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_num_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.get_world_size">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_world_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/homura/utils/environment.html#get_world_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_world_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.init_distributed">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">init_distributed</code><span class="sig-paren">(</span><em class="sig-param">use_horovod: bool = False</em>, <em class="sig-param">*</em>, <em class="sig-param">backend='nccl'</em>, <em class="sig-param">init_method='env://'</em>, <em class="sig-param">warning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#init_distributed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.init_distributed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_accimage_available">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_accimage_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_accimage_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_accimage_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_distributed">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_distributed</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_distributed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_distributed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_distributed_avaiable">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_distributed_avaiable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_distributed_avaiable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_distributed_avaiable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_faiss_available">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_faiss_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_faiss_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_faiss_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_horovod_available">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_horovod_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_horovod_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_horovod_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.environment.is_master">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_master</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/homura/utils/environment.html#is_master"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_master" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="homura-utils-reproducibility-module">
+<h2>homura.utils.reproducibility module<a class="headerlink" href="#homura-utils-reproducibility-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.utils.reproducibility">
-<span id="homura-utils-reproducibility-module"></span><h2>homura.utils.reproducibility module<a class="headerlink" href="#module-homura.utils.reproducibility" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.utils.reproducibility.set_deterministic">
-<code class="sig-prename descclassname">homura.utils.reproducibility.</code><code class="sig-name descname">set_deterministic</code><span class="sig-paren">(</span><em class="sig-param">seed: Optional[int] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_deterministic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_deterministic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set seed of <cite>torch</cite>, <cite>random</cite> and <cite>numpy</cite> to <cite>seed</cite> for making it deterministic. Because of CUDA’s limitation, this
-does not make everything deterministic, however.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="homura.utils.reproducibility.set_seed">
-<code class="sig-prename descclassname">homura.utils.reproducibility.</code><code class="sig-name descname">set_seed</code><span class="sig-paren">(</span><em class="sig-param">seed: Optional[int] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/reproducibility.html#set_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.reproducibility.set_seed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fix seed of random generator in the given context. Negative seed has no effect</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">set_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">do_some_random_thing</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -84,26 +84,23 @@
 <li class="toctree-l1 current"><a class="reference internal" href="homura.html">homura package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="homura.language.html">homura.language package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="homura.vision.html">homura.vision package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-homura.vision.cutmix">homura.vision.cutmix module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-homura.vision.mixup">homura.vision.mixup module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.tasks">homura.tasks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-liblog-module">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -116,16 +113,13 @@
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.data.html">homura.vision.data package</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="homura.vision.models.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.transforms.html">homura.vision.transforms package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision.cutmix">homura.vision.cutmix module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision.mixup">homura.vision.mixup module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -203,36 +197,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.vision.models.segmentation.unet">
-<span id="homura-vision-models-segmentation-unet-module"></span><h2>homura.vision.models.segmentation.unet module<a class="headerlink" href="#module-homura.vision.models.segmentation.unet" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="homura.vision.models.segmentation.unet.unet">
-<code class="sig-prename descclassname">homura.vision.models.segmentation.unet.</code><code class="sig-name descname">unet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#unet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.unet" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="homura.vision.models.segmentation.unet.CustomUNet">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.models.segmentation.unet.</code><code class="sig-name descname">CustomUNet</code><span class="sig-paren">(</span><em class="sig-param">num_classes</em>, <em class="sig-param">input_channels</em>, <em class="sig-param">config=((64</em>, <em class="sig-param">128</em>, <em class="sig-param">256</em>, <em class="sig-param">512</em>, <em class="sig-param">1024)</em>, <em class="sig-param">(1024</em>, <em class="sig-param">512</em>, <em class="sig-param">256</em>, <em class="sig-param">128</em>, <em class="sig-param">64))</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.models.segmentation.unet.UNet</span></code></p>
-<dl class="method">
-<dt id="homura.vision.models.segmentation.unet.CustomUNet.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/models/segmentation/unet.html#CustomUNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.models.segmentation.unet.CustomUNet.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="homura-vision-models-segmentation-unet-module">
+<h2>homura.vision.models.segmentation.unet module<a class="headerlink" href="#homura-vision-models-segmentation-unet-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.vision.models.segmentation">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.vision.models.segmentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

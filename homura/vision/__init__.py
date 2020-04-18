@@ -1,6 +1,6 @@
-from .cutmix import cutmix, input_cutmix
 from .data import *
 from .data.statistics import PerChannelStatistics
-from .mixup import partial_mixup, mixup
 from .models import *
 from .transforms import *
+from .transforms.cutmix import cutmix, input_cutmix
+from .transforms.mixup import mixup, partial_mixup

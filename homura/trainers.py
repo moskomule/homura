@@ -1,3 +1,5 @@
+import contextlib
+import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
@@ -11,8 +13,9 @@ from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
 from homura import is_distributed, is_horovod_available
-from homura.liblog import get_logger
+from homura.liblog import get_logger, _set_tqdm_print
 from .callbacks import Callback, CallbackList, WeightSave
+from .callbacks.base import _NoOpCallback
 from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, Map, StepDict
@@ -110,12 +113,13 @@ class TrainerBase(metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        self.optimizer = None
-        self.scheduler = None
-        self._callbacks = None
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self._callbacks = callbacks
         self.update_scheduler_by_epoch = update_scheduler_by_epoch
-        self._set_optimizer(optimizer)
-        self._set_scheduler(scheduler)
+
+        self.set_optimizer()
+        self.set_scheduler()
         self._set_callbacks(callbacks)
 
         if use_horovod:
@@ -135,7 +139,10 @@ class TrainerBase(metaclass=ABCMeta):
         self._epoch = -1
         self._is_train = True
         # to nest, leave=False (https://github.com/tqdm/tqdm/blob/master/examples/simple_examples.py#L19)
-        self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False) if verb else lambda x: x
+        self._tqdm = lambda x: x
+        if verb:
+            self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
+            _set_tqdm_print()
 
         _map_base = {MODEL: self.accessible_model,
                      OPTIMIZER: self.optimizer,
@@ -217,18 +224,15 @@ class TrainerBase(metaclass=ABCMeta):
         self._iteration_map.update({EPOCH: self.epoch, ITERATION: self.step, MODE: mode})
         with torch.no_grad():
             self._callbacks.before_iteration(self._iteration_map)
+
+        data = self.data_handler_before_iter(data)
         results = self.iteration(data)
         if self.is_train and self.scheduler is not None and not self.update_scheduler_by_epoch:
             self.scheduler.step()
-        # backward compatibility
-        if isinstance(results, tuple):
-            loss, output = TensorTuple(results)
-            results = dict(loss=loss, output=output)
-            self._iteration_map.update(**results)
-        else:
-            for k in results:
-                self._iteration_map[k] = results[k]
-        self._iteration_map[DATA] = data
+
+        self._iteration_map.update(**results)
+        self._iteration_map[DATA] = self.data_handler_after_iter(data)
+
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
         # clean up
@@ -261,7 +265,6 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.before_epoch(self._epoch_map)
 
         for data in self._tqdm(data_loader):
-            data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             if self.is_train:
                 # increment step here for `callbacks`
                 self._step += 1
@@ -270,6 +273,25 @@ class TrainerBase(metaclass=ABCMeta):
         with torch.no_grad():
             self._callbacks.after_epoch(self._epoch_map)
         self.logger.debug(f"epoch {self.epoch} finished")
+
+    def data_handler_before_iter(self,
+                                 data: tuple) -> TensorTuple:
+        """ Handle data sampled from dataloader before `iteration`.
+        By default, `data` is expected to be a tuple of tensors,
+        so wrap it with TensorTuple and send it to `self.device`
+
+        """
+
+        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
+
+    def data_handler_after_iter(self,
+                                data: tuple):
+        """ Handle data sampled from dataloader after `iteration`.
+        By default, just returns the input.
+
+        """
+
+        return data
 
     def train(self,
               data_loader: Iterable or DataLoader,
@@ -362,8 +384,8 @@ class TrainerBase(metaclass=ABCMeta):
             self._callbacks.close()
 
     def state_dict(self) -> Mapping:
-        return {'step': self.step,
-                'epoch': self.epoch}
+        # check what is need to be saved
+        raise NotImplementedError
 
     def load_state_dict(self,
                         state_dict: Mapping):
@@ -374,8 +396,16 @@ class TrainerBase(metaclass=ABCMeta):
 
         raise NotImplementedError
 
-    def _set_optimizer(self,
-                       optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]]):
+    def set_optimizer(self):
+        """ Set optimizer(s) for model(s). You can override as ::
+
+        class YourTrainer(TrainerBase):
+            def set_optimizer(self):
+                self.optimizer = torch.optim.SGD(self.model.parameters())
+
+        """
+
+        optimizer = self.optimizer
         if isinstance(optimizer, Optimizer) or optimizer is None:
             self.optimizer = optimizer
 
@@ -396,8 +426,16 @@ class TrainerBase(metaclass=ABCMeta):
         else:
             raise TypeError(f"Unexpected type {type(optimizer)} for `optimizer`")
 
-    def _set_scheduler(self,
-                       scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]]):
+    def set_scheduler(self):
+        """ Set scheduler(s) for optimizer(s). You can override as ::
+
+                class YourTrainer(TrainerBase):
+                    def set_scheduler(self):
+                        self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)
+
+        """
+
+        scheduler = self.scheduler
         if scheduler is not None and self.optimizer is None:
             raise TypeError("Optimizer is not set, so scheduler cannot be set")
 
@@ -413,7 +451,12 @@ class TrainerBase(metaclass=ABCMeta):
         elif isinstance(scheduler, dict):
             if not isinstance(self.optimizer, StepDict):
                 raise TypeError("When `scheduler` is `dict`, `optimizer` is also needs to be `dict`")
-            self.scheduler = StepDict(Scheduler, **scheduler)
+            _scheduler = {}
+            for k, v in scheduler.items():
+                if isinstance(v, Partial):
+                    v = v(self.optimizer[k])
+                _scheduler[k] = v
+            self.scheduler = StepDict(Scheduler, **_scheduler)
 
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
@@ -436,6 +479,8 @@ class TrainerBase(metaclass=ABCMeta):
                 _outers.append(c)
             elif isinstance(c, Callback):
                 _inners.append(c)
+            elif isinstance(c, _NoOpCallback):
+                pass
             else:
                 raise TypeError(f"Element of `callbacks` is expected to be `Callback`, but got `{type(c)}`")
 
@@ -456,6 +501,7 @@ class SupervisedTrainer(TrainerBase):
                  verb=True,
                  use_cudnn_benchmark=True,
                  data_parallel=False,
+                 use_amp=False,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -465,13 +511,28 @@ class SupervisedTrainer(TrainerBase):
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
 
+        self._use_amp = use_amp
+        if use_amp:
+            if not hasattr(torch.cuda, 'amp'):
+                warnings.warn('amp is not available')
+                self._use_amp = False
+            else:
+                self.scaler = torch.cuda.amp.GradScaler()
+
     def iteration(self,
                   data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
-        output = self.model(input)
-        loss = self.loss_f(output, target)
+        context = torch.cuda.amp.autocast if self._use_amp else contextlib.nullcontext
+        with context():
+            output = self.model(input)
+            loss = self.loss_f(output, target)
         if self.is_train:
             self.optimizer.zero_grad()
-            loss.backward()
-            self.optimizer.step()
+            if self._use_amp:
+                self.scaler(loss).backward()
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+            else:
+                loss.backward()
+                self.optimizer.step()
         return Map(loss=loss, output=output)
