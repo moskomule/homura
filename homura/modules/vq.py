@@ -58,13 +58,15 @@ class VQModule(nn.Module):
         distance, ids = knn(self.embed, flatten, 1, self.metric, backend=self._knn_backend)
 
         vqs = self.lookup(ids)
+
+        if self.training and not self.frozen:
+            self.ema_update(flatten, ids)
+
         if len(shape) == 4:
             # vqs: (BWH)xC -> BxCxHxW
             b, c, h, w = shape
             vqs = vqs.view(b, w, h, c).transpose(1, -1)
             ids = ids.view(b, w, h).transpose(1, -1)
-        if self.training and not self.frozen:
-            self.ema_update(flatten, ids)
 
         return distance, ids, vqs
 
