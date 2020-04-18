@@ -1,11 +1,11 @@
 name: ghpage
-on: [push, pull_request]
+on: push
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, skip doc)"
+    if: "!contains(github.event.head_commit.message, 'skip doc')"
 
     steps:
       - uses: actions/checkout@v2
