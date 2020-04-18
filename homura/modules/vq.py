@@ -62,6 +62,7 @@ class VQModule(nn.Module):
             # vqs: (BWH)xC -> BxCxHxW
             b, c, h, w = shape
             vqs = vqs.view(b, w, h, c).transpose(1, -1)
+            ids = ids.view(b, w, h).transpose(1, -1)
         if self.training and not self.frozen:
             self.ema_update(flatten, ids)
 
