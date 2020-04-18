@@ -170,7 +170,7 @@ _DATASETS = {'cifar10': VisionSet(datasets.CIFAR10, "~/.torch/data/cifar10", 10,
 
              'voc_seg': VisionSet(ExtendedVOCSegmentation, "~/.torch/data/voc", 21,
                                   [segmentation.ToTensor(),
-                                   segmentation.Normalize((0.3265, 0.3116, 0.2888, (0.2906, 0.2815, 0.2753)))],
+                                   segmentation.Normalize((0.3265, 0.3116, 0.2888), (0.2906, 0.2815, 0.2753))],
                                   [segmentation.RandomResize(260, 1040),
                                    segmentation.RandomHorizontalFlip(),
                                    segmentation.RandomCrop(480)],

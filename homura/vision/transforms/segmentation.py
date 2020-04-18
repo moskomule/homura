@@ -112,8 +112,8 @@ class ToTensor(object):
 
 class Normalize(object):
     def __init__(self,
-                 mean: list,
-                 std: list):
+                 mean: list or tuple,
+                 std: list or tuple):
         self.mean = mean
         self.std = std
 
