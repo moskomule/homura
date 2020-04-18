@@ -47,7 +47,7 @@ class VQModule(nn.Module):
         # returns reconstructed inputs and corresponding reconstructed loss
 
         distance, ids, vqs = self._forward(*self.flatten(input))
-        return custom_straight_through_estimator(vqs, input), F.mse_loss(vqs.detach(), input)
+        return custom_straight_through_estimator(vqs, input), F.mse_loss(vqs.detach(), input), ids
 
     @torch.no_grad()
     def _forward(self,
