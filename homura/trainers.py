@@ -229,8 +229,10 @@ class TrainerBase(metaclass=ABCMeta):
         results = self.iteration(data)
         if self.is_train and self.scheduler is not None and not self.update_scheduler_by_epoch:
             self.scheduler.step()
+
         self._iteration_map.update(**results)
         self._iteration_map[DATA] = self.data_handler_after_iter(data)
+
         with torch.no_grad():
             self._callbacks.after_iteration(self._iteration_map)
         # clean up
