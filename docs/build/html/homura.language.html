@@ -86,8 +86,8 @@
 <li class="toctree-l3"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.language package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-language-transformer-module">homura.language.transformer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.language.transformer">homura.language.transformer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.language">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
@@ -97,11 +97,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-liblog-module">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -181,11 +181,35 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="homura-language-transformer-module">
-<h2>homura.language.transformer module<a class="headerlink" href="#homura-language-transformer-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.language.transformer">
+<span id="homura-language-transformer-module"></span><h2>homura.language.transformer module<a class="headerlink" href="#module-homura.language.transformer" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.language.transformer.MultiHeadAttention">
+<em class="property">class </em><code class="sig-prename descclassname">homura.language.transformer.</code><code class="sig-name descname">MultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">embed_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">8</span></em>, <em class="sig-param"><span class="n">hidden_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dropout_prob</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">relative_pos</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/language/transformer.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.language.transformer.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="py method">
+<dt id="homura.language.transformer.MultiHeadAttention.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">query: torch.Tensor</em>, <em class="sig-param">key: torch.Tensor</em>, <em class="sig-param">value: torch.Tensor</em>, <em class="sig-param">mask: Optional[torch.Tensor] = None) -&gt; (&lt;class 'torch.Tensor'&gt;</em>, <em class="sig-param">&lt;class 'torch.Tensor'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/language/transformer.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.language.transformer.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – <cite>…JxM</cite></p></li>
+<li><p><strong>key</strong> – <cite>…KxM</cite></p></li>
+<li><p><strong>value</strong> – <cite>…KxM</cite></p></li>
+<li><p><strong>mask</strong> – <cite>…JxK</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.language">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.language" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
