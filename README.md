@@ -1,4 +1,4 @@
-# Homura [![CircleCI](https://circleci.com/gh/moskomule/homura/tree/master.svg?style=svg)](https://circleci.com/gh/moskomule/homura/tree/master) [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
+# homura ![](https://github.com/moskomule/homura/workflows/pytest/badge.svg) [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
 
 **homura** is a library for fast prototyping DL research.
 
@@ -28,6 +28,7 @@ colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
 horovad (for easier distributed training)
+cupy
 ```
 
 If `horovod` is available, `homura` tries to use it for distributed training. To disable `horovod` and use `pytorch.distributed` instead, set `HOMURA_DISABLE_HOROVOD=1`.

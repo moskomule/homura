@@ -1,5 +1,6 @@
 # get information on the environment
 
+import builtins
 import importlib.util
 import os as python_os
 import subprocess
@@ -146,6 +147,12 @@ def init_distributed(use_horovod: bool = False, *,
         else:
             distributed.init_process_group(backend=backend, init_method=init_method)
         logger.debug("init distributed")
+
+    if not is_master():
+        def no_print(*values, **kwargs):
+            pass
+
+        builtins.print = no_print
 
 
 def enable_accimage() -> None:
