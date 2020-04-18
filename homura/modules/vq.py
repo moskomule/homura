@@ -67,6 +67,9 @@ class VQModule(nn.Module):
             b, c, h, w = shape
             vqs = vqs.view(b, w, h, c).transpose(1, -1)
             ids = ids.view(b, w, h).transpose(1, -1)
+        else:
+            # vqs
+            vqs = vqs.squeeze()
 
         return distance, ids, vqs
 
