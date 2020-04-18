@@ -102,8 +102,8 @@ class VisionSet:
     def __post_init__(self):
         # _ is self
         _, *args = inspect.getfullargspec(self.tv_class).args
-        assert {'root', 'train', 'transform', 'download'} < set(args), \
-            "dataset DataSet(root, train, transform) is expected"
+        assert {'root', 'train', 'transform', 'download'} <= set(args), \
+            "dataset DataSet(root, train, transform, download) is expected"
         self.root = pathlib.Path(self.root).expanduser()
         if self.default_train_da is None:
             self.default_train_da = []

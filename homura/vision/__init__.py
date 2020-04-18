@@ -3,3 +3,4 @@ from .data.statistics import PerChannelStatistics
 from .models import *
 from .transforms import *
 from .transforms.cutmix import cutmix, input_cutmix
+from .transforms.mixup import mixup, partial_mixup
