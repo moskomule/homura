@@ -70,6 +70,7 @@ class VQModule(nn.Module):
         else:
             # vqs
             vqs = vqs.squeeze()
+            ids = ids.squeeze()
 
         return distance, ids, vqs
 
