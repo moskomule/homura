@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -242,6 +240,10 @@
 
 <div class="viewcode-block" id="VisionSet"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.datasets.VisionSet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">VisionSet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Dataset abstraction for vision datasets.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">tv_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">)</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
     <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span>
@@ -333,6 +335,13 @@
 <div class="viewcode-block" id="register_vision_dataset"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.datasets.register_vision_dataset">[docs]</a><span class="k">def</span> <span class="nf">register_vision_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                             <span class="n">vision_set</span><span class="p">:</span> <span class="n">VisionSet</span>
                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Register dataset for vision tasks. Registered dataset can be called via `vision_loaders(...)`.</span>
+
+<span class="sd">    :param name:</span>
+<span class="sd">    :param vision_set:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_DATASETS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;name=(</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">) is already registered&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vision_set</span><span class="p">,</span> <span class="n">VisionSet</span><span class="p">):</span>

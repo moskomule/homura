@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -174,7 +172,7 @@
 <div class="viewcode-block" id="timeit"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.benchmarks.timeit">[docs]</a><span class="k">def</span> <span class="nf">timeit</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
            <span class="n">num_iters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
            <span class="n">warmup_iters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A simple</span>
+    <span class="sd">&quot;&quot;&quot; A simple timeit for GPU operations.</span>
 
 <span class="sd">    &gt;&gt;&gt; @timeit(num_iters=100, warmup_iters=100)</span>
 <span class="sd">    &gt;&gt;&gt; def mm(a, b):</span>

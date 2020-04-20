@@ -80,11 +80,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -285,7 +283,7 @@
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.confusion_matrix">confusion_matrix() (in module homura.metrics.commons)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.Map.copy">copy() (homura.utils.containers.Map method)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap.copy">copy() (homura.utils.containers.TensorMap method)</a>
 </li>
       <li><a href="homura.html#homura.lr_scheduler.CosineAnnealingWithWarmup">CosineAnnealingWithWarmup() (in module homura.lr_scheduler)</a>
 </li>
@@ -313,7 +311,7 @@
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.prefetcher.DataPrefetcher">DataPrefetcher (class in homura.vision.data.prefetcher)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.Map.deepcopy">deepcopy() (homura.utils.containers.Map method)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap.deepcopy">deepcopy() (homura.utils.containers.TensorMap method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -885,7 +883,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.modules.functional.html#homura.modules.functional.knn.k_nearest_neighbor">k_nearest_neighbor() (in module homura.modules.functional.knn)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.Map.keys">keys() (homura.utils.containers.Map method)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap.keys">keys() (homura.utils.containers.TensorMap method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -907,6 +905,8 @@
         <li><a href="homura.utils.html#homura.utils.containers.StepDict.load_state_dict">(homura.utils.containers.StepDict method)</a>
 </li>
       </ul></li>
+      <li><a href="homura.html#homura.liblog.log_once">log_once() (in module homura.liblog)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.modules.html#homura.modules.vq.VQModule.lookup">lookup() (homura.modules.vq.VQModule method)</a>
@@ -923,7 +923,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.utils.html#homura.utils.containers.Map">Map (class in homura.utils.containers)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.Map">Map (in module homura.utils.containers)</a>
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.base.Callback.master_only">master_only (homura.callbacks.base.Callback attribute)</a>
 
@@ -1110,10 +1110,10 @@
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.preact_resnet110">preact_resnet110() (in module homura.vision.models.classification.resnet)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.preact_resnet20">preact_resnet20() (in module homura.vision.models.classification.resnet)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.preact_resnet32">preact_resnet32() (in module homura.vision.models.classification.resnet)</a>
 </li>
       <li><a href="homura.vision.models.classification.html#homura.vision.models.classification.resnet.preact_resnet56">preact_resnet56() (in module homura.vision.models.classification.resnet)</a>
@@ -1123,6 +1123,8 @@
       <li><a href="homura.metrics.html#homura.metrics.commons.precision">precision() (in module homura.metrics.commons)</a>
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.prefetcher.DataPrefetcher.preload">preload() (homura.vision.data.prefetcher.DataPrefetcher method)</a>
+</li>
+      <li><a href="homura.html#homura.liblog.print_once">print_once() (in module homura.liblog)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1230,13 +1232,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="homura.callbacks.html#homura.callbacks.reporters.TensorboardReporter">TensorboardReporter (class in homura.callbacks.reporters)</a>
 </li>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap">TensorMap (class in homura.utils.containers)</a>
+</li>
       <li><a href="homura.utils.html#homura.utils.containers.TensorTuple">TensorTuple (class in homura.utils.containers)</a>
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.test">test() (homura.trainers.TrainerBase method)</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.benchmarks.timeit">timeit() (in module homura.utils.benchmarks)</a>
 </li>
-      <li><a href="homura.utils.html#homura.utils.containers.Map.to">to() (homura.utils.containers.Map method)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap.to">to() (homura.utils.containers.TensorMap method)</a>
 
       <ul>
         <li><a href="homura.utils.html#homura.utils.containers.TensorTuple.to">(homura.utils.containers.TensorTuple method)</a>
@@ -1280,7 +1284,7 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.utils.html#homura.utils.containers.Map.values">values() (homura.utils.containers.Map method)</a>
+      <li><a href="homura.utils.html#homura.utils.containers.TensorMap.values">values() (homura.utils.containers.TensorMap method)</a>
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.loaders.vision_loaders">vision_loaders() (in module homura.vision.data.loaders)</a>
 </li>
