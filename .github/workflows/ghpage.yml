@@ -36,5 +36,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add docs
-          git commit -m "update doc"
+#         To avoid throwing exit1 if there is no file to commit
+#         https://stackoverflow.com/questions/47036884/how-to-git-commit-with-persistent-exit-0-status
+          git diff-index --quiet HEAD || git commit -am 'update doc'
           git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:${GITHUB_REF}
