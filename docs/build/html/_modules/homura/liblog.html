@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -149,7 +147,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.liblog</h1><div class="highlight"><pre>
-<span></span><span class="c1"># ref to optuna logging</span>
+<span></span><span class="sd">&quot;&quot;&quot; logging tools</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span>
@@ -300,6 +300,37 @@
         <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
 
     <span class="n">builtins</span><span class="o">.</span><span class="n">print</span> <span class="o">=</span> <span class="n">tqdm_print</span> <span class="k">if</span> <span class="n">get_global_rank</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">no_print</span>
+
+
+<span class="c1"># log once</span>
+<span class="n">_LOG_CACHE</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="log_once"><a class="viewcode-back" href="../../homura.html#homura.liblog.log_once">[docs]</a><span class="k">def</span> <span class="nf">log_once</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span>
+             <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+             <span class="n">key</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Log message only once.</span>
+
+<span class="sd">    :param logger: e.g., `print`, `logger.info`</span>
+<span class="sd">    :param message:</span>
+<span class="sd">    :param key: if `key=None`, `message` is used as `key`.</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">message</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_LOG_CACHE</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">logger</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">_LOG_CACHE</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="print_once"><a class="viewcode-back" href="../../homura.html#homura.liblog.print_once">[docs]</a><span class="k">def</span> <span class="nf">print_once</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">key</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; `print` version of `log_once`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">log_once</span><span class="p">(</span><span class="nb">print</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

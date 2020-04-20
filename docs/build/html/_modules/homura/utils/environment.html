@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -149,13 +147,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.utils.environment</h1><div class="highlight"><pre>
-<span></span><span class="c1"># get information on the environment</span>
+<span></span><span class="sd">&quot;&quot;&quot; Get information about the environment. Useful especially when distributed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">builtins</span>
 <span class="kn">import</span> <span class="nn">importlib.util</span>
 <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">python_os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">python_sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributed</span>
 <span class="kn">from</span> <span class="nn">torch.cuda</span> <span class="kn">import</span> <span class="n">device_count</span>
@@ -265,11 +265,18 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">python_os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;WORLD_SIZE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="init_distributed"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.init_distributed">[docs]</a><span class="k">def</span> <span class="nf">init_distributed</span><span class="p">(</span><span class="n">use_horovod</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
-                     <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;nccl&quot;</span><span class="p">,</span>
-                     <span class="n">init_method</span><span class="o">=</span><span class="s2">&quot;env://&quot;</span><span class="p">,</span>
-                     <span class="n">warning</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="c1"># A simple initializer of distributed</span>
+<div class="viewcode-block" id="init_distributed"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.environment.init_distributed">[docs]</a><span class="k">def</span> <span class="nf">init_distributed</span><span class="p">(</span><span class="n">use_horovod</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">init_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Simple initializer for distributed training.</span>
+
+<span class="sd">    :param use_horovod:</span>
+<span class="sd">    :param backend: backend when</span>
+<span class="sd">    :param init_method:</span>
+<span class="sd">    :param warning:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed_available</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Distributed training is not available on this machine&#39;</span><span class="p">)</span>
@@ -277,6 +284,9 @@
     <span class="k">global</span> <span class="n">_DISTRIBUTED_FLAG</span>
     <span class="n">_DISTRIBUTED_FLAG</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">use_horovod</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">init_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Try to use horovod, but `backend` and `init_method` are not None&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">is_horovod_available</span><span class="p">():</span>
             <span class="kn">import</span> <span class="nn">horovod.torch</span> <span class="k">as</span> <span class="nn">hvd</span>
 
@@ -286,6 +296,10 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;horovod is not available!&#39;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;nccl&quot;</span>
+        <span class="k">if</span> <span class="n">init_method</span><span class="p">:</span>
+            <span class="n">init_method</span> <span class="o">=</span> <span class="s2">&quot;env://&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_distributed</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>

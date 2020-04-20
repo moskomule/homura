@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -154,13 +152,13 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span> <span class="s2">&quot;TensorTuple&quot;</span><span class="p">,</span> <span class="s2">&quot;StepDict&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span> <span class="s2">&quot;TensorMap&quot;</span><span class="p">,</span> <span class="s2">&quot;TensorTuple&quot;</span><span class="p">,</span> <span class="s2">&quot;StepDict&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Map"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map">[docs]</a><span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; dict like object but: stored values can be subscribed and attributed.</span>
+<div class="viewcode-block" id="TensorMap"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap">[docs]</a><span class="k">class</span> <span class="nc">TensorMap</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; dict like object but: stored values can be subscribed and attributed. ::</span>
 
-<span class="sd">        &gt;&gt;&gt; m = Map(test=&quot;test&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; m = TensorMap(test=&quot;test&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; m.test is m[&quot;test&quot;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -170,7 +168,7 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_data&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Map</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TensorMap</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -183,7 +181,7 @@
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;_data&quot;</span><span class="p">:</span>
             <span class="c1"># initialization!</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">Map</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TensorMap</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__default_methods</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
@@ -211,22 +209,23 @@
         <span class="c1"># to strip the las &quot;, &quot;</span>
         <span class="k">return</span> <span class="n">_str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 
-<div class="viewcode-block" id="Map.keys"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TensorMap.keys"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Map.values"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TensorMap.values"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Map.to"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TensorMap.to"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Move stored tensors to a given device</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Map.deepcopy"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map.deepcopy">[docs]</a>    <span class="k">def</span> <span class="nf">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+<div class="viewcode-block" id="TensorMap.deepcopy"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap.deepcopy">[docs]</a>    <span class="k">def</span> <span class="nf">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">TensorMap</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
                 <span class="c1"># Only leave tensors support __deepcopy__</span>
@@ -236,8 +235,8 @@
                 <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
-<div class="viewcode-block" id="Map.copy"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.Map.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+<div class="viewcode-block" id="TensorMap.copy"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorMap.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">TensorMap</span><span class="p">()</span>
         <span class="n">new</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new</span></div></div>
 
@@ -247,11 +246,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="TensorTuple.to"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.TensorTuple.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move stored tensors to a given device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="n">TensorTuple</span><span class="p">((</span><span class="n">t</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span></div></div>
 
 
 <div class="viewcode-block" id="StepDict"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.containers.StepDict">[docs]</a><span class="k">class</span> <span class="nc">StepDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler</span>
+    <span class="sd">&quot;&quot;&quot; Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler::</span>
+
+<span class="sd">        sd = StepDict(Optimizer, generator=Adam(...), discriminator=Adam(...))</span>
+<span class="sd">        sd.step()</span>
+<span class="sd">        # is equivalent to generator_opt.step(); discriminator.step()</span>
 
 <span class="sd">    :param _type:</span>
 <span class="sd">    :param kwargs:</span>
@@ -284,6 +290,10 @@
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;zero_grad&quot;</span><span class="p">):</span>
                 <span class="n">v</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># backward compatibility</span>
+<span class="n">Map</span> <span class="o">=</span> <span class="n">TensorMap</span>
 </pre></div>
 
            </div>
