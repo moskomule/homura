@@ -91,6 +91,10 @@ def _split_dataset(train_set: datasets.VisionDataset,
 
 @dataclass
 class VisionSet:
+    """ Dataset abstraction for vision datasets.
+
+    """
+
     tv_class: type(datasets.VisionDataset)
     root: str or pathlib.Path
     num_classes: int
@@ -182,6 +186,13 @@ _DATASETS = {'cifar10': VisionSet(datasets.CIFAR10, "~/.torch/data/cifar10", 10,
 def register_vision_dataset(name: str,
                             vision_set: VisionSet
                             ) -> None:
+    """ Register dataset for vision tasks. Registered dataset can be called via `vision_loaders(...)`.
+
+    :param name:
+    :param vision_set:
+    :return:
+    """
+
     if name in _DATASETS.keys():
         raise RuntimeError(f'name=({name}) is already registered')
     if isinstance(vision_set, VisionSet):

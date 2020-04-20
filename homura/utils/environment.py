@@ -1,10 +1,12 @@
-# get information on the environment
+""" Get information about the environment. Useful especially when distributed.
+"""
 
 import builtins
 import importlib.util
 import os as python_os
 import subprocess
 import sys as python_sys
+from typing import Optional
 
 from torch import distributed
 from torch.cuda import device_count
@@ -114,11 +116,18 @@ def get_world_size() -> int:
     return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
-def init_distributed(use_horovod: bool = False, *,
-                     backend="nccl",
-                     init_method="env://",
-                     warning=True):
-    # A simple initializer of distributed
+def init_distributed(use_horovod: bool = False,
+                     backend: Optional[str] = None,
+                     init_method: Optional[str] = None,
+                     warning: bool = True):
+    """ Simple initializer for distributed training.
+
+    :param use_horovod:
+    :param backend: backend when
+    :param init_method:
+    :param warning:
+    :return:
+    """
 
     if not is_distributed_available():
         raise RuntimeError('Distributed training is not available on this machine')
@@ -126,6 +135,9 @@ def init_distributed(use_horovod: bool = False, *,
     global _DISTRIBUTED_FLAG
     _DISTRIBUTED_FLAG = True
     if use_horovod:
+        if backend is not None or init_method is not None:
+            raise RuntimeError('Try to use horovod, but `backend` and `init_method` are not None')
+
         if is_horovod_available():
             import horovod.torch as hvd
 
@@ -135,6 +147,10 @@ def init_distributed(use_horovod: bool = False, *,
             raise RuntimeError('horovod is not available!')
 
     else:
+        if backend is None:
+            backend = "nccl"
+        if init_method:
+            init_method = "env://"
 
         if not is_distributed():
             raise RuntimeError(

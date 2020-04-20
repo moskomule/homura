@@ -3,13 +3,13 @@ from copy import deepcopy
 
 import torch
 
-__all__ = ["Map", "TensorTuple", "StepDict"]
+__all__ = ["Map", "TensorMap", "TensorTuple", "StepDict"]
 
 
-class Map(MutableMapping, dict):
-    """ dict like object but: stored values can be subscribed and attributed.
+class TensorMap(MutableMapping, dict):
+    """ dict like object but: stored values can be subscribed and attributed. ::
 
-        >>> m = Map(test="test")
+        >>> m = TensorMap(test="test")
         >>> m.test is m["test"]
     """
 
@@ -19,7 +19,7 @@ class Map(MutableMapping, dict):
     __slots__ = ["_data"]
 
     def __init__(self, **kwargs):
-        super(Map, self).__init__()
+        super(TensorMap, self).__init__()
         self._data = {}
         if len(kwargs) > 0:
             self._data.update(kwargs)
@@ -32,7 +32,7 @@ class Map(MutableMapping, dict):
     def __setattr__(self, key, value):
         if key == "_data":
             # initialization!
-            super(Map, self).__setattr__(key, value)
+            super(TensorMap, self).__setattr__(key, value)
         elif key not in self.__default_methods:
             self._data[key] = value
         else:
@@ -69,13 +69,14 @@ class Map(MutableMapping, dict):
     def to(self, device: str, **kwargs):
         """ Move stored tensors to a given device
         """
+
         for k, v in self._data.items():
             if isinstance(v, torch.Tensor):
                 self._data[k] = v.to(device, **kwargs)
         return self
 
     def deepcopy(self):
-        new = Map()
+        new = TensorMap()
         for k, v in self._data.items():
             if isinstance(v, torch.Tensor):
                 # Only leave tensors support __deepcopy__
@@ -86,7 +87,7 @@ class Map(MutableMapping, dict):
         return new
 
     def copy(self):
-        new = Map()
+        new = TensorMap()
         new._data = self._data.copy()
         return new
 
@@ -96,11 +97,18 @@ class TensorTuple(tuple):
     """
 
     def to(self, *args, **kwargs):
+        """ Move stored tensors to a given device
+        """
+
         return TensorTuple((t.to(*args, **kwargs) for t in self if torch.is_tensor(t)))
 
 
 class StepDict(dict):
-    """ Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler
+    """ Dictionary with step, state_dict, load_state_dict. Intended to be used with Optimizer, lr_scheduler::
+
+        sd = StepDict(Optimizer, generator=Adam(...), discriminator=Adam(...))
+        sd.step()
+        # is equivalent to generator_opt.step(); discriminator.step()
 
     :param _type:
     :param kwargs:
@@ -133,3 +141,7 @@ class StepDict(dict):
         for v in self.values():
             if hasattr(v, "zero_grad"):
                 v.zero_grad()
+
+
+# backward compatibility
+Map = TensorMap

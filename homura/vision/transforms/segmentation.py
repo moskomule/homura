@@ -1,4 +1,7 @@
-# from torchvision reference
+""" Transforms for segmentation task.
+
+"""
+
 import random
 from typing import Optional
 

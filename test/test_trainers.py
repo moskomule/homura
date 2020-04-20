@@ -13,7 +13,7 @@ def test_dict_model():
             input, target = data
             output = self.model["generator"](input) + self.model["discriminator"](input)
             loss = self.loss_f(output, target)
-            results = utils.Map(loss=loss, output=output)
+            results = utils.TensorMap(loss=loss, output=output)
             if self.is_train:
                 self.optimizer.zero_grad()
                 loss.backward()

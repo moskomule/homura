@@ -99,7 +99,7 @@ User can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
-from homura.utils.containers import Map
+from homura.utils.containers import TensorMap
 
 trainer = SupervisedTrainer(...)
 

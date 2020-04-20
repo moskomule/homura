@@ -1,4 +1,6 @@
-# ref to optuna logging
+""" logging tools
+
+"""
 
 import logging
 from typing import Optional, TextIO
@@ -149,3 +151,34 @@ def _set_tqdm_print():
         tqdm.write(s, end=end, file=file)
 
     builtins.print = tqdm_print if get_global_rank() <= 0 else no_print
+
+
+# log once
+_LOG_CACHE = set()
+
+
+def log_once(logger,
+             message: str,
+             key=Optional[str]) -> None:
+    """ Log message only once.
+
+    :param logger: e.g., `print`, `logger.info`
+    :param message:
+    :param key: if `key=None`, `message` is used as `key`.
+    :return:
+    """
+
+    if key is None:
+        key = message
+    if key in _LOG_CACHE:
+        return
+    logger(message)
+    _LOG_CACHE.add(key)
+
+
+def print_once(message: str,
+               key=Optional[str]) -> None:
+    """ `print` version of `log_once`
+    """
+
+    log_once(print, message, key)
