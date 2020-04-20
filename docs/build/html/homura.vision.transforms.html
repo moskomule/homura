@@ -89,17 +89,17 @@
 <li class="toctree-l3"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="homura.vision.html">homura.vision package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="homura.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-liblog-module">homura.liblog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-lr-scheduler-module">homura.lr_scheduler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-optim-module">homura.optim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#homura-trainers-module">homura.trainers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.liblog">homura.liblog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.lr_scheduler">homura.lr_scheduler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.optim">homura.optim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura.trainers">homura.trainers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.html#module-homura">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
@@ -113,16 +113,16 @@
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.vision.transforms package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-cutmix-module">homura.vision.transforms.cutmix module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-cutout-module">homura.vision.transforms.cutout module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-mixup-module">homura.vision.transforms.mixup module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-segmentation-module">homura.vision.transforms.segmentation module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.cutmix">homura.vision.transforms.cutmix module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.cutout">homura.vision.transforms.cutout module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.mixup">homura.vision.transforms.mixup module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.segmentation">homura.vision.transforms.segmentation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -198,20 +198,158 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="homura-vision-transforms-cutmix-module">
-<h2>homura.vision.transforms.cutmix module<a class="headerlink" href="#homura-vision-transforms-cutmix-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.cutmix">
+<span id="homura-vision-transforms-cutmix-module"></span><h2>homura.vision.transforms.cutmix module<a class="headerlink" href="#module-homura.vision.transforms.cutmix" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.vision.transforms.cutmix.cutmix">
+<code class="sig-prename descclassname">homura.vision.transforms.cutmix.</code><code class="sig-name descname">cutmix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>torch.Tensor<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>torch.Tensor<span class="p">, </span>torch.Tensor<span class="p">]</span><a class="reference internal" href="_modules/homura/vision/transforms/cutmix.html#cutmix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.cutmix.cutmix" title="Permalink to this definition">¶</a></dt>
+<dd><p>CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – The input tensor (B img C img H img W)</p></li>
+<li><p><strong>target</strong> – The target tensor (B img C) is assumed to be onehot.</p></li>
+<li><p><strong>gamma</strong> – </p></li>
+<li><p><strong>indices</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.cutmix.input_cutmix">
+<code class="sig-prename descclassname">homura.vision.transforms.cutmix.</code><code class="sig-name descname">input_cutmix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>torch.Tensor<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/homura/vision/transforms/cutmix.html#input_cutmix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.cutmix.input_cutmix" title="Permalink to this definition">¶</a></dt>
+<dd><p>CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – </p></li>
+<li><p><strong>gamma</strong> – </p></li>
+<li><p><strong>indices</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.cutmix.rand_bbox">
+<code class="sig-prename descclassname">homura.vision.transforms.cutmix.</code><code class="sig-name descname">rand_bbox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">, </span>int<span class="p">, </span>int<span class="p">]</span><a class="reference internal" href="_modules/homura/vision/transforms/cutmix.html#rand_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.cutmix.rand_bbox" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="homura-vision-transforms-cutout-module">
-<h2>homura.vision.transforms.cutout module<a class="headerlink" href="#homura-vision-transforms-cutout-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.cutout">
+<span id="homura-vision-transforms-cutout-module"></span><h2>homura.vision.transforms.cutout module<a class="headerlink" href="#module-homura.vision.transforms.cutout" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.vision.transforms.cutout.CutOut">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.cutout.</code><code class="sig-name descname">CutOut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/cutout.html#CutOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.cutout.CutOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Cutout for tensor</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.cutout.cutout">
+<code class="sig-prename descclassname">homura.vision.transforms.cutout.</code><code class="sig-name descname">cutout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/vision/transforms/cutout.html#cutout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.cutout.cutout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="homura-vision-transforms-mixup-module">
-<h2>homura.vision.transforms.mixup module<a class="headerlink" href="#homura-vision-transforms-mixup-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.mixup">
+<span id="homura-vision-transforms-mixup-module"></span><h2>homura.vision.transforms.mixup module<a class="headerlink" href="#module-homura.vision.transforms.mixup" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.vision.transforms.mixup.mixup">
+<code class="sig-prename descclassname">homura.vision.transforms.mixup.</code><code class="sig-name descname">mixup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>torch.Tensor<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>torch.Tensor<span class="p">, </span>torch.Tensor<span class="p">]</span><a class="reference internal" href="_modules/homura/vision/transforms/mixup.html#mixup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.mixup.mixup" title="Permalink to this definition">¶</a></dt>
+<dd><p>mixup: Beyond Empirical Risk Minimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – </p></li>
+<li><p><strong>target</strong> – </p></li>
+<li><p><strong>gamma</strong> – </p></li>
+<li><p><strong>indices</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.mixup.partial_mixup">
+<code class="sig-prename descclassname">homura.vision.transforms.mixup.</code><code class="sig-name descname">partial_mixup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">indices</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/homura/vision/transforms/mixup.html#partial_mixup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.mixup.partial_mixup" title="Permalink to this definition">¶</a></dt>
+<dd><p>mixup: Beyond Empirical Risk Minimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – </p></li>
+<li><p><strong>gamma</strong> – </p></li>
+<li><p><strong>indices</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="homura-vision-transforms-segmentation-module">
-<h2>homura.vision.transforms.segmentation module<a class="headerlink" href="#homura-vision-transforms-segmentation-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.segmentation">
+<span id="homura-vision-transforms-segmentation-module"></span><h2>homura.vision.transforms.segmentation module<a class="headerlink" href="#module-homura.vision.transforms.segmentation" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.CenterCrop">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">CenterCrop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#CenterCrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.CenterCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.Compose">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">Compose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transforms</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#Compose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.Compose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.Normalize">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">Normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">std</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#Normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.Normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.RandomCrop">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">RandomCrop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#RandomCrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.RandomCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.RandomHorizontalFlip">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">RandomHorizontalFlip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flip_prob</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#RandomHorizontalFlip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.RandomHorizontalFlip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.RandomResize">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">RandomResize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">max_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#RandomResize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.RandomResize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.segmentation.ToTensor">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">ToTensor</code><a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#ToTensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.ToTensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.segmentation.pad_if_smaller">
+<code class="sig-prename descclassname">homura.vision.transforms.segmentation.</code><code class="sig-name descname">pad_if_smaller</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span><span class="p">:</span> <span class="n">PIL.Image.Image</span></em>, <em class="sig-param"><span class="n">size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">fill</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; PIL.Image.Image<a class="reference internal" href="_modules/homura/vision/transforms/segmentation.html#pad_if_smaller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.transforms.segmentation.pad_if_smaller" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.vision.transforms" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
