@@ -1,13 +1,13 @@
 .. homura documentation master file, created by
-   sphinx-quickstart on Sat Feb 16 22:31:23 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+sphinx-quickstart on Sat Feb 16 22:31:23 2019.
+You can adapt this file completely to your liking, but it should at least
+contain the root `toctree` directive.
 
-Welcome to homura's documentation!
+Welcome to `homura`'s documentation!
 
 ==================================
 
-homura is a library for DL research.
+`homura` is a library for DL research.
 
 .. toctree::
 
@@ -16,11 +16,13 @@ homura is a library for DL research.
 
    usage
 
-   homura
+   homura.trainers
+   homura.optim
+   homura.lr_scheduler
+
    homura.callbacks
    homura.metrics
    homura.modules
-   homura.modules.functional
    homura.utils
    homura.vision
 

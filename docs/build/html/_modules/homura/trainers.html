@@ -79,11 +79,9 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.html">homura package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.modules.functional.html">homura.modules.functional package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
 </ul>
@@ -169,7 +167,7 @@
 <span class="kn">from</span> <span class="nn">.callbacks.base</span> <span class="kn">import</span> <span class="n">_NoOpCallback</span>
 <span class="kn">from</span> <span class="nn">.callbacks.reporters</span> <span class="kn">import</span> <span class="n">_ReporterBase</span>
 <span class="kn">from</span> <span class="nn">.utils._vocabulary</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="kn">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">StepDict</span>
+<span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="kn">import</span> <span class="n">TensorTuple</span><span class="p">,</span> <span class="n">TensorMap</span><span class="p">,</span> <span class="n">StepDict</span>
 <span class="kn">from</span> <span class="nn">.utils.environment</span> <span class="kn">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TrainerBase&quot;</span><span class="p">,</span> <span class="s2">&quot;SupervisedTrainer&quot;</span><span class="p">]</span>
@@ -299,9 +297,9 @@
                      <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
                      <span class="n">SCHEDULER</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span>
                      <span class="n">TRAINER</span><span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iteration_map</span> <span class="o">=</span> <span class="n">TensorMap</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_map</span> <span class="o">=</span> <span class="n">TensorMap</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_map</span> <span class="o">=</span> <span class="n">TensorMap</span><span class="p">(</span><span class="o">**</span><span class="n">_map_base</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
@@ -339,10 +337,10 @@
 <span class="sd">                    self.optimizer.zero_grad()</span>
 <span class="sd">                    loss.backward()</span>
 <span class="sd">                    self.optimizer.step()</span>
-<span class="sd">                return Map(loss=loss, output=output)</span>
+<span class="sd">                return TensorMap(loss=loss, output=output)</span>
 
 <span class="sd">        :param data: data used during a iteration</span>
-<span class="sd">        :return: loss, output</span>
+<span class="sd">        :return: TensorMap or Dict</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="TrainerBase.override_iteration"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.override_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">override_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -490,7 +488,12 @@
             <span class="n">total_iterations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">val_intervals</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 
-        <span class="sd">&quot;&quot;&quot; Train the model for a given iterations</span>
+        <span class="sd">&quot;&quot;&quot; Train the model for a given iterations. This module is almost equal to ::</span>
+
+<span class="sd">            for ep in range(total_iterations):</span>
+<span class="sd">                trainer.train(train_loader)</span>
+<span class="sd">                for k, v in val_loaders.items():</span>
+<span class="sd">                    trainer.test(v, k)</span>
 
 <span class="sd">        :param train_loader:</span>
 <span class="sd">        :param val_loaders:</span>
@@ -550,9 +553,9 @@
 <div class="viewcode-block" id="TrainerBase.set_optimizer"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.set_optimizer">[docs]</a>    <span class="k">def</span> <span class="nf">set_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set optimizer(s) for model(s). You can override as ::</span>
 
-<span class="sd">        class YourTrainer(TrainerBase):</span>
-<span class="sd">            def set_optimizer(self):</span>
-<span class="sd">                self.optimizer = torch.optim.SGD(self.model.parameters())</span>
+<span class="sd">            class YourTrainer(TrainerBase):</span>
+<span class="sd">                def set_optimizer(self):</span>
+<span class="sd">                    self.optimizer = torch.optim.SGD(self.model.parameters())</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -580,9 +583,9 @@
 <div class="viewcode-block" id="TrainerBase.set_scheduler"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.set_scheduler">[docs]</a>    <span class="k">def</span> <span class="nf">set_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set scheduler(s) for optimizer(s). You can override as ::</span>
 
-<span class="sd">                class YourTrainer(TrainerBase):</span>
-<span class="sd">                    def set_scheduler(self):</span>
-<span class="sd">                        self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)</span>
+<span class="sd">            class YourTrainer(TrainerBase):</span>
+<span class="sd">                def set_scheduler(self):</span>
+<span class="sd">                    self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -642,6 +645,10 @@
 
 
 <div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../homura.html#homura.trainers.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="n">TrainerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple trainer for supervised image classification. It only accepts single model. AMP-ready.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
                  <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span>
@@ -686,7 +693,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">TensorMap</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

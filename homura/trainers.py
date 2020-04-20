@@ -18,7 +18,7 @@ from .callbacks import Callback, CallbackList, WeightSave
 from .callbacks.base import _NoOpCallback
 from .callbacks.reporters import _ReporterBase
 from .utils._vocabulary import *
-from .utils.containers import TensorTuple, Map, StepDict
+from .utils.containers import TensorTuple, TensorMap, StepDict
 from .utils.environment import get_global_rank, get_local_rank
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
@@ -148,9 +148,9 @@ class TrainerBase(metaclass=ABCMeta):
                      OPTIMIZER: self.optimizer,
                      SCHEDULER: self.scheduler,
                      TRAINER: self}
-        self._iteration_map = Map(**_map_base.copy())
-        self._epoch_map = Map(**_map_base.copy())
-        self._all_map = Map(**_map_base.copy())
+        self._iteration_map = TensorMap(**_map_base.copy())
+        self._epoch_map = TensorMap(**_map_base.copy())
+        self._all_map = TensorMap(**_map_base.copy())
 
         for k, v in kwargs.items():
             if hasattr(self, k):
@@ -188,10 +188,10 @@ class TrainerBase(metaclass=ABCMeta):
                     self.optimizer.zero_grad()
                     loss.backward()
                     self.optimizer.step()
-                return Map(loss=loss, output=output)
+                return TensorMap(loss=loss, output=output)
 
         :param data: data used during a iteration
-        :return: loss, output
+        :return: TensorMap or Dict
         """
 
     def override_iteration(self,
@@ -339,7 +339,12 @@ class TrainerBase(metaclass=ABCMeta):
             total_iterations: int,
             val_intervals: int):
 
-        """ Train the model for a given iterations
+        """ Train the model for a given iterations. This module is almost equal to ::
+
+            for ep in range(total_iterations):
+                trainer.train(train_loader)
+                for k, v in val_loaders.items():
+                    trainer.test(v, k)
 
         :param train_loader:
         :param val_loaders:
@@ -399,9 +404,9 @@ class TrainerBase(metaclass=ABCMeta):
     def set_optimizer(self):
         """ Set optimizer(s) for model(s). You can override as ::
 
-        class YourTrainer(TrainerBase):
-            def set_optimizer(self):
-                self.optimizer = torch.optim.SGD(self.model.parameters())
+            class YourTrainer(TrainerBase):
+                def set_optimizer(self):
+                    self.optimizer = torch.optim.SGD(self.model.parameters())
 
         """
 
@@ -429,9 +434,9 @@ class TrainerBase(metaclass=ABCMeta):
     def set_scheduler(self):
         """ Set scheduler(s) for optimizer(s). You can override as ::
 
-                class YourTrainer(TrainerBase):
-                    def set_scheduler(self):
-                        self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)
+            class YourTrainer(TrainerBase):
+                def set_scheduler(self):
+                    self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)
 
         """
 
@@ -491,6 +496,10 @@ class TrainerBase(metaclass=ABCMeta):
 
 
 class SupervisedTrainer(TrainerBase):
+    """ A simple trainer for supervised image classification. It only accepts single model. AMP-ready.
+
+    """
+
     def __init__(self,
                  model: nn.Module,
                  optimizer: Optimizer,
@@ -535,4 +544,4 @@ class SupervisedTrainer(TrainerBase):
             else:
                 loss.backward()
                 self.optimizer.step()
-        return Map(loss=loss, output=output)
+        return TensorMap(loss=loss, output=output)

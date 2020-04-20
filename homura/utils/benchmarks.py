@@ -23,7 +23,7 @@ def _syncronize(is_cuda: bool):
 def timeit(func: Optional[Callable] = None,
            num_iters: Optional[int] = 100,
            warmup_iters: Optional[int] = None):
-    """ A simple
+    """ A simple timeit for GPU operations.
 
     >>> @timeit(num_iters=100, warmup_iters=100)
     >>> def mm(a, b):

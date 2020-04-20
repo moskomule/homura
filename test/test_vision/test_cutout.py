@@ -1,6 +1,6 @@
 import torch
 
-from homura.vision.transforms import CutOut
+from homura.vision import CutOut
 
 
 def test_cutout():

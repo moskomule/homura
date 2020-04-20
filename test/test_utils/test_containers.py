@@ -1,11 +1,11 @@
 import pytest
 import torch
 
-from homura.utils.containers import Map, TensorTuple
+from homura.utils.containers import TensorMap, TensorTuple
 
 
 def test_map():
-    map = Map(a=1, b=2)
+    map = TensorMap(a=1, b=2)
     map["c"] = 3
     for k, v in map.items():
         assert map[k] == getattr(map, k)
