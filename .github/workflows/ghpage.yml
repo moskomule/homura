@@ -38,3 +38,6 @@ jobs:
           git add docs
           git diff-index --quiet HEAD || git commit -am 'update doc'
           git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:${GITHUB_REF}
+
+# git diff-index --quiet HEAD || git commit -am 'update doc' always exits with 0 except something wrong happens
+# git commit -am 'update doc' alone exits with 1 if there is no file to commit
