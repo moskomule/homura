@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.modules.functional package &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="homura.utils package" href="homura.utils.html" />
+    <link rel="prev" title="homura.modules package" href="homura.modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="homura.modules.html">homura.modules package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="homura.modules.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">homura.modules.functional package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.attention">homura.modules.functional.attention module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.convert">homura.modules.functional.convert module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.discretizations">homura.modules.functional.discretizations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.grad_approximation">homura.modules.functional.grad_approximation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.knn">homura.modules.functional.knn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional.loss">homura.modules.functional.loss module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.modules.functional">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.attention">homura.modules.attention module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.discretization">homura.modules.discretization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.ema">homura.modules.ema module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.miscs">homura.modules.miscs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules.vq">homura.modules.vq module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.modules.html#module-homura.modules">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="homura.modules.html">homura.modules package</a> &raquo;</li>
+        
+      <li>homura.modules.functional package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/homura.modules.functional.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="homura-modules-functional-package">
+<h1>homura.modules.functional package<a class="headerlink" href="#homura-modules-functional-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-homura.modules.functional.attention">
+<span id="homura-modules-functional-attention-module"></span><h2>homura.modules.functional.attention module<a class="headerlink" href="#module-homura.modules.functional.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.attention.kv_attention">
+<code class="sig-prename descclassname">homura.modules.functional.attention.</code><code class="sig-name descname">kv_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">additive_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">training</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dropout_prob</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">scaling</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/attention.html#kv_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.attention.kv_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attention using queries, keys and value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>torch.Tensor</em>) – <cite>…JxM</cite></p></li>
+<li><p><strong>key</strong> (<em>torch.Tensor</em>) – <cite>…KxM</cite></p></li>
+<li><p><strong>value</strong> (<em>torch.Tensor</em>) – <cite>…KxM</cite></p></li>
+<li><p><strong>mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – <cite>…JxK</cite></p></li>
+<li><p><strong>additive_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
+<li><p><strong>training</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>dropout_prob</strong> (<em>float</em>) – </p></li>
+<li><p><strong>scaling</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>torch.Tensor whose shape of <cite>…JxM</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(&lt;class ‘torch.Tensor’&gt;, &lt;class ‘torch.Tensor’&gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.modules.functional.attention.lsh">
+<code class="sig-prename descclassname">homura.modules.functional.attention.</code><code class="sig-name descname">lsh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">num_hashes</span></em>, <em class="sig-param"><span class="n">num_buckets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/attention.html#lsh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.attention.lsh" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>num_hashes</strong> (<em>int</em>) – </p></li>
+<li><p><strong>num_buckets</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.modules.functional.attention.lsh_attention">
+<code class="sig-prename descclassname">homura.modules.functional.attention.</code><code class="sig-name descname">lsh_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/attention.html#lsh_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.attention.lsh_attention" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>key</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
+<li><p><strong>value</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(&lt;class ‘torch.Tensor’&gt;, &lt;class ‘torch.Tensor’&gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional.convert">
+<span id="homura-modules-functional-convert-module"></span><h2>homura.modules.functional.convert module<a class="headerlink" href="#module-homura.modules.functional.convert" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.convert.to_onehot">
+<code class="sig-prename descclassname">homura.modules.functional.convert.</code><code class="sig-name descname">to_onehot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">num_classes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/convert.html#to_onehot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.convert.to_onehot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert given target tensor to onehot format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – <cite>LongTensor</cite> of <cite>BxCx(optional dimensions)</cite></p></li>
+<li><p><strong>num_classes</strong> (<em>int</em>) – number of classes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional.discretizations">
+<span id="homura-modules-functional-discretizations-module"></span><h2>homura.modules.functional.discretizations module<a class="headerlink" href="#module-homura.modules.functional.discretizations" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.discretizations.gumbel_softmax">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">gumbel_softmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">temp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#gumbel_softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.gumbel_softmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>gumbel softmax</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – </p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.modules.functional.discretizations.gumbel_sigmoid">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">gumbel_sigmoid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">temp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#gumbel_sigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.gumbel_sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>gumbel sigmoid function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.modules.functional.discretizations.straight_through_estimator">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">straight_through_estimator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#straight_through_estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.straight_through_estimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>straight through estimator</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">straight_through_estimator</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="go">tensor([[0., 1., 0.],</span>
+<span class="go">        [0., 1., 1.],</span>
+<span class="go">        [0., 0., 1.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.modules.functional.discretizations.semantic_hashing">
+<code class="sig-prename descclassname">homura.modules.functional.discretizations.</code><code class="sig-name descname">semantic_hashing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">is_training</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/discretizations.html#semantic_hashing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.discretizations.semantic_hashing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Semantic hashing</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">semantic_hashing</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># by 0.5</span>
+<span class="go">tensor([[0.3515, 0.0918, 0.7717],</span>
+<span class="go">        [0.8246, 0.1620, 0.0689],</span>
+<span class="go">        [1.0000, 0.3575, 0.6598]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">semantic_hashing</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
+<span class="go">tensor([[0., 0., 1.],</span>
+<span class="go">        [0., 1., 1.],</span>
+<span class="go">        [0., 1., 1.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>is_training</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional.grad_approximation">
+<span id="homura-modules-functional-grad-approximation-module"></span><h2>homura.modules.functional.grad_approximation module<a class="headerlink" href="#module-homura.modules.functional.grad_approximation" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.grad_approximation.custom_straight_through_estimator">
+<code class="sig-prename descclassname">homura.modules.functional.grad_approximation.</code><code class="sig-name descname">custom_straight_through_estimator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_forward</span></em>, <em class="sig-param"><span class="n">input_backward</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/grad_approximation.html#custom_straight_through_estimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.grad_approximation.custom_straight_through_estimator" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_forward</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>input_backward</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional.knn">
+<span id="homura-modules-functional-knn-module"></span><h2>homura.modules.functional.knn module<a class="headerlink" href="#module-homura.modules.functional.knn" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.knn.k_nearest_neighbor">
+<code class="sig-prename descclassname">homura.modules.functional.knn.</code><code class="sig-name descname">k_nearest_neighbor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keys</span></em>, <em class="sig-param"><span class="n">queries</span></em>, <em class="sig-param"><span class="n">num_neighbors</span></em>, <em class="sig-param"><span class="n">distance</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">backend</span><span class="o">=</span><span class="default_value">'torch'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/knn.html#k_nearest_neighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.knn.k_nearest_neighbor" title="Permalink to this definition">¶</a></dt>
+<dd><p>k-Nearest Neighbor search</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> (<em>torch.Tensor</em>) – tensor of (num_keys, dim)</p></li>
+<li><p><strong>queries</strong> (<em>torch.Tensor</em>) – tensor of (num_queries, dim)</p></li>
+<li><p><strong>num_neighbors</strong> (<em>int</em>) – <cite>k</cite></p></li>
+<li><p><strong>distance</strong> (<em>str</em>) – name of distance (<cite>dot_product</cite> or <cite>l2</cite>)</p></li>
+<li><p><strong>backend</strong> (<em>str</em>) – backend (<cite>faiss</cite> or <cite>torch</cite>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scores, indices</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[torch.Tensor, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional.loss">
+<span id="homura-modules-functional-loss-module"></span><h2>homura.modules.functional.loss module<a class="headerlink" href="#module-homura.modules.functional.loss" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.modules.functional.loss.cross_entropy_with_softlabels">
+<code class="sig-prename descclassname">homura.modules.functional.loss.</code><code class="sig-name descname">cross_entropy_with_softlabels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'mean'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/loss.html#cross_entropy_with_softlabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.loss.cross_entropy_with_softlabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross entropy with soft labels. Unlike <cite>torch.nn.functional.cross_entropy</cite>, <cite>target</cite> is expected to be
+one-hot or soft label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – Tensor of <cite>BxCx(optional dimensions)</cite></p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Tensor of <cite>BxCx(optional dimensions)</cite></p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – </p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.modules.functional">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.modules.functional" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="homura.utils.html" class="btn btn-neutral float-right" title="homura.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="homura.modules.html" class="btn btn-neutral float-left" title="homura.modules package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
