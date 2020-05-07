@@ -1,3 +1,5 @@
+import contextlib
+import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
@@ -522,17 +524,23 @@ class SupervisedTrainer(TrainerBase):
 
         self._use_amp = use_amp
         if use_amp:
-            self.scaler = torch.cuda.amp.GradScaler()
+            if not hasattr(torch.cuda.amp, 'autocast'):
+                warnings.warn('amp is not available')
+                self._use_amp = False
+            else:
+                self.scaler = torch.cuda.amp.GradScaler()
 
     def iteration(self,
                   data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
-        output = self.model(input)
-        loss = self.loss_f(output, target)
+        context = torch.cuda.amp.autocast if self._use_amp else contextlib.nullcontext
+        with context():
+            output = self.model(input)
+            loss = self.loss_f(output, target)
         if self.is_train:
             self.optimizer.zero_grad()
             if self._use_amp:
-                self.scaler.scale(loss).backward()
+                self.scaler(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
             else:
