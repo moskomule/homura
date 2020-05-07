@@ -540,7 +540,7 @@ class SupervisedTrainer(TrainerBase):
         if self.is_train:
             self.optimizer.zero_grad()
             if self._use_amp:
-                self.scaler(loss).backward()
+                self.scaler.scale(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
             else:
