@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>homura.modules.functional.knn &mdash; homura  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>homura.modules.functional.knn</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for homura.modules.functional.knn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">homura.utils</span> <span class="kn">import</span> <span class="n">is_faiss_available</span>
+
+
+<span class="k">def</span> <span class="nf">_tensor_to_ptr</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">faiss</span>
+
+    <span class="k">assert</span> <span class="nb">input</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">faiss</span><span class="o">.</span><span class="n">cast_integer_to_float_ptr</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">storage</span><span class="p">()</span><span class="o">.</span><span class="n">data_ptr</span><span class="p">()</span> <span class="o">+</span> <span class="nb">input</span><span class="o">.</span><span class="n">storage_offset</span><span class="p">()</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">faiss</span><span class="o">.</span><span class="n">cast_integer_to_long_ptr</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">storage</span><span class="p">()</span><span class="o">.</span><span class="n">data_ptr</span><span class="p">()</span> <span class="o">+</span> <span class="nb">input</span><span class="o">.</span><span class="n">storage_offset</span><span class="p">()</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_torch_knn</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">queries</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">num_neighbors</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+               <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">assert</span> <span class="n">distance</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dot_product&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">distance</span> <span class="o">==</span> <span class="s2">&quot;dot_product&quot;</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+            <span class="n">scores</span> <span class="o">*=</span> <span class="mi">2</span>
+            <span class="n">scores</span> <span class="o">-=</span> <span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">scores</span> <span class="o">-=</span> <span class="p">(</span><span class="n">queries</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">scores</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">num_neighbors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">largest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">scores</span><span class="p">,</span> <span class="n">indices</span>
+
+
+<span class="k">def</span> <span class="nf">_faiss_knn</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">queries</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">num_neighbors</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+               <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="c1"># https://github.com/facebookresearch/XLM/blob/master/src/model/memory/utils.py</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_faiss_available</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;faiss_knn requires faiss-gpu&quot;</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">faiss</span>
+
+    <span class="k">assert</span> <span class="n">distance</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dot_product&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">metric</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_INNER_PRODUCT</span> <span class="k">if</span> <span class="n">distance</span> <span class="o">==</span> <span class="s1">&#39;dot_product&#39;</span> <span class="k">else</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_L2</span>
+
+    <span class="n">k_ptr</span> <span class="o">=</span> <span class="n">_tensor_to_ptr</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">_tensor_to_ptr</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">((</span><span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">num_neighbors</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">((</span><span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">num_neighbors</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">s_ptr</span> <span class="o">=</span> <span class="n">_tensor_to_ptr</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    <span class="n">i_ptr</span> <span class="o">=</span> <span class="n">_tensor_to_ptr</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="n">faiss</span><span class="o">.</span><span class="n">bruteForceKnn</span><span class="p">(</span><span class="n">FAISS_RES</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span>
+                        <span class="n">k_ptr</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">q_ptr</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">queries</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">s_ptr</span><span class="p">,</span> <span class="n">i_ptr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scores</span><span class="p">,</span> <span class="n">indices</span>
+
+
+<div class="viewcode-block" id="k_nearest_neighbor"><a class="viewcode-back" href="../../../../homura.modules.functional.html#homura.modules.functional.knn.k_nearest_neighbor">[docs]</a><span class="k">def</span> <span class="nf">k_nearest_neighbor</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                       <span class="n">queries</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                       <span class="n">num_neighbors</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                       <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                       <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot; k-Nearest Neighbor search</span>
+
+<span class="sd">    :param keys: tensor of (num_keys, dim)</span>
+<span class="sd">    :param queries: tensor of (num_queries, dim)</span>
+<span class="sd">    :param num_neighbors: `k`</span>
+<span class="sd">    :param distance: name of distance (`dot_product` or `l2`)</span>
+<span class="sd">    :param backend: backend (`faiss` or `torch`)</span>
+<span class="sd">    :return: scores, indices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;faiss&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">_faiss_knn</span> <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;faiss&quot;</span> <span class="ow">and</span> <span class="n">is_faiss_available</span><span class="p">()</span> <span class="k">else</span> <span class="n">_torch_knn</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="n">is_faiss_available</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">faiss</span>
+
+    <span class="n">FAISS_RES</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">StandardGpuResources</span><span class="p">()</span>
+    <span class="n">FAISS_RES</span><span class="o">.</span><span class="n">setDefaultNullStreamAllDevices</span><span class="p">()</span>
+    <span class="n">FAISS_RES</span><span class="o">.</span><span class="n">setTempMemory</span><span class="p">(</span><span class="mi">1200</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-, Ryuichiro Hataya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
