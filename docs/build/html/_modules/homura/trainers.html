@@ -78,12 +78,16 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -178,7 +182,7 @@
 
 <span class="sd">    :param model: model to be trained in `nn.Module` or `{&quot;name&quot;: nn.Module}`</span>
 <span class="sd">    :param optimizer: optimizer for the model in `partial`, `torch.optim.Optimizer` or dict of them. For distributed</span>
-<span class="sd">    training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.</span>
+<span class="sd">     training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.</span>
 <span class="sd">    :param loss_f: loss function</span>
 <span class="sd">    :param callbacks: callbacks</span>
 <span class="sd">    :param scheduler: scheduler for the model in `partial`, `lr_scheduler._LRScheduler` or dict of them</span>
@@ -551,12 +555,13 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TrainerBase.set_optimizer"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.set_optimizer">[docs]</a>    <span class="k">def</span> <span class="nf">set_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set optimizer(s) for model(s). You can override as ::</span>
+        <span class="sd">&quot;&quot;&quot; Set optimizer(s) for model(s). You can override as::</span>
 
 <span class="sd">            class YourTrainer(TrainerBase):</span>
 <span class="sd">                def set_optimizer(self):</span>
 <span class="sd">                    self.optimizer = torch.optim.SGD(self.model.parameters())</span>
 
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span>
@@ -587,6 +592,7 @@
 <span class="sd">                def set_scheduler(self):</span>
 <span class="sd">                    self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)</span>
 
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">scheduler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span>
@@ -671,7 +677,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_amp</span> <span class="o">=</span> <span class="n">use_amp</span>
         <span class="k">if</span> <span class="n">use_amp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">amp</span><span class="p">,</span> <span class="s1">&#39;autocast&#39;</span><span class="p">):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;amp is not available&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_use_amp</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
@@ -687,7 +693,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_amp</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
@@ -706,7 +712,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ryuichiro Hataya
+        &copy; Copyright 2019-, Ryuichiro Hataya
 
     </p>
   </div>

@@ -25,8 +25,8 @@ class EMANet(nn.Module):
     :param model: model to be tracked
     :param momentum: momentum for EMA
     :param wrap_model: If True, `forward` returns outputs of the original model during training.
-    If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
-    :param weight_decay: If a float value is given, apply weight decay to the original model
+     If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
+    :param weight_decay: If a float value is given, apply weight decay to the original model.
     """
 
     def __init__(self,

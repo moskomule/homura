@@ -80,7 +80,8 @@
               
             
             
-              <ul class="current">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.modules package</a><ul>
@@ -99,6 +100,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -353,12 +357,12 @@ registered hooks while the latter silently ignores them.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> – model to be tracked</p></li>
 <li><p><strong>momentum</strong> – momentum for EMA</p></li>
-<li><p><strong>wrap_model</strong> – If True, <cite>forward</cite> returns outputs of the original model during training.</p></li>
+<li><p><strong>wrap_model</strong> – If True, <cite>forward</cite> returns outputs of the original model during training.
+If False, it returns outputs of the EMAed model. Set False if you need a pair of models.</p></li>
+<li><p><strong>weight_decay</strong> – If a float value is given, apply weight decay to the original model.</p></li>
 </ul>
 </dd>
 </dl>
-<p>If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
-:param weight_decay: If a float value is given, apply weight decay to the original model</p>
 <dl class="py method">
 <dt id="homura.modules.ema.EMANet.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">update_buffers</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMANet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.ema.EMANet.forward" title="Permalink to this definition">¶</a></dt>
@@ -519,7 +523,7 @@ registered hooks while the latter silently ignores them.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ryuichiro Hataya
+        &copy; Copyright 2019-, Ryuichiro Hataya
 
     </p>
   </div>

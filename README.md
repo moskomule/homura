@@ -13,9 +13,9 @@ For older versions, install as `pip install git+https://github.com/moskomule/hom
 ### minimal requirements
 
 ```
-Python>=3.7
-PyTorch>=1.4.0
-torchvision>=0.5.0
+Python>=3.8
+PyTorch>=1.5.0
+torchvision>=0.6.0
 tqdm # automatically installed
 tensorboard # automatically installed
 hydra-core # automatically installed

@@ -78,12 +78,16 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -174,8 +178,8 @@
 <span class="sd">    :param model: model to be tracked</span>
 <span class="sd">    :param momentum: momentum for EMA</span>
 <span class="sd">    :param wrap_model: If True, `forward` returns outputs of the original model during training.</span>
-<span class="sd">    If False, it returns outputs of the EMAed model. Set False if you need a pair of models.</span>
-<span class="sd">    :param weight_decay: If a float value is given, apply weight decay to the original model</span>
+<span class="sd">     If False, it returns outputs of the EMAed model. Set False if you need a pair of models.</span>
+<span class="sd">    :param weight_decay: If a float value is given, apply weight decay to the original model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -233,7 +237,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ryuichiro Hataya
+        &copy; Copyright 2019-, Ryuichiro Hataya
 
     </p>
   </div>

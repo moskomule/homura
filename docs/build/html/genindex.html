@@ -79,12 +79,16 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -183,7 +187,7 @@
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.AccuracyCallback">AccuracyCallback (class in homura.callbacks.metrics)</a>
 </li>
-      <li><a href="homura.html#homura.optim.Adam">Adam() (in module homura.optim)</a>
+      <li><a href="homura.html#homura.optim.Adam">Adam() (in module homura.optim)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.optim.Adam">[1]</a>
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.reporters.TQDMReporter.add_text">add_text() (homura.callbacks.reporters.TQDMReporter method)</a>
 </li>
@@ -285,7 +289,7 @@
 </li>
       <li><a href="homura.utils.html#homura.utils.containers.TensorMap.copy">copy() (homura.utils.containers.TensorMap method)</a>
 </li>
-      <li><a href="homura.html#homura.lr_scheduler.CosineAnnealingWithWarmup">CosineAnnealingWithWarmup() (in module homura.lr_scheduler)</a>
+      <li><a href="homura.html#homura.lr_scheduler.CosineAnnealingWithWarmup">CosineAnnealingWithWarmup() (in module homura.lr_scheduler)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.lr_scheduler.CosineAnnealingWithWarmup">[1]</a>
 </li>
       <li><a href="homura.modules.functional.html#homura.modules.functional.loss.cross_entropy_with_softlabels">cross_entropy_with_softlabels() (in module homura.modules.functional.loss)</a>
 </li>
@@ -305,9 +309,9 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.html#homura.trainers.TrainerBase.data_handler_after_iter">data_handler_after_iter() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.data_handler_after_iter">data_handler_after_iter() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.data_handler_after_iter">[1]</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.data_handler_before_iter">data_handler_before_iter() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.data_handler_before_iter">data_handler_before_iter() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.data_handler_before_iter">[1]</a>
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.prefetcher.DataPrefetcher">DataPrefetcher (class in homura.vision.data.prefetcher)</a>
 </li>
@@ -869,10 +873,10 @@
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.is_train">is_train() (homura.trainers.TrainerBase property)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.SupervisedTrainer.iteration">iteration() (homura.trainers.SupervisedTrainer method)</a>
+      <li><a href="homura.html#homura.trainers.SupervisedTrainer.iteration">iteration() (homura.trainers.SupervisedTrainer method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.SupervisedTrainer.iteration">[1]</a>
 
       <ul>
-        <li><a href="homura.html#homura.trainers.TrainerBase.iteration">(homura.trainers.TrainerBase method)</a>
+        <li><a href="homura.html#homura.trainers.TrainerBase.iteration">(homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.iteration">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -897,7 +901,7 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.html#homura.lr_scheduler.LambdaLR">LambdaLR() (in module homura.lr_scheduler)</a>
+      <li><a href="homura.html#homura.lr_scheduler.LambdaLR">LambdaLR() (in module homura.lr_scheduler)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.lr_scheduler.LambdaLR">[1]</a>
 </li>
       <li><a href="homura.html#homura.trainers.TrainerBase.load_state_dict">load_state_dict() (homura.trainers.TrainerBase method)</a>
 
@@ -1068,7 +1072,7 @@
 </li>
       <li><a href="homura.language.html#homura.language.transformer.MultiHeadAttention">MultiHeadAttention (class in homura.language.transformer)</a>
 </li>
-      <li><a href="homura.html#homura.lr_scheduler.MultiStepLR">MultiStepLR() (in module homura.lr_scheduler)</a>
+      <li><a href="homura.html#homura.lr_scheduler.MultiStepLR">MultiStepLR() (in module homura.lr_scheduler)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.lr_scheduler.MultiStepLR">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1092,7 +1096,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="homura.html#homura.trainers.TrainerBase.override_iteration">override_iteration() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.override_iteration">override_iteration() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.override_iteration">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1144,7 +1148,7 @@
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.metrics.MetricCallback.reduce">reduce() (homura.callbacks.metrics.MetricCallback method)</a>
 </li>
-      <li><a href="homura.html#homura.lr_scheduler.ReduceLROnPlateau">ReduceLROnPlateau() (in module homura.lr_scheduler)</a>
+      <li><a href="homura.html#homura.lr_scheduler.ReduceLROnPlateau">ReduceLROnPlateau() (in module homura.lr_scheduler)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.lr_scheduler.ReduceLROnPlateau">[1]</a>
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.datasets.register_vision_dataset">register_vision_dataset() (in module homura.vision.data.datasets)</a>
 </li>
@@ -1164,7 +1168,7 @@
 </li>
       <li><a href="homura.vision.data.html#homura.vision.data.datasets.VisionSet.root">root (homura.vision.data.datasets.VisionSet attribute)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.run">run() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.run">run() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.run">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1184,15 +1188,15 @@
 </li>
       <li><a href="homura.html#homura.liblog.set_file_handler">set_file_handler() (in module homura.liblog)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.set_optimizer">set_optimizer() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.set_optimizer">set_optimizer() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.set_optimizer">[1]</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.set_scheduler">set_scheduler() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.set_scheduler">set_scheduler() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.set_scheduler">[1]</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.reproducibility.set_seed">set_seed() (in module homura.utils.reproducibility)</a>
 </li>
       <li><a href="homura.html#homura.liblog.set_verb_level">set_verb_level() (in module homura.liblog)</a>
 </li>
-      <li><a href="homura.html#homura.optim.SGD">SGD() (in module homura.optim)</a>
+      <li><a href="homura.html#homura.optim.SGD">SGD() (in module homura.optim)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.optim.SGD">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1214,7 +1218,7 @@
       </ul></li>
       <li><a href="homura.utils.html#homura.utils.containers.StepDict">StepDict (class in homura.utils.containers)</a>
 </li>
-      <li><a href="homura.html#homura.lr_scheduler.StepLR">StepLR() (in module homura.lr_scheduler)</a>
+      <li><a href="homura.html#homura.lr_scheduler.StepLR">StepLR() (in module homura.lr_scheduler)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.lr_scheduler.StepLR">[1]</a>
 </li>
       <li><a href="homura.modules.html#homura.modules.miscs.straight_backprop">straight_backprop() (in module homura.modules.miscs)</a>
 </li>
@@ -1222,7 +1226,7 @@
 </li>
       <li><a href="homura.modules.html#homura.modules.discretization.StraightThroughEstimator">StraightThroughEstimator (class in homura.modules.discretization)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.SupervisedTrainer">SupervisedTrainer (class in homura.trainers)</a>
+      <li><a href="homura.html#homura.trainers.SupervisedTrainer">SupervisedTrainer (class in homura.trainers)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.SupervisedTrainer">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1236,7 +1240,7 @@
 </li>
       <li><a href="homura.utils.html#homura.utils.containers.TensorTuple">TensorTuple (class in homura.utils.containers)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.test">test() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.test">test() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.test">[1]</a>
 </li>
       <li><a href="homura.utils.html#homura.utils.benchmarks.timeit">timeit() (in module homura.utils.benchmarks)</a>
 </li>
@@ -1260,9 +1264,9 @@
 </li>
       <li><a href="homura.callbacks.html#homura.callbacks.reporters.TQDMReporter">TQDMReporter (class in homura.callbacks.reporters)</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase.train">train() (homura.trainers.TrainerBase method)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase.train">train() (homura.trainers.TrainerBase method)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase.train">[1]</a>
 </li>
-      <li><a href="homura.html#homura.trainers.TrainerBase">TrainerBase (class in homura.trainers)</a>
+      <li><a href="homura.html#homura.trainers.TrainerBase">TrainerBase (class in homura.trainers)</a>, <a href="trainers_optimizer_lr_scheduler.html#homura.trainers.TrainerBase">[1]</a>
 </li>
       <li><a href="homura.metrics.html#homura.metrics.commons.true_negative">true_negative() (in module homura.metrics.commons)</a>
 </li>
@@ -1343,7 +1347,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ryuichiro Hataya
+        &copy; Copyright 2019-, Ryuichiro Hataya
 
     </p>
   </div>

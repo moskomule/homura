@@ -35,8 +35,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add docs
-          git diff-index --quiet HEAD || git commit -am 'update doc'
+          git add docs/build
+          git diff-index --quiet HEAD || git commit -am 'update doc [skip doc, skip tests]'
           git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:${GITHUB_REF}
 
 # git diff-index --quiet HEAD || git commit -am 'update doc' always exits with 0 except something wrong happens

@@ -78,12 +78,16 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -425,26 +429,26 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> – model to be trained in <cite>nn.Module</cite> or <cite>{“name”: nn.Module}</cite></p></li>
-<li><p><strong>optimizer</strong> – optimizer for the model in <cite>partial</cite>, <cite>torch.optim.Optimizer</cite> or dict of them. For distributed</p></li>
+<li><p><strong>optimizer</strong> – optimizer for the model in <cite>partial</cite>, <cite>torch.optim.Optimizer</cite> or dict of them. For distributed
+training, optimizer like <cite>partial(SGD)</cite> is recommended. See <cite>homura.optim</cite>.</p></li>
+<li><p><strong>loss_f</strong> – loss function</p></li>
+<li><p><strong>callbacks</strong> – callbacks</p></li>
+<li><p><strong>scheduler</strong> – scheduler for the model in <cite>partial</cite>, <cite>lr_scheduler._LRScheduler</cite> or dict of them</p></li>
+<li><p><strong>update_scheduler_by_epoch</strong> – <cite>True</cite> if scheduler is updated by epoch, otherwise update by iteration</p></li>
+<li><p><strong>device</strong> – </p></li>
+<li><p><strong>verb</strong> – </p></li>
+<li><p><strong>use_cudnn_benchmark</strong> – </p></li>
+<li><p><strong>use_cuda_nonblocking</strong> – </p></li>
+<li><p><strong>use_horovod</strong> – </p></li>
+<li><p><strong>logger</strong> – </p></li>
+<li><p><strong>distributed_backend</strong> – </p></li>
+<li><p><strong>init_method</strong> – </p></li>
+<li><p><strong>use_sync_bn</strong> – </p></li>
+<li><p><strong>tqdm_ncols</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
 </ul>
 </dd>
 </dl>
-<p>training, optimizer like <cite>partial(SGD)</cite> is recommended. See <cite>homura.optim</cite>.
-:param loss_f: loss function
-:param callbacks: callbacks
-:param scheduler: scheduler for the model in <cite>partial</cite>, <cite>lr_scheduler._LRScheduler</cite> or dict of them
-:param update_scheduler_by_epoch: <cite>True</cite> if scheduler is updated by epoch, otherwise update by iteration
-:param device:
-:param verb:
-:param use_cudnn_benchmark:
-:param use_cuda_nonblocking:
-:param use_horovod:
-:param logger:
-:param distributed_backend:
-:param init_method:
-:param use_sync_bn:
-:param tqdm_ncols:
-:param kwargs:</p>
 <dl class="py method">
 <dt id="homura.trainers.TrainerBase.data_handler_after_iter">
 <code class="sig-name descname">data_handler_after_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.data_handler_after_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.data_handler_after_iter" title="Permalink to this definition">¶</a></dt>
@@ -576,12 +580,15 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dl class="py method">
 <dt id="homura.trainers.TrainerBase.set_optimizer">
 <code class="sig-name descname">set_optimizer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.set_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.set_optimizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set optimizer(s) for model(s). You can override as</p>
-<dl class="simple">
-<dt>class YourTrainer(TrainerBase):</dt><dd><dl class="simple">
-<dt>def set_optimizer(self):</dt><dd><p>self.optimizer = torch.optim.SGD(self.model.parameters())</p>
-</dd>
-</dl>
+<dd><p>Set optimizer(s) for model(s). You can override as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">YourTrainer</span><span class="p">(</span><span class="n">TrainerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -590,11 +597,14 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dt id="homura.trainers.TrainerBase.set_scheduler">
 <code class="sig-name descname">set_scheduler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.set_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.set_scheduler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set scheduler(s) for optimizer(s). You can override as</p>
-<dl class="simple">
-<dt>class YourTrainer(TrainerBase):</dt><dd><dl class="simple">
-<dt>def set_scheduler(self):</dt><dd><p>self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)</p>
-</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">YourTrainer</span><span class="p">(</span><span class="n">TrainerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">Foo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -699,7 +709,7 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ryuichiro Hataya
+        &copy; Copyright 2019-, Ryuichiro Hataya
 
     </p>
   </div>

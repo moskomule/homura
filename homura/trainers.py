@@ -29,7 +29,7 @@ class TrainerBase(metaclass=ABCMeta):
 
     :param model: model to be trained in `nn.Module` or `{"name": nn.Module}`
     :param optimizer: optimizer for the model in `partial`, `torch.optim.Optimizer` or dict of them. For distributed
-    training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.
+     training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.
     :param loss_f: loss function
     :param callbacks: callbacks
     :param scheduler: scheduler for the model in `partial`, `lr_scheduler._LRScheduler` or dict of them
@@ -402,12 +402,13 @@ class TrainerBase(metaclass=ABCMeta):
         raise NotImplementedError
 
     def set_optimizer(self):
-        """ Set optimizer(s) for model(s). You can override as ::
+        """ Set optimizer(s) for model(s). You can override as::
 
             class YourTrainer(TrainerBase):
                 def set_optimizer(self):
                     self.optimizer = torch.optim.SGD(self.model.parameters())
 
+        :return:
         """
 
         optimizer = self.optimizer
@@ -438,6 +439,7 @@ class TrainerBase(metaclass=ABCMeta):
                 def set_scheduler(self):
                     self.scheduler = torch.optim.lr_scheduler.Foo(self.optimizer)
 
+        :return:
         """
 
         scheduler = self.scheduler
@@ -522,7 +524,7 @@ class SupervisedTrainer(TrainerBase):
 
         self._use_amp = use_amp
         if use_amp:
-            if not hasattr(torch.cuda, 'amp'):
+            if not hasattr(torch.cuda.amp, 'autocast'):
                 warnings.warn('amp is not available')
                 self._use_amp = False
             else:
@@ -538,7 +540,7 @@ class SupervisedTrainer(TrainerBase):
         if self.is_train:
             self.optimizer.zero_grad()
             if self._use_amp:
-                self.scaler(loss).backward()
+                self.scaler.scale(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
             else:
