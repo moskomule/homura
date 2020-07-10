@@ -1,3 +1,4 @@
+import dataclasses
 from collections.abc import MutableMapping
 from copy import deepcopy
 
@@ -36,7 +37,7 @@ class TensorMap(MutableMapping, dict):
         elif key not in self.__default_methods:
             self._data[key] = value
         else:
-            raise KeyError(f"{key} is a method name.")
+            raise KeyError(f"{key} is a method registry_name.")
 
     def __getitem__(self, item):
         return self.__getattr__(item)
@@ -101,6 +102,77 @@ class TensorTuple(tuple):
         """
 
         return TensorTuple((t.to(*args, **kwargs) for t in self if torch.is_tensor(t)))
+
+
+@dataclasses.dataclass
+class TensorDataClass(object):
+    """ TensorDataClass is an extension of `dataclass` that can handle tensors easily. ::
+
+        @dataclasses.dataclass
+        class YourTensorClass(TensorDataClass):
+            __slots__ = ('pred', 'loss')
+            pred: torch.Tensor
+            loss: torch.Tensor
+
+        x = YourTensorClass(prediction, loss)
+        x.to('cuda')
+        x.to(dtype=torch.int32)
+        registry_name, loss = x
+        loss = x.loss
+        loss = x['loss']
+        loss = x[1]
+
+    """
+
+
+    def __post_init__(self):
+        self._field_names = tuple((f.name for f in dataclasses.fields(self)))
+
+    def __getitem__(self,
+                    item):
+        if isinstance(item, int):
+            try:
+                return tuple(self.__iter__())[item]
+            except IndexError as e:
+                raise IndexError('Index out of error')
+        else:
+            return getattr(self, item, None)
+
+    def __iter__(self):
+        """ Enable unpacking
+
+        :return: iter
+        """
+
+        return (getattr(self, f) for f in self._field_names)
+
+    def __getstate__(self):
+        return self
+
+    def __setstate__(self,
+                     state):
+        self.__init__(*state)
+
+    def to(self,
+           *args,
+           **kwargs):
+        self.__init__(*((t.to(*args, **kwargs) if torch.is_tensor(t) else t)
+                        for t in self))
+        return self
+
+    @classmethod
+    def create_class(cls,
+                     cls_name,
+                     fields,
+                     **kwargs):
+        """
+
+        :param cls_name:
+        :param fields:
+        :param kwargs:
+        :return: Subclass of TensorDataClass
+        """
+        return dataclasses.make_dataclass(cls_name, fields, bases=(cls,), **kwargs)
 
 
 class StepDict(dict):

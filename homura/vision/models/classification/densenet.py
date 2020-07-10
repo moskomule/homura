@@ -7,10 +7,14 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from homura import Registry
+
 __all__ = ["cifar_densenet100", "CIFARDenseNet"]
 
 _padding = {"reflect": nn.ReflectionPad2d,
             "zero": nn.ZeroPad2d}
+
+MODEL_REGISTRY = Registry('model')
 
 
 class _DenseLayer(nn.Module):
@@ -59,6 +63,7 @@ class _Transition(nn.Module):
         return self.layers(input)
 
 
+@MODEL_REGISTRY.register
 class CIFARDenseNet(nn.Module):
     """
     DenseNet-BC (bottleneck and compactness) for CIFAR dataset. For ImageNet classification, use `torchvision`'s.
@@ -123,5 +128,6 @@ def _cifar_densenet(depth, num_classes, growth_rate=12, **kwargs):
     return model
 
 
+@MODEL_REGISTRY.register
 def cifar_densenet100(num_classes, **kwargs):
     return _cifar_densenet(100, num_classes, **kwargs)

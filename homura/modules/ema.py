@@ -16,7 +16,7 @@ def exponential_moving_average_(base: torch.Tensor,
     :return: exponential-moving-averaged `base` tensor
     """
 
-    return base.mul_(momentum).add_(1 - momentum, update)
+    return base.mul_(momentum).add_(update, alpha=1 - momentum)
 
 
 class EMANet(nn.Module):

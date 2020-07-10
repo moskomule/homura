@@ -3,9 +3,12 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+from homura import Registry
 from .._intialization import init_parameters
 
 __all__ = ["WideResNet", "WideBasicModule", "wrn28_10", "wrn28_2"]
+
+MODEL_REGISTRY = Registry('model')
 
 
 def conv3x3(in_planes, out_planes, stride=1):
@@ -95,11 +98,13 @@ class WideResNet(nn.Module):
         return x
 
 
+@MODEL_REGISTRY.register
 def wrn28_10(num_classes=10, dropout_rate=0) -> WideResNet:
     model = WideResNet(depth=28, widen_factor=10, dropout_rate=dropout_rate, num_classes=num_classes)
     return model
 
 
+@MODEL_REGISTRY.register
 def wrn28_2(num_classes=10, dropout_rate=0) -> WideResNet:
     model = WideResNet(depth=28, widen_factor=2, dropout_rate=dropout_rate, num_classes=num_classes)
     return model

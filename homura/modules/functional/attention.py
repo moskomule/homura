@@ -39,24 +39,3 @@ def kv_attention(query: torch.Tensor,
         attn = F.dropout(attn, p=dropout_prob)
 
     return torch.einsum('...jk,...km->...jm', attn, value), attn
-
-
-def lsh_attention(query: torch.Tensor,
-                  key: Optional[torch.Tensor],
-                  value: torch.Tensor,
-                  mask: Optional[torch.Tensor] = None,
-                  ) -> (torch.Tensor, torch.Tensor):
-    pass
-
-
-def lsh(input: torch.Tensor,
-        num_hashes: int,
-        num_buckets: int
-        ) -> torch.Tensor:
-    # input: ...JxM
-    # rot: Mx{num_hashes}x{num_buckets//2}
-    rot = input.new_empty(input.size(-1), num_hashes, num_buckets // 2).normal_()
-    rot_vec = torch.einsum("...jm,mhb->...hjb", input, rot)
-    # ...MxHx{num_buckets}
-    rot_vec = torch.cat([rot_vec, -rot_vec], -1)
-    bucket_range = torch.arange(rot_vec.size(-1), device=rot_vec.device)

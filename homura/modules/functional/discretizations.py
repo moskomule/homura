@@ -1,10 +1,11 @@
 # some functions to discretize input_forward tensors
 
 import random
+import warnings
 
 import torch
 from torch.autograd import Function
-from torch.distributions import RelaxedOneHotCategorical, RelaxedBernoulli
+from torch.distributions import RelaxedBernoulli
 from torch.nn import functional as F
 
 __all__ = ["gumbel_softmax", "gumbel_sigmoid", "straight_through_estimator", "semantic_hashing"]
@@ -75,4 +76,6 @@ def gumbel_softmax(input: torch.Tensor,
                    temp: float) -> torch.Tensor:
     """ gumbel softmax
     """
-    return RelaxedOneHotCategorical(temp, input.softmax(dim=dim)).rsample()
+    warnings.warn("homura's gumbel_softmax is deprecated in favor of F.gumbel_softmax",
+                  DeprecationWarning)
+    return F.gumbel_softmax(input, tau=temp, dim=dim)

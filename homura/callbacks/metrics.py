@@ -17,7 +17,7 @@ class MetricCallback(Callback):
     """ Base class of MetricCallback class such as AccuracyCallback
 
     :param metric: metric function: (data) -> float
-    :param name: name of the metric
+    :param name: registry_name of the metric
     :param logger:
     :param no_reduce: skip reducing when distributed
     :param reduction: reduction method after every epoch
@@ -214,7 +214,7 @@ def metric_callback_decorator(_metric: Callable = None,
 
 
 def metric_callback_by_name(name: str):
-    """ Construct a metric callback by ``name`` (key) of ``data``.
+    """ Construct a metric callback by ``registry_name`` (key) of ``data``.
 
     :param name:
     :return:

@@ -27,7 +27,7 @@ __all__ = ["TrainerBase", "SupervisedTrainer"]
 class TrainerBase(metaclass=ABCMeta):
     """ Train and evaluate model in a given period (an epoch or iterations)
 
-    :param model: model to be trained in `nn.Module` or `{"name": nn.Module}`
+    :param model: model to be trained in `nn.Module` or `{"registry_name": nn.Module}`
     :param optimizer: optimizer for the model in `partial`, `torch.optim.Optimizer` or dict of them. For distributed
      training, optimizer like `partial(SGD)` is recommended. See `homura.optim`.
     :param loss_f: loss function
