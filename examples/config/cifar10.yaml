@@ -1,4 +1,13 @@
-batch_size: 128
-epochs: 200
-model: resnet20
+data:
+  batch_size: 128
+
+optim:
+  epochs: 200
+  weight_decay: 1e-4
+  lr_decay: 0.1
+
+model:
+  name: resnet20
+
 bn_no_wd: false
+use_amp: false

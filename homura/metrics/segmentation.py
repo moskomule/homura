@@ -1,9 +1,9 @@
 # some metrics especially for semantic/instance segmentation
 
 import torch
+from torch.nn import functional as F
 
-from homura.modules import to_onehot
-from .commons import confusion_matrix
+from homura.metrics.commons import confusion_matrix
 
 __all__ = ["binary_as_multiclass", "pixel_accuracy", "mean_iou", "classwise_iou"]
 
@@ -35,9 +35,9 @@ def pixel_accuracy(input: torch.Tensor,
         raise RuntimeError(f"Dimension of target is expected to be 3, but got {target.dim()}")
 
     b, c, h, w = input.size()
-    pred = to_onehot(input.argmax(dim=1), num_classes=c)
-    gt = to_onehot(target, num_classes=c)
-    acc = (pred * gt).sum(dim=(1, 2, 3)) / (w * h)
+    pred = F.one_hot(input.argmax(dim=1), num_classes=c)
+    gt = F.one_hot(target, num_classes=c)
+    acc = (pred * gt).sum(dim=(1, 2, 3)).float() / (w * h)
     return acc.mean()
 
 

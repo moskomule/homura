@@ -5,12 +5,6 @@ from torch.nn import functional as F
 from homura.modules import functional as HF
 
 
-def test_gumbel_softmax():
-    input = torch.tensor([10, 0.3, 0.3])
-    samples = sum([HF.gumbel_softmax(input, 0, 0.01) for _ in range(400)]) / 400
-    assert samples.tolist() == approx([1, 0, 0], abs=1e-2)
-
-
 def test_gumbel_sigmoid():
     input = torch.tensor([10.0, -10.0])
     samples = sum([HF.gumbel_sigmoid(input, 0.01) for _ in range(400)]) / 400

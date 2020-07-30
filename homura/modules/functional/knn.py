@@ -61,10 +61,10 @@ def _faiss_knn(keys: torch.Tensor,
     s_ptr = _tensor_to_ptr(scores)
     i_ptr = _tensor_to_ptr(indices)
 
-    faiss.bruteForceKnn(FAISS_RES, metric,
-                        k_ptr, True, keys.size(0),
-                        q_ptr, True, queries.size(0),
-                        queries.size(1), num_neighbors, s_ptr, i_ptr)
+    faiss.bfKnn(FAISS_RES, metric,
+                k_ptr, True, keys.size(0),
+                q_ptr, True, queries.size(0),
+                queries.size(1), num_neighbors, s_ptr, i_ptr)
     return scores, indices
 
 
@@ -78,7 +78,7 @@ def k_nearest_neighbor(keys: torch.Tensor,
     :param keys: tensor of (num_keys, dim)
     :param queries: tensor of (num_queries, dim)
     :param num_neighbors: `k`
-    :param distance: name of distance (`dot_product` or `l2`)
+    :param distance: registry_name of distance (`dot_product` or `l2`)
     :param backend: backend (`faiss` or `torch`)
     :return: scores, indices
     """

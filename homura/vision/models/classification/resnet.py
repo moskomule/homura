@@ -6,6 +6,7 @@ https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua
 from torch import nn
 
 from .._intialization import init_parameters
+from . import MODEL_REGISTRY
 
 __all__ = ["resnet20", "resnet32", "resnet56", "resnet110",
            "preact_resnet20", "preact_resnet32", "preact_resnet56", "preact_resnet110",
@@ -153,41 +154,49 @@ class PreActResNet(ResNet):
         return x
 
 
+@MODEL_REGISTRY.register
 def resnet20(**kwargs):
     model = ResNet(BasicBlock, 3, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def resnet32(**kwargs):
     model = ResNet(BasicBlock, 5, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def resnet56(**kwargs):
     model = ResNet(BasicBlock, 9, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def resnet110(**kwargs):
     model = ResNet(BasicBlock, 18, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def preact_resnet20(**kwargs):
     model = PreActResNet(PreActBasicBlock, 3, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def preact_resnet32(**kwargs):
     model = PreActResNet(PreActBasicBlock, 5, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def preact_resnet56(**kwargs):
     model = PreActResNet(PreActBasicBlock, 9, **kwargs)
     return model
 
 
+@MODEL_REGISTRY.register
 def preact_resnet110(**kwargs):
     model = PreActResNet(PreActBasicBlock, 18, **kwargs)
     return model
