@@ -1,10 +1,9 @@
 import torch
 from torch import nn
 
-from .functional import (gumbel_sigmoid, straight_through_estimator,
-                         semantic_hashing, gumbel_softmax, to_onehot)
+from .functional import (gumbel_sigmoid, straight_through_estimator, semantic_hashing)
 
-__all__ = ["GumbelSigmoid", "GumbelSoftmax", "StraightThroughEstimator", "SemanticHashing"]
+__all__ = ["GumbelSigmoid", "StraightThroughEstimator", "SemanticHashing"]
 
 
 class GumbelSigmoid(nn.Module):
@@ -39,21 +38,3 @@ class SemanticHashing(nn.Module):
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         return semantic_hashing(input, self.training)
-
-
-class GumbelSoftmax(nn.Module):
-    """ This module outputs `gumbel_softmax` while training and argmax in onehot fashion while evaluation
-    """
-
-    def __init__(self,
-                 dim: int,
-                 temp: float = 0.1):
-        super(GumbelSoftmax, self).__init__()
-        self.dim = dim
-        self.temp = temp
-
-    def forward(self, input: torch.Tensor) -> torch.Tensor:
-        if self.training:
-            return gumbel_softmax(input, self.dim, self.temp)
-        else:
-            return to_onehot(input.argmax(dim=self.dim), input.size(self.dim))

@@ -18,7 +18,7 @@ def partial_mixup(input: torch.Tensor,
     if input.size(0) != indices.size(0):
         raise RuntimeError("Size mismatch!")
     perm_input = input[indices]
-    return input.mul(gamma).add(1 - gamma, perm_input)
+    return input.mul(gamma).add(perm_input, alpha=1 - gamma)
 
 
 def mixup(input: torch.Tensor,

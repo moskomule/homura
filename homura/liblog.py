@@ -29,9 +29,9 @@ def _name() -> str:
 def _create_default_formatter() -> logging.Formatter:
     datefmt = "%Y-%m-%d %H:%M:%S"
     if _has_colorlog:
-        return colorlog.ColoredFormatter('%(log_color)s[%(registry_name)s|%(asctime)s|%(levelname)s] %(message)s',
+        return colorlog.ColoredFormatter('%(log_color)s[%(name)s|%(asctime)s|%(levelname)s] %(message)s',
                                          datefmt=datefmt)
-    return logging.Formatter("[%(registry_name)s|%(asctime)s|%(levelname)s] %(message)s", datefmt=datefmt)
+    return logging.Formatter("[%(name)s|%(asctime)s|%(levelname)s] %(message)s", datefmt=datefmt)
 
 
 def _get_root_logger() -> logging.Logger:

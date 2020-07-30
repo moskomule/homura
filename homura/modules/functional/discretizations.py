@@ -8,7 +8,7 @@ from torch.autograd import Function
 from torch.distributions import RelaxedBernoulli
 from torch.nn import functional as F
 
-__all__ = ["gumbel_softmax", "gumbel_sigmoid", "straight_through_estimator", "semantic_hashing"]
+__all__ = ["gumbel_sigmoid", "straight_through_estimator", "semantic_hashing"]
 
 
 def gumbel_sigmoid(input: torch.Tensor,
@@ -69,13 +69,3 @@ def semantic_hashing(input: torch.Tensor, is_training: bool) -> torch.Tensor:
         return v1 - v1.detach() + v2
     else:
         return v1
-
-
-def gumbel_softmax(input: torch.Tensor,
-                   dim: int,
-                   temp: float) -> torch.Tensor:
-    """ gumbel softmax
-    """
-    warnings.warn("homura's gumbel_softmax is deprecated in favor of F.gumbel_softmax",
-                  DeprecationWarning)
-    return F.gumbel_softmax(input, tau=temp, dim=dim)
