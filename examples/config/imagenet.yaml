@@ -6,7 +6,6 @@ debug: false
 use_amp: false
 
 distributed:
-  enable: false
   use_horovod: false
   init_method: "env://"
   backend: "nccl"

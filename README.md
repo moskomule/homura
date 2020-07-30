@@ -4,10 +4,6 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
-**Notice: homura v2019.11+ introduces backward-incompatible changes**
-
-For older versions, install as `pip install git+https://github.com/moskomule/homura@v0.7` etc.
-
 ## Requirements
 
 ### Minimal requirements
@@ -30,8 +26,6 @@ accimage (for faster image pre-processing)
 horovad (for easier distributed training)
 cupy
 ```
-
-If `horovod` is available, `homura` tries to use it for distributed training. To disable `horovod` and use `pytorch.distributed` instead, set `HOMURA_DISABLE_HOROVOD=1`.
 
 ### test
 
@@ -186,20 +180,22 @@ with set_seed(seed):
 See [examples](examples).
 
 * [cifar10.py](examples/cifar10.py): training ResNet-20 or WideResNet-28-10 with random crop on CIFAR10
-* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and     multi process)
+* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and multi process)
+
+Note that homura expects datasets are downloaded in `~/.torch/data/DATASET_NAME`.
 
 For [imagenet.py](examples/imagenet.py), if you want 
 
 * single node single gpu
 * single node multi gpus
 
-run `python imagenet.py root=/path/to/imagenet/root`.
+run `python imagenet.py`.
 
 If you want
 
 * single node multi threads multi gpus
 
-run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS imagenet.py root=/path/to/imagenet/root distributed.on=true`.
+run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS imagenet.py distributed.on=true`.
 
 If you want
 
@@ -207,8 +203,8 @@ If you want
 
 run
 
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py root=/path/to/imagenet/root distributed.on=true` on the master node
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py root=s/path/to/imagenet/root distributed.on=true` on the other nodes
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py` on the master node
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py` on the other nodes
 
 Here, `0<$RANK<$NUM_NODES`.
 

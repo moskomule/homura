@@ -7,6 +7,8 @@ from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, g
 from homura.trainers import SupervisedTrainer
 from homura.vision.data import prefetcher, DATASET_REGISTRY
 
+is_distributed = False
+
 
 def _handle_argparse():
     # handle raises Error with non key=val format
@@ -16,13 +18,21 @@ def _handle_argparse():
 
     original_argv = sys.argv
     hydra_pattern = re.compile(r'[^-|^=]+=[^=]+')
-    non_hydra_argv = [k for k in original_argv if re.match(hydra_pattern, k) is not None]
-    sys.argv = [original_argv[0]] + non_hydra_argv
+    hydra_argv = [k for k in original_argv if re.match(hydra_pattern, k) is not None]
+    non_hydra_argv = [k for k in original_argv[1:] if k not in hydra_argv]
+    if any([not k.startswith('-') for k in non_hydra_argv]):
+        # non_hydra_argv should start with -
+        raise RuntimeError(f"Wrong argument is given: check one of {non_hydra_argv}")
+    help_argv = [k for k in original_argv if k == '-h' or k == '--help']
+    sys.argv = [original_argv[0]] + hydra_argv + help_argv
+    if any(['local_rank' in k for k in non_hydra_argv]):
+        global is_distributed
+        is_distributed = True
 
 
 @hydra.main("config/imagenet.yaml")
 def main(cfg):
-    if cfg.distributed.enable:
+    if is_distributed:
         init_distributed(use_horovod=cfg.distributed.use_horovod,
                          backend=cfg.distributed.backend,
                          init_method=cfg.distributed.init_method)
@@ -40,11 +50,10 @@ def main(cfg):
          reporters.TensorboardReporter("."),
          reporters.IOReporter(".")]
     _train_loader, _test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
-                                                               distributed=cfg.distributed.enable,
                                                                num_train_samples=cfg.batch_size * 10 if cfg.debug else None,
                                                                num_test_samples=cfg.batch_size * 10 if cfg.debug else None)
 
-    use_multi_gpus = not cfg.distributed.enable and torch.cuda.device_count() > 1
+    use_multi_gpus = not is_distributed and torch.cuda.device_count() > 1
     with SupervisedTrainer(model,
                            optimizer,
                            F.cross_entropy,
