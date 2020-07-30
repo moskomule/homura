@@ -6,15 +6,12 @@ https://github.com/liuzhuang13/DenseNet
 import torch
 from torch import nn
 from torch.nn import functional as F
-
-from homura import Registry
+from . import MODEL_REGISTRY
 
 __all__ = ["cifar_densenet100", "CIFARDenseNet"]
 
 _padding = {"reflect": nn.ReflectionPad2d,
             "zero": nn.ZeroPad2d}
-
-MODEL_REGISTRY = Registry('vision_model')
 
 
 class _DenseLayer(nn.Module):

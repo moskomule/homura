@@ -3,12 +3,10 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from homura import Registry
+from . import MODEL_REGISTRY
 from .._intialization import init_parameters
 
 __all__ = ["WideResNet", "WideBasicModule", "wrn28_10", "wrn28_2"]
-
-MODEL_REGISTRY = Registry('vision_model')
 
 
 def conv3x3(in_planes, out_planes, stride=1):
