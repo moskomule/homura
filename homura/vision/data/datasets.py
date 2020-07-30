@@ -84,7 +84,7 @@ class VisionSet:
         _, *args = inspect.getfullargspec(self.tv_class).args
         if not ({'root', 'train', 'transform', 'download'} <= set(args)):
             raise RuntimeError(f"dataset DataSet(root, train, transform, download) is expected, "
-                               f"but got {set(args)} instead.")
+                               f"but {self.tv_class} has arguments of {set(args)} instead.")
         self.root = pathlib.Path(self.root).expanduser()
         if self.default_train_da is None:
             self.default_train_da = []
