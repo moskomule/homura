@@ -4,5 +4,6 @@ from .utils import (Map, TensorMap, TensorTuple, get_global_rank, get_local_rank
                     get_git_hash, is_distributed, is_faiss_available, is_accimage_available, is_horovod_available,
                     is_distributed_available, init_distributed, enable_accimage, set_seed, set_deterministic, is_master)
 from .register import Registry
+import trainers, optim, lr_scheduler
 
 Registry.import_modules('vision')

@@ -1,4 +1,3 @@
-root: ???
 epochs: 90
 batch_size: 256
 enable_accimage: false

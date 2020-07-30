@@ -14,7 +14,7 @@ __all__ = ["cifar_densenet100", "CIFARDenseNet"]
 _padding = {"reflect": nn.ReflectionPad2d,
             "zero": nn.ZeroPad2d}
 
-MODEL_REGISTRY = Registry('model')
+MODEL_REGISTRY = Registry('vision_model')
 
 
 class _DenseLayer(nn.Module):

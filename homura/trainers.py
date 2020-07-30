@@ -17,8 +17,8 @@ from homura.liblog import get_logger, _set_tqdm_print
 from .callbacks import Callback, CallbackList, WeightSave
 from .callbacks.base import _NoOpCallback
 from .callbacks.reporters import _ReporterBase
-from .utils._vocabulary import *
 from .utils.containers import TensorTuple, TensorMap, StepDict
+from .utils._vocabulary import *
 from .utils.environment import get_global_rank, get_local_rank
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
@@ -377,7 +377,7 @@ class TrainerBase(metaclass=ABCMeta):
         for ep in range(total_iterations // val_intervals):
             self.train(train_loader)
             if isinstance(train_loader.loader, DataLoader) \
-                and isinstance(train_loader.loader.sampler, DistributedSampler):
+                    and isinstance(train_loader.loader.sampler, DistributedSampler):
                 train_loader.loader.sampler.set_epoch(self.epoch)
             for name, loader in val_loaders.items():
                 self.test(loader, name)
@@ -523,18 +523,13 @@ class SupervisedTrainer(TrainerBase):
             self.model.to(self.device)
 
         self._use_amp = use_amp
-        if use_amp:
-            if not hasattr(torch.cuda.amp, 'autocast'):
-                warnings.warn('amp is not available')
-                self._use_amp = False
-            else:
-                self.scaler = torch.cuda.amp.GradScaler()
+        if self._use_amp:
+            self.scaler = torch.cuda.amp.GradScaler()
 
     def iteration(self,
                   data: Tuple[torch.Tensor, torch.Tensor]) -> Mapping[str, torch.Tensor]:
         input, target = data
-        context = torch.cuda.amp.autocast if self._use_amp else contextlib.nullcontext
-        with context():
+        with torch.cuda.amp.autocast(self._use_amp):
             output = self.model(input)
             loss = self.loss_f(output, target)
         if self.is_train:

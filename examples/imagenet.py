@@ -5,7 +5,7 @@ from torchvision.models import resnet50
 
 from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, get_num_nodes, init_distributed
 from homura.trainers import SupervisedTrainer
-from homura.vision.data import imagenet_loaders, prefetcher
+from homura.vision.data import prefetcher, DATASET_REGISTRY
 
 
 def _handle_argparse():
@@ -39,11 +39,10 @@ def main(cfg):
          tq,
          reporters.TensorboardReporter("."),
          reporters.IOReporter(".")]
-    _train_loader, _test_loader = imagenet_loaders(cfg.root,
-                                                   cfg.batch_size,
-                                                   distributed=cfg.distributed.enable,
-                                                   num_train_samples=cfg.batch_size * 10 if cfg.debug else None,
-                                                   num_test_samples=cfg.batch_size * 10 if cfg.debug else None)
+    _train_loader, _test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
+                                                               distributed=cfg.distributed.enable,
+                                                               num_train_samples=cfg.batch_size * 10 if cfg.debug else None,
+                                                               num_test_samples=cfg.batch_size * 10 if cfg.debug else None)
 
     use_multi_gpus = not cfg.distributed.enable and torch.cuda.device_count() > 1
     with SupervisedTrainer(model,

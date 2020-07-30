@@ -3,22 +3,16 @@ import torch
 import torch.nn.functional as F
 
 from homura import optim, lr_scheduler, callbacks, reporters, trainers
-from homura.vision.data import vision_loaders
-from homura.vision.models.classification import resnet20, wrn28_10
+from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
 
 
 @hydra.main('config/cifar10.yaml')
 def main(cfg):
-    model = {"resnet20": resnet20,
-             "wrn28_10": wrn28_10}[cfg.model](num_classes=10)
-    weight_decay = {"resnet20": 1e-4,
-                    "wrn28_10": 5e-4}[cfg.model]
-    lr_decay = {"resnet20": 0.1,
-                "wrn28_10": 0.2}[cfg.model]
-    train_loader, test_loader = vision_loaders("cifar10", cfg.batch_size)
-    optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=weight_decay)
-    scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=lr_decay)
-    tq = reporters.TQDMReporter(range(cfg.epochs), verb=True)
+    model = MODEL_REGISTRY(cfg.model.name)(num_classes=10)
+    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.data.batch_size)
+    optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)
+    scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.optim.lr_decay)
+    tq = reporters.TQDMReporter(range(cfg.optim.epochs), verb=True)
     c = [callbacks.AccuracyCallback(),
          callbacks.LossCallback(),
          reporters.IOReporter("."),
@@ -37,14 +31,18 @@ def main(cfg):
                     non_bn_parameters.append(p)
             optim_params = [
                 {"params": bn_params, "weight_decay": 0},
-                {"params": non_bn_parameters, "weight_decay": weight_decay},
+                {"params": non_bn_parameters, "weight_decay": cfg.optim.weight_decay},
             ]
             trainer.optimizer = torch.optim.SGD(optim_params, lr=1e-1, momentum=0.9)
 
         trainers.SupervisedTrainer.set_optimizer = set_optimizer
 
-    with trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, callbacks=c,
-                                    scheduler=scheduler) as trainer:
+    with trainers.SupervisedTrainer(model,
+                                    optimizer,
+                                    F.cross_entropy,
+                                    callbacks=c,
+                                    scheduler=scheduler,
+                                    use_amp=cfg.use_amp) as trainer:
 
         for _ in tq:
             trainer.train(train_loader)

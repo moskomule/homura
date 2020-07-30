@@ -12,7 +12,7 @@ __all__ = ["resnet20", "resnet32", "resnet56", "resnet110",
            "preact_resnet20", "preact_resnet32", "preact_resnet56", "preact_resnet110",
            "ResNet", "PreActResNet"]
 
-MODEL_REGISTRY = Registry('model')
+MODEL_REGISTRY = Registry('vision_model')
 
 
 def initialization(module: nn.Module,

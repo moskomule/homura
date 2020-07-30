@@ -2,7 +2,7 @@ import copy
 import inspect
 import pathlib
 from dataclasses import dataclass
-from typing import Optional, Callable, Tuple
+from typing import Optional, Callable, Tuple, Type
 
 import numpy as np
 import torch
@@ -71,7 +71,7 @@ class VisionSet:
     """ Dataset abstraction for vision datasets.
     """
 
-    tv_class: type(datasets.VisionDataset)
+    tv_class: Type[datasets.VisionDataset]
     root: str or pathlib.Path
     num_classes: int
     default_norm: List
@@ -80,7 +80,7 @@ class VisionSet:
     collate_fn: Optional[Callable] = None
 
     def __post_init__(self):
-        # _ is self
+        # _ is trainer
         _, *args = inspect.getfullargspec(self.tv_class).args
         assert {'root', 'train', 'transform', 'download'} <= set(args), \
             "dataset DataSet(root, train, transform, download) is expected"
@@ -91,28 +91,50 @@ class VisionSet:
             self.default_test_da = []
 
     def get_dataset(self,
+                    train_size: Optional[int] = None,
+                    test_size: Optional[int] = None,
                     val_size: Optional[int] = None,
                     train_da: Optional[List] = None,
                     test_da: Optional[List] = None,
                     norm: Optional[List] = None,
-                    download: bool = False
+                    download: bool = False,
+                    *,
+                    pre_default_train_da: Optional[List] = None,
+                    post_default_train_da: Optional[List] = None,
+                    post_norm_train_da: Optional[List] = None
                     ) -> Tuple[datasets.VisionDataset, datasets.VisionDataset, Optional[datasets.VisionDataset]]:
 
         assert (download or self.root.exists()), "root does not exist"
         if train_da is None:
-            train_da = self.default_train_da
+            train_da = list(self.default_train_da)
         if test_da is None:
-            test_da = self.default_test_da
+            test_da = list(self.default_test_da)
         if norm is None:
-            norm = self.default_norm
-        train_transform = transforms.Compose(train_da + norm)
-        train_set = self.tv_class(
-            self.root, train=True, transform=train_transform, download=download)
+            norm = list(self.default_norm)
+
+        def unpack_optional_list(x: Optional[List]) -> List:
+            return [] if x is None else x
+
+        pre_default_train_da = unpack_optional_list(pre_default_train_da)
+        post_default_train_da = unpack_optional_list(post_default_train_da)
+        post_norm_train_da = unpack_optional_list(post_norm_train_da)
+
+        train_transform = transforms.Compose(pre_default_train_da + train_da + post_default_train_da
+                                             + norm + post_norm_train_da)
+        train_set = self.tv_class(self.root, train=True, transform=train_transform, download=download)
+        if train_size is not None and train_size > len(train_set):
+            raise ValueError(f'train_size should be <={len(train_set)}')
+
         test_transform = transforms.Compose(test_da + norm)
-        test_set = self.tv_class(
-            self.root, train=False, transform=test_transform, download=download)
+        test_set = self.tv_class(self.root, train=False, transform=test_transform, download=download)
+        if test_size is not None and test_size > len(test_set):
+            raise ValueError(f'test_size should be <={len(test_set)}')
+
         val_set = None
         if val_size is not None and val_size > 0:
+            if train_size is not None and (train_size + val_size) > len(train_set):
+                raise ValueError(f'train_set+val_size should be <={len(train_set)}')
+
             train_set, val_set = self._split_dataset(train_set, val_size)
             val_set.transform = test_transform
 
@@ -123,6 +145,8 @@ class VisionSet:
                        train_da: Optional[List] = None,
                        test_da: Optional[List] = None,
                        norm: Optional[List] = None,
+                       train_size: Optional[int] = None,
+                       test_size: Optional[int] = None,
                        val_size: Optional[int] = None,
                        download: bool = False,
                        num_workers: int = 0,
@@ -131,6 +155,9 @@ class VisionSet:
                        pin_memory: bool = True,
                        return_num_classes: bool = True,
                        test_batch_size: Optional[int] = None,
+                       pre_default_train_da: Optional[List] = None,
+                       post_default_train_da: Optional[List] = None,
+                       post_norm_train_da: Optional[List] = None
                        ) -> (Tuple[DataLoader, DataLoader]
                              or Tuple[DataLoader, DataLoader, DataLoader]):
 
@@ -141,7 +168,11 @@ class VisionSet:
 
         """
 
-        train_set, test_set, val_set = self.get_dataset(val_size, train_da, test_da, norm, download)
+        train_set, test_set, val_set = self.get_dataset(train_size, test_size, val_size,
+                                                        train_da, test_da, norm, download,
+                                                        pre_default_train_da=pre_default_train_da,
+                                                        post_default_train_da=post_default_train_da,
+                                                        post_norm_train_da=post_norm_train_da)
         if test_batch_size is None:
             test_batch_size = non_training_bs_factor * batch_size
 
@@ -168,8 +199,7 @@ class VisionSet:
         if val_set is not None:
             if is_distributed():
                 samplers[1] = DistributedSampler(val_set, **dist_sampler_kwargs)
-            val_loader = DataLoader(
-                val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
+            val_loader = DataLoader(val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
             ret.append(val_loader)
 
         if return_num_classes:
@@ -195,7 +225,7 @@ class VisionSet:
         return train_set, valset
 
 
-DATASET_REGISTRY = Registry('datasets', type=VisionSet)
+DATASET_REGISTRY = Registry('vision_datasets', type=VisionSet)
 
 DATASET_REGISTRY.register_from_dict(
     {'cifar10': VisionSet(datasets.CIFAR10, "~/.torch/data/cifar10", 10,

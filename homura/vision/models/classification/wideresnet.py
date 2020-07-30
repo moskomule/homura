@@ -8,7 +8,7 @@ from .._intialization import init_parameters
 
 __all__ = ["WideResNet", "WideBasicModule", "wrn28_10", "wrn28_2"]
 
-MODEL_REGISTRY = Registry('model')
+MODEL_REGISTRY = Registry('vision_model')
 
 
 def conv3x3(in_planes, out_planes, stride=1):
