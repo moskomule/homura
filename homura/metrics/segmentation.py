@@ -37,7 +37,7 @@ def pixel_accuracy(input: torch.Tensor,
     b, c, h, w = input.size()
     pred = F.one_hot(input.argmax(dim=1), num_classes=c)
     gt = F.one_hot(target, num_classes=c)
-    acc = (pred * gt).sum(dim=(1, 2, 3)) / (w * h)
+    acc = (pred * gt).sum(dim=(1, 2, 3)).float() / (w * h)
     return acc.mean()
 
 
