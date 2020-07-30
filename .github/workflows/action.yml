@@ -11,7 +11,8 @@ jobs:
     strategy:
       matrix:
         python: ['3.7', '3.8']
-        torch: ['--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html', 'torch==1.5.0+cpu torchvision==0.6.0+cpu -f https://download.pytorch.org/whl/torch_stable.html']
+        torch: ['--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html',
+                'torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html']
 
     steps:
       - uses: actions/checkout@v2
@@ -23,6 +24,7 @@ jobs:
         run: |
           python -m venv venv
           . venv/bin/activate
+          pip install numpy
           pip install ${{ matrix.torch }}
           pip install -U pytest
           pip install -U .

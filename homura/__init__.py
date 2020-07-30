@@ -5,4 +5,4 @@ from .utils import (Map, TensorMap, TensorTuple, get_global_rank, get_local_rank
                     is_distributed_available, init_distributed, enable_accimage, set_seed, set_deterministic, is_master)
 from .register import Registry
 
-Registry.import_modules('vision')
+Registry.import_modules('homura.vision')
