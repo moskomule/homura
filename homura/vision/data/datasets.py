@@ -154,7 +154,7 @@ class VisionSet:
                        non_training_bs_factor=2,
                        drop_last: bool = False,
                        pin_memory: bool = True,
-                       return_num_classes: bool = True,
+                       return_num_classes: bool = False,
                        test_batch_size: Optional[int] = None,
                        pre_default_train_da: Optional[List] = None,
                        post_default_train_da: Optional[List] = None,
