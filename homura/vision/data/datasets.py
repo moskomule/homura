@@ -190,10 +190,8 @@ class VisionSet:
 
         shared_kwargs = dict(drop_last=drop_last, num_workers=num_workers, pin_memory=pin_memory,
                              collate_fn=self.collate_fn)
-        train_loader = DataLoader(
-            train_set, batch_size, sampler=samplers[0], **shared_kwargs)
-        test_loader = DataLoader(
-            test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
+        train_loader = DataLoader(train_set, batch_size, sampler=samplers[0], **shared_kwargs)
+        test_loader = DataLoader(test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
 
         ret = [train_loader, test_loader]
 
