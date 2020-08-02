@@ -139,6 +139,12 @@ class VisionSet:
             train_set, val_set = self._split_dataset(train_set, val_size)
             val_set.transform = test_transform
 
+        if train_size is not None:
+            train_set = self._sample_dataset(train_set, train_size)
+
+        if test_size is not None:
+            test_set = self._sample_dataset(test_set, test_size)
+
         return train_set, test_set, val_set
 
     def get_dataloader(self,
@@ -210,7 +216,8 @@ class VisionSet:
 
     @staticmethod
     def _split_dataset(train_set: datasets.VisionDataset,
-                       val_size: int) -> (datasets.VisionDataset, datasets.VisionDataset):
+                       val_size: int
+                       ) -> (datasets.VisionDataset, datasets.VisionDataset):
         # split train_set to train_set and val_set
         assert len(train_set) >= val_size
         indices = torch.randperm(len(train_set))
@@ -222,6 +229,15 @@ class VisionSet:
         valset.targets = [valset.targets[i] for i in indices[:val_size]]
 
         return train_set, valset
+
+    @staticmethod
+    def _sample_dataset(dataset: datasets.VisionDataset,
+                        size: int
+                        ) -> datasets.VisionDataset:
+        indices = torch.randperm(len(dataset))[:size]
+        dataset.data = [dataset.data[i] for i in indices]
+        dataset.targets = [dataset.targets[i] for i in indices]
+        return dataset
 
 
 DATASET_REGISTRY = Registry('vision_datasets', type=VisionSet)
