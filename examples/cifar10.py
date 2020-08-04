@@ -2,7 +2,7 @@ import hydra
 import torch
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, callbacks, reporters, trainers
+from homura import optim, lr_scheduler, reporters, trainers
 from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
 
 
@@ -12,13 +12,6 @@ def main(cfg):
     train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.data.batch_size)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.optim.lr_decay)
-    tq = reporters.TQDMReporter(range(cfg.optim.epochs), verb=True)
-    c = [callbacks.AccuracyCallback(),
-         callbacks.LossCallback(),
-         reporters.IOReporter("."),
-         reporters.TensorboardReporter("."),
-         callbacks.WeightSave("."),
-         tq]
 
     if cfg.bn_no_wd:
         def set_optimizer(trainer):
@@ -40,11 +33,11 @@ def main(cfg):
     with trainers.SupervisedTrainer(model,
                                     optimizer,
                                     F.cross_entropy,
-                                    callbacks=c,
+                                    reporters=[reporters.TensorboardReporter('.')],
                                     scheduler=scheduler,
                                     use_amp=cfg.use_amp) as trainer:
 
-        for _ in tq:
+        for _ in trainer.epoch_iteration(cfg.optim.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
 

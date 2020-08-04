@@ -124,7 +124,6 @@ class TensorDataClass(object):
 
     """
 
-
     def __post_init__(self):
         self._field_names = tuple((f.name for f in dataclasses.fields(self)))
 

@@ -63,23 +63,30 @@ pip install horovod
 
 ```python
 from homura import optim, lr_scheduler
-from homura import trainers, callbacks, reporters
-from torchvision.models import resnet50
+from homura import trainers, reporters
+from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
 from torch.nn import functional as F
 
+train_loader, test_loader, num_classes = DATASET_REGISTRY('dataset_name')(...)
 # User does not need to care about the device
-resnet = resnet50()
+model = MODEL_REGISTRY('model_name')(...)
+
 # Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 
-# `homura` has callbacks
-c = [callbacks.AccuracyCallback(),
-    reporters.TensorboardReporter(".")]
-with trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy, 
-                                     callbacks=c, scheduler=scheduler) as trainer:
+# from v2020.08, the callbacks system changed
+# SupervisedTrainer by default reports loss and accuracy
+# TQDMReporter is used as a default reporter.
+# If you need additional reporters, do as follows 
+
+with trainers.SupervisedTrainer(model, 
+                                optimizer, 
+                                F.cross_entropy, 
+                                reporters=reporters.TensorboardReporter(...),
+                                scheduler=scheduler) as trainer:
     # epoch-based training
-    for _ in range(epochs):
+    for _ in trainer.epoch_iterator(epochs):
         trainer.train(train_loader)
         trainer.test(test_loader)
 
@@ -87,68 +94,38 @@ with trainers.SupervisedTrainer(resnet, optimizer, loss_f=F.cross_entropy,
 
     trainer.run(train_loader, test_loader, 
                 total_iterations=1_000, val_intervals=10)
+
+    print(f"Max Accuracy={max(trainer.history['accuracy']['test'])}")
 ```
 
-User can customize `iteration` of `trainer` as follows.
+You can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
-from homura.utils.containers import TensorMap
 
 trainer = SupervisedTrainer(...)
 
+# from v2020.08, iteration is much simpler
+
 def iteration(trainer: TrainerBase, 
-              data: Tuple[torch.Tensor]) -> Mapping[torch.Tensor]:
+              data: Tuple[torch.Tensor, torch.Tensor]
+              ) -> None:
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
-    results = Map(loss=loss, output=output)
+    trainer.reporter.add('loss', loss)
+    trainer.reporter.add('accuracy', accuracy(input, target))
     if trainer.is_train:
         trainer.optimizer.zero_grad()
         loss.backward()
         trainer.optimizer.step()
-    # iteration returns at least (loss, output)
-    # registered value can be called in callbacks
-    results.user_value = user_value
-    return results
 
 SupervisedTrainer.iteration = iteration
 # or   
 trainer.update_iteration(iteration) 
 ```
 
-`callbacks.Callback` can access the parameters of models, loss, outputs of models and other user-defined values.
-
-In most cases, `callbacks.metric_callback_decorator` is useful. The returned values are accumulated.
-
-```python
-from homura import callbacks
-
-@callbacks.metric_callback_decorator
-def user_value(data):
-    return data["user_value"]
-```  
-
-`callbacks.Callback` has methods `before_all`, `before_iteration`, `before_epoch`, `after_all`, `after_iteration` and `after_epoch`. For example, `callbacks.WeightSave` is like:
-
-```python
-from homura.callbacks import Callback
-class WeightSave(Callback):
-    ...
-
-    def after_epoch(self, data: Mapping):
-        self._epoch = data["epoch"]
-        self._step = data["step"]
-        if self.save_freq > 0 and data["epoch"] % self.save_freq == 0:
-            self.save(data, f"{data['epoch']}.pkl")
-
-    def after_all(self, data: Mapping):
-        if self.save_freq == -1:
-            self.save(data, "weight.pkl")
-```
-
-
-`dict` of models, optimizers, loss functions are supported.
+`dict` of models, optimizers, loss functions are supported. This is useful for GANs, for example.
 
 ```python
 trainer = CustomTrainer({"generator": generator, "discriminator": discriminator},

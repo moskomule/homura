@@ -1,6 +1,7 @@
 from typing import Tuple
 
 import torch
+from torch import Tensor
 
 from homura.liblog import get_logger
 
@@ -8,19 +9,21 @@ logger = get_logger(__name__)
 
 __all__ = ["true_positive", "true_negative", "false_positive", "false_negative",
            "classwise_accuracy", "precision", "recall", "specificity", "f1_score",
-           "confusion_matrix", ]
+           "confusion_matrix", "accuracy"]
 
 
-def _base(input: torch.Tensor,
-          target: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+def _base(input: Tensor,
+          target: Tensor
+          ) -> Tuple[Tensor, Tensor, Tensor]:
     classes = torch.arange(input.size(1), device=input.device)
     pred = input.argmax(dim=1).view(-1, 1)
     target = target.view(-1, 1)
     return pred, target, classes
 
 
-def true_positive(input: torch.Tensor,
-                  target: torch.Tensor) -> torch.Tensor:
+def true_positive(input: Tensor,
+                  target: Tensor
+                  ) -> Tensor:
     """Calculate true positive
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -33,8 +36,9 @@ def true_positive(input: torch.Tensor,
     return out.sum(dim=0).float()
 
 
-def true_negative(input: torch.Tensor,
-                  target: torch.Tensor) -> torch.Tensor:
+def true_negative(input: Tensor,
+                  target: Tensor
+                  ) -> Tensor:
     """Calculate true negative
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -47,8 +51,9 @@ def true_negative(input: torch.Tensor,
     return out.sum(dim=0).float()
 
 
-def false_positive(input: torch.Tensor,
-                   target: torch.Tensor) -> torch.Tensor:
+def false_positive(input: Tensor,
+                   target: Tensor
+                   ) -> Tensor:
     """Calculate false positive
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -61,8 +66,9 @@ def false_positive(input: torch.Tensor,
     return out.sum(dim=0).float()
 
 
-def false_negative(input: torch.Tensor,
-                   target: torch.Tensor) -> torch.Tensor:
+def false_negative(input: Tensor,
+                   target: Tensor
+                   ) -> Tensor:
     """Calculate false negative
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
     :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`
@@ -74,8 +80,9 @@ def false_negative(input: torch.Tensor,
     return out.sum(dim=0).float()
 
 
-def classwise_accuracy(input: torch.Tensor,
-                       target: torch.Tensor) -> torch.Tensor:
+def classwise_accuracy(input: Tensor,
+                       target: Tensor
+                       ) -> Tensor:
     """Calculate class wise accuracy
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -93,8 +100,9 @@ def classwise_accuracy(input: torch.Tensor,
     return (tp + tn) / denom
 
 
-def precision(input: torch.Tensor,
-              target: torch.Tensor) -> torch.Tensor:
+def precision(input: Tensor,
+              target: Tensor
+              ) -> Tensor:
     """Calculate precision
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -110,8 +118,9 @@ def precision(input: torch.Tensor,
     return tp / denom
 
 
-def recall(input: torch.Tensor,
-           target: torch.Tensor) -> torch.Tensor:
+def recall(input: Tensor,
+           target: Tensor
+           ) -> Tensor:
     """Calculate recall
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -127,8 +136,9 @@ def recall(input: torch.Tensor,
     return tp / denom
 
 
-def specificity(input: torch.Tensor,
-                target: torch.Tensor) -> torch.Tensor:
+def specificity(input: Tensor,
+                target: Tensor
+                ) -> Tensor:
     """Calculate specificity
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -144,8 +154,9 @@ def specificity(input: torch.Tensor,
     return tn / denom
 
 
-def f1_score(input: torch.Tensor,
-             target: torch.Tensor) -> torch.Tensor:
+def f1_score(input: Tensor,
+             target: Tensor
+             ) -> Tensor:
     """Calculate f1 score
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -158,8 +169,9 @@ def f1_score(input: torch.Tensor,
     return 2 * prec * rec / (prec + rec)
 
 
-def confusion_matrix(input: torch.Tensor,
-                     target: torch.Tensor) -> torch.Tensor:
+def confusion_matrix(input: Tensor,
+                     target: Tensor
+                     ) -> Tensor:
     """Calculate confusion matrix
 
     :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`
@@ -172,3 +184,13 @@ def confusion_matrix(input: torch.Tensor,
     pred = input.argmax(dim=1)[indices]
     inds = num_classes * pred + target[indices]
     return inds.bincount(minlength=num_classes ** 2).view(num_classes, num_classes)
+
+
+@torch.no_grad()
+def accuracy(input: Tensor,
+             target: Tensor,
+             top_k: int = 1
+             ) -> Tensor:
+    pred_idx = input.argmax(dim=-1) if top_k == 1 else input.topk(k=top_k, dim=-1)
+    target = target.view(-1, 1).expand_as(pred_idx)
+    return (pred_idx == target).float().sum(dim=1).mean()
