@@ -106,3 +106,9 @@ def wrn28_10(num_classes=10, dropout_rate=0) -> WideResNet:
 def wrn28_2(num_classes=10, dropout_rate=0) -> WideResNet:
     model = WideResNet(depth=28, widen_factor=2, dropout_rate=dropout_rate, num_classes=num_classes)
     return model
+
+
+@MODEL_REGISTRY.register
+def wrn40_2(num_classes=10, dropout_rate=0) -> WideResNet:
+    model = WideResNet(depth=40, widen_factor=2, dropout_rate=dropout_rate, num_classes=num_classes)
+    return model
