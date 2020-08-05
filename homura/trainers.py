@@ -17,11 +17,12 @@ from .reporters import _ReporterBase, TQDMReporter, ReporterList
 from .utils._vocabulary import *
 from .utils.containers import TensorTuple, StepDict
 from .utils.environment import get_global_rank, get_local_rank, is_horovod_available
+from .utils.mixin import StateDictMixIn
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
 
 
-class TrainerBase(metaclass=ABCMeta):
+class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def __init__(self,
                  model: nn.Module or Dict[str, nn.Module],
@@ -182,8 +183,8 @@ class TrainerBase(metaclass=ABCMeta):
         setattr(self, "iteration", MethodType(new_iteration, self))
         self.logger.debug("Override iteration")
 
-    def epoch_iteration(self,
-                        epoch: int):
+    def epoch_range(self,
+                    epoch: int):
         tqdm_reporter = [rep for rep in self.reporter.reporters if isinstance(rep, TQDMReporter)][0]
         tqdm_reporter.set_iterator(range(epoch))
         return tqdm_reporter
@@ -341,21 +342,6 @@ class TrainerBase(metaclass=ABCMeta):
     def exit(self):
         self.reporter.exit()
 
-    def state_dict(self
-                   ) -> Mapping[str, Any]:
-        # check what is need to be saved
-        raise NotImplementedError
-
-    def load_state_dict(self,
-                        state_dict: Mapping[str, Any]
-                        ) -> None:
-
-        # check kwargs in __init__
-        # use weakref to track objects?
-        # check if picklable or not
-
-        raise NotImplementedError
-
     def set_optimizer(self
                       ) -> None:
         """ Set optimizer(s) for model(s). You can override as::
@@ -440,6 +426,7 @@ class SupervisedTrainer(TrainerBase):
                  use_cudnn_benchmark=True,
                  data_parallel=False,
                  use_amp=False,
+                 report_accuracy_topk: Optional[int] = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -453,6 +440,7 @@ class SupervisedTrainer(TrainerBase):
         self._use_amp = use_amp
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
+        self._report_topk = report_accuracy_topk
 
     def iteration(self,
                   data: Tuple[Tensor, Tensor]
@@ -474,6 +462,8 @@ class SupervisedTrainer(TrainerBase):
 
         self.reporter.add('accuracy', accuracy(output, target))
         self.reporter.add('loss', loss.detach_())
+        if self._report_topk is not None:
+            self.reporter.add(f'accuracy@{self._report_topk}', accuracy(output, target, self._report_topk))
 
     def state_dict(self
                    ) -> Mapping[str, Any]:

@@ -72,11 +72,16 @@ class TQDMReporter(_ReporterBase):
         return len(self.writer)
 
     def flush(self):
-        postfix = {key: value for key, value in self._temporal_memory.items() if isinstance(value, Number)}
+        postfix = {key: value
+                   for key, (value, _) in self._temporal_memory.items()
+                   if isinstance(value, Number)}
         self.writer.set_postfix(postfix)
-        for k, v in {key: value for key, value in self._temporal_memory.items() if
-                     not isinstance(value, Number)}.items():
-            print(f'{k}={v}')
+
+        if len(postfix) != len(postfix):
+            for k, v in {key: value
+                         for key, (value, _) in self._temporal_memory.items() if
+                         not isinstance(value, Number)}.items():
+                self.add_text(k, v)
         # clear temporal memory
         self._temporal_memory = {}
 
@@ -179,6 +184,7 @@ class _Accumulator(object):
             value = {k: self._process_tensor(v) for k, v in value.items()}
 
         self._memory.append(value)
+        return self
 
     def _process_tensor(self,
                         value: Any
@@ -269,23 +275,26 @@ class ReporterList(object):
                mode: str = ""
                ) -> None:
         # intended to be called after epoch
-
         if len(self._epoch_hist) == 0:
             # to avoid report repeatedly in a single epoch
             return
 
+        temporal_memory = {}
         for k, v in self._epoch_hist.items():
             # accumulate stored values during an epoch
             key = f"{k}/{mode}"
             accumulated = v.accumulate()
-            self._persistent_hist[k].append(accumulated if isinstance(v, (Number, torch.Tensor, Dict)) else None)
+            accumulated = (accumulated
+                           if isinstance(accumulated, (Number, Dict)) or torch.is_tensor(accumulated) else None)
+            self._persistent_hist[key].append(accumulated)
+            temporal_memory[key] = accumulated
 
         if is_master():
 
-            for k, v in self._persistent_hist.items():
-                v = v[-1]
+            for k, v in temporal_memory.items():
+
                 if torch.is_tensor(v):
-                    if v.nelements() == 1:
+                    if v.nelement() == 1:
                         for rep in self.reporters:
                             rep.add_scalar(k, v, step)
                     else:

@@ -37,6 +37,7 @@ class ImageNet(datasets.ImageFolder):
         assert not download, "Download dataset by yourself!"
         root = pathlib.Path(root) / ('train' if train else 'val')
         super(ImageNet, self).__init__(root, transform=transform)
+        self.data = [s[0] for s in self.samples]
         import warnings
 
         warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)

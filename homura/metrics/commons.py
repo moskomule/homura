@@ -191,6 +191,6 @@ def accuracy(input: Tensor,
              target: Tensor,
              top_k: int = 1
              ) -> Tensor:
-    pred_idx = input.argmax(dim=-1) if top_k == 1 else input.topk(k=top_k, dim=-1)
+    pred_idx = input.argmax(dim=-1, keepdim=True) if top_k == 1 else input.topk(k=top_k, dim=-1).indices
     target = target.view(-1, 1).expand_as(pred_idx)
     return (pred_idx == target).float().sum(dim=1).mean()
