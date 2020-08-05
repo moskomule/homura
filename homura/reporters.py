@@ -236,6 +236,18 @@ class _Accumulator(object):
         return self._reduce(self._memory)
 
 
+class _History(object):
+    # Dictionary that can be access via () and []
+
+    def __init__(self, history_dict: Dict[str, Any]) -> None:
+        self.history_dict = history_dict
+
+    def __call__(self, key: str) -> Any:
+        return self.history_dict[key]
+
+    __getitem__ = __call__
+
+
 class ReporterList(object):
     # _persistent_hist tracks scalar values
     _persistent_hist: Dict[str, List[Optional[torch.Tensor or Number]]] = defaultdict(list)
@@ -327,10 +339,10 @@ class ReporterList(object):
             rep.flush()
         self._clear_epoch_hist()
 
-    def history(self,
-                key: str
-                ) -> List[Optional[float or int]]:
-        return self._persistent_hist[key]
+    @property
+    def history(self
+                ) -> _History:
+        return _History(self._persistent_hist)
 
     def _clear_epoch_hist(self
                           ) -> None:

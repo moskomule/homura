@@ -41,6 +41,8 @@ def main(cfg):
             trainer.train(train_loader)
             trainer.test(test_loader)
 
+        print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
+
 
 if __name__ == '__main__':
     main()

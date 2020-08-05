@@ -16,8 +16,6 @@ Welcome to `homura`'s documentation!
    homura.utils
    homura.vision
 
-   trainers_optimizer_lr_scheduler
-
 Indices and tables
 ==================
 

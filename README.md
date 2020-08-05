@@ -145,10 +145,14 @@ This method makes randomness deterministic in its context.
 
 ```python
 from homura.utils.reproducibility import set_deterministic, set_seed
+
 with set_deterministic(seed):
+    # suppress nondeterministic computation
+    # but will affect the performance
     something()
 
 with set_seed(seed):
+    # only set random seed of Python, PyTorch and Numpy
     other_thing()
 ```
 

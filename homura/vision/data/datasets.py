@@ -141,7 +141,6 @@ class VisionSet:
 
         if train_size is not None:
             train_set = self._sample_dataset(train_set, train_size)
-            print(f"{train_size=}, {len(train_set)=}")
 
         if test_size is not None:
             test_set = self._sample_dataset(test_set, test_size)
