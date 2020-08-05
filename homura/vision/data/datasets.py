@@ -37,7 +37,6 @@ class ImageNet(datasets.ImageFolder):
         assert not download, "Download dataset by yourself!"
         root = pathlib.Path(root) / ('train' if train else 'val')
         super(ImageNet, self).__init__(root, transform=transform)
-        self.data = [s[0] for s in self.samples]
         import warnings
 
         warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
@@ -142,6 +141,7 @@ class VisionSet:
 
         if train_size is not None:
             train_set = self._sample_dataset(train_set, train_size)
+            print(f"{train_size=}, {len(train_set)=}")
 
         if test_size is not None:
             test_set = self._sample_dataset(test_set, test_size)
@@ -223,7 +223,12 @@ class VisionSet:
         assert len(train_set) >= val_size
         indices = torch.randperm(len(train_set))
         valset = copy.deepcopy(train_set)
-        train_set.data = [train_set.data[i] for i in indices[val_size:]]
+
+        if hasattr(train_set, 'data'):
+            train_set.data = [train_set.data[i] for i in indices[val_size:]]
+        if hasattr(train_set, 'samples'):
+            train_set.samples = [train_set.samples[i] for i in indices[val_size:]]
+
         train_set.targets = [train_set.targets[i] for i in indices[val_size:]]
 
         valset.data = [valset.data[i] for i in indices[:val_size]]
@@ -236,7 +241,10 @@ class VisionSet:
                         size: int
                         ) -> datasets.VisionDataset:
         indices = torch.randperm(len(dataset))[:size]
-        dataset.data = [dataset.data[i] for i in indices]
+        if hasattr(dataset, 'data'):
+            dataset.data = [dataset.data[i] for i in indices]
+        if hasattr(dataset, 'samples'):
+            dataset.samples = [dataset.samples[i] for i in indices]
         dataset.targets = [dataset.targets[i] for i in indices]
         return dataset
 
