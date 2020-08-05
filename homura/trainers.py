@@ -440,6 +440,7 @@ class SupervisedTrainer(TrainerBase):
         self._use_amp = use_amp
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
+            self.logger.info("AMP is activated")
         self._report_topk = report_accuracy_topk
 
     def iteration(self,
