@@ -331,7 +331,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                                                   isinstance(val_loaders, DataLoader)):
             val_loaders = {'val': val_loaders}
 
-        for ep in range(total_iterations // val_intervals):
+        for ep in self.epoch_range(total_iterations // val_intervals):
             self.train(train_loader)
             if isinstance(train_loader.loader, DataLoader) \
                     and isinstance(train_loader.loader.sampler, DistributedSampler):

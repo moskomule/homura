@@ -44,7 +44,8 @@ def test_basic_trainer():
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
                                          update_scheduler_by_epoch=False)
-    trainer.train(loader)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
 
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 9)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
