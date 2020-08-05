@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import wraps
 from numbers import Number
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Callable, Iterator
@@ -8,6 +9,16 @@ import tqdm
 from torch import distributed
 
 from homura import is_distributed, is_master, liblog, get_args
+
+
+def if_is_master(func: Callable
+                 ) -> Callable:
+    @wraps(func)
+    def inner(*args, **kwargs):
+        if is_master():
+            return func(*args, **kwargs)
+
+    return inner
 
 
 class _ReporterBase(object):
@@ -71,6 +82,7 @@ class TQDMReporter(_ReporterBase):
                 ) -> int:
         return len(self.writer)
 
+    @if_is_master
     def flush(self):
         postfix = {key: value
                    for key, (value, _) in self._temporal_memory.items()
@@ -92,6 +104,7 @@ class TQDMReporter(_ReporterBase):
                  ) -> None:
         self.writer.write(value)
 
+    @if_is_master
     def add_scalar(self,
                    key: str,
                    value: Number or torch.Tensor,
@@ -101,6 +114,7 @@ class TQDMReporter(_ReporterBase):
             value = value.item()
         self._temporal_memory[key] = (value, step)
 
+    @if_is_master
     def add_scalars(self,
                     key: str,
                     value: Dict[str, Number or torch.Tensor],
@@ -120,6 +134,7 @@ class TensorboardReporter(_ReporterBase):
             self.writer = tensorboard.SummaryWriter(save_dir)
             self.writer.add_text("exec", ' '.join(get_args()))
 
+    @if_is_master
     def add_text(self,
                  key: str,
                  value: str,
@@ -127,6 +142,7 @@ class TensorboardReporter(_ReporterBase):
                  ) -> None:
         self.writer.add_text(key, value, step)
 
+    @if_is_master
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
@@ -140,6 +156,7 @@ class TensorboardReporter(_ReporterBase):
         else:
             raise ValueError(f"Dimension of image tensor is expected to be 3 or 4, but got {dim}")
 
+    @if_is_master
     def add_scalar(self,
                    key: str,
                    value: Any,
@@ -147,6 +164,7 @@ class TensorboardReporter(_ReporterBase):
                    ) -> None:
         self.writer.add_scalar(key, value, step)
 
+    @if_is_master
     def add_scalars(self,
                     key: str,
                     value: Dict[str, Any],
@@ -252,23 +270,23 @@ class ReporterList(object):
     __call__ = add_value
     add = add_value
 
+    @if_is_master
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
                   step: Optional[int] = None
                   ) -> None:
-        if is_master():
-            for rep in self.reporters:
-                rep.add_image(key, image, step)
+        for rep in self.reporters:
+            rep.add_image(key, image, step)
 
+    @if_is_master
     def add_text(self,
                  key: str,
                  value: str,
                  step: Optional[int] = None
                  ) -> None:
-        if is_master():
-            for rep in self.reporters:
-                rep.add_text(key, value, step)
+        for rep in self.reporters:
+            rep.add_text(key, value, step)
 
     def report(self,
                step: Optional[int] = None,
@@ -289,23 +307,20 @@ class ReporterList(object):
             self._persistent_hist[key].append(accumulated)
             temporal_memory[key] = accumulated
 
-        if is_master():
-
-            for k, v in temporal_memory.items():
-
-                if torch.is_tensor(v):
-                    if v.nelement() == 1:
-                        for rep in self.reporters:
-                            rep.add_scalar(k, v, step)
-                    else:
-                        for rep in self.reporters:
-                            rep.add_scalars(k, {str(i): vv for i, vv in enumerate(v.tolist())}, step)
-                elif isinstance(v, Number):
+        for k, v in temporal_memory.items():
+            if torch.is_tensor(v):
+                if v.nelement() == 1:
                     for rep in self.reporters:
                         rep.add_scalar(k, v, step)
                 else:
                     for rep in self.reporters:
-                        rep.add_scalars(k, v, step)
+                        rep.add_scalars(k, {str(i): vv for i, vv in enumerate(v.tolist())}, step)
+            elif isinstance(v, Number):
+                for rep in self.reporters:
+                    rep.add_scalar(k, v, step)
+            else:
+                for rep in self.reporters:
+                    rep.add_scalars(k, v, step)
 
         # cleanup
         for rep in self.reporters:
