@@ -5,7 +5,7 @@ from torchvision.models import resnet50
 
 from homura import optim, lr_scheduler, enable_accimage, get_num_nodes, init_distributed, reporters
 from homura.trainers import SupervisedTrainer
-from homura.vision.data import prefetcher, DATASET_REGISTRY
+from homura.vision.data import DATASET_REGISTRY
 
 is_distributed = False
 
@@ -42,10 +42,11 @@ def main(cfg):
     model = resnet50()
     optimizer = optim.SGD(lr=1e-1 * cfg.batch_size * get_num_nodes() / 256, momentum=0.9, weight_decay=1e-4)
     scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
-    _train_loader, _test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
-                                                               train_size=cfg.batch_size * 10 if cfg.debug else None,
-                                                               test_size=cfg.batch_size * 10 if cfg.debug else None,
-                                                               num_workers=8)
+    train_loader, test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
+                                                             train_size=cfg.batch_size * 50 if cfg.debug else None,
+                                                             test_size=cfg.batch_size * 50 if cfg.debug else None,
+                                                             num_workers=cfg.num_workers,
+                                                             use_prefetcher=cfg.use_prefetcher)
 
     use_multi_gpus = not is_distributed and torch.cuda.device_count() > 1
     with SupervisedTrainer(model,
@@ -55,16 +56,12 @@ def main(cfg):
                            scheduler=scheduler,
                            data_parallel=use_multi_gpus,
                            use_amp=cfg.use_amp,
+                           use_cuda_nonblocking=True,
+                           use_sync_bn=cfg.use_sync_bn,
                            use_horovod=cfg.distributed.use_horovod,
                            report_accuracy_topk=5) as trainer:
 
         for epoch in trainer.epoch_range(cfg.epochs):
-            if cfg.use_prefetcher:
-                train_loader = prefetcher.DataPrefetcher(_train_loader)
-                test_loader = prefetcher.DataPrefetcher(_test_loader)
-            else:
-                train_loader, test_loader = _train_loader, _test_loader
-            # following apex's training scheme
             trainer.train(train_loader)
             trainer.test(test_loader)
 

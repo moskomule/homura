@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 
-from homura.vision.data.prefetcher import DataPrefetcher
+from homura.vision.data.prefetcher import DataPrefetchWrapper
 
 
 def test_prefetcher():
@@ -9,7 +9,7 @@ def test_prefetcher():
     label = torch.arange(128)
     dataset = TensorDataset(data, label)
     loader = DataLoader(dataset, batch_size=32)
-    prefetcher = DataPrefetcher(loader)
+    prefetcher = DataPrefetchWrapper(loader)
     for _ in range(2):
         for input, target in prefetcher:
             pass

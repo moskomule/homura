@@ -4,6 +4,8 @@ enable_accimage: false
 use_prefetcher: false
 debug: false
 use_amp: false
+use_sync_bn: false
+num_workers: 4
 
 distributed:
   use_horovod: false

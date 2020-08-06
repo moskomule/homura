@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader, RandomSampler, DistributedSampler
 from torchvision import datasets, transforms
 
 from homura import is_distributed, Registry, get_environ
+from .prefetcher import DataPrefetchWrapper
 
 
 # to enable _split_dataset
@@ -156,7 +157,7 @@ class VisionSet:
                        test_size: Optional[int] = None,
                        val_size: Optional[int] = None,
                        download: bool = False,
-                       num_workers: int = 0,
+                       num_workers: int = 1,
                        non_training_bs_factor=2,
                        drop_last: bool = False,
                        pin_memory: bool = True,
@@ -164,7 +165,9 @@ class VisionSet:
                        test_batch_size: Optional[int] = None,
                        pre_default_train_da: Optional[List] = None,
                        post_default_train_da: Optional[List] = None,
-                       post_norm_train_da: Optional[List] = None
+                       post_norm_train_da: Optional[List] = None,
+                       use_prefetcher: bool = False,
+                       start_epoch: bool = 0
                        ) -> (Tuple[DataLoader, DataLoader]
                              or Tuple[DataLoader, DataLoader, DataLoader]):
 
@@ -191,6 +194,8 @@ class VisionSet:
                                        rank=homura.get_global_rank())
             samplers[0] = DistributedSampler(train_set, **dist_sampler_kwargs)
             samplers[2] = DistributedSampler(test_set, **dist_sampler_kwargs)
+            samplers[0].set_epoch(start_epoch)
+            samplers[2].set_epoch(start_epoch)
         else:
             samplers[0] = RandomSampler(train_set, True)
 
@@ -198,13 +203,19 @@ class VisionSet:
                              collate_fn=self.collate_fn)
         train_loader = DataLoader(train_set, batch_size, sampler=samplers[0], **shared_kwargs)
         test_loader = DataLoader(test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
+        if use_prefetcher:
+            train_loader = DataPrefetchWrapper(train_loader, start_epoch)
+            test_loader = DataPrefetchWrapper(test_loader, start_epoch)
 
         ret = [train_loader, test_loader]
 
         if val_set is not None:
             if is_distributed():
                 samplers[1] = DistributedSampler(val_set, **dist_sampler_kwargs)
+                samplers[1].set_epoch(start_epoch)
             val_loader = DataLoader(val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
+            if use_prefetcher:
+                val_loader = DataPrefetchWrapper(test_loader)
             ret.append(val_loader)
 
         if return_num_classes:
