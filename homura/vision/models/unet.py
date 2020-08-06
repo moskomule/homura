@@ -4,7 +4,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .._intialization import init_parameters
+from homura.vision.models import MODEL_REGISTRY
+from homura.vision.models._intialization import init_parameters
 
 __all__ = ["unet", "CustomUNet"]
 
@@ -74,6 +75,7 @@ class DownsampleBlock(Block):
         return self.block(input)
 
 
+@MODEL_REGISTRY.register
 class UNet(nn.Module):
     def __init__(self, num_classes, input_channels,
                  config=((64, 128, 256, 512, 1024),

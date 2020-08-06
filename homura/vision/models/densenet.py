@@ -6,7 +6,8 @@ https://github.com/liuzhuang13/DenseNet
 import torch
 from torch import nn
 from torch.nn import functional as F
-from . import MODEL_REGISTRY
+
+from homura.vision.models import MODEL_REGISTRY
 
 __all__ = ["cifar_densenet100", "CIFARDenseNet"]
 

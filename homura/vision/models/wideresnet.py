@@ -3,8 +3,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from . import MODEL_REGISTRY
-from .._intialization import init_parameters
+from homura.vision.models import MODEL_REGISTRY
+from homura.vision.models._intialization import init_parameters
 
 __all__ = ["WideResNet", "WideBasicModule", "wrn28_10", "wrn28_2"]
 

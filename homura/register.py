@@ -2,7 +2,7 @@ import contextlib
 import functools
 import types
 from pathlib import Path
-from typing import Callable, Optional, Dict, Type, Any
+from typing import Callable, Optional, Dict, Type
 
 
 class Registry(object):
@@ -20,7 +20,8 @@ class Registry(object):
 
     def __new__(cls,
                 name: str,
-                type: Optional[Type] = None):
+                type: Optional[Type] = None
+                ):
         if name in Registry._available_registries:
             return Registry._available_registries[name]
 
