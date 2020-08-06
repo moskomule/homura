@@ -110,7 +110,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.optimizer = hvd.DistributedOptimizer(self.optimizer,
                                                       named_parameters=self.model.named_parameters())
 
-        if not isinstance(reporters, Iterable):
+        if reporters is not None and not isinstance(reporters, Iterable):
             reporters = [reporters]
         reporters = reporters or []
 
