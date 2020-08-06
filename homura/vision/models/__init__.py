@@ -12,4 +12,4 @@ from .wideresnet import wrn28_2, wrn40_2, wrn28_10
 from .densenet import cifar_densenet100
 from .resnet import resnet20, preact_resnet20
 
-from .unet import UNet
+from .unet import unet

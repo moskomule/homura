@@ -75,7 +75,6 @@ class DownsampleBlock(Block):
         return self.block(input)
 
 
-@MODEL_REGISTRY.register
 class UNet(nn.Module):
     def __init__(self, num_classes, input_channels,
                  config=((64, 128, 256, 512, 1024),
@@ -131,5 +130,6 @@ class CustomUNet(UNet):
         return self.channel_conv(x)
 
 
+@MODEL_REGISTRY.register
 def unet(num_classes, input_channels=3):
     return UNet(num_classes, input_channels)
