@@ -128,8 +128,9 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
 
 ## Distributed training
 
-Easy distributed initializer `homura.init_distributed()` is available. See [imagenet.py](example/imagenet.py) as an example.
+Distributed training is complicated at glance. `homura` has simple APIs, to hide the messy codes for DDP, such as `homura.init_distributed` for the initialization and `homura.is_master` for checking if the process is master or not.   
 
+For details, see `examples/imagenet.py`.
 
 ## Reproducibility
 
@@ -146,6 +147,30 @@ with set_deterministic(seed):
 with set_seed(seed):
     # only set random seed of Python, PyTorch and Numpy
     other_thing()
+```
+
+## Registry System
+
+Following major libraries, `homura` also has a simple register system.
+
+```python
+from homura import Registry
+MODEL_REGISTRY = Registry("language_models")
+
+@MODEL_REGISTRY.register
+class Transformer(nn.Module):
+    ...
+
+# or
+
+MODEL_REGISTRY.register(bert_model, 'bert')
+
+# magic
+MODEL_REGISTRY.import_modules(".")
+
+transformer = MODEL_REGISTRY('Transformer')(...)
+# or
+bert = MODEL_REGISTRY('bert', ...)
 ```
 
 # Examples
@@ -168,7 +193,7 @@ If you want
 
 * single node multi threads multi gpus
 
-run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS imagenet.py distributed.on=true`.
+run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS imagenet.py [...]`.
 
 If you want
 
