@@ -2,12 +2,14 @@ import hydra
 import torch
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, reporters, trainers
+from homura import optim, lr_scheduler, reporters, trainers, enable_accimage
 from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
 
 
 @hydra.main('config/cifar10.yaml')
 def main(cfg):
+    if cfg.use_accimage:
+        enable_accimage()
     model = MODEL_REGISTRY(cfg.model.name)(num_classes=10)
     train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.data.batch_size, num_workers=4)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)

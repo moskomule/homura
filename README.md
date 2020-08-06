@@ -23,7 +23,7 @@ hydra-core # automatically installed
 colorlog (to log with colors)
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
-horovad (for easier distributed training)
+horovad (for distributed training without using torch.distributed)
 cupy
 ```
 
@@ -46,14 +46,6 @@ git clone https://github.com/moskomule/homura
 cd homura
 pip install -e .
 ```
-
-### horovod installation
-
-```
-conda install gxx_linux-64
-pip install horovod
-```
-
 
 # APIs
 
@@ -83,7 +75,7 @@ scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
 with trainers.SupervisedTrainer(model, 
                                 optimizer, 
                                 F.cross_entropy, 
-                                reporters=reporters.TensorboardReporter(...),
+                                reporters=[reporters.TensorboardReporter(...)],
                                 scheduler=scheduler) as trainer:
     # epoch-based training
     for _ in trainer.epoch_iterator(epochs):

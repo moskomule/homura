@@ -1,5 +1,4 @@
 from collections import defaultdict
-from functools import wraps
 from numbers import Number
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Callable, Iterator
@@ -8,17 +7,7 @@ import torch
 import tqdm
 from torch import distributed
 
-from homura import is_distributed, is_master, liblog, get_args
-
-
-def if_is_master(func: Callable
-                 ) -> Callable:
-    @wraps(func)
-    def inner(*args, **kwargs):
-        if is_master():
-            return func(*args, **kwargs)
-
-    return inner
+from homura import is_distributed, is_master, liblog, get_args, if_is_master
 
 
 class _ReporterBase(object):

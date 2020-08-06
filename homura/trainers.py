@@ -29,7 +29,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]],
                  loss_f: Optional[Callable or Dict[str, Callable]] = None,
                  *,
-                 reporters: Optional[List[_ReporterBase]] = None,
+                 reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
@@ -110,9 +110,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.optimizer = hvd.DistributedOptimizer(self.optimizer,
                                                       named_parameters=self.model.named_parameters())
 
+        if not isinstance(reporters, Iterable):
+            reporters = [reporters]
         reporters = reporters or []
+
         if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
-            # at least, TQDMReporter is used
+            # if reporters not contain TQDMReporter
             reporters.append(TQDMReporter(ncols=tqdm_ncols))
         self.reporter = ReporterList(reporters)
 
@@ -420,7 +423,7 @@ class SupervisedTrainer(TrainerBase):
                  optimizer: Optimizer,
                  loss_f: Callable,
                  *,
-                 reporters: Optional[List[_ReporterBase]] = None,
+                 reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Scheduler] = None,
                  verb=True,
                  use_cudnn_benchmark=True,

@@ -11,3 +11,4 @@ model:
 
 bn_no_wd: false
 use_amp: false
+use_accimage: false
