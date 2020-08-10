@@ -36,13 +36,6 @@ class _ReporterBase(object):
                     ) -> None:
         pass
 
-    def add_image(self,
-                  key: str,
-                  image: torch.Tensor,
-                  step: Optional[int] = None
-                  ) -> None:
-        pass
-
 
 class TQDMReporter(_ReporterBase):
     def __init__(self,
@@ -161,6 +154,14 @@ class TensorboardReporter(_ReporterBase):
                     ) -> None:
         self.writer.add_scalars(key, value, step)
 
+    @if_is_master
+    def add_histogram(self,
+                      key: str,
+                      value: torch.Tensor,
+                      step: Optional[int] = None
+                      ) -> None:
+        self.writer.add_histogram(key, value, step)
+
 
 class _Accumulator(object):
     # for accumulation and sync
@@ -175,8 +176,20 @@ class _Accumulator(object):
 
         self._reduction = reduction
         self._no_sync = no_sync
+        self._total_size: int = 0
 
         self._memory: List[Any] = []
+
+    def set_batch_size(self,
+                       batch_size: int
+                       ) -> None:
+        if is_distributed():
+            _batch_size = torch.empty(1, dtype=torch.int,
+                                      device=torch.device(torch.cuda.current_device())
+                                      ).fill_(batch_size)
+            distributed.all_reduce(_batch_size, op=distributed.ReduceOp.SUM)
+            batch_size = _batch_size.item()
+        self._total_size += batch_size
 
     def __call__(self,
                  value: Any
@@ -199,7 +212,6 @@ class _Accumulator(object):
         if torch.is_tensor(value):
             if is_distributed() and not self._no_sync:
                 distributed.all_reduce(value, op=distributed.ReduceOp.SUM)
-                value.div_(distributed.get_world_size())
             value = value.cpu()
         return value
 
@@ -209,7 +221,7 @@ class _Accumulator(object):
         if self._reduction == 'sum':
             return sum(values)
         elif self._reduction == 'average':
-            return sum(values) / len(self._memory)
+            return sum(values) / self._total_size
         else:
             return self._reduction(values)
 
@@ -246,12 +258,20 @@ class ReporterList(object):
                  ) -> None:
         self.reporters = reporters
         # _epoch_hist clears after each epoch
+        self._batch_size: Optional[int] = None
         self._epoch_hist: Dict[str, _Accumulator] = {}
+
+    def set_batch_size(self,
+                       batch_size: int
+                       ) -> None:
+        # intended to be used in trainer
+        self._batch_size = batch_size
 
     def add_value(self,
                   key: str,
                   value: torch.Tensor or Number or Dict[str, torch.Tensor or Number],
                   *,
+                  is_averaged: bool = True,
                   reduction: str or Callable = 'average',
                   no_sync: bool = False,
                   ) -> None:
@@ -259,14 +279,21 @@ class ReporterList(object):
 
         :param key: Unique key to track value
         :param value: Value
+        :param is_averaged: If value is averaged
         :param reduction: Method of reduction after epoch, 'average', 'sum' or function of List[Value] -> Value
         :param no_sync: If not sync in distributed setting
         :return:
         """
+
+        if is_averaged:
+            value *= self._batch_size
+
         if self._epoch_hist.get(key) is None:
             self._epoch_hist[key] = _Accumulator(key, reduction, no_sync)(value)
         else:
             self._epoch_hist[key](value)
+
+        self._epoch_hist[key].set_batch_size(self._batch_size)
 
     __call__ = add_value
     add = add_value
@@ -278,7 +305,18 @@ class ReporterList(object):
                   step: Optional[int] = None
                   ) -> None:
         for rep in self.reporters:
-            rep.add_image(key, image, step)
+            if hasattr(rep, "add_image"):
+                rep.add_image(key, image, step)
+
+    @if_is_master
+    def add_histogram(self,
+                      key: str,
+                      value: torch.Tensor,
+                      step: Optional[int] = None,
+                      ) -> None:
+        for rep in self.reporters:
+            if hasattr(rep, "add_histogram"):
+                rep.add_histogram(key, value, step)
 
     @if_is_master
     def add_text(self,

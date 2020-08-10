@@ -203,7 +203,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         :return:
         """
 
-        data = self.data_preprocess(data)
+        data, batch_size = self.data_preprocess(data)
+        self.reporter.set_batch_size(batch_size)
         self.iteration(data)
         if self.is_train and self.scheduler is not None and not self._update_scheduler_by_epoch:
             self.scheduler.step()
@@ -237,14 +238,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def data_preprocess(self,
                         data: Tuple[Tensor, ...]
-                        ) -> Tuple[Tensor, ...]:
-        """ Handle data sampled from dataloader before `iteration`.
-        By default, `data` is expected to be a tuple of tensors,
-        so wrap it with TensorTuple and send it to `self.device`
+                        ) -> (Tuple[Tensor, ...], int):
+        """ preprocess data and return (TensorTuple, batch_size)
 
         """
 
-        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
+        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking), data[0].size(0)
 
     def train(self,
               data_loader: Iterable or DataLoader,
