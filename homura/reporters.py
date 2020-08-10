@@ -162,6 +162,14 @@ class TensorboardReporter(_ReporterBase):
                       ) -> None:
         self.writer.add_histogram(key, value, step)
 
+    @if_is_master
+    def add_figure(self,
+                   key: str,
+                   figure: "matplotlib.pyplot.figure",
+                   step: Optional[int] = None
+                   ) -> None:
+        self.writer.add_figure(key, figure, step)
+
 
 class _Accumulator(object):
     # for accumulation and sync
@@ -317,6 +325,16 @@ class ReporterList(object):
         for rep in self.reporters:
             if hasattr(rep, "add_histogram"):
                 rep.add_histogram(key, value, step)
+
+    @if_is_master
+    def add_figure(self,
+                   key: str,
+                   figure: "matplotlib.pyplot.figure",
+                   step: Optional[int] = None
+                   ) -> None:
+        for rep in self.reporters:
+            if hasattr(rep, "add_figure"):
+                rep.add_figure(key, figure, None)
 
     @if_is_master
     def add_text(self,
