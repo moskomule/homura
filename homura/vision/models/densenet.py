@@ -127,5 +127,10 @@ def _cifar_densenet(depth, num_classes, growth_rate=12, **kwargs):
 
 
 @MODEL_REGISTRY.register
-def cifar_densenet100(num_classes, **kwargs):
+def densenet100(num_classes, **kwargs):
     return _cifar_densenet(100, num_classes, **kwargs)
+
+
+@MODEL_REGISTRY.register
+def densenet40(num_classes, **kwargs):
+    return _cifar_densenet(40, num_classes, **kwargs)
