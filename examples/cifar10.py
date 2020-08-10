@@ -11,7 +11,8 @@ def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
     model = MODEL_REGISTRY(cfg.model.name)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.data.batch_size, num_workers=4)
+    train_loader, test_loader = DATASET_REGISTRY("fast_cifar10" if cfg.use_fast_collate else "cifar10"
+                                                 )(cfg.data.batch_size, num_workers=4, use_prefetcher=cfg.use_prefetcher)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.optim.lr_decay)
 

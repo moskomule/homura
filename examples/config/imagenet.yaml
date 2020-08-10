@@ -5,6 +5,7 @@ use_prefetcher: false
 debug: false
 use_amp: false
 use_sync_bn: false
+use_fast_collate: false
 num_workers: 4
 
 distributed:

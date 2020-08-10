@@ -42,7 +42,8 @@ def main(cfg):
     model = resnet50()
     optimizer = optim.SGD(lr=1e-1 * cfg.batch_size * get_num_nodes() / 256, momentum=0.9, weight_decay=1e-4)
     scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
-    train_loader, test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
+    train_loader, test_loader = DATASET_REGISTRY("fast_imagenet" if cfg.use_fast_collate else
+                                                 "imagenet")(cfg.batch_size,
                                                              train_size=cfg.batch_size * 50 if cfg.debug else None,
                                                              test_size=cfg.batch_size * 50 if cfg.debug else None,
                                                              num_workers=cfg.num_workers,
