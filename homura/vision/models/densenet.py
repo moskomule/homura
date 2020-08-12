@@ -9,7 +9,7 @@ from torch.nn import functional as F
 
 from homura.vision.models import MODEL_REGISTRY
 
-__all__ = ["cifar_densenet100", "CIFARDenseNet"]
+__all__ = ["densenet40", "densenet100", "CIFARDenseNet"]
 
 _padding = {"reflect": nn.ReflectionPad2d,
             "zero": nn.ZeroPad2d}
