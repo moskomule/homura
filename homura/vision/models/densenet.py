@@ -6,9 +6,10 @@ https://github.com/liuzhuang13/DenseNet
 import torch
 from torch import nn
 from torch.nn import functional as F
-from . import MODEL_REGISTRY
 
-__all__ = ["cifar_densenet100", "CIFARDenseNet"]
+from homura.vision.models import MODEL_REGISTRY
+
+__all__ = ["densenet40", "densenet100", "CIFARDenseNet"]
 
 _padding = {"reflect": nn.ReflectionPad2d,
             "zero": nn.ZeroPad2d}
@@ -126,5 +127,10 @@ def _cifar_densenet(depth, num_classes, growth_rate=12, **kwargs):
 
 
 @MODEL_REGISTRY.register
-def cifar_densenet100(num_classes, **kwargs):
+def densenet100(num_classes, **kwargs):
     return _cifar_densenet(100, num_classes, **kwargs)
+
+
+@MODEL_REGISTRY.register
+def densenet40(num_classes, **kwargs):
+    return _cifar_densenet(40, num_classes, **kwargs)

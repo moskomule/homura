@@ -11,3 +11,6 @@ model:
 
 bn_no_wd: false
 use_amp: false
+use_accimage: false
+use_fast_collate: false
+use_prefetcher: false

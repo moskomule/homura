@@ -3,8 +3,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from . import MODEL_REGISTRY
-from .._intialization import init_parameters
+from homura.vision.models import MODEL_REGISTRY
+from homura.vision.models._intialization import init_parameters
 
 __all__ = ["WideResNet", "WideBasicModule", "wrn28_10", "wrn28_2"]
 
@@ -105,4 +105,10 @@ def wrn28_10(num_classes=10, dropout_rate=0) -> WideResNet:
 @MODEL_REGISTRY.register
 def wrn28_2(num_classes=10, dropout_rate=0) -> WideResNet:
     model = WideResNet(depth=28, widen_factor=2, dropout_rate=dropout_rate, num_classes=num_classes)
+    return model
+
+
+@MODEL_REGISTRY.register
+def wrn40_2(num_classes=10, dropout_rate=0) -> WideResNet:
+    model = WideResNet(depth=40, widen_factor=2, dropout_rate=dropout_rate, num_classes=num_classes)
     return model

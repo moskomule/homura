@@ -6,16 +6,17 @@ import importlib.util
 import os as python_os
 import subprocess
 import sys as python_sys
-from typing import Optional
+from functools import wraps
+from typing import Optional, Any, Callable
 
 from torch import distributed
 from torch.cuda import device_count
 
 from homura.liblog import get_logger
 
-logger = get_logger("homura.env")
-args = " ".join(python_sys.argv)
-_DISTRIBUTED_FLAG = False
+logger = get_logger("homura.environment")
+# IS_DISTRIBUTED is used to handle horovod
+IS_DISTRIBUTED_HOROVOD = False
 
 
 # Utility functions that useful libraries are available or not
@@ -23,9 +24,14 @@ def is_accimage_available() -> bool:
     return importlib.util.find_spec("accimage") is not None
 
 
-def is_horovod_available() -> bool:
-    disable_horovod = int(get_environ("HOMURA_DISABLE_HOROVOD", 0))
-    return (importlib.util.find_spec("horovod") is not None) and (disable_horovod == 0)
+def enable_accimage() -> None:
+    if is_accimage_available():
+        import torchvision
+
+        torchvision.set_image_backend("accimage")
+        logger.info("accimage is activated")
+    else:
+        logger.warning("accimage is not available")
 
 
 def is_faiss_available() -> bool:
@@ -37,13 +43,11 @@ def is_faiss_available() -> bool:
         return False
 
 
-def is_distributed_available() -> bool:
-    return (hasattr(distributed, "is_available") and getattr(distributed, "is_available")) or is_horovod_available()
+def is_horovod_available() -> bool:
+    return importlib.util.find_spec("horovod") is not None
 
 
-def is_distributed() -> bool:
-    return get_world_size() > 1
-
+# get environment information
 
 def get_git_hash() -> str:
     def _decode_bytes(b: bytes) -> str:
@@ -69,35 +73,47 @@ def get_args() -> list:
 
 
 def get_environ(name: str,
-                default) -> str:
+                default: Optional[Any] = None
+                ) -> str:
     return python_os.environ.get(name, default)
+
+
+# distributed
+
+
+def is_distributed_available() -> bool:
+    return distributed.is_available() or is_horovod_available()
+
+
+def is_distributed() -> bool:
+    # to handle horovod
+    return get_world_size() > 1
 
 
 def get_local_rank() -> int:
     # returns -1 if not distributed, else returns local rank
     # it works before dist.init_process_group
-    if not is_distributed():
-        return -1
-    else:
-        if is_horovod_available():
-            import horovod.torch as hvd
+    if IS_DISTRIBUTED_HOROVOD:
+        import horovod.torch as hvd
 
-            return hvd.local_rank()
+        return hvd.local_rank()
+    else:
         return int(get_environ('LOCAL_RANK', 0))
 
 
 def get_global_rank() -> int:
     # returns -1 if not distributed, else returns global rank
     # it works before dist.init_process_group
-    if _DISTRIBUTED_FLAG and is_horovod_available():
+    if IS_DISTRIBUTED_HOROVOD:
         import horovod.torch as hvd
 
         return hvd.rank()
-    return int(get_environ('RANK', -1))
+    else:
+        return int(get_environ('RANK', 0))
 
 
 def is_master() -> bool:
-    return get_global_rank() <= 0
+    return get_global_rank() == 0
 
 
 def get_num_nodes() -> int:
@@ -109,11 +125,12 @@ def get_num_nodes() -> int:
 
 
 def get_world_size() -> int:
-    if _DISTRIBUTED_FLAG and is_horovod_available():
+    if IS_DISTRIBUTED_HOROVOD:
         import horovod.torch as hvd
 
         return hvd.size()
-    return int(python_os.environ.get("WORLD_SIZE", 1))
+    else:
+        return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
 def init_distributed(use_horovod: bool = False,
@@ -122,19 +139,19 @@ def init_distributed(use_horovod: bool = False,
                      warning: bool = True):
     """ Simple initializer for distributed training.
 
-    :param use_horovod:
-    :param backend: backend when
-    :param init_method:
-    :param warning:
+    :param use_horovod: If use horovod as distributed backend
+    :param backend: backend of torch.distributed.init_process_group
+    :param init_method: init_method of torch.distributed.init_process_group
+    :param warning: Warn if this method is called multiple times
     :return:
     """
 
     if not is_distributed_available():
         raise RuntimeError('Distributed training is not available on this machine')
 
-    global _DISTRIBUTED_FLAG
-    _DISTRIBUTED_FLAG = True
     if use_horovod:
+        global IS_DISTRIBUTED_HOROVOD
+        IS_DISTRIBUTED_HOROVOD = True
         if backend is not None or init_method is not None:
             raise RuntimeError('Try to use horovod, but `backend` and `init_method` are not None')
 
@@ -142,27 +159,26 @@ def init_distributed(use_horovod: bool = False,
             import horovod.torch as hvd
 
             hvd.init()
-            logger.debug("init horovod")
+            logger.info("Horovod initialized")
         else:
             raise RuntimeError('horovod is not available!')
 
     else:
-        if backend is None:
-            backend = "nccl"
-        if init_method:
-            init_method = "env://"
+        # default values
+        backend = backend or "nccl"
+        init_method = init_method or "env://"
 
         if not is_distributed():
             raise RuntimeError(
                 f"For distributed training, use `python -m torch.distributed.launch "
-                f"--nproc_per_node={device_count()} {args}` ...")
+                f"--nproc_per_node={device_count()} {get_args()}` ...")
 
         if distributed.is_initialized():
             if warning:
                 logger.warn("`distributed` is already initialized. Skipped.")
         else:
             distributed.init_process_group(backend=backend, init_method=init_method)
-        logger.debug("init distributed")
+        logger.info("Distributed initialized")
 
     if not is_master():
         def no_print(*values, **kwargs):
@@ -171,10 +187,19 @@ def init_distributed(use_horovod: bool = False,
         builtins.print = no_print
 
 
-def enable_accimage() -> None:
-    if is_accimage_available():
-        import torchvision
+# decorators
 
-        torchvision.set_image_backend("accimage")
-    else:
-        logger.warning("accimage is not available")
+def if_is_master(func: Callable
+                 ) -> Callable:
+    """ Wraps function that is active only if it is the master process
+
+    :param func: Any function
+    :return:
+    """
+
+    @wraps(func)
+    def inner(*args, **kwargs) -> Optional:
+        if is_master():
+            return func(*args, **kwargs)
+
+    return inner

@@ -20,7 +20,7 @@ def test_confusion_matrix():
     assert all(cm.view(-1) == expected.view(-1))
 
 
-def test_accuracy():
+def test_classwise_accuracy():
     assert all(commons.classwise_accuracy(input, target) == torch.tensor([3 / 4, 3 / 4, 2 / 4]))
 
 
@@ -93,3 +93,14 @@ def test_true_positive_2d():
                             [2, 0]]])
 
     assert all(commons.true_positive(input, target) == torch.tensor([2, 2, 4]).float())
+
+
+def test_accuracy():
+    input = torch.tensor([[0.9159, -0.3400, -1.0952, 0.1969, 0.4769],
+                          [-0.1677, 0.7205, 0.3802, -0.8408, 0.5447],
+                          [0.1596, 0.0366, -1.3719, 1.6869, -0.2422]])
+    # argmax=[0, 1, 3], argmin=[2, 3, 2]
+    target = torch.tensor([0, 3, 0])
+    assert commons.accuracy(input, target) == torch.tensor([1 / 3])
+    assert commons.accuracy(input, target, top_k=3) == torch.tensor([2 / 3])
+    assert commons.accuracy(input, target, top_k=5) == torch.tensor([1.0])

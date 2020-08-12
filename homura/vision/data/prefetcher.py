@@ -1,41 +1,44 @@
 import torch
 from torch.utils.data import DataLoader
+from torch.utils.data import DistributedSampler
 
-from homura.utils.containers import TensorTuple
+from homura import TensorTuple
 
 
-class DataPrefetcher(object):
-    """ prefetch data
+class DataPrefetchWrapper(object):
+    """ from NVidia's DeepLearningExamples ::
+
     """
 
     def __init__(self,
-                 loader: DataLoader):
-        self._cuda_available = torch.cuda.is_available()
-        self._length = len(loader)
-        self.loader = iter(loader)
-        self.stream = torch.cuda.Stream() if self._cuda_available else None
-        self.next_data = None
-        self.preload()
-
-    def preload(self):
-        try:
-            self.next_data = TensorTuple(next(self.loader))
-        except StopIteration:
-            self.next_data = None
-            raise StopIteration
-        if self._cuda_available:
-            with torch.cuda.stream(self.stream):
-                self.next_data = self.next_data.to(device="cuda", non_blocking=True)
-
-    def __len__(self):
-        return self._length
+                 loader: DataLoader,
+                 start_epoch: int = 0
+                 ) -> None:
+        if not torch.cuda.is_available():
+            raise RuntimeError('Prefetcher needs CUDA, but not available!')
+        self.loader = loader
+        self.epoch = start_epoch - 1
 
     def __iter__(self):
-        return self
+        if self.loader.sampler is not None and isinstance(self.loader.sampler, DistributedSampler):
+            self.loader.sampler.set_epoch(self.epoch)
+        self.epoch += 1
 
-    def __next__(self):
-        if self._cuda_available:
-            torch.cuda.current_stream().wait_stream(self.stream)
-        data = self.next_data
-        self.preload()
-        return data
+        stream = torch.cuda.Stream()
+        is_first = True
+
+        for next_data in self.loader:
+            with torch.cuda.stream(stream):
+                next_data = TensorTuple(next_data).to(device='cuda', non_blocking=True)
+
+            if not is_first:
+                yield data
+            else:
+                is_first = False
+
+            torch.cuda.current_stream().wait_stream(stream)
+            data = next_data
+        yield data
+
+    def __len__(self) -> int:
+        return len(self.loader)

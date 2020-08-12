@@ -3,9 +3,9 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, callbacks, reporters, enable_accimage, get_num_nodes, init_distributed
+from homura import optim, lr_scheduler, enable_accimage, get_num_nodes, init_distributed, reporters
 from homura.trainers import SupervisedTrainer
-from homura.vision.data import prefetcher, DATASET_REGISTRY
+from homura.vision.data import DATASET_REGISTRY
 
 is_distributed = False
 
@@ -42,35 +42,31 @@ def main(cfg):
     model = resnet50()
     optimizer = optim.SGD(lr=1e-1 * cfg.batch_size * get_num_nodes() / 256, momentum=0.9, weight_decay=1e-4)
     scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
-    tq = reporters.TQDMReporter(range(cfg.epochs))
-    c = [callbacks.AccuracyCallback(),
-         callbacks.AccuracyCallback(k=5),
-         callbacks.LossCallback(),
-         tq,
-         reporters.TensorboardReporter("."),
-         reporters.IOReporter(".")]
-    _train_loader, _test_loader = DATASET_REGISTRY('imagenet')(cfg.batch_size,
-                                                               num_train_samples=cfg.batch_size * 10 if cfg.debug else None,
-                                                               num_test_samples=cfg.batch_size * 10 if cfg.debug else None)
+    train_loader, test_loader = DATASET_REGISTRY("fast_imagenet" if cfg.use_fast_collate else
+                                                 "imagenet")(cfg.batch_size,
+                                                             train_size=cfg.batch_size * 50 if cfg.debug else None,
+                                                             test_size=cfg.batch_size * 50 if cfg.debug else None,
+                                                             num_workers=cfg.num_workers,
+                                                             use_prefetcher=cfg.use_prefetcher)
 
     use_multi_gpus = not is_distributed and torch.cuda.device_count() > 1
     with SupervisedTrainer(model,
                            optimizer,
                            F.cross_entropy,
-                           callbacks=c,
+                           reporters=[reporters.TensorboardReporter(".")],
                            scheduler=scheduler,
                            data_parallel=use_multi_gpus,
-                           use_horovod=cfg.distributed.use_horovod) as trainer:
+                           use_amp=cfg.use_amp,
+                           use_cuda_nonblocking=True,
+                           use_sync_bn=cfg.use_sync_bn,
+                           use_horovod=cfg.distributed.use_horovod,
+                           report_accuracy_topk=5) as trainer:
 
-        for epoch in tq:
-            if cfg.use_prefetcher:
-                train_loader = prefetcher.DataPrefetcher(_train_loader)
-                test_loader = prefetcher.DataPrefetcher(_test_loader)
-            else:
-                train_loader, test_loader = _train_loader, _test_loader
-            # following apex's training scheme
+        for epoch in trainer.epoch_range(cfg.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
+
+        print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
 
 
 if __name__ == '__main__':

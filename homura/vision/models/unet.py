@@ -4,7 +4,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .._intialization import init_parameters
+from homura.vision.models import MODEL_REGISTRY
+from homura.vision.models._intialization import init_parameters
 
 __all__ = ["unet", "CustomUNet"]
 
@@ -129,5 +130,6 @@ class CustomUNet(UNet):
         return self.channel_conv(x)
 
 
+@MODEL_REGISTRY.register
 def unet(num_classes, input_channels=3):
     return UNet(num_classes, input_channels)

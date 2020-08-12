@@ -3,7 +3,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from homura import trainers, utils, optim, lr_scheduler
+from homura import trainers, optim, lr_scheduler
 
 
 def test_dict_model():
@@ -13,12 +13,11 @@ def test_dict_model():
             input, target = data
             output = self.model["generator"](input) + self.model["discriminator"](input)
             loss = self.loss_f(output, target)
-            results = utils.TensorMap(loss=loss, output=output)
             if self.is_train:
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-            return results
+            self.reporter('loss', loss.detach_())
 
     model = {"generator": nn.Linear(10, 10),
              "discriminator": nn.Linear(10, 10)}
@@ -26,7 +25,8 @@ def test_dict_model():
                  "discriminator": None}
     trainer = Trainer(model, optimizer, F.cross_entropy)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
-    for _ in range(1):
+
+    for _ in trainer.epoch_range(1):
         trainer.train(loader)
         trainer.test(loader)
 
@@ -38,13 +38,15 @@ def test_basic_trainer():
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
                                          update_scheduler_by_epoch=False)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
-    trainer.train(loader)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
     assert pytest.approx(trainer.optimizer.param_groups[0]["lr"], 0.01)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
                                          update_scheduler_by_epoch=False)
-    trainer.train(loader)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
 
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 9)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,

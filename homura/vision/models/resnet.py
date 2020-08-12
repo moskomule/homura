@@ -5,8 +5,8 @@ https://github.com/facebook/fb.resnet.torch/blob/master/models/resnet.lua
 
 from torch import nn
 
-from .._intialization import init_parameters
-from . import MODEL_REGISTRY
+from homura.vision.models import MODEL_REGISTRY
+from homura.vision.models._intialization import init_parameters
 
 __all__ = ["resnet20", "resnet32", "resnet56", "resnet110",
            "preact_resnet20", "preact_resnet32", "preact_resnet56", "preact_resnet110",

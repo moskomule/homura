@@ -2,7 +2,7 @@ import contextlib
 import functools
 import types
 from pathlib import Path
-from typing import Callable, Optional, Dict, Type, Any
+from typing import Callable, Optional, Dict, Type
 
 
 class Registry(object):
@@ -20,7 +20,8 @@ class Registry(object):
 
     def __new__(cls,
                 name: str,
-                type: Optional[Type] = None):
+                type: Optional[Type] = None
+                ):
         if name in Registry._available_registries:
             return Registry._available_registries[name]
 
@@ -42,34 +43,38 @@ class Registry(object):
     def register(self,
                  func: Callable = None,
                  *,
-                 name: Optional[str] = None):
+                 name: Optional[str] = None
+                 ) -> Callable:
         if func is None:
             return functools.partial(self.register, name=name)
 
         _type = self.type
-        if _type is not None and not isinstance(_type, types.FunctionType):
+        if _type is not None and not isinstance(func, types.FunctionType):
             if not (isinstance(func, _type) or issubclass(func, _type)):
-                raise TypeError(
-                    f'`func` is expected to be subclass of {_type}.')
+                raise TypeError(f'`func` is expected to be subclass of {_type}.')
 
         if name is None:
             name = func.__name__
 
         if self._registry.get(name) is not None:
-            raise KeyError(
-                f'Name {name} is already used, try another name!')
+            raise KeyError(f'Name {name} is already used, try another name!')
 
         self._registry[name] = func
         return func
 
     def __call__(self,
-                 name: str):
+                 name: str,
+                 *args,
+                 **kwargs):
         ret = self._registry.get(name)
         if ret is None:
             _registry = {k.lower(): v for k, v in self._registry.items()}
             ret = _registry.get(name.lower())
             if ret is None:
                 raise KeyError(f'Unknown {name} is called!')
+            if len(args) > 0 or len(kwargs) > 0:
+                # if args and kwargs is specified, instantiate
+                ret = ret(*args, **kwargs)
         return ret
 
     @classmethod

@@ -2,23 +2,19 @@ import hydra
 import torch
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, callbacks, reporters, trainers
+from homura import optim, lr_scheduler, reporters, trainers, enable_accimage
 from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
 
 
 @hydra.main('config/cifar10.yaml')
 def main(cfg):
+    if cfg.use_accimage:
+        enable_accimage()
     model = MODEL_REGISTRY(cfg.model.name)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.data.batch_size)
+    train_loader, test_loader = DATASET_REGISTRY("fast_cifar10" if cfg.use_fast_collate else "cifar10"
+                                                 )(cfg.data.batch_size, num_workers=4, use_prefetcher=cfg.use_prefetcher)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.optim.lr_decay)
-    tq = reporters.TQDMReporter(range(cfg.optim.epochs), verb=True)
-    c = [callbacks.AccuracyCallback(),
-         callbacks.LossCallback(),
-         reporters.IOReporter("."),
-         reporters.TensorboardReporter("."),
-         callbacks.WeightSave("."),
-         tq]
 
     if cfg.bn_no_wd:
         def set_optimizer(trainer):
@@ -40,13 +36,15 @@ def main(cfg):
     with trainers.SupervisedTrainer(model,
                                     optimizer,
                                     F.cross_entropy,
-                                    callbacks=c,
+                                    reporters=[reporters.TensorboardReporter('.')],
                                     scheduler=scheduler,
                                     use_amp=cfg.use_amp) as trainer:
 
-        for _ in tq:
+        for _ in trainer.epoch_range(cfg.optim.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
+
+        print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
 
 
 if __name__ == '__main__':
