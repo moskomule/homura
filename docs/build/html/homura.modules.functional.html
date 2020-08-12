@@ -84,7 +84,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="homura.modules.html">homura.modules package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="homura.modules.html#subpackages">Subpackages</a><ul class="current">
@@ -110,9 +109,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -356,15 +352,13 @@
 <dl class="py function">
 <dt id="homura.modules.functional.loss.cross_entropy_with_softlabels">
 <code class="sig-prename descclassname">homura.modules.functional.loss.</code><code class="sig-name descname">cross_entropy_with_softlabels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'mean'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/functional/loss.html#cross_entropy_with_softlabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.modules.functional.loss.cross_entropy_with_softlabels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cross entropy with soft labels. Unlike <cite>torch.nn.functional.cross_entropy</cite>, <cite>target</cite> is expected to be
-one-hot or soft label.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<em>torch.Tensor</em>) – Tensor of <cite>BxCx(optional dimensions)</cite></p></li>
-<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Tensor of <cite>BxCx(optional dimensions)</cite></p></li>
-<li><p><strong>reduction</strong> (<em>str</em>) – </p></li>
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – </p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – </p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

@@ -82,14 +82,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -161,19 +157,9 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.base">homura.callbacks.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.metrics">homura.callbacks.metrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.reporters">homura.callbacks.reporters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks.saver">homura.callbacks.saver module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.callbacks.html#module-homura.callbacks">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.commons">homura.metrics.commons module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.generative">homura.metrics.generative module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics.segmentation">homura.metrics.segmentation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.metrics.html#module-homura.metrics">Module contents</a></li>
 </ul>
@@ -205,8 +191,8 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.backends">homura.utils.backends module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.benchmarks">homura.utils.benchmarks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.debug">homura.utils.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.environment">homura.utils.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.mixin">homura.utils.mixin module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="homura.utils.html#module-homura.utils">Module contents</a></li>
 </ul>
@@ -223,7 +209,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models.densenet">homura.vision.models.densenet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models.resnet">homura.vision.models.resnet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models.resnext">homura.vision.models.resnext module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models.unet">homura.vision.models.unet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models.wideresnet">homura.vision.models.wideresnet module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="homura.vision.models.html#module-homura.vision.models">Module contents</a></li>
 </ul>
 </li>
@@ -406,6 +397,16 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="homura.optim.AdamW">
+<code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">AdamW</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">betas</span><span class="o">=</span><span class="default_value">0.9, 0.999</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">amsgrad</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#AdamW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.AdamW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="homura.optim.RMSprop">
+<code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">RMSprop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.99</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">momentum</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">centered</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#RMSprop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.RMSprop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="homura.optim.SGD">
 <code class="sig-prename descclassname">homura.optim.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">momentum</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">dampening</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nesterov</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.optim.SGD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -470,6 +471,9 @@ model_registry is model_registry2</p>
 <li><p><strong>name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Callable</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -486,37 +490,311 @@ model_registry is model_registry2</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-homura.reporters">
+<span id="homura-reporters-module"></span><h2>homura.reporters module<a class="headerlink" href="#module-homura.reporters" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.reporters.ReporterList">
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">ReporterList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reporters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">is_averaged</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'average'</span></em>, <em class="sig-param"><span class="n">no_sync</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#homura.reporters.ReporterList.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add value(s) to reporter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Unique key to track value</p></li>
+<li><p><strong>value</strong> (<em>torch.Tensor</em>) – Value</p></li>
+<li><p><strong>is_averaged</strong> (<em>bool</em>) – If value is averaged</p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – Method of reduction after epoch, ‘average’, ‘sum’ or function of List[Value] -&gt; Value</p></li>
+<li><p><strong>no_sync</strong> (<em>bool</em>) – If not sync in distributed setting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add_figure">
+<code class="sig-name descname">add_figure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.add_figure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.add_figure" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add_histogram">
+<code class="sig-name descname">add_histogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.add_histogram" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add_image">
+<code class="sig-name descname">add_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.add_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add_text">
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.add_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.add_value">
+<code class="sig-name descname">add_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">is_averaged</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'average'</span></em>, <em class="sig-param"><span class="n">no_sync</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.add_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.add_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add value(s) to reporter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Unique key to track value</p></li>
+<li><p><strong>value</strong> (<em>torch.Tensor</em>) – Value</p></li>
+<li><p><strong>is_averaged</strong> (<em>bool</em>) – If value is averaged</p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – Method of reduction after epoch, ‘average’, ‘sum’ or function of List[Value] -&gt; Value</p></li>
+<li><p><strong>no_sync</strong> (<em>bool</em>) – If not sync in distributed setting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.exit">
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.exit" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.history">
+<em class="property">property </em><code class="sig-name descname">history</code><a class="headerlink" href="#homura.reporters.ReporterList.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.report">
+<code class="sig-name descname">report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.report" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.ReporterList.set_batch_size">
+<code class="sig-name descname">set_batch_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_size</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList.set_batch_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.ReporterList.set_batch_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch_size</strong> (<em>int</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.reporters.TQDMReporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">TQDMReporter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ncols</span><span class="o">=</span><span class="default_value">80</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters._ReporterBase</span></code></p>
+<dl class="py method">
+<dt id="homura.reporters.TQDMReporter.add_scalar">
+<code class="sig-name descname">add_scalar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter.add_scalar" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TQDMReporter.add_scalars">
+<code class="sig-name descname">add_scalars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter.add_scalars" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TQDMReporter.add_text">
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter.add_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – </p></li>
+<li><p><strong>value</strong> (<em>str</em>) – </p></li>
+<li><p><strong>step</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TQDMReporter.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter.flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TQDMReporter.set_iterator">
+<code class="sig-name descname">set_iterator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterator</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter.set_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TQDMReporter.set_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>iterator</strong> (<em>Iterator</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.reporters.TensorboardReporter">
+<em class="property">class </em><code class="sig-prename descclassname">homura.reporters.</code><code class="sig-name descname">TensorboardReporter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters._ReporterBase</span></code></p>
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_figure">
+<code class="sig-name descname">add_figure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_figure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_figure" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_histogram">
+<code class="sig-name descname">add_histogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_histogram" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_image">
+<code class="sig-name descname">add_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_scalar">
+<code class="sig-name descname">add_scalar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_scalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_scalar" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_scalars">
+<code class="sig-name descname">add_scalars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_scalars" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.reporters.TensorboardReporter.add_text">
+<code class="sig-name descname">add_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter.add_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter.add_text" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-homura.trainers">
 <span id="homura-trainers-module"></span><h2>homura.trainers module<a class="headerlink" href="#module-homura.trainers" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="homura.trainers.SupervisedTrainer">
-<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">SupervisedTrainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">loss_f</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">callbacks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scheduler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verb</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">data_parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">use_amp</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">SupervisedTrainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">loss_f</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">reporters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scheduler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verb</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">data_parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">use_amp</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">report_accuracy_topk</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.trainers.TrainerBase" title="homura.trainers.TrainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.TrainerBase</span></code></a></p>
 <p>A simple trainer for supervised image classification. It only accepts single model. AMP-ready.</p>
 <dl class="py method">
 <dt id="homura.trainers.SupervisedTrainer.iteration">
 <code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iteration part, user can override via duck typing or override_iteration</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-    <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">TensorMap</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em>) – data used during a iteration</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TensorMap or Dict</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.trainers.SupervisedTrainer.load_state_dict">
+<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.load_state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state_dict</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.trainers.SupervisedTrainer.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Mapping[str, torch.Tensor]</p>
+<dd class="field-odd"><p>Mapping[str, Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -525,57 +803,18 @@ model_registry is model_registry2</p>
 
 <dl class="py class">
 <dt id="homura.trainers.TrainerBase">
-<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">TrainerBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">loss_f</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">callbacks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scheduler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_scheduler_by_epoch</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verb</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cuda_nonblocking</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">use_horovod</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_sync_bn</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tqdm_ncols</span><span class="o">=</span><span class="default_value">80</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Train and evaluate model in a given period (an epoch or iterations)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – model to be trained in <cite>nn.Module</cite> or <cite>{“registry_name”: nn.Module}</cite></p></li>
-<li><p><strong>optimizer</strong> – optimizer for the model in <cite>partial</cite>, <cite>torch.optim.Optimizer</cite> or dict of them. For distributed
-training, optimizer like <cite>partial(SGD)</cite> is recommended. See <cite>homura.optim</cite>.</p></li>
-<li><p><strong>loss_f</strong> – loss function</p></li>
-<li><p><strong>callbacks</strong> – callbacks</p></li>
-<li><p><strong>scheduler</strong> – scheduler for the model in <cite>partial</cite>, <cite>lr_scheduler._LRScheduler</cite> or dict of them</p></li>
-<li><p><strong>update_scheduler_by_epoch</strong> – <cite>True</cite> if scheduler is updated by epoch, otherwise update by iteration</p></li>
-<li><p><strong>device</strong> – </p></li>
-<li><p><strong>verb</strong> – </p></li>
-<li><p><strong>use_cudnn_benchmark</strong> – </p></li>
-<li><p><strong>use_cuda_nonblocking</strong> – </p></li>
-<li><p><strong>use_horovod</strong> – </p></li>
-<li><p><strong>logger</strong> – </p></li>
-<li><p><strong>distributed_backend</strong> – </p></li>
-<li><p><strong>init_method</strong> – </p></li>
-<li><p><strong>use_sync_bn</strong> – </p></li>
-<li><p><strong>tqdm_ncols</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
-</ul>
-</dd>
-</dl>
+<em class="property">class </em><code class="sig-prename descclassname">homura.trainers.</code><code class="sig-name descname">TrainerBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">loss_f</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">reporters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scheduler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">update_scheduler_by_epoch</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verb</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cudnn_benchmark</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">use_cuda_nonblocking</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">use_horovod</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_sync_bn</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tqdm_ncols</span><span class="o">=</span><span class="default_value">80</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="homura.utils.html#homura.utils.mixin.StateDictMixIn" title="homura.utils.mixin.StateDictMixIn"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils.mixin.StateDictMixIn</span></code></a></p>
 <dl class="py method">
-<dt id="homura.trainers.TrainerBase.data_handler_after_iter">
-<code class="sig-name descname">data_handler_after_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.data_handler_after_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.data_handler_after_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle data sampled from dataloader after <cite>iteration</cite>.
-By default, just returns the input.</p>
+<dt id="homura.trainers.TrainerBase.data_preprocess">
+<code class="sig-name descname">data_preprocess</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.data_preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.data_preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>preprocess data and return (TensorTuple, batch_size)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>tuple</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.trainers.TrainerBase.data_handler_before_iter">
-<code class="sig-name descname">data_handler_before_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.data_handler_before_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.data_handler_before_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle data sampled from dataloader before <cite>iteration</cite>.
-By default, <cite>data</cite> is expected to be a tuple of tensors,
-so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>tuple</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>..</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="homura.utils.html#homura.utils.containers.TensorTuple" title="homura.utils.containers.TensorTuple">homura.utils.containers.TensorTuple</a></p>
+<dd class="field-even"><p>(typing.Tuple[torch.Tensor, ..], &lt;class ‘int’&gt;)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,8 +825,23 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="homura.trainers.TrainerBase.epoch_range">
+<code class="sig-name descname">epoch_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">epoch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.epoch_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.epoch_range" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epoch</strong> (<em>int</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="homura.trainers.TrainerBase.exit">
 <code class="sig-name descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="homura.trainers.TrainerBase.history">
+<em class="property">property </em><code class="sig-name descname">history</code><a class="headerlink" href="#homura.trainers.TrainerBase.history" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -598,37 +852,12 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dl class="py method">
 <dt id="homura.trainers.TrainerBase.iteration">
 <em class="property">abstract </em><code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iteration part, user can override via duck typing or override_iteration</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-    <span class="nb">input</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_f</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">TensorMap</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>]</em>) – data used during a iteration</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TensorMap or Dict</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Mapping[str, torch.Tensor]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.trainers.TrainerBase.load_state_dict">
-<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.load_state_dict" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>state_dict</strong> (<em>Mapping</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>..</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -647,10 +876,13 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>new_iteration</strong> (<em>Callable</em>) – </p>
+<dd class="field-odd"><p><strong>new_iteration</strong> (<em>Callable</em><em>[</em><em>[</em><em>Tuple</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -677,6 +909,9 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
 </dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -692,6 +927,9 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -709,15 +947,8 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.trainers.TrainerBase.state_dict">
-<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.trainers.TrainerBase.state_dict" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Mapping</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -741,6 +972,9 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
 </dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -754,6 +988,9 @@ so wrap it with TensorTuple and send it to <cite>self.device</cite></p>
 <li><p><strong>data_loader</strong> (<em>Iterable</em>) – </p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – Name of this loop. Default is <cite>train</cite>. Passed to callbacks.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

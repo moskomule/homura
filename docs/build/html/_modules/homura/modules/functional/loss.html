@@ -82,14 +82,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -174,17 +170,42 @@
                                   <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                                   <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                                   <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Cross entropy with soft labels. Unlike `torch.nn.functional.cross_entropy`, `target` is expected to be</span>
-<span class="sd">    one-hot or soft label.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    :param input: Tensor of `BxCx(optional dimensions)`</span>
-<span class="sd">    :param target: Tensor of `BxCx(optional dimensions)`</span>
+<span class="sd">    :param input:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :param dim:</span>
 <span class="sd">    :param reduction:</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input size (</span><span class="si">{</span><span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2">) and target size (</span><span class="si">{</span><span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s2">) should be same!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_reduction</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span> <span class="o">*</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">),</span> <span class="n">reduction</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">cross_entropy_with_smoothing</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                 <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                 <span class="n">smoothing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                 <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span>
+                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param input:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :param smoothing:</span>
+<span class="sd">    :param dim:</span>
+<span class="sd">    :param reduction:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">log_prob</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">nll_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_prob</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">))</span>
+    <span class="n">nll_loss</span> <span class="o">=</span> <span class="n">nll_loss</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">smooth_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_prob</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">nll_loss</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">*</span> <span class="n">smooth_loss</span>
+    <span class="k">return</span> <span class="n">_reduction</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">reduction</span><span class="p">)</span>
 </pre></div>
 
            </div>

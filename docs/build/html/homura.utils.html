@@ -84,7 +84,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.utils package</a><ul>
@@ -92,16 +91,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.backends">homura.utils.backends module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.benchmarks">homura.utils.benchmarks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.debug">homura.utils.debug module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.environment">homura.utils.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.mixin">homura.utils.mixin module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -335,28 +331,6 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-homura.utils.debug">
-<span id="homura-utils-debug-module"></span><h2>homura.utils.debug module<a class="headerlink" href="#module-homura.utils.debug" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="homura.utils.debug.module_debugger">
-<code class="sig-prename descclassname">homura.utils.debug.</code><code class="sig-name descname">module_debugger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loss</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/debug.html#module_debugger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.debug.module_debugger" title="Permalink to this definition">¶</a></dt>
-<dd><p>log all modules connected with forward and backward calculation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – </p></li>
-<li><p><strong>input</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>target</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>torch.Tensor</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>loss</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
 <div class="section" id="module-homura.utils.environment">
 <span id="homura-utils-environment-module"></span><h2>homura.utils.environment module<a class="headerlink" href="#module-homura.utils.environment" title="Permalink to this headline">¶</a></h2>
 <p>Get information about the environment. Useful especially when distributed.</p>
@@ -382,10 +356,13 @@
 
 <dl class="py function">
 <dt id="homura.utils.environment.get_environ">
-<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_environ</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">default</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_environ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_environ" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">get_environ</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#get_environ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.get_environ" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>default</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
@@ -444,16 +421,33 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="homura.utils.environment.if_is_master">
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">if_is_master</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#if_is_master"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.if_is_master" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps function that is active only if it is the master process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – Any function</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="homura.utils.environment.init_distributed">
 <code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">init_distributed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">use_horovod</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">backend</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">init_method</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">warning</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#init_distributed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.init_distributed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple initializer for distributed training.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>use_horovod</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>backend</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – backend when</p></li>
-<li><p><strong>init_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
-<li><p><strong>warning</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>use_horovod</strong> (<em>bool</em>) – If use horovod as distributed backend</p></li>
+<li><p><strong>backend</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – backend of torch.distributed.init_process_group</p></li>
+<li><p><strong>init_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – init_method of torch.distributed.init_process_group</p></li>
+<li><p><strong>warning</strong> (<em>bool</em>) – Warn if this method is called multiple times</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -520,6 +514,65 @@
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-homura.utils.mixin">
+<span id="homura-utils-mixin-module"></span><h2>homura.utils.mixin module<a class="headerlink" href="#module-homura.utils.mixin" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.utils.mixin.StateDictMixIn">
+<em class="property">class </em><code class="sig-prename descclassname">homura.utils.mixin.</code><code class="sig-name descname">StateDictMixIn</code><a class="reference internal" href="_modules/homura/utils/mixin.html#StateDictMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.mixin.StateDictMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="homura.utils.mixin.StateDictMixIn.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">file_name</span></em>, <em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/mixin.html#StateDictMixIn.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.mixin.StateDictMixIn.load" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>file_name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
+<li><p><strong>device</strong> (<em>Optional</em><em>[</em><em>torch.device</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.utils.mixin.StateDictMixIn.load_state_dict">
+<code class="sig-name descname">load_state_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/mixin.html#StateDictMixIn.load_state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.mixin.StateDictMixIn.load_state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.utils.mixin.StateDictMixIn.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">file_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/mixin.html#StateDictMixIn.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.mixin.StateDictMixIn.save" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.utils.mixin.StateDictMixIn.state_dict">
+<code class="sig-name descname">state_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/mixin.html#StateDictMixIn.state_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.mixin.StateDictMixIn.state_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>

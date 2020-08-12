@@ -7,12 +7,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>homura.vision.models.classification.densenet &mdash; homura  documentation</title>
+  <title>homura.vision.models.densenet &mdash; homura  documentation</title>
   
 
   
-  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -21,21 +21,21 @@
 
   
   <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/language_data.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
     
-    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
     
-    <link rel="index" title="Index" href="../../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../../search.html" /> 
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +49,7 @@
           
 
           
-            <a href="../../../../../index.html" class="icon icon-home" alt="Documentation Home"> homura
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> homura
           
 
           
@@ -62,7 +62,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -82,14 +82,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.callbacks.html">homura.callbacks package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.metrics.html">homura.metrics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.modules.html">homura.modules package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.utils.html">homura.utils package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
             
@@ -105,7 +101,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../../index.html">homura</a>
+          <a href="../../../../index.html">homura</a>
         
       </nav>
 
@@ -134,11 +130,11 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>homura.vision.models.classification.densenet</li>
+      <li>homura.vision.models.densenet</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -153,7 +149,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for homura.vision.models.classification.densenet</h1><div class="highlight"><pre>
+  <h1>Source code for homura.vision.models.densenet</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">DenseNet for CIFAR dataset proposed in Gao et al. 2016</span>
 <span class="sd">https://github.com/liuzhuang13/DenseNet</span>
@@ -162,9 +158,10 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">MODEL_REGISTRY</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cifar_densenet100&quot;</span><span class="p">,</span> <span class="s2">&quot;CIFARDenseNet&quot;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">homura.vision.models</span> <span class="kn">import</span> <span class="n">MODEL_REGISTRY</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;densenet40&quot;</span><span class="p">,</span> <span class="s2">&quot;densenet100&quot;</span><span class="p">,</span> <span class="s2">&quot;CIFARDenseNet&quot;</span><span class="p">]</span>
 
 <span class="n">_padding</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;reflect&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReflectionPad2d</span><span class="p">,</span>
             <span class="s2">&quot;zero&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">}</span>
@@ -216,7 +213,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="CIFARDenseNet"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet">[docs]</a><span class="nd">@MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span>
+<div class="viewcode-block" id="CIFARDenseNet"><a class="viewcode-back" href="../../../../homura.vision.models.html#homura.vision.models.densenet.CIFARDenseNet">[docs]</a><span class="nd">@MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">CIFARDenseNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DenseNet-BC (bottleneck and compactness) for CIFAR dataset. For ImageNet classification, use `torchvision`&#39;s.</span>
@@ -256,14 +253,14 @@
         <span class="c1"># initialize parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CIFARDenseNet.forward"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+<div class="viewcode-block" id="CIFARDenseNet.forward"><a class="viewcode-back" href="../../../../homura.vision.models.html#homura.vision.models.densenet.CIFARDenseNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn1</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">adaptive_avg_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CIFARDenseNet.initialize"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.densenet.CIFARDenseNet.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CIFARDenseNet.initialize"><a class="viewcode-back" href="../../../../homura.vision.models.html#homura.vision.models.densenet.CIFARDenseNet.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -281,9 +278,14 @@
     <span class="k">return</span> <span class="n">model</span>
 
 
-<div class="viewcode-block" id="cifar_densenet100"><a class="viewcode-back" href="../../../../../homura.vision.models.classification.html#homura.vision.models.classification.densenet.cifar_densenet100">[docs]</a><span class="nd">@MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">cifar_densenet100</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="densenet100"><a class="viewcode-back" href="../../../../homura.vision.models.html#homura.vision.models.densenet.densenet100">[docs]</a><span class="nd">@MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">densenet100</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_cifar_densenet</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="densenet40"><a class="viewcode-back" href="../../../../homura.vision.models.html#homura.vision.models.densenet.densenet40">[docs]</a><span class="nd">@MODEL_REGISTRY</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">densenet40</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_cifar_densenet</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

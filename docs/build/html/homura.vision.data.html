@@ -84,7 +84,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
@@ -106,9 +105,6 @@
 <li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -228,23 +224,18 @@
 
 <dl class="py method">
 <dt id="homura.vision.data.datasets.VisionSet.get_dataloader">
-<code class="sig-name descname">get_dataloader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">train_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">val_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">non_training_bs_factor</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">drop_last</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pin_memory</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_num_classes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_norm_train_da</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet.get_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.get_dataloader" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Get data loaders for registered vision datasets. homura expects</dt><dd><p>datasets are in <cite>~/.torch/data/DATASET_NAME</cite>.</p>
-</dd>
-</dl>
-<p>Link path if necessary, e.g. <cite>ln -s /original/path $HOME/.torch</cite>. Datasets can be registered
-using <cite>homura.vision.register_dataset</cite></p>
+<code class="sig-name descname">get_dataloader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">train_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">val_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">non_training_bs_factor</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">drop_last</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pin_memory</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_num_classes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_norm_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_prefetcher</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">start_epoch</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet.get_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.get_dataloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Dataloader. This will automatically handle distributed setting</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch_size</strong> (<em>int</em>) – </p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p></li>
+<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
+<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
+<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
+<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
+<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
+<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset.</p></li>
 <li><p><strong>download</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>num_workers</strong> (<em>int</em>) – </p></li>
 <li><p><strong>drop_last</strong> (<em>bool</em>) – </p></li>
@@ -254,34 +245,55 @@ using <cite>homura.vision.register_dataset</cite></p>
 <li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
 <li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
 <li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
+<li><p><strong>use_prefetcher</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>start_epoch</strong> (<em>bool</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Tuple[torch.utils.data.dataloader.DataLoader, torch.utils.data.dataloader.DataLoader]</p>
 </dd>
 </dl>
+<p>If None, None will be returned.
+:param download: If dataset needs downloading
+:param num_workers: Number of workers in data loaders
+:param non_training_bs_factor: Batch size scale factor during non training. For example,
+testing time requires no backward cache, so basically batch size can be doubled.
+:param drop_last: If drop last batch or not
+:param pin_memory: If pin memory or not
+:param return_num_classes: If return number of classes as the last return value
+:param test_batch_size: Test time batch size. If None, non_training_bs_factor * batch_size is used.
+:param pre_default_train_da: Data Augmentation before the default data augmentation
+:param post_default_train_da: Data Augmentation after the default data augmentation
+:param post_norm_train_da: Data Augmentation after normalization (i.e., norm)
+:param use_prefetcher: Use prefetcher or Not
+:param start_epoch: Epoch at start time
+:return: train_loader, test_loader, [val_loader], [num_classes]</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="homura.vision.data.datasets.VisionSet.get_dataset">
 <code class="sig-name descname">get_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">train_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">val_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">pre_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_norm_train_da</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet.get_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.get_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Get Dataset</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>download</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
+<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
+<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
+<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset. If None, None will be returned.</p></li>
+<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
+<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
+<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
+<li><p><strong>download</strong> (<em>bool</em>) – If dataset needs downloading</p></li>
+<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation before the default data augmentation</p></li>
+<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after the default data augmentation</p></li>
+<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after normalization (i.e., norm)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[torchvision.datasets.vision.VisionDataset, torchvision.datasets.vision.VisionDataset, Optional[torchvision.datasets.vision.VisionDataset]]</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>train_set, test_set, Optional[val_set]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[torchvision.datasets.vision.VisionDataset, torchvision.datasets.vision.VisionDataset, Optional[torchvision.datasets.vision.VisionDataset]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,29 +305,42 @@ using <cite>homura.vision.register_dataset</cite></p>
 
 <dl class="py attribute">
 <dt id="homura.vision.data.datasets.VisionSet.root">
-<code class="sig-name descname">root</code><em class="property">: str or pathlib.Path</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.root" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">root</code><em class="property">: str</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.root" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="homura.vision.data.datasets.VisionSet.tv_class">
-<code class="sig-name descname">tv_class</code><em class="property">: Type<span class="p">[</span>datasets.VisionDataset<span class="p">]</span></em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.tv_class" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tv_class</code><em class="property">: Type<span class="p">[</span>torchvision.datasets.vision.VisionDataset<span class="p">]</span></em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.tv_class" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.data.datasets.fast_collate">
+<code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">fast_collate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em>, <em class="sig-param"><span class="n">memory_format</span></em>, <em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">std</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#fast_collate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.fast_collate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>PIL.Image.Image</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>memory_format</strong> (<em>torch.memory_format</em>) – </p></li>
+<li><p><strong>mean</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – </p></li>
+<li><p><strong>std</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[torch.Tensor, torch.Tensor]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-homura.vision.data.prefetcher">
 <span id="homura-vision-data-prefetcher-module"></span><h2>homura.vision.data.prefetcher module<a class="headerlink" href="#module-homura.vision.data.prefetcher" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.vision.data.prefetcher.DataPrefetcher">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.prefetcher.</code><code class="sig-name descname">DataPrefetcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loader</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.vision.data.prefetcher.DataPrefetchWrapper">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.prefetcher.</code><code class="sig-name descname">DataPrefetchWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loader</span></em>, <em class="sig-param"><span class="n">start_epoch</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetchWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetchWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>prefetch data</p>
-<dl class="py method">
-<dt id="homura.vision.data.prefetcher.DataPrefetcher.preload">
-<code class="sig-name descname">preload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetcher.preload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetcher.preload" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>from NVidia’s DeepLearningExamples</p>
 </dd></dl>
 
 </div>

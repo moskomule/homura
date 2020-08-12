@@ -82,14 +82,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.callbacks.html">homura.callbacks package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html">Trainers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#optimizer">Optimizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../trainers_optimizer_lr_scheduler.html#learning-rate-scheduler">Learning rate Scheduler</a></li>
 </ul>
 
             
@@ -157,7 +153,9 @@
 <span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -168,6 +166,7 @@
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
 
 <span class="kn">from</span> <span class="nn">homura</span> <span class="kn">import</span> <span class="n">is_distributed</span><span class="p">,</span> <span class="n">Registry</span><span class="p">,</span> <span class="n">get_environ</span>
+<span class="kn">from</span> <span class="nn">.prefetcher</span> <span class="kn">import</span> <span class="n">DataPrefetchWrapper</span>
 
 
 <span class="c1"># to enable _split_dataset</span>
@@ -222,6 +221,28 @@
             <span class="k">return</span> <span class="n">OriginalSVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="fast_collate"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.datasets.fast_collate">[docs]</a><span class="k">def</span> <span class="nf">fast_collate</span><span class="p">(</span><span class="n">batch</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+                 <span class="n">memory_format</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">memory_format</span><span class="p">,</span>
+                 <span class="n">mean</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                 <span class="n">std</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;fast_collate is experimental!&quot;</span><span class="p">)</span>
+    <span class="n">imgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">imgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">imgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">(</span><span class="n">memory_format</span><span class="o">=</span><span class="n">memory_format</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">imgs</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ByteTensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ByteStorage</span><span class="o">.</span><span class="n">from_buffer</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="n">tensor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">div_</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">tensor</span><span class="o">.</span><span class="n">sub_</span><span class="p">(</span><span class="n">mean</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">div_</span><span class="p">(</span><span class="n">std</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">targets</span></div>
+
+
 <div class="viewcode-block" id="VisionSet"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.datasets.VisionSet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">VisionSet</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Dataset abstraction for vision datasets.</span>
@@ -260,6 +281,20 @@
                     <span class="n">post_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot; Get Dataset</span>
+
+<span class="sd">        :param train_size: Size of training dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param test_size: Size of test dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param val_size: Size of validation dataset, randomly split from the training dataset. If None, None will be returned.</span>
+<span class="sd">        :param train_da: Data Augmentation for training</span>
+<span class="sd">        :param test_da: Data Augmentation for testing and validation</span>
+<span class="sd">        :param norm: Normalization after train_da and test_da</span>
+<span class="sd">        :param download: If dataset needs downloading</span>
+<span class="sd">        :param pre_default_train_da: Data Augmentation before the default data augmentation</span>
+<span class="sd">        :param post_default_train_da: Data Augmentation after the default data augmentation</span>
+<span class="sd">        :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)</span>
+<span class="sd">        :return: train_set, test_set, Optional[val_set]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">assert</span> <span class="p">(</span><span class="n">download</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()),</span> <span class="s2">&quot;root does not exist&quot;</span>
         <span class="k">if</span> <span class="n">train_da</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -295,6 +330,12 @@
             <span class="n">train_set</span><span class="p">,</span> <span class="n">val_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">val_size</span><span class="p">)</span>
             <span class="n">val_set</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">test_transform</span>
 
+        <span class="k">if</span> <span class="n">train_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">train_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">train_size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_dataset</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_size</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span></div>
 
 <div class="viewcode-block" id="VisionSet.get_dataloader"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.datasets.VisionSet.get_dataloader">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -306,7 +347,7 @@
                        <span class="n">test_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                       <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                       <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                        <span class="n">non_training_bs_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                        <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                        <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -314,15 +355,37 @@
                        <span class="n">test_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">pre_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">post_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                       <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                       <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">use_prefetcher</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">start_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="mi">0</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
-                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]):</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot; Get Dataloader. This will automatically handle distributed setting</span>
 
-        <span class="sd">&quot;&quot;&quot; Get data loaders for registered vision datasets. homura expects</span>
-<span class="sd">         datasets are in `~/.torch/data/DATASET_NAME`.</span>
-<span class="sd">        Link path if necessary, e.g. `ln -s /original/path $HOME/.torch`. Datasets can be registered</span>
-<span class="sd">        using `homura.vision.register_dataset`</span>
-
+<span class="sd">        :param batch_size: Batch size</span>
+<span class="sd">        :param train_da: Data Augmentation for training</span>
+<span class="sd">        :param test_da: Data Augmentation for testing and validation</span>
+<span class="sd">        :param norm: Normalization after train_da and test_da</span>
+<span class="sd">        :param train_size: Size of training dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param test_size: Size of test dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param val_size: Size of validation dataset, randomly split from the training dataset.</span>
+<span class="sd">        If None, None will be returned.</span>
+<span class="sd">        :param download: If dataset needs downloading</span>
+<span class="sd">        :param num_workers: Number of workers in data loaders</span>
+<span class="sd">        :param non_training_bs_factor: Batch size scale factor during non training. For example,</span>
+<span class="sd">        testing time requires no backward cache, so basically batch size can be doubled.</span>
+<span class="sd">        :param drop_last: If drop last batch or not</span>
+<span class="sd">        :param pin_memory: If pin memory or not</span>
+<span class="sd">        :param return_num_classes: If return number of classes as the last return value</span>
+<span class="sd">        :param test_batch_size: Test time batch size. If None, non_training_bs_factor * batch_size is used.</span>
+<span class="sd">        :param pre_default_train_da: Data Augmentation before the default data augmentation</span>
+<span class="sd">        :param post_default_train_da: Data Augmentation after the default data augmentation</span>
+<span class="sd">        :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)</span>
+<span class="sd">        :param use_prefetcher: Use prefetcher or Not</span>
+<span class="sd">        :param start_epoch: Epoch at start time</span>
+<span class="sd">        :return: train_loader, test_loader, [val_loader], [num_classes]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">train_size</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span>
@@ -341,6 +404,8 @@
                                        <span class="n">rank</span><span class="o">=</span><span class="n">homura</span><span class="o">.</span><span class="n">get_global_rank</span><span class="p">())</span>
             <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
             <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
@@ -348,13 +413,19 @@
                              <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">)</span>
         <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
         <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_prefetcher</span><span class="p">:</span>
+            <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataPrefetchWrapper</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">start_epoch</span><span class="p">)</span>
+            <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataPrefetchWrapper</span><span class="p">(</span><span class="n">test_loader</span><span class="p">,</span> <span class="n">start_epoch</span><span class="p">)</span>
 
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">val_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
                 <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
+                <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
             <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_prefetcher</span><span class="p">:</span>
+                <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataPrefetchWrapper</span><span class="p">(</span><span class="n">test_loader</span><span class="p">)</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_num_classes</span><span class="p">:</span>
@@ -366,49 +437,88 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_split_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">:</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span>
-                       <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">):</span>
+                       <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">):</span>
         <span class="c1"># split train_set to train_set and val_set</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">val_size</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">))</span>
         <span class="n">valset</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span>
-        <span class="n">train_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+            <span class="n">train_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="s1">&#39;samples&#39;</span><span class="p">):</span>
+            <span class="n">train_set</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+
         <span class="n">train_set</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
 
         <span class="n">valset</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">valset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:</span><span class="n">val_size</span><span class="p">]]</span>
         <span class="n">valset</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">valset</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:</span><span class="n">val_size</span><span class="p">]]</span>
 
-        <span class="k">return</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">valset</span></div>
+        <span class="k">return</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">valset</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_sample_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">,</span>
+                        <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datasets</span><span class="o">.</span><span class="n">VisionDataset</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))[:</span><span class="n">size</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;samples&#39;</span><span class="p">):</span>
+            <span class="c1"># e.g., imagenet</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
 
 
 <span class="n">DATASET_REGISTRY</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s1">&#39;vision_datasets&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">VisionSet</span><span class="p">)</span>
 
 <span class="n">DATASET_REGISTRY</span><span class="o">.</span><span class="n">register_from_dict</span><span class="p">(</span>
-    <span class="p">{</span><span class="s1">&#39;cifar10&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="p">{</span>  <span class="c1"># fast_cifar10 uses fast_collate</span>
+        <span class="s1">&#39;fast_cifar10&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+                                  <span class="p">[],</span>
+                                  <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">),</span>
+                                   <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()],</span>
+                                  <span class="n">collate_fn</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">fast_collate</span><span class="p">,</span>
+                                                     <span class="n">memory_format</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">contiguous_format</span><span class="p">,</span>
+                                                     <span class="n">mean</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4914</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4465</span><span class="p">),</span>
+                                                     <span class="n">std</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2023</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2010</span><span class="p">))),</span>
+
+        <span class="s1">&#39;cifar10&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/cifar10&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+                             <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+                              <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.4914</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4465</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2023</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2010</span><span class="p">))],</span>
+                             <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">),</span>
+                              <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]),</span>
+
+        <span class="s1">&#39;cifar100&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR100</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/cifar100&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
+                              <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+                               <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.5071</span><span class="p">,</span> <span class="mf">0.4867</span><span class="p">,</span> <span class="mf">0.4408</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2675</span><span class="p">,</span> <span class="mf">0.2565</span><span class="p">,</span> <span class="mf">0.2761</span><span class="p">))],</span>
+                              <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">),</span>
+                               <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]),</span>
+
+        <span class="s1">&#39;SVHN&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">OriginalSVHN</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/svhn&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
-                           <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.4914</span><span class="p">,</span> <span class="mf">0.4822</span><span class="p">,</span> <span class="mf">0.4465</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2023</span><span class="p">,</span> <span class="mf">0.1994</span><span class="p">,</span> <span class="mf">0.2010</span><span class="p">))],</span>
-                          <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">),</span>
-                           <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]),</span>
+                           <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.4390</span><span class="p">,</span> <span class="mf">0.4443</span><span class="p">,</span> <span class="mf">0.4692</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1189</span><span class="p">,</span> <span class="mf">0.1222</span><span class="p">,</span> <span class="mf">0.1049</span><span class="p">))],</span>
+                          <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)]</span>
+                          <span class="p">),</span>
 
-     <span class="s1">&#39;cifar100&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR100</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/cifar100&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
-                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
-                            <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.5071</span><span class="p">,</span> <span class="mf">0.4867</span><span class="p">,</span> <span class="mf">0.4408</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2675</span><span class="p">,</span> <span class="mf">0.2565</span><span class="p">,</span> <span class="mf">0.2761</span><span class="p">))],</span>
-                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">),</span>
-                            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()]),</span>
+        <span class="s1">&#39;fast_imagenet&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">ImageNet</span><span class="p">,</span> <span class="n">get_environ</span><span class="p">(</span><span class="s1">&#39;IMAGENET_ROOT&#39;</span><span class="p">,</span> <span class="s1">&#39;~/.torch/data/imagenet&#39;</span><span class="p">),</span> <span class="mi">1_000</span><span class="p">,</span>
+                                   <span class="p">[],</span>
+                                   <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span>
+                                       <span class="mi">224</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()],</span>
+                                   <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">)],</span>
+                                   <span class="n">collate_fn</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">fast_collate</span><span class="p">,</span>
+                                                      <span class="n">memory_format</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">contiguous_format</span><span class="p">,</span>
+                                                      <span class="n">mean</span><span class="o">=</span><span class="p">(</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span>
+                                                      <span class="n">std</span><span class="o">=</span><span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">))),</span>
 
-     <span class="s1">&#39;SVHN&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">OriginalSVHN</span><span class="p">,</span> <span class="s2">&quot;~/.torch/data/svhn&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
-                       <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
-                        <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.4390</span><span class="p">,</span> <span class="mf">0.4443</span><span class="p">,</span> <span class="mf">0.4692</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1189</span><span class="p">,</span> <span class="mf">0.1222</span><span class="p">,</span> <span class="mf">0.1049</span><span class="p">))],</span>
-                       <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomCrop</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)]</span>
-                       <span class="p">),</span>
+        <span class="s1">&#39;imagenet&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">ImageNet</span><span class="p">,</span> <span class="n">get_environ</span><span class="p">(</span><span class="s1">&#39;IMAGENET_ROOT&#39;</span><span class="p">,</span> <span class="s1">&#39;~/.torch/data/imagenet&#39;</span><span class="p">),</span> <span class="mi">1_000</span><span class="p">,</span>
+                              <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+                               <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">))],</span>
+                              <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span>
+                                  <span class="mi">224</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()],</span>
+                              <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">)]),</span>
 
-     <span class="s1">&#39;imagenet&#39;</span><span class="p">:</span> <span class="n">VisionSet</span><span class="p">(</span><span class="n">ImageNet</span><span class="p">,</span> <span class="n">get_environ</span><span class="p">(</span><span class="s1">&#39;IMAGENET_ROOT&#39;</span><span class="p">,</span> <span class="s1">&#39;~/.torch/data/imagenet&#39;</span><span class="p">),</span> <span class="mi">1_000</span><span class="p">,</span>
-                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
-                            <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">))],</span>
-                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span>
-                               <span class="mi">224</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()],</span>
-                           <span class="p">[</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">)]),</span>
-
-     <span class="p">}</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 
