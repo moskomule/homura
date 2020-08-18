@@ -10,7 +10,6 @@ Welcome to `homura`'s documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   homura.callbacks
    homura.metrics
    homura.modules
    homura.utils
