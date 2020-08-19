@@ -158,8 +158,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     @property
     def history(self
-                ) -> Dict[str, Dict[str, List[float]]]:
-        raise NotImplementedError
+                ) -> Dict[str, List[float]]:
+        return self.reporter.history
 
     @abstractmethod
     def iteration(self,

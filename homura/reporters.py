@@ -247,16 +247,18 @@ class _Accumulator(object):
         return self._reduce(self._memory)
 
 
-class _History(object):
+class _History(Dict):
     # Dictionary that can be access via () and []
+    def __init__(self, history_dict: Dict[str, List[float]]) -> None:
+        super().__init__(history_dict)
 
-    def __init__(self, history_dict: Dict[str, Any]) -> None:
-        self.history_dict = history_dict
+    def __getitem__(self,
+                    item: str
+                    ) -> List[float]:
+        return super().__getitem__(item)
 
-    def __call__(self, key: str) -> Any:
-        return self.history_dict[key]
-
-    __getitem__ = __call__
+    __call__ = __getitem__
+    __getitem__ = __getitem__
 
 
 class ReporterList(object):
