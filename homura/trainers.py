@@ -10,14 +10,13 @@ from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
-from homura import is_distributed
+from homura import get_global_rank, get_local_rank, is_distributed, is_horovod_available
 from homura.liblog import _set_tqdm_print, get_logger
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
+from .utils._mixin import StateDictMixIn
 from .utils._vocabulary import *
 from .utils.containers import StepDict, TensorTuple
-from .utils.environment import get_global_rank, get_local_rank, is_horovod_available
-from .utils.mixin import StateDictMixIn
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
 

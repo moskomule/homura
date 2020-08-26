@@ -12,9 +12,6 @@
 Python>=3.8
 PyTorch>=1.6.0
 torchvision>=0.7.0
-tqdm # automatically installed
-tensorboard # automatically installed
-hydra-core # automatically installed
 ```
 
 ### Optional
