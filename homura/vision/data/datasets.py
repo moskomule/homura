@@ -3,16 +3,16 @@ import inspect
 import pathlib
 from dataclasses import dataclass
 from functools import partial
-from typing import Optional, Callable, Tuple, Type
+from typing import Callable, Optional, Tuple, Type
 
 import numpy as np
 import torch
 from PIL import Image
 from torch.jit.annotations import List
-from torch.utils.data import DataLoader, RandomSampler, DistributedSampler
+from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import datasets, transforms
 
-from homura import is_distributed, Registry, get_environ
+from homura import Registry, get_environ, is_distributed
 from .prefetcher import DataPrefetchWrapper
 
 

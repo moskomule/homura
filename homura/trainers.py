@@ -1,21 +1,21 @@
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional, Any, List
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Tuple
 
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
 from homura import is_distributed
-from homura.liblog import get_logger, _set_tqdm_print
+from homura.liblog import _set_tqdm_print, get_logger
 from .metrics import accuracy
-from .reporters import _ReporterBase, TQDMReporter, ReporterList
+from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._vocabulary import *
-from .utils.containers import TensorTuple, StepDict
+from .utils.containers import StepDict, TensorTuple
 from .utils.environment import get_global_rank, get_local_rank, is_horovod_available
 from .utils.mixin import StateDictMixIn
 

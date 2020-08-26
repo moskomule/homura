@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from .functional import (gumbel_sigmoid, straight_through_estimator, semantic_hashing)
+from .functional import (gumbel_sigmoid, semantic_hashing, straight_through_estimator)
 
 __all__ = ["GumbelSigmoid", "StraightThroughEstimator", "SemanticHashing"]
 

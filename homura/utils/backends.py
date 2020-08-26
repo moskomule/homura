@@ -2,7 +2,7 @@ import warnings
 
 import numpy as np
 import torch
-from torch.utils.dlpack import to_dlpack, from_dlpack
+from torch.utils.dlpack import from_dlpack, to_dlpack
 
 try:
     import cupy

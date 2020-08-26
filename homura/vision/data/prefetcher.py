@@ -1,6 +1,5 @@
 import torch
-from torch.utils.data import DataLoader
-from torch.utils.data import DistributedSampler
+from torch.utils.data import DataLoader, DistributedSampler
 
 from homura import TensorTuple
 

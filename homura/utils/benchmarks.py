@@ -2,7 +2,7 @@ import functools
 import statistics
 import time
 from contextlib import contextmanager
-from typing import Optional, Callable, Dict
+from typing import Callable, Dict, Optional
 
 import torch
 

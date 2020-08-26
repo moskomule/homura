@@ -2,7 +2,7 @@ import contextlib
 import functools
 import types
 from pathlib import Path
-from typing import Callable, Optional, Dict, Type
+from typing import Callable, Dict, Optional, Type
 
 
 class Registry(object):
@@ -16,6 +16,7 @@ class Registry(object):
         model_registry2 = Registry('model')
         model_registry is model_registry2
     """
+    
     _available_registries = {}
 
     def __new__(cls,

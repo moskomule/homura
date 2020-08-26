@@ -4,13 +4,13 @@ import warnings
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
-from typing import Any, Dict, Optional, List, Callable, Iterator
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 import torch
 import tqdm
 from torch import distributed
 
-from homura import is_distributed, is_master, liblog, get_args, if_is_master
+from homura import get_args, if_is_master, is_distributed, is_master, liblog
 
 __all__ = ["ReporterList", "TensorboardReporter", "TQDMReporter"]
 

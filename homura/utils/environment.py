@@ -7,7 +7,7 @@ import os as python_os
 import subprocess
 import sys as python_sys
 from functools import wraps
-from typing import Optional, Any, Callable
+from typing import Any, Callable, Optional
 
 from torch import distributed
 from torch.cuda import device_count

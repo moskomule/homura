@@ -1,7 +1,6 @@
 # some functions to discretize input_forward tensors
 
 import random
-import warnings
 
 import torch
 from torch.autograd import Function
