@@ -185,7 +185,7 @@ class _Accumulator(object):
             raise ValueError(f"reduction is expected to be 'sum' or 'average', but got {reduction}.")
 
         self._reduction = reduction
-        self._no_sync = no_sync
+        self._sync = not no_sync and is_distributed()
         self._total_size: int = 0
 
         self._memory: List[Any] = []
@@ -193,7 +193,7 @@ class _Accumulator(object):
     def set_batch_size(self,
                        batch_size: int
                        ) -> None:
-        if is_distributed():
+        if self._sync:
             _batch_size = torch.empty(1, dtype=torch.int,
                                       device=torch.device(torch.cuda.current_device())
                                       ).fill_(batch_size)
@@ -220,7 +220,7 @@ class _Accumulator(object):
                         value: Any
                         ) -> Any:
         if torch.is_tensor(value):
-            if is_distributed() and not self._no_sync:
+            if self._sync:
                 distributed.all_reduce(value, op=distributed.ReduceOp.SUM)
             value = value.cpu()
         return value
@@ -287,7 +287,12 @@ class ReporterList(object):
                   reduction: str or Callable = 'average',
                   no_sync: bool = False,
                   ) -> None:
-        """ Add value(s) to reporter
+        """ Add value(s) to reporter::
+
+        def iteration(self: TrainerBase, data: Tuple[Tensor, ...]):
+            ...
+            self.reporter.add_value('loss', loss.detach())
+            self.reporter.add_value('miou', confusion_matrix(output, target), reduction=cm_to_miou)
 
         :param key: Unique key to track value
         :param value: Value
@@ -361,7 +366,7 @@ class ReporterList(object):
         temporal_memory = {}
         for k, v in self._epoch_hist.items():
             # accumulate stored values during an epoch
-            key = f"{k}/{mode}"
+            key = f"{k}/{mode}" if len(mode) > 0 else k
             accumulated = v.accumulate()
             accumulated = (accumulated
                            if isinstance(accumulated, (Number, Dict)) or torch.is_tensor(accumulated) else None)
