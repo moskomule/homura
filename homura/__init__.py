@@ -1,5 +1,5 @@
 from .register import Registry
-from .utils.containers import Map, TensorMap, TensorTuple
+from .utils.containers import TensorTuple, TensorDataClass
 from .utils.environment import (get_args, get_environ, get_git_hash)
 from .utils.environment import (get_local_rank, get_global_rank, get_world_size, get_num_nodes,
                                 is_distributed_available, is_distributed, init_distributed, is_master, if_is_master)

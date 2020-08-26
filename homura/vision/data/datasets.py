@@ -1,7 +1,6 @@
 import copy
 import inspect
 import pathlib
-import warnings
 from dataclasses import dataclass
 from functools import partial
 from typing import Optional, Callable, Tuple, Type
@@ -74,7 +73,6 @@ def fast_collate(batch: List[Tuple[Image.Image, int]],
                  mean: Tuple[int, ...],
                  std: Tuple[int, ...]
                  ) -> Tuple[torch.Tensor, torch.Tensor]:
-    warnings.warn("fast_collate is experimental!")
     imgs = [img[0] for img in batch]
     targets = torch.tensor([target[1] for target in batch], dtype=torch.long)
     mean = torch.as_tensor(mean, dtype=torch.float)
