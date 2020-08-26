@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import warnings
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
@@ -10,6 +13,8 @@ from torch import distributed
 from homura import is_distributed, is_master, liblog, get_args, if_is_master
 
 __all__ = ["ReporterList", "TensorboardReporter", "TQDMReporter"]
+
+Value = torch.Tensor or Number or Dict[str, torch.Tensor or Number]
 
 
 class _ReporterBase(object):
@@ -127,6 +132,25 @@ class TensorboardReporter(_ReporterBase):
         self.writer.add_text(key, value, step)
 
     @if_is_master
+    def add_audio(self,
+                  key: str,
+                  audio: torch.Tensor,
+                  step: Optional[int] = None
+                  ) -> None:
+        if audio.ndim != 2 or audio.size(0) != 1:
+            raise RuntimeError(f"Shape of audio tensor is expected to be [1, L], but got {audio.shape}")
+        self.writer.add_audio(key, audio, step)
+
+    @if_is_master
+    def add_histogram(self,
+                      key: str,
+                      values: torch.Tensor,
+                      step: Optional[int],
+                      bins: str = 'tensorflow'
+                      ) -> None:
+        self.writer.add_histogram(key, values, step, bins=bins)
+
+    @if_is_master
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
@@ -202,8 +226,8 @@ class _Accumulator(object):
         self._total_size += batch_size
 
     def __call__(self,
-                 value: Any
-                 ) -> Any:
+                 value: Value
+                 ) -> _Accumulator:
         # value is extpected to be
         # 1. Number
         # 2. Tensor
@@ -217,8 +241,8 @@ class _Accumulator(object):
         return self
 
     def _process_tensor(self,
-                        value: Any
-                        ) -> Any:
+                        value: Value
+                        ) -> Value:
         if torch.is_tensor(value):
             if self._sync:
                 distributed.all_reduce(value, op=distributed.ReduceOp.SUM)
@@ -226,8 +250,8 @@ class _Accumulator(object):
         return value
 
     def _reduce(self,
-                values: List[Any]
-                ) -> Any:
+                values: List[Value]
+                ) -> Value:
         if self._reduction == 'sum':
             return sum(values)
         elif self._reduction == 'average':
@@ -236,7 +260,7 @@ class _Accumulator(object):
             return self._reduction(values)
 
     def accumulate(self
-                   ) -> Any:
+                   ) -> Value:
         # called after iteration
 
         if isinstance(self._memory[0], dict):
@@ -262,8 +286,11 @@ class _History(Dict):
 
 
 class ReporterList(object):
+    """ ReporterList is expected to be used in TrainerBase
+    """
+
     # _persistent_hist tracks scalar values
-    _persistent_hist: Dict[str, List[Optional[torch.Tensor or Number]]] = defaultdict(list)
+    _persistent_hist: Dict[str, List[Value]] = defaultdict(list)
 
     def __init__(self,
                  reporters: List[_ReporterBase]
@@ -281,10 +308,10 @@ class ReporterList(object):
 
     def add_value(self,
                   key: str,
-                  value: torch.Tensor or Number or Dict[str, torch.Tensor or Number],
+                  value: Value,
                   *,
                   is_averaged: bool = True,
-                  reduction: str or Callable = 'average',
+                  reduction: str or Callable[[Value, ...], Value] = 'average',
                   no_sync: bool = False,
                   ) -> None:
         """ Add value(s) to reporter::
@@ -315,25 +342,17 @@ class ReporterList(object):
     __call__ = add_value
     add = add_value
 
-    @if_is_master
-    def add_image(self,
-                  key: str,
-                  image: torch.Tensor,
-                  step: Optional[int] = None
-                  ) -> None:
+    def _add_backend(self,
+                     something: str,
+                     *args,
+                     **kwargs):
+        used = False
         for rep in self.reporters:
-            if hasattr(rep, "add_image"):
-                rep.add_image(key, image, step)
-
-    @if_is_master
-    def add_histogram(self,
-                      key: str,
-                      value: torch.Tensor,
-                      step: Optional[int] = None,
-                      ) -> None:
-        for rep in self.reporters:
-            if hasattr(rep, "add_histogram"):
-                rep.add_histogram(key, value, step)
+            if hasattr(rep, something):
+                used = True
+                getattr(rep, something)(*args, **kwargs)
+        if not used:
+            warnings.warn(f"None of reporters has attribute: {something}")
 
     @if_is_master
     def add_figure(self,
@@ -341,18 +360,32 @@ class ReporterList(object):
                    figure: "matplotlib.pyplot.figure",
                    step: Optional[int] = None
                    ) -> None:
-        for rep in self.reporters:
-            if hasattr(rep, "add_figure"):
-                rep.add_figure(key, figure, None)
+        self._add_backend("add_figure", key, figure, step)
+
+    @if_is_master
+    def add_histogram(self,
+                      key: str,
+                      value: torch.Tensor,
+                      step: Optional[int] = None,
+                      bins: str = "tensorflow"
+                      ) -> None:
+        self._add_backend("add_histogram", key, value, step, bins=bins)
+
+    @if_is_master
+    def add_image(self,
+                  key: str,
+                  image: torch.Tensor,
+                  step: Optional[int] = None
+                  ) -> None:
+        self._add_backend("add_image", key, image, step)
 
     @if_is_master
     def add_text(self,
                  key: str,
-                 value: str,
+                 text: str,
                  step: Optional[int] = None
                  ) -> None:
-        for rep in self.reporters:
-            rep.add_text(key, value, step)
+        self._add_backend("add_text", key, text, step)
 
     def report(self,
                step: Optional[int] = None,
@@ -368,8 +401,8 @@ class ReporterList(object):
             # accumulate stored values during an epoch
             key = f"{k}/{mode}" if len(mode) > 0 else k
             accumulated = v.accumulate()
-            accumulated = (accumulated
-                           if isinstance(accumulated, (Number, Dict)) or torch.is_tensor(accumulated) else None)
+            accumulated = (accumulated if isinstance(accumulated, (Number, Dict)) or torch.is_tensor(accumulated)
+                           else None)
             self._persistent_hist[key].append(accumulated)
             temporal_memory[key] = accumulated
 
