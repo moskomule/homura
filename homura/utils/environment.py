@@ -36,6 +36,10 @@ def is_faiss_available() -> bool:
         return False
 
 
+def is_cupy_avaialbel() -> bool:
+    return importlib.util.find_spec("cupy") is not None
+
+
 # get environment information
 
 def get_git_hash() -> str:

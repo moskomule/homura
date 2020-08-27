@@ -141,7 +141,7 @@ def _set_tqdm_print():
     # override print
     from tqdm import tqdm
     import builtins
-    from .utils.environment import get_global_rank
+    from .utils.distributed import get_global_rank
 
     def no_print(*values, **kwargs):
         pass

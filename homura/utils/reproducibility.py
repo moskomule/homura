@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 @contextlib.contextmanager
 def set_seed(seed: Optional[int] = None):
-    """ Fix seed of random generator in the given context. Negative seed has no effect ::
+    """ Fix seed of random generator in the given context. ::
 
         >>> with set_seed(0):
         >>>     do_some_random_thing()

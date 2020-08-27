@@ -27,13 +27,16 @@ def is_distributed_available() -> bool:
 
 
 def is_distributed() -> bool:
-    # to handle horovod
+    """ Check if the process is distributed by checking the world size is larger than 1.
+    """
+
     return get_world_size() > 1
 
 
 def get_local_rank() -> int:
-    # returns -1 if not distributed, else returns local rank
-    # it works before dist.init_process_group
+    """ Get the local rank of the process, i.e., the process number of the node.
+    """
+
     if IS_DISTRIBUTED_HOROVOD:
         import horovod.torch as hvd
 
@@ -43,6 +46,9 @@ def get_local_rank() -> int:
 
 
 def get_global_rank() -> int:
+    """ Get the global rank of the process. 0 if the process is the master.
+    """
+
     if IS_DISTRIBUTED_HOROVOD:
         import horovod.torch as hvd
 
@@ -56,7 +62,9 @@ def is_master() -> bool:
 
 
 def get_num_nodes() -> int:
-    # assume all nodes have the same number of gpus
+    """ Get the number of nodes. Note that this function assumes all nodes have the same number of processes.
+    """
+
     if not is_distributed():
         return 1
     else:
@@ -64,6 +72,9 @@ def get_num_nodes() -> int:
 
 
 def get_world_size() -> int:
+    """ Get the world size, i.e., the total number of processes.
+    """
+
     if IS_DISTRIBUTED_HOROVOD:
         import horovod.torch as hvd
 
