@@ -314,12 +314,12 @@ class ReporterList(object):
                   reduction: str or Callable[[Value, ...], Value] = 'average',
                   no_sync: bool = False,
                   ) -> None:
-        """ Add value(s) to reporter::
+        """ Add value(s) to reporter ::
 
-        def iteration(self: TrainerBase, data: Tuple[Tensor, ...]):
-            ...
-            self.reporter.add_value('loss', loss.detach())
-            self.reporter.add_value('miou', confusion_matrix(output, target), reduction=cm_to_miou)
+            def iteration(self: TrainerBase, data: Tuple[Tensor, ...]):
+
+                self.reporter.add_value('loss', loss.detach())
+                self.reporter.add_value('miou', confusion_matrix(output, target), reduction=cm_to_miou)
 
         :param key: Unique key to track value
         :param value: Value

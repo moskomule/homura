@@ -8,15 +8,19 @@ from typing import Callable, Dict, Optional, Type
 class Registry(object):
     """ Registry of models, datasets and anything you like. ::
 
-        model_registry = Registry('model')
-        @model_registry.register
-        def your_model(*args, **kwargs):
-            return ...
-        your_model_instance = model_registry('your_model')(...)
-        model_registry2 = Registry('model')
-        model_registry is model_registry2
+            model_registry = Registry('model')
+            @model_registry.register
+            def your_model(*args, **kwargs):
+                return ...
+            your_model_instance = model_registry('your_model')(...)
+            model_registry2 = Registry('model')
+            model_registry is model_registry2
+
+        :param name: name of registry. If name is already used, return that registry.
+        :param type: type of registees. If type is not None, registees are type checked when registered.
+
     """
-    
+
     _available_registries = {}
 
     def __new__(cls,
