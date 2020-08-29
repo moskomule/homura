@@ -19,17 +19,21 @@ def set_seed(seed: Optional[int] = None):
 
     """
 
+    s_py, s_np, s_torch = random.getstate(), numpy.random.get_state(), torch.get_rng_state()
+    if torch.cuda.is_available():
+        s_cuda = torch.cuda.get_rng_state_all()
     if seed is not None:
         random.seed(seed)
-        torch.manual_seed(seed)
         numpy.random.seed(seed)
+        torch.manual_seed(seed)
         logger.info(f"Set seed to {seed}")
     yield
-    random.seed()
-    new_seed = random.randrange(2 ** 32 - 1)
-    torch.manual_seed(new_seed)
-    new_seed = random.randrange(2 ** 32 - 1)
-    numpy.random.seed(new_seed)
+    # recover random states
+    random.seed(s_py)
+    numpy.random.set_state(s_np)
+    torch.set_rng_state(s_torch)
+    if torch.cuda.is_available():
+        torch.cuda.set_rng_state_all(s_cuda)
 
 
 @contextlib.contextmanager
