@@ -19,9 +19,10 @@ torchvision>=0.7.0
 ```
 colorlog (to log with colors)
 faiss (for faster kNN)
-accimage (for faster image pre-processing)
 horovad (for distributed training without using torch.distributed)
 cupy
+accimage (for faster image pre-processing)
+nlp (to run an example)
 ```
 
 ### test
