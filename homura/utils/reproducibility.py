@@ -5,8 +5,8 @@ from typing import Optional
 import numpy
 import torch
 
-from homura import get_global_rank
 from homura.liblog import get_logger
+from homura.utils.distributed import get_global_rank
 
 logger = get_logger(__name__)
 
