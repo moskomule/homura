@@ -17,7 +17,6 @@ torchvision>=0.7.0
 ### Optional
 
 ```
-colorlog (to log with colors)
 faiss (for faster kNN)
 horovad (for distributed training without using torch.distributed)
 cupy
@@ -92,6 +91,7 @@ You can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
+from homura.metrics import accuracy
 
 trainer = SupervisedTrainer(...)
 
@@ -103,8 +103,9 @@ def iteration(trainer: TrainerBase,
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
-    trainer.reporter.add('loss', loss)
+    trainer.reporter.add('loss', loss.detach())
     trainer.reporter.add('accuracy', accuracy(input, target))
+    trainer.reporter.add('')
     if trainer.is_train:
         trainer.optimizer.zero_grad()
         loss.backward()
@@ -122,6 +123,26 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         {"generator": gen_opt, "discriminator": dis_opt},
                         {"reconstruction": recon_loss, "generator": gen_loss},
                         **kwargs)
+```
+
+`reporter` internally tracks the values during each epoch and reduces after every epoch. Therefore, users can compute mIoU, for example, as
+
+```python
+from homura.metrics import confusion_matrix
+
+def cm_to_miou(cms: List[torch.Tensor]) -> torch.Tensor:
+    # cms: list of confusion matrices
+    cm = sum(cms).float()
+    miou = cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
+    return miou.mean().item()
+
+def iteration(trainer: TrainerBase, 
+              data: Tuple[torch.Tensor, torch.Tensor]
+              ) -> None:
+    input, target = data
+    output = trainer.model(input)
+    trainer.reporter.add('miou', confusion_matrix(output, target), reduction=cm_to_miou)
+    ...
 ```
 
 ## Distributed training
@@ -211,8 +232,6 @@ Here, `0<$RANK<$NUM_NODES`.
     author = {Ryuichiro Hataya},
     title = {homura},
     year = {2018},
-    publisher = {GitHub},
-    journal = {GitHub repository},
-    howpublished = {\url{https://GitHub.com/moskomule/homura}},
+    howpublished = {\url{https:/github.com/moskomule/homura}},
 }
 ```

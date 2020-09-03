@@ -5,6 +5,7 @@ from typing import Optional
 import numpy
 import torch
 
+from homura import get_global_rank
 from homura.liblog import get_logger
 
 logger = get_logger(__name__)
@@ -23,6 +24,8 @@ def set_seed(seed: Optional[int] = None):
     if torch.cuda.is_available():
         s_cuda = torch.cuda.get_rng_state_all()
     if seed is not None:
+        # to avoid using the same seed on different processes
+        seed += get_global_rank()
         random.seed(seed)
         numpy.random.seed(seed)
         torch.manual_seed(seed)
