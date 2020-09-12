@@ -2,6 +2,7 @@
 """
 
 import dataclasses
+import types
 from typing import Any, Dict, Type
 
 import torch
@@ -21,21 +22,6 @@ class TensorTuple(tuple):
 @dataclasses.dataclass
 class TensorDataClass(object):
     """ TensorDataClass is an extension of `dataclass` that can handle tensors easily.
-    It can be used as `NamedTensorTuple` ::
-
-        @dataclasses.dataclass
-        class YourTensorClass(TensorDataClass):
-            __slots__ = ('pred', 'loss')
-            pred: torch.Tensor
-            loss: torch.Tensor
-
-        x = YourTensorClass(prediction, loss)
-        x_cuda = x.to('cuda')
-        x_int = x.to(dtype=torch.int32)
-        registry_name, loss = x
-        loss = x.loss
-        loss = x['loss']
-
     """
 
     def __getitem__(self,
@@ -53,6 +39,37 @@ class TensorDataClass(object):
            **kwargs):
         new = type(self)(*((t.to(*args, **kwargs) if torch.is_tensor(t) else t) for t in self))
         return new
+
+
+def tensor_dataclass(cls=None,
+                     **kwargs) -> TensorDataClass:
+    """ Helper function to create a TensorDataClass, expected to be used as decorator::
+
+        @tensor_dataclass
+        class YourTensorClass(TensorDataClass):
+            __slots__ = ('pred', 'loss')
+            pred: torch.Tensor
+            loss: torch.Tensor
+
+        x = YourTensorClass(prediction, loss)
+        x_cuda = x.to('cuda')
+        x_int = x.to(dtype=torch.int32)
+        registry_name, loss = x
+        loss = x.loss
+        loss = x['loss']
+
+    :param cls: wrapped class
+    :param kwargs: kwargs to dataclasses.dataclass
+    :return:
+    """
+
+    def wrap(cls):
+        # create cls whose baseclass is TensorDataClass
+        cls = types.new_class(cls.__name__, (TensorDataClass,), {}, lambda ns: ns.update(cls.__dict__))
+        # make cls to dataclass
+        return dataclasses.dataclass(cls, **kwargs)
+
+    return wrap if cls is None else wrap(cls)
 
 
 class StepDict(dict):

@@ -360,6 +360,8 @@ class ReporterList(object):
                    figure: "matplotlib.pyplot.figure",
                    step: Optional[int] = None
                    ) -> None:
+        """ Report Figure of matplotlib.pyplot
+        """
         self._add_backend("add_figure", key, figure, step)
 
     @if_is_master
@@ -369,15 +371,32 @@ class ReporterList(object):
                       step: Optional[int] = None,
                       bins: str = "tensorflow"
                       ) -> None:
+        """ Report histogram of a given tensor
+        """
         self._add_backend("add_histogram", key, value, step, bins=bins)
 
     @if_is_master
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
-                  step: Optional[int] = None
+                  step: Optional[int] = None,
+                  normalize: bool = False
                   ) -> None:
+        """ Report a single image or a batch of images
+        """
+        if normalize:
+            image = self._norm_image(image)
         self._add_backend("add_image", key, image, step)
+
+    @staticmethod
+    @torch.no_grad()
+    def _norm_image(img: torch.Tensor
+                    ) -> torch.Tensor:
+        img = img.clone()
+        min, max = img.min().item(), img.max().item()
+        img.clamp_(min=min, max=max)
+        img.add_(-min).div_(max - min + 1e-5)
+        return img
 
     @if_is_master
     def add_text(self,
@@ -385,6 +404,8 @@ class ReporterList(object):
                  text: str,
                  step: Optional[int] = None
                  ) -> None:
+        """ Report text
+        """
         self._add_backend("add_text", key, text, step)
 
     def report(self,
