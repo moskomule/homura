@@ -1,3 +1,4 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
@@ -10,7 +11,7 @@ from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 
-from homura import get_global_rank, get_local_rank, is_distributed, is_horovod_available
+from homura import get_global_rank, get_local_rank, is_distributed
 from homura.liblog import _set_tqdm_print, get_logger
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
@@ -22,6 +23,22 @@ __all__ = ["TrainerBase", "SupervisedTrainer"]
 
 
 class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
+    """ Baseclass for Trainers
+
+    :param model:
+    :param optimizer:
+    :param loss_f:
+    :param reporters:
+    :param scheduler:
+    :param device:
+    :param verb:
+    :param use_cudnn_benchmark:
+    :param use_cuda_nonblocking:
+    :param logger:
+    :param use_sync_bn:
+    :param tqdm_ncols:
+    :param kwargs:
+    """
 
     def __init__(self,
                  model: nn.Module or Dict[str, nn.Module],
@@ -30,16 +47,17 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  *,
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
-                 update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
                  verb: bool = True,
                  use_cudnn_benchmark: bool = True,
-                 use_cuda_nonblocking: bool = False,
-                 use_horovod: bool = False,
+                 use_cuda_nonblocking: bool = True,
                  logger=None,
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 80,
                  **kwargs):
+
+        if kwargs.get("update_scheduler_by_epoch"):
+            warnings.warn("update_scheduler_by_epoch is deprecated, users need to step", DeprecationWarning)
 
         if kwargs.get("callbacks"):
             raise DeprecationWarning("callback is deprecated, if you need, use homura before v2020.8")
@@ -61,6 +79,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                 # to avoid overwriting
                 verb = False
 
+        self.loss_f = loss_f
+        self._verb = verb
+
         # setup model
         if isinstance(model, nn.Module):
             self.model = model
@@ -80,8 +101,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             # usually, this is not expected
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
-        if not use_horovod and is_distributed():
+        if is_distributed():
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
+            self.logger.debug("model converted to DistributedDataParallel")
 
         # self.accessible_model is useful for e.g., checkpointing
         if isinstance(self.model, nn.parallel.DistributedDataParallel) or isinstance(self.model, nn.DataParallel):
@@ -89,25 +111,11 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        self.loss_f = loss_f
-        self._verb = verb
-
         # setup optimizer and scheduler
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self._update_scheduler_by_epoch = update_scheduler_by_epoch
         self.set_optimizer()
         self.set_scheduler()
-
-        if use_horovod:
-            if not is_horovod_available():
-                raise RuntimeError("horovod is not available!")
-            import horovod.torch as hvd
-
-            hvd.broadcast_parameters(self.model.state_dict(), root_rank=0)
-            hvd.broadcast_optimizer_state(self.optimizer, root_rank=0)
-            self.optimizer = hvd.DistributedOptimizer(self.optimizer,
-                                                      named_parameters=self.model.named_parameters())
 
         if reporters is not None and not isinstance(reporters, Iterable):
             reporters = [reporters]
@@ -205,8 +213,6 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         data, batch_size = self.data_preprocess(data)
         self.reporter.set_batch_size(batch_size)
         self.iteration(data)
-        if self.is_train and self.scheduler is not None and not self._update_scheduler_by_epoch:
-            self.scheduler.step()
 
     def __enter__(self):
         """
@@ -263,11 +269,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         self._loop(data_loader, mode=mode)
 
-        if self.scheduler is not None and self._update_scheduler_by_epoch:
-            self.scheduler.step()
-
         # For distributed training
-        if isinstance(data_loader, DataLoader) and isinstance(data_loader.sampler, DistributedSampler):
+        if isinstance(data_loader, DataLoader) and hasattr(data_loader.sampler, "set_epoch"):
             data_loader.sampler.set_epoch(self.epoch)
 
     def test(self,
@@ -474,7 +477,6 @@ class SupervisedTrainer(TrainerBase):
                 'optim': self.optimizer.state_dict(),
                 'scheduler': self.scheduler.state_dict(),
                 'epoch': self.epoch,
-                'update_scheduler_by_epoch': self._update_scheduler_by_epoch,
                 'use_sync_bn': self._use_sync_bn,
                 'use_amp': self._use_amp}
 
@@ -486,6 +488,5 @@ class SupervisedTrainer(TrainerBase):
         self.scheduler.load_state_dict(state_dict['scheduler'])
         self.scheduler.last_epoch = state_dict['epoch']
         self._epoch = state_dict['epoch']
-        self._update_scheduler_by_epoch = state_dict['update_scheduler_by_epoch']
         self._use_sync_bn = state_dict['use_sync_bn']
         self._use_amp = state_dict['use_amp']

@@ -139,7 +139,7 @@ def init_distributed(use_horovod: bool = False,
 
 def if_is_master(func: Callable
                  ) -> Callable:
-    """ Wraps function that is active only if it is the master process::
+    """ Wraps void functions that are active only if it is the master process::
 
     @if_is_master
     def print_master(message):
@@ -149,8 +149,23 @@ def if_is_master(func: Callable
     """
 
     @wraps(func)
-    def inner(*args, **kwargs) -> Optional:
+    def inner(*args, **kwargs) -> None:
         if is_master():
             return func(*args, **kwargs)
 
     return inner
+
+
+import tqdm
+
+
+def _tqdm(iter, *args, **kwargs):
+    if is_master():
+        return tqdm.tqdm(iter, *args, **kwargs)
+    else:
+        return iter
+
+
+if is_distributed():
+    logger.info("tqdm is active only on the master")
+    tqdm.tqdm = _tqdm

@@ -4,6 +4,11 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
+## Important Notes
+
+* `homura` no longer supports `horovod` by default
+* `homura` no longer installs `hydra-core` by default
+
 ## Requirements
 
 ### Minimal requirements
@@ -18,7 +23,6 @@ torchvision>=0.7.0
 
 ```
 faiss (for faster kNN)
-horovad (for distributed training without using torch.distributed)
 cupy
 accimage (for faster image pre-processing)
 nlp (to run an example)

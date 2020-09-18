@@ -1,4 +1,3 @@
 tqdm
 tensorboard
-hydra-core
 colorlog
