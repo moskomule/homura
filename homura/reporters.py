@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 import torch
-import tqdm
 from torch import distributed
 
 from homura import get_args, if_is_master, is_distributed, is_master, liblog
@@ -53,13 +52,13 @@ class TQDMReporter(_ReporterBase):
         self._temporal_memory = {}
 
         liblog._set_tqdm_handler()
-        liblog._set_tqdm_print()
+        liblog._set_tqdm_stdout_stderr()
 
     def set_iterator(self,
                      iterator: Iterator
                      ) -> None:
         if is_master():
-            self.writer = tqdm.tqdm(iterator, ncols=self._ncols)
+            self.writer = liblog.tqdm(iterator, ncols=self._ncols)
         else:
             self.writer = iterator
 
@@ -86,6 +85,7 @@ class TQDMReporter(_ReporterBase):
         # clear temporal memory
         self._temporal_memory = {}
 
+    @if_is_master
     def add_text(self,
                  key: str,
                  value: str,

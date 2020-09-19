@@ -2,8 +2,15 @@
 
 """
 
+# ported from Optuna and Transformers
+
 import logging
+import sys
+import threading
 from typing import Optional, TextIO
+
+import tqdm as _tqdm
+from tqdm.contrib import DummyTqdmFile
 
 try:
     import colorlog
@@ -20,6 +27,8 @@ _LOG_LEVEL = {"debug": logging.DEBUG,
               "critical": logging.CRITICAL}
 
 _default_handler = None
+_original_stds = sys.stdout, sys.stderr
+_lock = threading.Lock()
 
 
 def _name() -> str:
@@ -40,32 +49,38 @@ def _get_root_logger() -> logging.Logger:
 
 def _configure_root_logger() -> None:
     global _default_handler
-    if _default_handler is not None:
-        return None
-    _default_handler = logging.StreamHandler()
-    _default_handler.setFormatter(_create_default_formatter())
-    _user_root_logger = logging.getLogger()
-    if len(_user_root_logger.handlers) > 0:
-        # if user already defines their own root logger
-        return None
-    root_logger = _get_root_logger()
-    root_logger.addHandler(_default_handler)
-    root_logger.setLevel(logging.INFO)
+    with _lock:
+        if _default_handler is not None:
+            return None
+        _default_handler = logging.StreamHandler()
+        _default_handler.setFormatter(_create_default_formatter())
+        _user_root_logger = logging.getLogger()
+        if len(_user_root_logger.handlers) > 0:
+            # if user already defines their own root logger
+            return None
+        root_logger = _get_root_logger()
+        root_logger.addHandler(_default_handler)
+        root_logger.setLevel(logging.INFO)
+        root_logger.propagate = False
 
 
 def _reset_root_logger() -> None:
     global _default_handler
-    if _default_handler is None:
-        return None
-    root_logger = _get_root_logger()
-    root_logger.removeHandler(_default_handler)
-    root_logger.setLevel(logging.NOTSET)
-    _default_handler = None
+    with _lock:
+        if _default_handler is None:
+            return None
+        root_logger = _get_root_logger()
+        root_logger.removeHandler(_default_handler)
+        root_logger.setLevel(logging.NOTSET)
+        _default_handler = None
 
 
 # public APIs
 
-def get_logger(name: str):
+def get_logger(name: str = None
+               ) -> logging.Logger:
+    if name is None:
+        name = _name()
     _configure_root_logger()
     return logging.getLogger(name)
 
@@ -91,9 +106,19 @@ def enable_default_handler() -> None:
 
 def disable_default_handler() -> None:
     _configure_root_logger()
-    if _default_handler is not None:
+    if _default_handler is None:
         raise RuntimeWarning()
     _get_root_logger().removeHandler(_default_handler)
+
+
+def enable_propagation() -> None:
+    _configure_root_logger()
+    _get_root_logger().propagate = True
+
+
+def disable_propagation() -> None:
+    _configure_root_logger()
+    _get_root_logger().propagate = False
 
 
 def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
@@ -109,6 +134,7 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
     _get_root_logger().addHandler(fh)
 
 
+# internal
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
@@ -137,20 +163,20 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
     _get_root_logger().addHandler(th)
 
 
-def _set_tqdm_print():
-    # override print
-    from tqdm import tqdm
-    import builtins
-    from .utils.distributed import get_global_rank
+def _set_tqdm_stdout_stderr():
+    # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
+    sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
 
-    def no_print(*values, **kwargs):
-        pass
 
-    def tqdm_print(*values, sep=' ', end='\n', file=None):
-        s = sep.join([str(v) for v in values])
-        tqdm.write(s, end=end, file=file)
+# tqdm
 
-    builtins.print = tqdm_print if get_global_rank() <= 0 else no_print
+def tqdm(*args, **kwargs):
+    # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
+    if kwargs.get("file") is None:
+        kwargs["file"] = _original_stds[0]
+    if kwargs.get("dynamic_ncols") is None:
+        kwargs["dynamic_ncols"] = True
+    return _tqdm.tqdm(*args, **kwargs)
 
 
 # log once

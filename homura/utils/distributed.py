@@ -14,9 +14,7 @@ from homura.liblog import get_logger
 from .environment import get_args, get_environ
 
 logger = get_logger("homura.distributed")
-
-
-# IS_DISTRIBUTED is used to handle horovod
+original_print = builtins.print
 
 
 def is_horovod_available() -> bool:
@@ -70,17 +68,26 @@ def get_world_size() -> int:
     return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
+def _distributed_print(self, *args, sep=' ', end='\n', file=None, force=False) -> None:
+    if force:
+        self = f"[rank={get_global_rank()}] {self}"
+        print(self, *args, sep=sep, end=end, file=file)
+    elif is_master():
+        print(self, *args, sep=sep, end=end, file=file)
+
+
 def init_distributed(use_horovod: bool = False,
                      backend: Optional[str] = None,
                      init_method: Optional[str] = None,
-                     warning: bool = True):
-    """ Simple initializer for distributed training.
+                     disable_distributed_print: str = False
+                     ) -> None:
+    """ Simple initializer for distributed training. This function substitutes print function with `_distributed_print`.
 
     :param use_horovod: If use horovod as distributed backend
     :param backend: backend of torch.distributed.init_process_group
     :param init_method: init_method of torch.distributed.init_process_group
-    :param warning: Warn if this method is called multiple times
-    :return:
+    :param disable_distributed_print:
+    :return: None
     """
 
     if not is_distributed_available():
@@ -97,18 +104,12 @@ def init_distributed(use_horovod: bool = False,
         raise RuntimeError(f"For distributed training, use `python -m torch.distributed.launch "
                            f"--nproc_per_node={device_count()} {get_args()}` ...")
 
-    if distributed.is_initialized():
-        if warning:
-            logger.warn("`distributed` is already initialized. Skipped.")
-    else:
+    if not distributed.is_initialized():
         distributed.init_process_group(backend=backend, init_method=init_method)
     logger.info("Distributed initialized")
 
-    if not is_master():
-        def no_print(*values, **kwargs):
-            pass
-
-        builtins.print = no_print
+    if not disable_distributed_print:
+        builtins.print = _distributed_print
 
 
 def if_is_master(func: Callable
