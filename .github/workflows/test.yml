@@ -1,6 +1,6 @@
 name: pytest
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -10,9 +10,9 @@ jobs:
 
     strategy:
       matrix:
-        python: ['3.7', '3.8']
-        torch: ['torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html',
-                '--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html']
+        python: [ '3.8', '3.9.0-rc.1' ]
+        torch: [ 'torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html',
+                 '--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html' ]
 
     steps:
       - uses: actions/checkout@v2
