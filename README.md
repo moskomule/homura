@@ -6,8 +6,9 @@
 
 ## Important Notes
 
-* `homura` no longer supports `horovod` by default
-* `homura` no longer installs `hydra-core` by default
+* no longer supports `horovod` by default
+* no longer installs `hydra-core` by default
+* no longer steps schedulers by default. Do it manually.
 
 ## Requirements
 
@@ -62,16 +63,11 @@ from torch.nn import functional as F
 
 train_loader, test_loader, num_classes = DATASET_REGISTRY('dataset_name')(...)
 # User does not need to care about the device
-model = MODEL_REGISTRY('model_name')(...)
+model = MODEL_REGISTRY('model_name')(num_classes=num_classes)
 
 # Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
-
-# from v2020.08, the callbacks system changed
-# SupervisedTrainer by default reports loss and accuracy
-# TQDMReporter is used as a default reporter.
-# If you need additional reporters, do as follows 
 
 with trainers.SupervisedTrainer(model, 
                                 optimizer, 
@@ -79,8 +75,9 @@ with trainers.SupervisedTrainer(model,
                                 reporters=[reporters.TensorboardReporter(...)],
                                 scheduler=scheduler) as trainer:
     # epoch-based training
-    for _ in trainer.epoch_iterator(epochs):
+    for _ in trainer.epoch_iterator(num_epochs):
         trainer.train(train_loader)
+        trainer.scheduler.step()
         trainer.test(test_loader)
 
     # otherwise, iteration-based training

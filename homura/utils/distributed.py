@@ -2,8 +2,8 @@
 """
 
 import builtins
-import importlib.util
 import os as python_os
+import warnings
 from functools import wraps
 from typing import Callable, Optional
 
@@ -14,16 +14,18 @@ from homura.liblog import get_logger
 from .environment import get_args, get_environ
 
 logger = get_logger("homura.distributed")
+
+
 # IS_DISTRIBUTED is used to handle horovod
-IS_DISTRIBUTED_HOROVOD = False
 
 
 def is_horovod_available() -> bool:
-    return importlib.util.find_spec("horovod") is not None
+    warnings.warn("horovod is no longer supported by homura", DeprecationWarning)
+    return False
 
 
 def is_distributed_available() -> bool:
-    return distributed.is_available() or is_horovod_available()
+    return distributed.is_available()
 
 
 def is_distributed() -> bool:
@@ -37,24 +39,14 @@ def get_local_rank() -> int:
     """ Get the local rank of the process, i.e., the process number of the node.
     """
 
-    if IS_DISTRIBUTED_HOROVOD:
-        import horovod.torch as hvd
-
-        return hvd.local_rank()
-    else:
-        return int(get_environ('LOCAL_RANK', 0))
+    return int(get_environ('LOCAL_RANK', 0))
 
 
 def get_global_rank() -> int:
     """ Get the global rank of the process. 0 if the process is the master.
     """
 
-    if IS_DISTRIBUTED_HOROVOD:
-        import horovod.torch as hvd
-
-        return hvd.rank()
-    else:
-        return int(get_environ('RANK', 0))
+    return int(get_environ('RANK', 0))
 
 
 def is_master() -> bool:
@@ -75,12 +67,7 @@ def get_world_size() -> int:
     """ Get the world size, i.e., the total number of processes.
     """
 
-    if IS_DISTRIBUTED_HOROVOD:
-        import horovod.torch as hvd
-
-        return hvd.size()
-    else:
-        return int(python_os.environ.get("WORLD_SIZE", 1))
+    return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
 def init_distributed(use_horovod: bool = False,
@@ -100,35 +87,22 @@ def init_distributed(use_horovod: bool = False,
         raise RuntimeError('Distributed training is not available on this machine')
 
     if use_horovod:
-        global IS_DISTRIBUTED_HOROVOD
-        IS_DISTRIBUTED_HOROVOD = True
-        if backend is not None or init_method is not None:
-            raise RuntimeError('Try to use horovod, but `backend` and `init_method` are not None')
+        raise DeprecationWarning("horovod is no longer supported by homura")
 
-        if is_horovod_available():
-            import horovod.torch as hvd
+    # default values
+    backend = backend or "nccl"
+    init_method = init_method or "env://"
 
-            hvd.init()
-            logger.info("Horovod initialized")
-        else:
-            raise RuntimeError('horovod is not available!')
+    if not is_distributed():
+        raise RuntimeError(f"For distributed training, use `python -m torch.distributed.launch "
+                           f"--nproc_per_node={device_count()} {get_args()}` ...")
 
+    if distributed.is_initialized():
+        if warning:
+            logger.warn("`distributed` is already initialized. Skipped.")
     else:
-        # default values
-        backend = backend or "nccl"
-        init_method = init_method or "env://"
-
-        if not is_distributed():
-            raise RuntimeError(
-                f"For distributed training, use `python -m torch.distributed.launch "
-                f"--nproc_per_node={device_count()} {get_args()}` ...")
-
-        if distributed.is_initialized():
-            if warning:
-                logger.warn("`distributed` is already initialized. Skipped.")
-        else:
-            distributed.init_process_group(backend=backend, init_method=init_method)
-        logger.info("Distributed initialized")
+        distributed.init_process_group(backend=backend, init_method=init_method)
+    logger.info("Distributed initialized")
 
     if not is_master():
         def no_print(*values, **kwargs):
@@ -154,18 +128,3 @@ def if_is_master(func: Callable
             return func(*args, **kwargs)
 
     return inner
-
-
-import tqdm
-
-
-def _tqdm(iter, *args, **kwargs):
-    if is_master():
-        return tqdm.tqdm(iter, *args, **kwargs)
-    else:
-        return iter
-
-
-if is_distributed():
-    logger.info("tqdm is active only on the master")
-    tqdm.tqdm = _tqdm

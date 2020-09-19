@@ -5,9 +5,9 @@ import numpy as np
 import torch
 from torch.utils.dlpack import from_dlpack, to_dlpack
 
-from .environment import is_cupy_avaialbel
+from .environment import is_cupy_available
 
-IS_CUPY_AVAILABLE = is_cupy_avaialbel()
+IS_CUPY_AVAILABLE = is_cupy_available()
 if IS_CUPY_AVAILABLE:
     import cupy
 

@@ -28,15 +28,15 @@ def enable_accimage() -> None:
 
 
 def is_faiss_available() -> bool:
-    try:
+    _faiss_available = importlib.util.find_spec("faiss") is not None
+    if _faiss_available:
         import faiss
+        if not hasattr(faiss, 'StandardGpuResources'):
+            logger.info("faiss is available but is not for GPUs")
+    return _faiss_available
 
-        return hasattr(faiss, 'StandardGpuResources')
-    except ImportError:
-        return False
 
-
-def is_cupy_avaialbel() -> bool:
+def is_cupy_available() -> bool:
     return importlib.util.find_spec("cupy") is not None
 
 
