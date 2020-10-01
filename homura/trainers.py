@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader, DistributedSampler
 
 from homura import get_global_rank, get_local_rank, is_distributed
-from homura.liblog import _set_tqdm_stdout_stderr, get_logger, tqdm
+from homura.liblog import _set_tqdm_stdout_stderr, get_logger, set_verb_level, tqdm
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
@@ -52,18 +52,23 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  use_cuda_nonblocking: bool = True,
                  logger=None,
                  use_sync_bn: bool = False,
-                 tqdm_ncols: int = 80,
+                 tqdm_ncols: int = 120,
+                 debug: bool = False,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
-            warnings.warn("update_scheduler_by_epoch is deprecated, users need to step", DeprecationWarning)
+            raise DeprecationWarning("update_scheduler_by_epoch is deprecated, users need to step")
 
         if kwargs.get("callbacks"):
             raise DeprecationWarning("callback is deprecated, if you need, use homura before v2020.8")
 
         self.logger = logger or get_logger(__name__)
-
         self.device = device or (torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU))
+        self._is_debug = debug
+
+        if self._is_debug:
+            self.logger.warning("Trainer is set to be debug mode, which may affect the performance")
+            set_verb_level("debug")
 
         # setup for distributed
         self._use_sync_bn = use_sync_bn
@@ -211,7 +216,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         data, batch_size = self.data_preprocess(data)
         self.reporter.set_batch_size(batch_size)
-        self.iteration(data)
+        if self._is_debug and batch_size == 1 and self.is_train:
+            if any([isinstance(m, nn.modules.batchnorm._BatchNorm) for m in self.accessible_model.modules()]):
+                warnings.warn("BatchNorm exists, while batch size is 1", RuntimeWarning)
+
+        with torch.autograd.set_detect_anomaly(self._is_debug):
+            self.iteration(data)
 
     def __enter__(self):
         """
@@ -271,6 +281,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         # For distributed training
         if isinstance(data_loader, DataLoader) and hasattr(data_loader.sampler, "set_epoch"):
             data_loader.sampler.set_epoch(self.epoch)
+            self.logger.debug("")
 
     def test(self,
              data_loader: Iterable or DataLoader,
@@ -429,7 +440,7 @@ class SupervisedTrainer(TrainerBase):
                  use_cudnn_benchmark=True,
                  data_parallel=False,
                  use_amp=False,
-                 report_accuracy_topk: Optional[int] = None,
+                 report_accuracy_topk: Optional[int, List[int]] = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -444,6 +455,8 @@ class SupervisedTrainer(TrainerBase):
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
+        if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
+            report_accuracy_topk = [report_accuracy_topk]
         self._report_topk = report_accuracy_topk
 
     def iteration(self,
@@ -463,11 +476,14 @@ class SupervisedTrainer(TrainerBase):
             else:
                 loss.backward()
                 self.optimizer.step()
+        if self._is_debug and torch.isnan(loss):
+            self.logger.warning("loss is NaN")
 
         self.reporter.add('accuracy', accuracy(output, target))
         self.reporter.add('loss', loss.detach_())
         if self._report_topk is not None:
-            self.reporter.add(f'accuracy@{self._report_topk}', accuracy(output, target, self._report_topk))
+            for top_k in self._report_topk:
+                self.reporter.add(f'accuracy@{top_k}', accuracy(output, target, top_k))
 
     def state_dict(self
                    ) -> Mapping[str, Any]:
