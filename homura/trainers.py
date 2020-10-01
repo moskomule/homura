@@ -440,7 +440,7 @@ class SupervisedTrainer(TrainerBase):
                  use_cudnn_benchmark=True,
                  data_parallel=False,
                  use_amp=False,
-                 report_accuracy_topk: Optional[int, List[int]] = None,
+                 report_accuracy_topk: Optional[int or List[int]] = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
