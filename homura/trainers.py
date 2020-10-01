@@ -8,7 +8,7 @@ import torch
 from torch import Tensor, nn
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
-from torch.utils.data import DataLoader, DistributedSampler
+from torch.utils.data import DataLoader
 
 from homura import get_global_rank, get_local_rank, is_distributed
 from homura.liblog import _set_tqdm_stdout_stderr, get_logger, set_verb_level, tqdm
@@ -271,6 +271,10 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         self._is_train = True
         self._epoch += 1
+        # For distributed training
+        if isinstance(data_loader, DataLoader) and hasattr(data_loader.sampler, "set_epoch"):
+            data_loader.sampler.set_epoch(self.epoch)
+            self.logger.debug("set_epoch to the sampler")
         self.model.train()
 
         if hasattr(self.loss_f, "train"):
@@ -278,10 +282,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         self._loop(data_loader, mode=mode)
 
-        # For distributed training
-        if isinstance(data_loader, DataLoader) and hasattr(data_loader.sampler, "set_epoch"):
-            data_loader.sampler.set_epoch(self.epoch)
-            self.logger.debug("")
+        if self._is_debug:
+            for name, param in self.accessible_model.named_parameters():
+                self.reporter.add_histogram(name, param, self.epoch)
 
     def test(self,
              data_loader: Iterable or DataLoader,
@@ -347,9 +350,6 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         for ep in self.epoch_range(total_iterations // val_intervals):
             self.train(train_loader)
-            if isinstance(train_loader.loader, DataLoader) \
-                    and isinstance(train_loader.loader.sampler, DistributedSampler):
-                train_loader.loader.sampler.set_epoch(self.epoch)
             for name, loader in val_loaders.items():
                 self.test(loader, name)
 
