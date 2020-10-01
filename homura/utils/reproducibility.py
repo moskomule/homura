@@ -12,7 +12,8 @@ logger = get_logger(__name__)
 
 
 @contextlib.contextmanager
-def set_seed(seed: Optional[int] = None):
+def set_seed(seed: Optional[int] = None,
+             by_rank: bool = False):
     """ Fix seed of random generator in the given context. ::
 
         >>> with set_seed(0):
@@ -25,10 +26,14 @@ def set_seed(seed: Optional[int] = None):
         s_cuda = torch.cuda.get_rng_state_all()
     if seed is not None:
         # to avoid using the same seed on different processes
-        seed += get_global_rank()
+        if by_rank:
+            seed += get_global_rank()
         random.seed(seed)
         numpy.random.seed(seed)
         torch.manual_seed(seed)
+        # these functions are safe even if cuda is not available
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
         logger.info(f"Set seed to {seed}")
     yield
     # recover random states
@@ -40,12 +45,13 @@ def set_seed(seed: Optional[int] = None):
 
 
 @contextlib.contextmanager
-def set_deterministic(seed: Optional[int] = None):
+def set_deterministic(seed: Optional[int] = None,
+                      by_rank: bool = False):
     """ Set seed of `torch`, `random` and `numpy` to `seed` for making it deterministic. Because of CUDA's limitation, this
     does not make everything deterministic, however.
     """
 
-    with set_seed(seed):
+    with set_seed(seed, by_rank):
         if seed is not None:
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
