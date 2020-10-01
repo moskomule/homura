@@ -4,16 +4,17 @@ Welcome to `homura`'s documentation!
 
 ==================================
 
-`homura` is a library for DL research.
+`homura` is a library for fast prototyping of DL research.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Package Reference:
 
-   homura.callbacks
    homura.metrics
    homura.modules
+
    homura.utils
+   homura.nlp
    homura.vision
 
 Indices and tables

@@ -1,0 +1,37 @@
+name: pytest
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip test')"
+
+    strategy:
+      matrix:
+        python: [ '3.8' ]
+        torch: [ 'torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html' ]
+        #'--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html' ]
+        # I don't know why, but with this version, homura.vision.datasets.VisionDataset cannot get datasets' args in
+        # __init__.
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: install dependencies
+        run: |
+          python -m venv venv
+          . venv/bin/activate
+          pip install numpy
+          pip install ${{ matrix.torch }}
+          pip install -U pytest
+          pip install -U .
+
+      - name: run test
+        run: |
+          . venv/bin/activate
+          pytest

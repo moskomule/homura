@@ -1,18 +1,21 @@
-import pytest
+import dataclasses
+
 import torch
 
-from homura.utils.containers import TensorMap, TensorTuple
+from homura.utils.containers import TensorTuple, TensorDataClass
 
 
-def test_map():
-    map = TensorMap(a=1, b=2)
-    map["c"] = 3
-    for k, v in map.items():
-        assert map[k] == getattr(map, k)
+def test_tensor_dataclass():
+    @dataclasses.dataclass
+    class TestClass(TensorDataClass):
+        x: torch.Tensor
+        y: torch.Tensor
 
-    for k in ["update", "keys", "items", "values", "clear", "copy", "get", "pop"]:
-        with pytest.raises(KeyError):
-            setattr(map, k, 1)
+    t = TestClass(torch.randn(3, 3), torch.randn(3, 3))
+    x, y = t
+    assert torch.equal(t.x, x)
+    t_int = t.to(dtype=torch.int32)
+    assert t_int.x.dtype == torch.int32
 
 
 def test_tensortuple():

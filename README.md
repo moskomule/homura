@@ -4,6 +4,12 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
+## Important Notes
+
+* no longer supports `horovod` by default
+* no longer installs `hydra-core` by default
+* no longer steps schedulers by default. Do it manually.
+
 ## Requirements
 
 ### Minimal requirements
@@ -12,19 +18,15 @@
 Python>=3.8
 PyTorch>=1.6.0
 torchvision>=0.7.0
-tqdm # automatically installed
-tensorboard # automatically installed
-hydra-core # automatically installed
 ```
 
 ### Optional
 
 ```
-colorlog (to log with colors)
 faiss (for faster kNN)
-accimage (for faster image pre-processing)
-horovad (for distributed training without using torch.distributed)
 cupy
+accimage (for faster image pre-processing)
+nlp (to run an example)
 ```
 
 ### test
@@ -61,16 +63,11 @@ from torch.nn import functional as F
 
 train_loader, test_loader, num_classes = DATASET_REGISTRY('dataset_name')(...)
 # User does not need to care about the device
-model = MODEL_REGISTRY('model_name')(...)
+model = MODEL_REGISTRY('model_name')(num_classes=num_classes)
 
 # Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
 scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
-
-# from v2020.08, the callbacks system changed
-# SupervisedTrainer by default reports loss and accuracy
-# TQDMReporter is used as a default reporter.
-# If you need additional reporters, do as follows 
 
 with trainers.SupervisedTrainer(model, 
                                 optimizer, 
@@ -78,8 +75,9 @@ with trainers.SupervisedTrainer(model,
                                 reporters=[reporters.TensorboardReporter(...)],
                                 scheduler=scheduler) as trainer:
     # epoch-based training
-    for _ in trainer.epoch_iterator(epochs):
+    for _ in trainer.epoch_iterator(num_epochs):
         trainer.train(train_loader)
+        trainer.scheduler.step()
         trainer.test(test_loader)
 
     # otherwise, iteration-based training
@@ -94,6 +92,7 @@ You can customize `iteration` of `trainer` as follows.
 
 ```python
 from homura.trainers import TrainerBase, SupervisedTrainer
+from homura.metrics import accuracy
 
 trainer = SupervisedTrainer(...)
 
@@ -105,8 +104,9 @@ def iteration(trainer: TrainerBase,
     input, target = data
     output = trainer.model(input)
     loss = trainer.loss_f(output, target)
-    trainer.reporter.add('loss', loss)
+    trainer.reporter.add('loss', loss.detach())
     trainer.reporter.add('accuracy', accuracy(input, target))
+    trainer.reporter.add('')
     if trainer.is_train:
         trainer.optimizer.zero_grad()
         loss.backward()
@@ -124,6 +124,26 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         {"generator": gen_opt, "discriminator": dis_opt},
                         {"reconstruction": recon_loss, "generator": gen_loss},
                         **kwargs)
+```
+
+`reporter` internally tracks the values during each epoch and reduces after every epoch. Therefore, users can compute mIoU, for example, as
+
+```python
+from homura.metrics import confusion_matrix
+
+def cm_to_miou(cms: List[torch.Tensor]) -> torch.Tensor:
+    # cms: list of confusion matrices
+    cm = sum(cms).float()
+    miou = cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
+    return miou.mean().item()
+
+def iteration(trainer: TrainerBase, 
+              data: Tuple[torch.Tensor, torch.Tensor]
+              ) -> None:
+    input, target = data
+    output = trainer.model(input)
+    trainer.reporter.add('miou', confusion_matrix(output, target), reduction=cm_to_miou)
+    ...
 ```
 
 ## Distributed training
@@ -213,8 +233,6 @@ Here, `0<$RANK<$NUM_NODES`.
     author = {Ryuichiro Hataya},
     title = {homura},
     year = {2018},
-    publisher = {GitHub},
-    journal = {GitHub repository},
-    howpublished = {\url{https://GitHub.com/moskomule/homura}},
+    howpublished = {\url{https:/github.com/moskomule/homura}},
 }
 ```

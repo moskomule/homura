@@ -1,21 +1,22 @@
-import warnings
+""" Helper functions to convert PyTorch Tensors <->  Cupy/Numpy arrays. These functions  are useful to write device-agnostic extensions.
+"""
 
 import numpy as np
 import torch
-from torch.utils.dlpack import to_dlpack, from_dlpack
+from torch.utils.dlpack import from_dlpack, to_dlpack
 
-try:
+from .environment import is_cupy_available
+
+IS_CUPY_AVAILABLE = is_cupy_available()
+if IS_CUPY_AVAILABLE:
     import cupy
-
-    IS_CUPY_AVAILABLE = True
-except ImportError as e:
-    IS_CUPY_AVAILABLE = False
-    warnings.warn("cupy is not available")
 
 
 def torch_to_xp(input: torch.Tensor
                 ) -> np.ndarray:
-    # torch Tensor to numpy/cupy ndarray
+    """ Convert a PyTorch tensor to a Cupy/Numpy array.
+    """
+
     if not torch.is_tensor(input):
         raise RuntimeError(f'torch_to_numpy expects torch.Tensor as input, but got {type(input)}')
 
@@ -27,7 +28,9 @@ def torch_to_xp(input: torch.Tensor
 
 def xp_to_torch(input: np.ndarray
                 ) -> torch.Tensor:
-    # numpy/cupy ndarray to torchTensor
+    """ Convert a Cupy/Numpy array to a PyTorch tensor
+    """
+
     if isinstance(input, np.ndarray):
         return torch.from_numpy(input)
     elif IS_CUPY_AVAILABLE and isinstance(input, cupy.ndarray):

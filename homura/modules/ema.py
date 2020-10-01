@@ -24,15 +24,12 @@ class EMANet(nn.Module):
 
     :param model: model to be tracked
     :param momentum: momentum for EMA
-    :param wrap_model: If True, `forward` returns outputs of the original model during training.
-     If False, it returns outputs of the EMAed model. Set False if you need a pair of models.
     :param weight_decay: If a float value is given, apply weight decay to the original model.
     """
 
     def __init__(self,
                  model: nn.Module,
                  momentum: float,
-                 wrap_model: bool = False,
                  weight_decay: Optional[float] = None):
 
         super(EMANet, self).__init__()
@@ -42,7 +39,6 @@ class EMANet(nn.Module):
         if momentum < 0 or 1 < momentum:
             raise RuntimeError(f"`momentum` is expected to be in [0, 1], but got {momentum}.")
         self.momentum = momentum
-        self.wrap_model = wrap_model
         self.weight_decay = weight_decay
 
     def forward(self,
@@ -52,8 +48,7 @@ class EMANet(nn.Module):
 
         if self.training:
             self.ema_model.train()
-            model = self.original_model if self.wrap_model else self.ema_model
-            outputs = model(*inputs, **kwargs)
+            outputs = self.original_model(*inputs, **kwargs)
             self._update(update_buffers)
 
         else:

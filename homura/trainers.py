@@ -1,28 +1,43 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Callable, Iterable, Dict, Mapping, Tuple, Optional, Any, List
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Tuple
 
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
-from torch.utils.data import DataLoader, DistributedSampler
-from tqdm import tqdm
+from torch.utils.data import DataLoader
 
-from homura import is_distributed
-from homura.liblog import get_logger, _set_tqdm_print
+from homura import get_global_rank, get_local_rank, is_distributed
+from homura.liblog import _set_tqdm_stdout_stderr, get_logger, set_verb_level, tqdm
 from .metrics import accuracy
-from .reporters import _ReporterBase, TQDMReporter, ReporterList
+from .reporters import ReporterList, TQDMReporter, _ReporterBase
+from .utils._mixin import StateDictMixIn
 from .utils._vocabulary import *
-from .utils.containers import TensorTuple, StepDict
-from .utils.environment import get_global_rank, get_local_rank, is_horovod_available
-from .utils.mixin import StateDictMixIn
+from .utils.containers import StepDict, TensorTuple
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
 
 
 class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
+    """ Baseclass for Trainers
+
+    :param model:
+    :param optimizer:
+    :param loss_f:
+    :param reporters:
+    :param scheduler:
+    :param device:
+    :param verb:
+    :param use_cudnn_benchmark:
+    :param use_cuda_nonblocking:
+    :param logger:
+    :param use_sync_bn:
+    :param tqdm_ncols:
+    :param kwargs:
+    """
 
     def __init__(self,
                  model: nn.Module or Dict[str, nn.Module],
@@ -31,23 +46,29 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  *,
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
-                 update_scheduler_by_epoch: bool = True,
                  device: Optional[torch.device or str] = None,
                  verb: bool = True,
                  use_cudnn_benchmark: bool = True,
-                 use_cuda_nonblocking: bool = False,
-                 use_horovod: bool = False,
+                 use_cuda_nonblocking: bool = True,
                  logger=None,
                  use_sync_bn: bool = False,
-                 tqdm_ncols: int = 80,
+                 tqdm_ncols: int = 120,
+                 debug: bool = False,
                  **kwargs):
+
+        if kwargs.get("update_scheduler_by_epoch"):
+            raise DeprecationWarning("update_scheduler_by_epoch is deprecated, users need to step")
 
         if kwargs.get("callbacks"):
             raise DeprecationWarning("callback is deprecated, if you need, use homura before v2020.8")
 
         self.logger = logger or get_logger(__name__)
-
         self.device = device or (torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU))
+        self._is_debug = debug
+
+        if self._is_debug:
+            self.logger.warning("Trainer is set to be debug mode, which may affect the performance")
+            set_verb_level("debug")
 
         # setup for distributed
         self._use_sync_bn = use_sync_bn
@@ -61,6 +82,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             if get_global_rank() > 0:
                 # to avoid overwriting
                 verb = False
+
+        self.loss_f = loss_f
+        self._verb = verb
 
         # setup model
         if isinstance(model, nn.Module):
@@ -81,8 +105,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             # usually, this is not expected
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
-        if not use_horovod and is_distributed():
+        if is_distributed():
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
+            self.logger.debug("model converted to DistributedDataParallel")
 
         # self.accessible_model is useful for e.g., checkpointing
         if isinstance(self.model, nn.parallel.DistributedDataParallel) or isinstance(self.model, nn.DataParallel):
@@ -90,25 +115,11 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        self.loss_f = loss_f
-        self._verb = verb
-
         # setup optimizer and scheduler
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self._update_scheduler_by_epoch = update_scheduler_by_epoch
         self.set_optimizer()
         self.set_scheduler()
-
-        if use_horovod:
-            if not is_horovod_available():
-                raise RuntimeError("horovod is not available!")
-            import horovod.torch as hvd
-
-            hvd.broadcast_parameters(self.model.state_dict(), root_rank=0)
-            hvd.broadcast_optimizer_state(self.optimizer, root_rank=0)
-            self.optimizer = hvd.DistributedOptimizer(self.optimizer,
-                                                      named_parameters=self.model.named_parameters())
 
         if reporters is not None and not isinstance(reporters, Iterable):
             reporters = [reporters]
@@ -129,7 +140,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self._tqdm = lambda x: x
         if verb:
             self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
-            _set_tqdm_print()
+            _set_tqdm_stdout_stderr()
 
         for k, v in kwargs.items():
             if hasattr(self, k):
@@ -158,8 +169,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     @property
     def history(self
-                ) -> Dict[str, Dict[str, List[float]]]:
-        raise NotImplementedError
+                ) -> Dict[str, List[float]]:
+        return self.reporter.history
 
     @abstractmethod
     def iteration(self,
@@ -205,9 +216,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         data, batch_size = self.data_preprocess(data)
         self.reporter.set_batch_size(batch_size)
-        self.iteration(data)
-        if self.is_train and self.scheduler is not None and not self._update_scheduler_by_epoch:
-            self.scheduler.step()
+        if self._is_debug and batch_size == 1 and self.is_train:
+            if any([isinstance(m, nn.modules.batchnorm._BatchNorm) for m in self.accessible_model.modules()]):
+                warnings.warn("BatchNorm exists, while batch size is 1", RuntimeWarning)
+
+        with torch.autograd.set_detect_anomaly(self._is_debug):
+            self.iteration(data)
 
     def __enter__(self):
         """
@@ -257,6 +271,10 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         self._is_train = True
         self._epoch += 1
+        # For distributed training
+        if isinstance(data_loader, DataLoader) and hasattr(data_loader.sampler, "set_epoch"):
+            data_loader.sampler.set_epoch(self.epoch)
+            self.logger.debug("set_epoch to the sampler")
         self.model.train()
 
         if hasattr(self.loss_f, "train"):
@@ -264,12 +282,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         self._loop(data_loader, mode=mode)
 
-        if self.scheduler is not None and self._update_scheduler_by_epoch:
-            self.scheduler.step()
-
-        # For distributed training
-        if isinstance(data_loader, DataLoader) and isinstance(data_loader.sampler, DistributedSampler):
-            data_loader.sampler.set_epoch(self.epoch)
+        if self._is_debug:
+            for name, param in self.accessible_model.named_parameters():
+                self.reporter.add_histogram(name, param, self.epoch)
 
     def test(self,
              data_loader: Iterable or DataLoader,
@@ -335,9 +350,6 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         for ep in self.epoch_range(total_iterations // val_intervals):
             self.train(train_loader)
-            if isinstance(train_loader.loader, DataLoader) \
-                    and isinstance(train_loader.loader.sampler, DistributedSampler):
-                train_loader.loader.sampler.set_epoch(self.epoch)
             for name, loader in val_loaders.items():
                 self.test(loader, name)
 
@@ -428,7 +440,7 @@ class SupervisedTrainer(TrainerBase):
                  use_cudnn_benchmark=True,
                  data_parallel=False,
                  use_amp=False,
-                 report_accuracy_topk: Optional[int] = None,
+                 report_accuracy_topk: Optional[int or List[int]] = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -443,6 +455,8 @@ class SupervisedTrainer(TrainerBase):
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
+        if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
+            report_accuracy_topk = [report_accuracy_topk]
         self._report_topk = report_accuracy_topk
 
     def iteration(self,
@@ -462,11 +476,14 @@ class SupervisedTrainer(TrainerBase):
             else:
                 loss.backward()
                 self.optimizer.step()
+        if self._is_debug and torch.isnan(loss):
+            self.logger.warning("loss is NaN")
 
         self.reporter.add('accuracy', accuracy(output, target))
         self.reporter.add('loss', loss.detach_())
         if self._report_topk is not None:
-            self.reporter.add(f'accuracy@{self._report_topk}', accuracy(output, target, self._report_topk))
+            for top_k in self._report_topk:
+                self.reporter.add(f'accuracy@{top_k}', accuracy(output, target, top_k))
 
     def state_dict(self
                    ) -> Mapping[str, Any]:
@@ -475,7 +492,6 @@ class SupervisedTrainer(TrainerBase):
                 'optim': self.optimizer.state_dict(),
                 'scheduler': self.scheduler.state_dict(),
                 'epoch': self.epoch,
-                'update_scheduler_by_epoch': self._update_scheduler_by_epoch,
                 'use_sync_bn': self._use_sync_bn,
                 'use_amp': self._use_amp}
 
@@ -487,6 +503,5 @@ class SupervisedTrainer(TrainerBase):
         self.scheduler.load_state_dict(state_dict['scheduler'])
         self.scheduler.last_epoch = state_dict['epoch']
         self._epoch = state_dict['epoch']
-        self._update_scheduler_by_epoch = state_dict['update_scheduler_by_epoch']
         self._use_sync_bn = state_dict['use_sync_bn']
         self._use_amp = state_dict['use_amp']

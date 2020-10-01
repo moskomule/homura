@@ -1,19 +1,18 @@
 import copy
 import inspect
 import pathlib
-import warnings
 from dataclasses import dataclass
 from functools import partial
-from typing import Optional, Callable, Tuple, Type
+from typing import Callable, Optional, Tuple, Type
 
 import numpy as np
 import torch
 from PIL import Image
 from torch.jit.annotations import List
-from torch.utils.data import DataLoader, RandomSampler, DistributedSampler
+from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import datasets, transforms
 
-from homura import is_distributed, Registry, get_environ
+from homura import Registry, get_environ, is_distributed
 from .prefetcher import DataPrefetchWrapper
 
 
@@ -74,7 +73,6 @@ def fast_collate(batch: List[Tuple[Image.Image, int]],
                  mean: Tuple[int, ...],
                  std: Tuple[int, ...]
                  ) -> Tuple[torch.Tensor, torch.Tensor]:
-    warnings.warn("fast_collate is experimental!")
     imgs = [img[0] for img in batch]
     targets = torch.tensor([target[1] for target in batch], dtype=torch.long)
     mean = torch.as_tensor(mean, dtype=torch.float)
@@ -109,7 +107,7 @@ class VisionSet:
         _, *args = inspect.getfullargspec(self.tv_class).args
         if not ({'root', 'train', 'transform', 'download'} <= set(args)):
             raise RuntimeError(f"dataset DataSet(root, train, transform, download) is expected, "
-                               f"but {self.tv_class} has arguments of {set(args)} instead.")
+                               f"but {self.tv_class} has arguments of {args} instead.")
         self.root = pathlib.Path(self.root).expanduser()
         if self.default_train_da is None:
             self.default_train_da = []

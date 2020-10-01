@@ -14,3 +14,5 @@ use_amp: false
 use_accimage: false
 use_fast_collate: false
 use_prefetcher: false
+use_zerograd_none: false
+debug: false

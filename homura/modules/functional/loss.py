@@ -1,7 +1,5 @@
 import torch
 
-__all__ = ["cross_entropy_with_softlabels"]
-
 
 def _reduction(input: torch.Tensor, reduction: str) -> torch.Tensor:
     if reduction == "mean":

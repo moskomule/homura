@@ -1,2 +1,2 @@
+from .datasets import DATASET_REGISTRY, VisionSet
 from .statistics import PerChannelStatistics
-from .datasets import VisionSet, DATASET_REGISTRY

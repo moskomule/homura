@@ -2,8 +2,8 @@ import hydra
 import torch
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, reporters, trainers, enable_accimage
-from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
+from homura import enable_accimage, lr_scheduler, optim, reporters, trainers
+from homura.vision import DATASET_REGISTRY, MODEL_REGISTRY
 
 
 @hydra.main('config/cifar10.yaml')
@@ -12,7 +12,8 @@ def main(cfg):
         enable_accimage()
     model = MODEL_REGISTRY(cfg.model.name)(num_classes=10)
     train_loader, test_loader = DATASET_REGISTRY("fast_cifar10" if cfg.use_fast_collate else "cifar10"
-                                                 )(cfg.data.batch_size, num_workers=4, use_prefetcher=cfg.use_prefetcher)
+                                                 )(cfg.data.batch_size, num_workers=4,
+                                                   use_prefetcher=cfg.use_prefetcher)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=1e-1, momentum=0.9, weight_decay=cfg.optim.weight_decay)
     scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.optim.lr_decay)
 
@@ -33,12 +34,29 @@ def main(cfg):
 
         trainers.SupervisedTrainer.set_optimizer = set_optimizer
 
+    if cfg.use_zerograd_none:
+        import types
+
+        def set_optimizer(trainer):
+            # see Apex for details
+            def zero_grad(self):
+                for group in self.param_groups:
+                    for p in group['params']:
+                        p.grad = None
+
+            trainer.optimizer = trainer.optimizer(trainer.model.parameters())
+            trainer.optimizer.zero_grad = types.MethodType(zero_grad, trainer.optimizer)
+
+        trainers.SupervisedTrainer.set_optimizer = set_optimizer
+
     with trainers.SupervisedTrainer(model,
                                     optimizer,
                                     F.cross_entropy,
                                     reporters=[reporters.TensorboardReporter('.')],
                                     scheduler=scheduler,
-                                    use_amp=cfg.use_amp) as trainer:
+                                    use_amp=cfg.use_amp,
+                                    debug=cfg.debug
+                                    ) as trainer:
 
         for _ in trainer.epoch_range(cfg.optim.epochs):
             trainer.train(train_loader)
