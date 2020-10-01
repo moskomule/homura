@@ -175,7 +175,7 @@ def tqdm(*args, **kwargs):
     if kwargs.get("file") is None:
         kwargs["file"] = _original_stds[0]
     # tqdm seems to prioritize dynamic_ncols over ncols
-    if kwargs.get("nclols") is None and kwargs.get("dynamic_ncols") is None:
+    if kwargs.get("ncols") is None and kwargs.get("dynamic_ncols") is None:
         kwargs["dynamic_ncols"] = True
     return _tqdm.tqdm(*args, **kwargs)
 
