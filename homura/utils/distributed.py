@@ -68,12 +68,17 @@ def get_world_size() -> int:
     return int(python_os.environ.get("WORLD_SIZE", 1))
 
 
-def _distributed_print(self, *args, sep=' ', end='\n', file=None, force=False) -> None:
-    if force:
+def _print_if_master(self, *args, sep=' ', end='\n', file=None) -> None:
+    if is_master():
+        original_print(self, *args, sep=sep, end=end, file=file)
+
+
+def distributed_print(self, *args, sep=' ', end='\n', file=None) -> None:
+    """ print something on any node
+    """
+    if is_distributed():
         self = f"[rank={get_global_rank()}] {self}"
-        print(self, *args, sep=sep, end=end, file=file)
-    elif is_master():
-        print(self, *args, sep=sep, end=end, file=file)
+    original_print(self, *args, sep=sep, end=end, file=file)
 
 
 def init_distributed(use_horovod: bool = False,
@@ -81,7 +86,7 @@ def init_distributed(use_horovod: bool = False,
                      init_method: Optional[str] = None,
                      disable_distributed_print: str = False
                      ) -> None:
-    """ Simple initializer for distributed training. This function substitutes print function with `_distributed_print`.
+    """ Simple initializer for distributed training. This function substitutes print function with `_print_if_master`.
 
     :param use_horovod: If use horovod as distributed backend
     :param backend: backend of torch.distributed.init_process_group
@@ -109,7 +114,7 @@ def init_distributed(use_horovod: bool = False,
     logger.info("Distributed initialized")
 
     if not disable_distributed_print:
-        builtins.print = _distributed_print
+        builtins.print = _print_if_master
 
 
 def if_is_master(func: Callable
