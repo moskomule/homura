@@ -2,8 +2,8 @@ import hydra
 import torch
 import torch.nn.functional as F
 
-from homura import optim, lr_scheduler, reporters, trainers, enable_accimage
-from homura.vision import MODEL_REGISTRY, DATASET_REGISTRY
+from homura import enable_accimage, lr_scheduler, optim, reporters, trainers
+from homura.vision import DATASET_REGISTRY, MODEL_REGISTRY
 
 
 @hydra.main('config/cifar10.yaml')
@@ -54,7 +54,9 @@ def main(cfg):
                                     F.cross_entropy,
                                     reporters=[reporters.TensorboardReporter('.')],
                                     scheduler=scheduler,
-                                    use_amp=cfg.use_amp) as trainer:
+                                    use_amp=cfg.use_amp,
+                                    debug=cfg.debug
+                                    ) as trainer:
 
         for _ in trainer.epoch_range(cfg.optim.epochs):
             trainer.train(train_loader)
