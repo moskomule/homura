@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader
 
 from homura import get_global_rank, get_local_rank, is_distributed
-from homura.liblog import _set_tqdm_stdout_stderr, get_logger, set_verb_level, tqdm
+from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tqdm
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
@@ -140,7 +140,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self._tqdm = lambda x: x
         if verb:
             self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
-            _set_tqdm_stdout_stderr()
+            set_tqdm_stdout_stderr()
 
         for k, v in kwargs.items():
             if hasattr(self, k):

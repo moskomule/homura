@@ -52,7 +52,7 @@ class TQDMReporter(_ReporterBase):
         self._temporal_memory = {}
 
         liblog._set_tqdm_handler()
-        liblog._set_tqdm_stdout_stderr()
+        liblog.set_tqdm_stdout_stderr()
 
     def set_iterator(self,
                      iterator: Iterator
