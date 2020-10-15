@@ -165,7 +165,8 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
 
 def _set_tqdm_stdout_stderr():
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
-    sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
+    if not isinstance(_original_stds[0], DummyTqdmFile):
+        sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
 
 
 # tqdm
