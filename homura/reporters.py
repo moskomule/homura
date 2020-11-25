@@ -181,14 +181,6 @@ class TensorboardReporter(_ReporterBase):
         self.writer.add_scalars(key, value, step)
 
     @if_is_master
-    def add_histogram(self,
-                      key: str,
-                      value: torch.Tensor,
-                      step: Optional[int] = None
-                      ) -> None:
-        self.writer.add_histogram(key, value, step)
-
-    @if_is_master
     def add_figure(self,
                    key: str,
                    figure: "matplotlib.pyplot.figure",
