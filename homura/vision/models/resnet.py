@@ -45,7 +45,7 @@ class BasicBlock(nn.Module):
             self.norm1 = nn.Identity()
             self.norm2 = nn.Identity()
         else:
-            self.norm1 = norm(num_features=in_planes)
+            self.norm1 = norm(num_features=planes)
             self.norm2 = norm(num_features=planes)
 
         self.downsample = nn.Identity()
@@ -83,7 +83,7 @@ class PreActBasicBlock(BasicBlock):
 
     def forward(self, x):
         residual = self.downsample(x)
-        out = self.bn1(x)
+        out = self.norm1(x)
         out = self.act(out)
         out = self.conv1(out)
 
