@@ -51,7 +51,7 @@ class BasicBlock(nn.Module):
         self.downsample = nn.Identity()
         if in_planes != planes:
             _norm = nn.Identity() if norm is None else norm(num_features=planes)
-            self.downsample = nn.Sequential(conv1x1(in_planes, planes, bias=norm is None),
+            self.downsample = nn.Sequential(conv1x1(in_planes, planes, stride=stride, bias=norm is None),
                                             _norm)
 
     def forward(self, x):
