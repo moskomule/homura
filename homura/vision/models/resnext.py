@@ -42,9 +42,9 @@ class ResNeXtBottleneck(nn.Module):
                 _norm
             )
 
-    def forward(self, x):
-        residual = x
-
+    def forward(self,
+                x: torch.Tensor
+                ) -> torch.Tensor:
         bottleneck = self.conv_reduce(x)
         bottleneck = self.act(self.norm_reduce(bottleneck))
 
@@ -103,7 +103,9 @@ class CIFARResNeXt(nn.Module):
             layers.append(block(self.inplanes, planes, self.cardinality, self.base_width, stride, self.norm, self.act))
         return nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self,
+                x: torch.Tensor
+                ) -> torch.Tensor:
         x = self.conv_1_3x3(x)
         x = self.act(self.norm_1(x))
         x = self.stage_1(x)

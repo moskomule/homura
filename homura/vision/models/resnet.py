@@ -151,7 +151,7 @@ class PreActResNet(ResNet):
     def __init__(self, *args, **kwargs):
         super(PreActResNet, self).__init__(*args, **kwargs)
         self.norm1 = self.norm(self.inplane)
-        self.initialize()
+        initialization(self, False)
 
     def forward(self, x):
         x = self.conv1(x)
