@@ -5,7 +5,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from homura.vision.models import MODEL_REGISTRY
-from homura.vision.models._intialization import init_parameters
+from homura.vision.models._utils import init_parameters
 
 __all__ = ["unet", "CustomUNet"]
 
