@@ -1,18 +1,11 @@
 import torch
 
-from homura.vision.models import resnet20, preact_resnet20, unet, wrn28_10, densenet100, resnext29_32x4d
+from homura.vision.models import densenet100, resnet20, resnext29_32x4d, unet, wrn28_10
 
 
 def test_resnet20():
     input = torch.randn(2, 3, 32, 32)
     model = resnet20(num_classes=10)
-    output = model(input)
-    assert output.size(1) == 10
-
-
-def test_paresnet20():
-    input = torch.randn(2, 3, 32, 32)
-    model = preact_resnet20(num_classes=10)
     output = model(input)
     assert output.size(1) == 10
 

@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 
@@ -27,3 +28,20 @@ def conv1x1(in_planes: int,
             bias: bool = False
             ) -> nn.Conv2d:
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, padding=0, bias=bias)
+
+
+class SELayer(nn.Module):
+    def __init__(self,
+                 planes: int,
+                 reduction: int):
+        super().__init__()
+        self.module = nn.Sequential(nn.AdaptiveAvgPool2d(1),
+                                    conv1x1(planes, planes // reduction, bias=False),
+                                    nn.ReLU(inplace=True),
+                                    conv1x1(planes // reduction, planes, bias=False),
+                                    nn.Sigmoid())
+
+    def forward(self,
+                x: torch.Tensor
+                ) -> torch.Tensor:
+        return x * self.module(x)
