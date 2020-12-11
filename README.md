@@ -1,4 +1,8 @@
-# homura ![](https://github.com/moskomule/homura/workflows/pytest/badge.svg) [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
+# homura  [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
+
+|     | master | dev |
+| --- | --- | --- |
+|  | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg) | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg?branch=dev)  |
 
 **homura** is a library for fast prototyping DL research.
 
@@ -6,8 +10,6 @@
 
 ## Important Notes
 
-* no longer supports `horovod` by default
-* no longer installs `hydra-core` by default
 * no longer steps schedulers by default. Do it manually.
 
 ## Requirements
@@ -16,8 +18,8 @@
 
 ```
 Python>=3.8
-PyTorch>=1.6.0
-torchvision>=0.7.0
+PyTorch>=1.7.0
+torchvision>=0.8.0
 ```
 
 ### Optional
@@ -26,7 +28,6 @@ torchvision>=0.7.0
 faiss (for faster kNN)
 cupy
 accimage (for faster image pre-processing)
-nlp (to run an example)
 ```
 
 ### test
@@ -67,11 +68,11 @@ model = MODEL_REGISTRY('model_name')(num_classes=num_classes)
 
 # Model is registered in optimizer lazily. This is convenient for distributed training and other complicated scenes.
 optimizer = optim.SGD(lr=0.1, momentum=0.9)
-scheduler = lr_scheduler.MultiStepLR(milestones=[30,80], gamma=0.1)
+scheduler = lr_scheduler.MultiStepLR(milestones=[30, 80], gamma=0.1)
 
-with trainers.SupervisedTrainer(model, 
-                                optimizer, 
-                                F.cross_entropy, 
+with trainers.SupervisedTrainer(model,
+                                optimizer,
+                                F.cross_entropy,
                                 reporters=[reporters.TensorboardReporter(...)],
                                 scheduler=scheduler) as trainer:
     # epoch-based training
@@ -82,7 +83,7 @@ with trainers.SupervisedTrainer(model,
 
     # otherwise, iteration-based training
 
-    trainer.run(train_loader, test_loader, 
+    trainer.run(train_loader, test_loader,
                 total_iterations=1_000, val_intervals=10)
 
     print(f"Max Accuracy={max(trainer.history['accuracy']['test'])}")
@@ -96,9 +97,10 @@ from homura.metrics import accuracy
 
 trainer = SupervisedTrainer(...)
 
+
 # from v2020.08, iteration is much simpler
 
-def iteration(trainer: TrainerBase, 
+def iteration(trainer: TrainerBase,
               data: Tuple[torch.Tensor, torch.Tensor]
               ) -> None:
     input, target = data
@@ -111,6 +113,7 @@ def iteration(trainer: TrainerBase,
         trainer.optimizer.zero_grad()
         loss.backward()
         trainer.optimizer.step()
+
 
 SupervisedTrainer.iteration = iteration
 # or   
@@ -126,10 +129,12 @@ trainer = CustomTrainer({"generator": generator, "discriminator": discriminator}
                         **kwargs)
 ```
 
-`reporter` internally tracks the values during each epoch and reduces after every epoch. Therefore, users can compute mIoU, for example, as
+`reporter` internally tracks the values during each epoch and reduces after every epoch. Therefore, users can compute
+mIoU, for example, as
 
 ```python
 from homura.metrics import confusion_matrix
+
 
 def cm_to_miou(cms: List[torch.Tensor]) -> torch.Tensor:
     # cms: list of confusion matrices
@@ -137,7 +142,8 @@ def cm_to_miou(cms: List[torch.Tensor]) -> torch.Tensor:
     miou = cm.diag() / (cm.sum(0) + cm.sum(1) - cm.diag())
     return miou.mean().item()
 
-def iteration(trainer: TrainerBase, 
+
+def iteration(trainer: TrainerBase,
               data: Tuple[torch.Tensor, torch.Tensor]
               ) -> None:
     input, target = data
@@ -148,13 +154,14 @@ def iteration(trainer: TrainerBase,
 
 ## Distributed training
 
-Distributed training is complicated at glance. `homura` has simple APIs, to hide the messy codes for DDP, such as `homura.init_distributed` for the initialization and `homura.is_master` for checking if the process is master or not.   
+Distributed training is complicated at glance. `homura` has simple APIs, to hide the messy codes for DDP, such
+as `homura.init_distributed` for the initialization and `homura.is_master` for checking if the process is master or not.
 
 For details, see `examples/imagenet.py`.
 
 ## Reproducibility
 
-This method makes randomness deterministic in its context.
+These methods make randomness deterministic in its context.
 
 ```python
 from homura.utils.reproducibility import set_deterministic, set_seed
@@ -171,15 +178,18 @@ with set_seed(seed):
 
 ## Registry System
 
-Following major libraries, `homura` also has a simple register system.
+Following major libraries, `homura` also has a simple registry system.
 
 ```python
 from homura import Registry
+
 MODEL_REGISTRY = Registry("language_models")
+
 
 @MODEL_REGISTRY.register
 class Transformer(nn.Module):
     ...
+
 
 # or
 
@@ -202,7 +212,7 @@ See [examples](examples).
 
 Note that homura expects datasets are downloaded in `~/.torch/data/DATASET_NAME`.
 
-For [imagenet.py](examples/imagenet.py), if you want 
+For [imagenet.py](examples/imagenet.py), if you want
 
 * single node single gpu
 * single node multi gpus
@@ -221,8 +231,10 @@ If you want
 
 run
 
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py` on the master node
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py` on the other nodes
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py`
+  on the master node
+* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py`
+  on the other nodes
 
 Here, `0<$RANK<$NUM_NODES`.
 
