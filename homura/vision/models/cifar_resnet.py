@@ -77,9 +77,9 @@ class Bottleneck(nn.Module):
                  ):
         super().__init__()
         width = int(planes * (width_per_group / 64)) * groups
-        self.conv1 = conv1x1(in_planes, width)
-        self.conv2 = conv3x3(width, width, stride, groups=groups)
-        self.conv3 = conv1x1(width, planes * self.expansion)
+        self.conv1 = conv1x1(in_planes, width, bias=norm is None)
+        self.conv2 = conv3x3(width, width, stride, groups=groups, bias=norm is None)
+        self.conv3 = conv1x1(width, planes * self.expansion, bias=norm is None)
         self.act = act
         self.norm1 = nn.Identity() if norm is None else norm(width)
         self.norm2 = nn.Identity() if norm is None else norm(width)
