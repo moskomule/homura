@@ -37,7 +37,7 @@ def set_seed(seed: Optional[int] = None,
         logger.info(f"Set seed to {seed}")
     yield
     # recover random states
-    random.seed(s_py)
+    random.setstate(s_py)
     numpy.random.set_state(s_np)
     torch.set_rng_state(s_torch)
     if torch.cuda.is_available():
