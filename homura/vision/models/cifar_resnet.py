@@ -178,14 +178,10 @@ class ResNet(nn.Module):
         x = self.conv1(x)
         x = self.norm1(x)
         x = self.act(x)
-        print(x.size())
 
         x = self.layer1(x)
-        print(x.size())
         x = self.layer2(x)
-        print(x.size())
         x = self.layer3(x)
-        print(x.size())
 
         x = self.avgpool(x)
         x = x.flatten(1)
