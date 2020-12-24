@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         python: [ '3.8' , '3.9' ]
-        torch: [ 'torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html'
+        torch: [ 'torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html',
                  '--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html' ]
 
     steps:
