@@ -9,7 +9,7 @@ from homura.vision.models import densenet100, resnet20, resnext29_32x4d, unet, w
 def test_cifar(model, num_classes):
     input = torch.randn(2, 3, 32, 32)
     output = model(num_classes=num_classes)(input)
-    assert output.size(1) == 10
+    assert output.size(1) == num_classes
     output.sum().backward()
 
 
