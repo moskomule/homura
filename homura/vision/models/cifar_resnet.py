@@ -1,5 +1,5 @@
 # ResNet variants
-
+from functools import partial
 from typing import Callable, Optional, Type, Union
 
 import torch
@@ -59,6 +59,36 @@ class BasicBlock(nn.Module):
         out += self.downsample(x)
         out = self.act(out)
 
+        return out
+
+
+class PreactBasicBlock(BasicBlock):
+    def __init__(self,
+                 in_planes: int,
+                 planes: int,
+                 stride: int,
+                 groups: int,
+                 width_per_group: int,
+                 norm: Optional[Type[nn.BatchNorm2d]],
+                 act: Callable[[torch.Tensor], torch.Tensor]
+                 ):
+        super().__init__(in_planes, planes, stride, groups, width_per_group, norm, act)
+        self.norm1 = nn.Identity() if norm is None else norm(num_features=in_planes)
+        if in_planes != planes:
+            self.downsample = conv1x1(in_planes, planes, stride=stride, bias=norm is None)
+
+    def foward(self,
+               x: torch.Tensor
+               ) -> torch.Tensor:
+        out = self.norm1(x)
+        out = self.act(out)
+        out = self.conv1(out)
+
+        out = self.norm2(out)
+        out = self.act(out)
+        out = self.conv2(out)
+
+        out += self.downsample(x)
         return out
 
 
@@ -149,7 +179,7 @@ class ResNet(nn.Module):
         self.norm = norm
         self.width_per_group = width_per_group
 
-        self.conv1 = nn.Conv2d(in_channels, width, kernel_size=3, stride=1, padding=1, bias=norm is None)
+        self.conv1 = conv3x3(in_channels, width, stride=1, bias=norm is None)
         self.norm1 = nn.Identity() if norm is None else norm(width)
         self.act = act
         self.layer1 = self._make_layer(block, width * widen_factor, layer_depth=layer_depth, stride=1)
@@ -169,7 +199,8 @@ class ResNet(nn.Module):
         for i in range(layer_depth):
             layers.append(
                 block(self.inplane, planes, stride if i == 0 else 1,
-                      self.groups, self.width_per_group, self.norm, self.act))
+                      self.groups, self.width_per_group, self.norm, self.act)
+            )
             if i == 0:
                 self.inplane = planes * block.expansion
         return nn.Sequential(*layers)
@@ -209,7 +240,7 @@ def _wide_resnet(num_classes: int,
                  in_channels: int = 3,
                  norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
                  act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-                 block: Type[BasicBlock] = BasicBlock
+                 block: Type[BasicBlock] = PreactBasicBlock
                  ) -> ResNet:
     f"wideresnet-{depth}-{widen_factor}"
     assert (depth - 4) % 6 == 0
@@ -276,7 +307,7 @@ def se_resnet20(num_classes: int = 10,
                 ) -> ResNet:
     """ SEResNet by Hu+18
     """
-    return _resnet(num_classes, 20, in_channels, block=SEBasicBlock)
+    return _resnet(num_classes, 20, in_channels, block=partial(SEBasicBlock, reduction=16))
 
 
 @MODEL_REGISTRY.register
@@ -285,7 +316,7 @@ def se_resnet56(num_classes: int = 10,
                 ) -> ResNet:
     """ SEResNet by Hu+18
     """
-    return _resnet(num_classes, 56, in_channels, block=SEBasicBlock)
+    return _resnet(num_classes, 56, in_channels, block=partial(SEBasicBlock, reduction=16))
 
 
 @MODEL_REGISTRY.register
@@ -330,7 +361,7 @@ def se_wrn16_8(num_classes: int = 10,
                ) -> ResNet:
     """ SEWideResNet by Hu+18
     """
-    return _wide_resnet(num_classes, 16, 8, in_channels, block=SEBasicBlock)
+    return _wide_resnet(num_classes, 16, 8, in_channels, block=partial(SEBasicBlock, reduction=16))
 
 
 @MODEL_REGISTRY.register
