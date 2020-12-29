@@ -91,12 +91,11 @@ class Registry(object):
         else:
             print(list(cls._available_registries.keys()))
 
-    @classmethod
-    def help(cls):
-        cls.available_registries(detailed=True)
-
-    def catalogue(self):
+    def help(self):
         print(f"{self.name} {list(self._registry.keys())}")
+
+    def choices(self):
+        return tuple(self._registry.keys())
 
     @staticmethod
     def import_modules(package_name: str) -> None:
