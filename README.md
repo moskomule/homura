@@ -4,7 +4,7 @@
 | --- | --- | --- |
 |  | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg) | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg?branch=dev)  |
 
-**homura** is a library for fast prototyping DL research.
+**homura** is a fast prototyping library for DL research.
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
@@ -22,11 +22,22 @@ PyTorch>=1.7.0
 torchvision>=0.8.0
 ```
 
+## Installation
+
+```console
+pip install -U homura-core
+```
+
+or
+
+```console
+pip install -U git+https://github.com/moskomule/homura
+```
+
 ### Optional
 
 ```
 faiss (for faster kNN)
-cupy
 accimage (for faster image pre-processing)
 ```
 
@@ -34,20 +45,6 @@ accimage (for faster image pre-processing)
 
 ```
 pytest .
-```
-
-## Installation
-
-```console
-pip install git+https://github.com/moskomule/homura
-```
-
-or
-
-```console
-git clone https://github.com/moskomule/homura
-cd homura
-pip install -e .
 ```
 
 # APIs
@@ -206,37 +203,6 @@ bert = MODEL_REGISTRY('bert', ...)
 # Examples
 
 See [examples](examples).
-
-* [cifar10.py](examples/cifar10.py): training ResNet-20 or WideResNet-28-10 with random crop on CIFAR10
-* [imagenet.py](examples/imagenet.py): training a CNN on ImageNet on multi GPUs (single and multi process)
-
-Note that homura expects datasets are downloaded in `~/.torch/data/DATASET_NAME`.
-
-For [imagenet.py](examples/imagenet.py), if you want
-
-* single node single gpu
-* single node multi gpus
-
-run `python imagenet.py`.
-
-If you want
-
-* single node multi threads multi gpus
-
-run `python -m torch.distributed.launch --nproc_per_node=$NUM_GPUS imagenet.py [...]`.
-
-If you want
-
-* multi nodes multi threads multi gpus,
-
-run
-
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=0 --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py`
-  on the master node
-* `python -m torch.distributed.launch --nnodes=$NUM_NODES --node_rank=$RANK --master_addr=$MASTER_IP --master_port=$MASTER_PORT --nproc_per_node=$NUM_GPUS imagenet.py`
-  on the other nodes
-
-Here, `0<$RANK<$NUM_NODES`.
 
 # Citing
 
