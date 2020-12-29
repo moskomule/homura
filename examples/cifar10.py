@@ -21,7 +21,6 @@ class Config:
     use_accimage: bool = False
     use_fast_collate: bool = False
     use_prefetcher: bool = False
-    use_zerograd_none: bool = False
     debug: bool = False
 
 
@@ -47,24 +46,9 @@ def main(cfg):
                     non_bn_parameters.append(p)
             optim_params = [
                 {"params": bn_params, "weight_decay": 0},
-                {"params": non_bn_parameters, "weight_decay": cfg.optim.weight_decay},
+                {"params": non_bn_parameters, "weight_decay": cfg.weight_decay},
             ]
             trainer.optimizer = torch.optim.SGD(optim_params, lr=1e-1, momentum=0.9)
-
-        trainers.SupervisedTrainer.set_optimizer = set_optimizer
-
-    if cfg.use_zerograd_none:
-        import types
-
-        def set_optimizer(trainer):
-            # see Apex for details
-            def zero_grad(self):
-                for group in self.param_groups:
-                    for p in group['params']:
-                        p.grad = None
-
-            trainer.optimizer = trainer.optimizer(trainer.model.parameters())
-            trainer.optimizer.zero_grad = types.MethodType(zero_grad, trainer.optimizer)
 
         trainers.SupervisedTrainer.set_optimizer = set_optimizer
 
@@ -77,7 +61,7 @@ def main(cfg):
                                     debug=cfg.debug
                                     ) as trainer:
 
-        for _ in trainer.epoch_range(cfg.optim.epochs):
+        for _ in trainer.epoch_range(cfg.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
 
