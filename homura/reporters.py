@@ -52,7 +52,7 @@ class TQDMReporter(_ReporterBase):
         self._temporal_memory = {}
 
         liblog._set_tqdm_handler()
-        liblog._set_tqdm_stdout_stderr()
+        liblog.set_tqdm_stdout_stderr()
 
     def set_iterator(self,
                      iterator: Iterator
@@ -179,14 +179,6 @@ class TensorboardReporter(_ReporterBase):
                     step: Optional[int] = None
                     ) -> None:
         self.writer.add_scalars(key, value, step)
-
-    @if_is_master
-    def add_histogram(self,
-                      key: str,
-                      value: torch.Tensor,
-                      step: Optional[int] = None
-                      ) -> None:
-        self.writer.add_histogram(key, value, step)
 
     @if_is_master
     def add_figure(self,

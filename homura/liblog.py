@@ -4,6 +4,7 @@
 
 # ported from Optuna and Transformers
 
+import io
 import logging
 import sys
 import threading
@@ -163,12 +164,15 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
     _get_root_logger().addHandler(th)
 
 
-def _set_tqdm_stdout_stderr():
-    # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
-    sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
-
-
 # tqdm
+
+def set_tqdm_stdout_stderr():
+    # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
+    # Some libraries override sys.stdout, which causes OSError: [Errno 9] Bad file descriptor.
+    # To avoid this, this if statement is necessary
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
+
 
 def tqdm(*args, **kwargs):
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py

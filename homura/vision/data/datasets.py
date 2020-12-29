@@ -104,7 +104,7 @@ class VisionSet:
 
     def __post_init__(self):
         # _ is trainer
-        _, *args = inspect.getfullargspec(self.tv_class).args
+        _, *args = inspect.getfullargspec(self.tv_class.__init__).args
         if not ({'root', 'train', 'transform', 'download'} <= set(args)):
             raise RuntimeError(f"dataset DataSet(root, train, transform, download) is expected, "
                                f"but {self.tv_class} has arguments of {args} instead.")

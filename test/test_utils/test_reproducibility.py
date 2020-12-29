@@ -17,6 +17,7 @@ def test_reproducibility():
 
     assert not torch.equal(a, torch.randn(3, 3))
 
-    with set_deterministic(0):
-        assert not torch.backends.cudnn.benchmark
-    assert torch.backends.cudnn.benchmark
+    if not hasattr(torch, "set_deterministic"):
+        with set_deterministic(0):
+            assert not torch.backends.cudnn.benchmark
+        assert torch.backends.cudnn.benchmark

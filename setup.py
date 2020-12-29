@@ -6,14 +6,16 @@ with open("README.md") as f:
 with open("requirements.txt") as f:
     requirements = f.read().split()
 
-setup(name="homura",
-      version="2020.10.0",
+setup(name="homura-core",
+      version="2020.12.0",
       author="moskomule",
-      author_email="hataya@nlab.jp",
+      author_email="hataya@nlab-mpg.jp",
       packages=find_packages(exclude=["test", "docs", "examples"]),
       url="https://github.com/moskomule/homura",
-      description="support tool for research experiments",
+      python_requires=">=3.8",
+      description="a fast prototyping library for DL research",
       long_description=readme,
+      long_description_content_type="text/markdown",
       license="Apache License 2.0",
       install_requires=requirements,
       )

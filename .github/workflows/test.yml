@@ -1,6 +1,6 @@
 name: pytest
 
-on: [ push, pull_request ]
+on: push
 
 jobs:
   build:
@@ -11,10 +11,9 @@ jobs:
     strategy:
       matrix:
         python: [ '3.8' ]
-        torch: [ 'torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html' ]
-        #'--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html' ]
-        # I don't know why, but with this version, homura.vision.datasets.VisionDataset cannot get datasets' args in
-        # __init__.
+        #        python: [ '3.8' , '3.9' ]
+        torch: [ 'torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html',
+                 '--pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +25,7 @@ jobs:
         run: |
           python -m venv venv
           . venv/bin/activate
-          pip install numpy
+          pip install -U numpy
           pip install ${{ matrix.torch }}
           pip install -U pytest
           pip install -U .

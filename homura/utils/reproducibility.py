@@ -37,7 +37,7 @@ def set_seed(seed: Optional[int] = None,
         logger.info(f"Set seed to {seed}")
     yield
     # recover random states
-    random.seed(s_py)
+    random.setstate(s_py)
     numpy.random.set_state(s_np)
     torch.set_rng_state(s_torch)
     if torch.cuda.is_available():
@@ -51,13 +51,20 @@ def set_deterministic(seed: Optional[int] = None,
     does not make everything deterministic, however.
     """
 
+    has_set_deterministic = hasattr(torch, "set_deterministic")
     with set_seed(seed, by_rank):
         if seed is not None:
-            torch.backends.cudnn.deterministic = True
-            torch.backends.cudnn.benchmark = False
+            if has_set_deterministic:
+                torch.set_deterministic(True)
+            else:
+                torch.backends.cudnn.deterministic = True
+                torch.backends.cudnn.benchmark = False
             logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "
                         "Also, this may affect the performance.")
         yield
-    torch.backends.cudnn.deterministic = False
-    torch.backends.cudnn.benchmark = True
+    if has_set_deterministic:
+        torch.set_deterministic(False)
+    else:
+        torch.backends.cudnn.deterministic = False
+        torch.backends.cudnn.benchmark = True
     logger.info("Back to non-deterministic.")
