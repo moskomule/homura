@@ -33,7 +33,7 @@ def main(cfg):
                                                  )(cfg.batch_size, num_workers=4,
                                                    use_prefetcher=cfg.use_prefetcher)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay)
-    scheduler = lr_scheduler.MultiStepLR([100, 150], gamma=cfg.lr_decay)
+    scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
 
     if cfg.bn_no_wd:
         def set_optimizer(trainer):
@@ -64,6 +64,7 @@ def main(cfg):
         for _ in trainer.epoch_range(cfg.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
+            trainer.scheduler.step()
 
         print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
 

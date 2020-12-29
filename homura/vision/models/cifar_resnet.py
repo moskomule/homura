@@ -172,15 +172,18 @@ class ResNet(nn.Module):
                  width_per_group: int = 16,
                  norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
                  act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
+                 preact: bool = False
                  ):
         super(ResNet, self).__init__()
         self.inplane = width
         self.groups = groups
         self.norm = norm
         self.width_per_group = width_per_group
+        self.preact = preact
 
         self.conv1 = conv3x3(in_channels, width, stride=1, bias=norm is None)
-        self.norm1 = nn.Identity() if norm is None else norm(width)
+        self.norm1 = nn.Identity() if norm is None else norm(4 * width * block.expansion * widen_factor if self.preact
+                                                             else width)
         self.act = act
         self.layer1 = self._make_layer(block, width * widen_factor, layer_depth=layer_depth, stride=1)
         self.layer2 = self._make_layer(block, width * 2 * widen_factor, layer_depth=layer_depth, stride=2)
@@ -207,12 +210,18 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        x = self.norm1(x)
-        x = self.act(x)
+
+        if not self.preact:
+            x = self.norm1(x)
+            x = self.act(x)
 
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
+
+        if self.preact:
+            x = self.norm1(x)
+            x = self.act(x)
 
         x = self.avgpool(x)
         x = x.flatten(1)
@@ -221,43 +230,43 @@ class ResNet(nn.Module):
         return x
 
 
-def _resnet(num_classes: int,
-            depth: int,
-            in_channels: int = 3,
-            norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
-            act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-            block: Type[BasicBlock] = BasicBlock
-            ) -> ResNet:
+def resnet(num_classes: int,
+           depth: int,
+           in_channels: int = 3,
+           norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+           act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
+           block: Type[BasicBlock] = BasicBlock
+           ) -> ResNet:
     f"resnet-{depth}"
     assert (depth - 2) % 6 == 0
     layer_depth = (depth - 2) // 6
     return ResNet(block, num_classes, layer_depth, in_channels=in_channels, norm=norm, act=act)
 
 
-def _wide_resnet(num_classes: int,
-                 depth: int,
-                 widen_factor: int,
-                 in_channels: int = 3,
-                 norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
-                 act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-                 block: Type[BasicBlock] = PreactBasicBlock
-                 ) -> ResNet:
+def wide_resnet(num_classes: int,
+                depth: int,
+                widen_factor: int,
+                in_channels: int = 3,
+                norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+                act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
+                block: Type[BasicBlock] = PreactBasicBlock
+                ) -> ResNet:
     f"wideresnet-{depth}-{widen_factor}"
     assert (depth - 4) % 6 == 0
     layer_depth = (depth - 4) // 6
     return ResNet(block, num_classes, layer_depth, in_channels=in_channels,
-                  widen_factor=widen_factor, norm=norm, act=act)
+                  widen_factor=widen_factor, norm=norm, act=act, preact=True)
 
 
-def _resnext(num_classes: int,
-             depth: int,
-             width_per_group: int,
-             groups: int,
-             in_channels: int,
-             norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
-             act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-             block: Type[Bottleneck] = Bottleneck
-             ) -> ResNet:
+def resnext(num_classes: int,
+            depth: int,
+            width_per_group: int,
+            groups: int,
+            in_channels: int,
+            norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+            act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
+            block: Type[Bottleneck] = Bottleneck
+            ) -> ResNet:
     f"resnext-{depth}_{groups}x{width_per_group}d"
     assert (depth - 2) % 9 == 0
     layer_depth = (depth - 2) // 9
@@ -271,7 +280,7 @@ def resnet20(num_classes: int = 10,
              ) -> ResNet:
     """ ResNet by He+16
     """
-    return _resnet(num_classes, 20, in_channels)
+    return resnet(num_classes, 20, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -280,7 +289,7 @@ def resnet32(num_classes: int = 10,
              ) -> ResNet:
     """ ResNet by He+16
     """
-    return _resnet(num_classes, 32, in_channels)
+    return resnet(num_classes, 32, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -289,7 +298,7 @@ def resnet56(num_classes: int = 10,
              ) -> ResNet:
     """ ResNet by He+16
     """
-    return _resnet(num_classes, 56, in_channels)
+    return resnet(num_classes, 56, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -298,7 +307,7 @@ def resnet110(num_classes: int = 10,
               ) -> ResNet:
     """ ResNet by He+16
     """
-    return _resnet(num_classes, 110, in_channels)
+    return resnet(num_classes, 110, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -307,7 +316,7 @@ def se_resnet20(num_classes: int = 10,
                 ) -> ResNet:
     """ SEResNet by Hu+18
     """
-    return _resnet(num_classes, 20, in_channels, block=partial(SEBasicBlock, reduction=16))
+    return resnet(num_classes, 20, in_channels, block=partial(SEBasicBlock, reduction=16))
 
 
 @MODEL_REGISTRY.register
@@ -316,7 +325,7 @@ def se_resnet56(num_classes: int = 10,
                 ) -> ResNet:
     """ SEResNet by Hu+18
     """
-    return _resnet(num_classes, 56, in_channels, block=partial(SEBasicBlock, reduction=16))
+    return resnet(num_classes, 56, in_channels, block=partial(SEBasicBlock, reduction=16))
 
 
 @MODEL_REGISTRY.register
@@ -325,7 +334,7 @@ def wrn16_8(num_classes: int = 10,
             ) -> ResNet:
     """ WideResNet by Zagoruyko&Komodakis 17
     """
-    return _wide_resnet(num_classes, 16, 8, in_channels)
+    return wide_resnet(num_classes, 16, 8, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -334,7 +343,7 @@ def wrn28_2(num_classes: int = 10,
             ) -> ResNet:
     """ WideResNet by Zagoruyko&Komodakis 17
     """
-    return _wide_resnet(num_classes, 28, 2, in_channels)
+    return wide_resnet(num_classes, 28, 2, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -343,7 +352,7 @@ def wrn28_10(num_classes: int = 10,
              ) -> ResNet:
     """ WideResNet by Zagoruyko&Komodakis 17
     """
-    return _wide_resnet(num_classes, 28, 10, in_channels)
+    return wide_resnet(num_classes, 28, 10, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -352,16 +361,7 @@ def wrn40_2(num_classes: int = 10,
             ) -> ResNet:
     """ WideResNet by Zagoruyko&Komodakis 17
     """
-    return _wide_resnet(num_classes, 40, 2, in_channels)
-
-
-@MODEL_REGISTRY.register
-def se_wrn16_8(num_classes: int = 10,
-               in_channels: int = 3
-               ) -> ResNet:
-    """ SEWideResNet by Hu+18
-    """
-    return _wide_resnet(num_classes, 16, 8, in_channels, block=partial(SEBasicBlock, reduction=16))
+    return wide_resnet(num_classes, 40, 2, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -370,7 +370,7 @@ def resnext29_32x4d(num_classes: int = 10,
                     ) -> ResNet:
     """ ResNeXT by Xie+17
     """
-    return _resnext(num_classes, 29, 4, 32, in_channels)
+    return resnext(num_classes, 29, 4, 32, in_channels)
 
 
 @MODEL_REGISTRY.register
@@ -379,4 +379,4 @@ def resnext29_8x64d(num_classes: int = 10,
                     ) -> ResNet:
     """ ResNeXT by Xie+17
     """
-    return _resnext(num_classes, 29, 64, 8, in_channels)
+    return resnext(num_classes, 29, 64, 8, in_channels)
