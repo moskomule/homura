@@ -1,41 +1,45 @@
-import hydra
+import chika
 import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import optim, lr_scheduler, enable_accimage, get_num_nodes, init_distributed, reporters
+from homura import enable_accimage, get_num_nodes, init_distributed, lr_scheduler, optim, reporters
 from homura.trainers import SupervisedTrainer
 from homura.vision.data import DATASET_REGISTRY
 
 is_distributed = False
 
 
-def _handle_argparse():
+def _detect_distributed():
     # handle raises Error with non key=val format
     # which causes problem with torch.distributed.launch
     import sys
-    import re
-
-    original_argv = sys.argv
-    hydra_pattern = re.compile(r'[^-|^=]+=[^=]+')
-    hydra_argv = [k for k in original_argv if re.match(hydra_pattern, k) is not None]
-    non_hydra_argv = [k for k in original_argv[1:] if k not in hydra_argv]
-    if any([not k.startswith('-') for k in non_hydra_argv]):
-        # non_hydra_argv should start with -
-        raise RuntimeError(f"Wrong argument is given: check one of {non_hydra_argv}")
-    help_argv = [k for k in original_argv if k == '-h' or k == '--help']
-    sys.argv = [original_argv[0]] + hydra_argv + help_argv
-    if any(['local_rank' in k for k in non_hydra_argv]):
+    if any(['--local_rank' in k for k in sys.argv]):
         global is_distributed
         is_distributed = True
 
 
-@hydra.main("config/imagenet.yaml")
-def main(cfg):
+@chika.config
+class Config:
+    epochs: int = 90
+    batch_size: int = 256
+    enable_accimage: bool = False
+    use_prefetcher: bool = False
+    debug: bool = False
+    use_amp: bool = False
+    use_sync_bn: bool = False
+    use_fast_collate: bool = False
+    num_workers: 4
+
+    init_method: str = "env://"
+    backend: str = "nccl"
+
+
+@chika.main(cfg_cls=Config)
+def main(cfg: Config):
     if is_distributed:
-        init_distributed(use_horovod=cfg.distributed.use_horovod,
-                         backend=cfg.distributed.backend,
-                         init_method=cfg.distributed.init_method)
+        init_distributed(backend=cfg.backend,
+                         init_method=cfg.init_method)
     if cfg.enable_accimage:
         enable_accimage()
 
@@ -59,7 +63,6 @@ def main(cfg):
                            use_amp=cfg.use_amp,
                            use_cuda_nonblocking=True,
                            use_sync_bn=cfg.use_sync_bn,
-                           use_horovod=cfg.distributed.use_horovod,
                            report_accuracy_topk=5) as trainer:
 
         for epoch in trainer.epoch_range(cfg.epochs):
@@ -76,5 +79,5 @@ if __name__ == '__main__':
     warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
     import sys
 
-    _handle_argparse()
+    _detect_distributed()
     main()

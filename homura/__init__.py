@@ -6,4 +6,4 @@ from .utils import TensorDataClass, TensorTuple, distributed_print, enable_accim
 
 Registry.import_modules('homura.vision')
 # to avoid circular import
-from . import reporters, trainers
+from . import reporters, trainers, optim, lr_scheduler

@@ -8,7 +8,7 @@ from homura.vision import DATASET_REGISTRY, MODEL_REGISTRY
 
 @chika.config
 class Config:
-    name: str = "resnet20"
+    name: str = chika.choices(*MODEL_REGISTRY.choices())
     batch_size: int = 128
 
     epochs: int = 200
