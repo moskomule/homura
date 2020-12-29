@@ -77,9 +77,9 @@ class PreactBasicBlock(BasicBlock):
         if in_planes != planes:
             self.downsample = conv1x1(in_planes, planes, stride=stride, bias=norm is None)
 
-    def foward(self,
-               x: torch.Tensor
-               ) -> torch.Tensor:
+    def forward(self,
+                x: torch.Tensor
+                ) -> torch.Tensor:
         out = self.norm1(x)
         out = self.act(out)
         out = self.conv1(out)
