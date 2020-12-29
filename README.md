@@ -1,8 +1,8 @@
 # homura  [![document](https://img.shields.io/static/v1?label=doc&message=homura&color=blue)](https://moskomule.github.io/homura)
 
-|     | master | dev |
-| --- | --- | --- |
-|  | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg) | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg?branch=dev)  |
+| master | dev |
+| --- | --- |
+| ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg) | ![pytest](https://github.com/moskomule/homura/workflows/pytest/badge.svg?branch=dev)  |
 
 **homura** is a fast prototyping library for DL research.
 
@@ -10,7 +10,10 @@
 
 ## Important Notes
 
-* no longer steps schedulers by default. Do it manually.
+* In order to avoid a name conflict on pypi, the library name is renamed to `homura-core`.
+    + For *installation*, use `homura-core`.
+    + For *importing*, use `homura`.
+    + If you have already installed `homura<2020.12.0`, uninstall it before installing the latest one.
 
 ## Requirements
 
@@ -25,23 +28,26 @@ torchvision>=0.8.0
 ## Installation
 
 ```console
+pip uninstall homura
 pip install -U homura-core
 ```
 
 or
 
 ```console
+pip uninstall homura
 pip install -U git+https://github.com/moskomule/homura
 ```
 
-### Optional
+## Optional
 
 ```
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
+cupy
 ```
 
-### test
+## test
 
 ```
 pytest .
@@ -77,6 +83,7 @@ with trainers.SupervisedTrainer(model,
         trainer.train(train_loader)
         trainer.scheduler.step()
         trainer.test(test_loader)
+        trainer.scheduler.step()
 
     # otherwise, iteration-based training
 
@@ -110,6 +117,8 @@ def iteration(trainer: TrainerBase,
         trainer.optimizer.zero_grad()
         loss.backward()
         trainer.optimizer.step()
+        # in case schedule is step-wise
+        trainer.scheduler.step()
 
 
 SupervisedTrainer.iteration = iteration
