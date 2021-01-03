@@ -4,7 +4,6 @@ from __future__ import annotations
 import random
 import warnings
 from abc import ABC, abstractmethod
-from numbers import Number
 from typing import List, Literal, Optional, Tuple
 
 import torch
@@ -466,19 +465,16 @@ class RandomGrayScale(NonGeometricTransformBase):
                  p: float = 0.5,
                  target_type: Optional[TargetType] = None):
         super().__init__(target_type)
-        self.p = p
+        self._impl = VT.RandomGrayscale(p)
 
     def apply_image(self,
                     image: torch.Tensor,
                     params
                     ) -> torch.Tensor:
-        num_channels = VF._get_image_num_channels(image)
-        if random.random() < self.p:
-            image = VF.rgb_to_grayscale(image, num_channels)
-        return image
+        return self._impl(image)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(p={self.p}"
+        return f"{self.__class__.__name__}(p={self._impl.p}"
 
 
 class ColorJitter(NonGeometricTransformBase):
@@ -489,31 +485,14 @@ class ColorJitter(NonGeometricTransformBase):
                  hue=0,
                  target_type: Optional[TargetType] = None):
         super().__init__(target_type)
-        self.brightness = self._check_input(brightness)
-        self.contrast = self._check_input(contrast)
-        self.saturation = self._check_input(saturation)
-        hue = self._check_input(hue, 0)
-        self.hue = (max(hue[0], -0.5), min(hue[1], 0.5))
-
-    @staticmethod
-    def _check_input(value: float or Tuple[float, float], center: float = 1):
-
-        if isinstance(value, Number):
-            value = (max(center - value, 0), center + value)
-        else:
-            value = (max(value[0], 0), value[1])
-        return value
-
-    def get_params(self,
-                   image: Optional[torch.Tensor]) -> Optional:
-        return VT.ColorJitter.get_params(self.brightness, self.contrast, self.saturation, self.hue)
+        self._impl = VT.ColorJitter(brightness, contrast, saturation, hue)
 
     def apply_image(self,
                     image: torch.Tensor,
                     params
                     ) -> torch.Tensor:
-        return params(image)
+        return self._impl(image)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(brightness={self.brightness}, contrast={self.contrast}, " \
-               f"saturation={self.saturation}, hue={self.hue})"
+        return f"{self.__class__.__name__}(brightness={self._impl.brightness}, contrast={self._impl.contrast}, " \
+               f"saturation={self._impl.saturation}, hue={self._impl.hue})"
