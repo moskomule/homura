@@ -24,7 +24,7 @@ def test_detection(transform):
     transform.target_type = "bbox"
     input = torch.randn(3, 64, 64)
     target = torch.tensor([[2, 4, 10, 14],
-                           [30, 40, 50, 61]])
+                           [30, 40, 50, 61]], dtype=torch.float)
     transform(input, target=target)
 
 
