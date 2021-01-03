@@ -34,3 +34,10 @@ def test_segmentation(transform):
     input = torch.randn(3, 64, 64)
     target = torch.randint(8, (3, 64, 64))
     transform(input, target=target)
+
+
+def test_concat():
+    transform1 = T.RandomCrop(32, padding=4, padding_mode="reflect")
+    transform2 = T.RandomRotation(30)
+    assert str(T.ConcatTransform(transform2, transform1)) == str((transform1 * transform2))
+    transform1 * transform2 * transform1

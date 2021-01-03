@@ -28,7 +28,7 @@ class TransformBase(ABC):
     """ Base class of data augmentation transformations. Transform is expected to be used as drop-in
     replacements of torchvision's transforms. ::
 
-    train_da = CenterCrop(224, task="segmentation") + ColorJitter(task="segmentation") + ...
+    train_da = CenterCrop(224, task="segmentation") * ColorJitter(task="segmentation") + ...
 
 
     """
@@ -64,7 +64,7 @@ class TransformBase(ABC):
             target = self.apply_mask(target, params)
         return input, target
 
-    def __add__(self,
+    def __mul__(self,
                 other: TransformBase
                 ) -> ConcatTransform:
         """ Concat transformations in (other, self) order.
@@ -75,7 +75,7 @@ class TransformBase(ABC):
         Returns: Concatenated transformations.
 
         """
-        return ConcatTransform(other, self, task=self.target_type)
+        return ConcatTransform(other, self, target_type=self.target_type)
 
     def get_params(self,
                    image: Optional[torch.Tensor]) -> Optional:
@@ -132,17 +132,16 @@ class TransformBase(ABC):
 
 # utils
 
-@TransformBase.register
-class ConcatTransform(object):
+class ConcatTransform(TransformBase):
     def __init__(self,
                  *transforms: TransformBase,
-                 task: Optional[TargetType] = None):
-        super().__init__(task)
+                 target_type: Optional[TargetType] = None):
+        super().__init__(target_type)
         self.transforms = transforms
 
-        if task is not None:
+        if target_type is not None:
             for transform in self.transforms:
-                if getattr(transform, "task", None) != task:
+                if getattr(transform, "task", None) != target_type:
                     warnings.warn(f"task of transform={transform} is inconsistent with others", HomuraTransformWarning)
 
     def __call__(self,
@@ -161,6 +160,18 @@ class ConcatTransform(object):
             format_string += f'    {t}'
         format_string += '\n)'
         return format_string
+
+    def apply_image(self, image: torch.Tensor, params) -> torch.Tensor:
+        pass
+
+    def apply_mask(self, mask: torch.Tensor, params) -> torch.Tensor:
+        pass
+
+    def apply_coords(self, coords: torch.Tensor, size_wh: torch.Tensor, params) -> torch.Tensor:
+        pass
+
+    def apply_bbox(self, bbox: torch.Tensor, params, size_wh: Tuple[int, int]) -> torch.Tensor:
+        pass
 
 
 # geometric
@@ -498,5 +509,5 @@ class ColorJitter(NonGeometricTransformBase):
         return params(image)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(brightness={self.brightness}, contrast={self.contrast}" \
+        return f"{self.__class__.__name__}(brightness={self.brightness}, contrast={self.contrast}, " \
                f"saturation={self.saturation}, hue={self.hue})"
