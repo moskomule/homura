@@ -49,17 +49,22 @@ class TransformBase(ABC):
     def __call__(self,
                  input: torch.Tensor,
                  target: Optional[torch.Tensor] = None
-                 ) -> (torch.Tensor, Optional[torch.Tensor]):
+                 ) -> torch.Tensor or Tuple[torch.Tensor, torch.Tensor]:
 
         input = self.ensure_tensor(input, True)
+        original_size = VF._get_image_size(input)
         if target is not None:
             target = self.ensure_tensor(target, False)
 
         params = self.get_params(input)
         input = self.apply_image(input, params)
+        if target is None:
+            if self.target_type is not None:
+                warnings.warn(f"target is None, but target_type=={self.target_type}")
+            return input
+
         if self.target_type == "bbox":
-            w, h = VF._get_image_size(input)
-            target = self.apply_bbox(target, params, (w, h))
+            target = self.apply_bbox(target, params, original_size)
         elif self.target_type == "mask":
             target = self.apply_mask(target, params)
         return input, target
@@ -91,7 +96,7 @@ class TransformBase(ABC):
     @abstractmethod
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh: torch.Tensor,
+                     original_wh: Tuple[int, int],
                      params
                      ) -> torch.Tensor:
         # transform coordinates of shape Nx2
@@ -100,7 +105,7 @@ class TransformBase(ABC):
     def apply_bbox(self,
                    bbox: torch.Tensor,
                    params,
-                   size_wh: Tuple[int, int]
+                   original_wh: Tuple[int, int]
                    ) -> torch.Tensor:
         # see also fvcore
         # bbox: Nx4 float tensor of XYXY format in absolute coordinate
@@ -111,8 +116,7 @@ class TransformBase(ABC):
         # (x0, y0, x1, y1) -> ((x0, y0), (x1, y0), (x0, y1), (x1, y1))
         # bbox should be cpu tensor
         idx = torch.tensor([(0, 1), (2, 1), (0, 3), (2, 3)]).flatten()
-        size_wh = torch.tensor(size_wh, dtype=torch.float).view(1, 2)
-        coords = self.apply_coords(bbox[:, idx].view(-1, 2), size_wh, params)
+        coords = self.apply_coords(bbox.view(-1, 4)[:, idx].reshape(-1, 2), original_wh, params).view(-1, 4, 2)
         minxy, _ = coords.min(dim=1)
         maxxy, _ = coords.max(dim=1)
 
@@ -141,7 +145,7 @@ class ConcatTransform(TransformBase):
 
         if target_type is not None:
             for transform in self.transforms:
-                if getattr(transform, "task", None) != target_type:
+                if getattr(transform, "target_type", None) != target_type:
                     warnings.warn(f"task of transform={transform} is inconsistent with others", HomuraTransformWarning)
 
     def __call__(self,
@@ -167,10 +171,10 @@ class ConcatTransform(TransformBase):
     def apply_mask(self, mask: torch.Tensor, params) -> torch.Tensor:
         pass
 
-    def apply_coords(self, coords: torch.Tensor, size_wh: torch.Tensor, params) -> torch.Tensor:
+    def apply_coords(self, coords: torch.Tensor, original_wh: torch.Tensor, params) -> torch.Tensor:
         pass
 
-    def apply_bbox(self, bbox: torch.Tensor, params, size_wh: Tuple[int, int]) -> torch.Tensor:
+    def apply_bbox(self, bbox: torch.Tensor, params, original_wh: Tuple[int, int]) -> torch.Tensor:
         pass
 
 
@@ -197,13 +201,12 @@ class RandomHorizontalFlip(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh,
+                     original_wh,
                      params
                      ) -> torch.Tensor:
         if params < self.p:
-            coords[:, 0] = size_wh[0] - coords[:, 0]
-        else:
-            return coords
+            coords[:, 0] = original_wh[0] - coords[:, 0]
+        return coords
 
     def apply_image(self,
                     image: torch.Tensor,
@@ -215,9 +218,22 @@ class RandomHorizontalFlip(GeometricTransformBase):
         return f"{self.__class__.__name__}(p={self.p})"
 
 
+def _crop_coods_(coords, top, left, h, w, output_h, output_w):
+    # crop
+    coords[:, 0] -= left
+    coords[:, 1] -= top
+    coords[:, 0].clamp_(0, w)
+    coords[:, 1].clamp_(0, h)
+    # scale
+    coords[:, 0] *= output_w / w
+    coords[:, 1] *= output_h / h
+
+    return coords.round()
+
+
 class RandomCrop(GeometricTransformBase):
     def __init__(self,
-                 size_wh,
+                 size,
                  padding=None,
                  pad_if_needed=False,
                  fill=0,
@@ -225,7 +241,7 @@ class RandomCrop(GeometricTransformBase):
                  mask_fill=255,
                  target_type: Optional[TargetType] = None):
         super().__init__(target_type)
-        self.size = VT._setup_size(size_wh, "Invalid value for size (h, w)")
+        self.size = VT._setup_size(size, "Invalid value for size (h, w)")
         self.padding = padding
         self.pad_if_needed = pad_if_needed
         self.padding_mode = padding_mode
@@ -269,15 +285,11 @@ class RandomCrop(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh,
+                     original_wh,
                      params
                      ) -> torch.Tensor:
-        x, y, h, w = params
-        coords[:, 0] -= x
-        coords[:, 1] -= y
-        # to ensure coordinates in the image
-        coords[:, 0].clamp_(0, w)
-        coords[:, 1].clamp_(0, h)
+        top, left, h, w = params
+        coords = _crop_coods_(coords, top, left, h, w, self.size[0], self.size[1])
         return coords
 
     def __repr__(self):
@@ -286,12 +298,12 @@ class RandomCrop(GeometricTransformBase):
 
 class RandomResizedCrop(GeometricTransformBase):
     def __init__(self,
-                 size_wh,
+                 size,
                  scale=(0.08, 1.0),
                  ratio=(3. / 4., 4. / 3.),
                  target_type=None):
         super().__init__(target_type=target_type)
-        self.size = VT._setup_size(size_wh, "Invalid value for size (h, w)")
+        self.size = VT._setup_size(size, "Invalid value for size (h, w)")
         self.scale = scale
         self.ratio = ratio
 
@@ -315,20 +327,12 @@ class RandomResizedCrop(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh: torch.Tensor,
+                     original_wh,
                      params
                      ) -> torch.Tensor:
-        i, j, h, w = params
-        # crop
-        coords[:, 0] -= i
-        coords[:, 1] -= j
-        coords[:, 0].clamp_(0, w)
-        coords[:, 1].clamp_(0, h)
-        # scale
-        coords[:, 0] *= self.size[0] / w
-        coords[:, 1] *= self.size[1] / h
-
-        return coords.round()
+        top, left, h, w = params
+        coords = _crop_coods_(coords, top, left, h, w, self.size[0], self.size[1])
+        return coords
 
     def __repr__(self):
         return f"{self.__class__.__name__}(size={self.size}, scale={self.scale}, ratio={self.ratio})"
@@ -337,10 +341,12 @@ class RandomResizedCrop(GeometricTransformBase):
 class RandomRotation(GeometricTransformBase):
     def __init__(self,
                  degrees,
+                 fill=None,
                  mask_fill=255,
                  target_type=None):
         super().__init__(target_type=target_type)
         self.degrees = VT._setup_angle(degrees, "degrees", (2,))
+        self.fill = fill
         self.mask_fill = mask_fill
         if self.target_type == "detection":
             warnings.warn("Rotated bbox may exceeds image area. Please check it carefully.", HomuraTransformWarning)
@@ -354,7 +360,7 @@ class RandomRotation(GeometricTransformBase):
                     params
                     ) -> torch.Tensor:
         angle = params
-        return VF.rotate(image, angle)
+        return VF.rotate(image, angle, fill=self.fill)
 
     def apply_mask(self,
                    mask: torch.Tensor,
@@ -365,13 +371,14 @@ class RandomRotation(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh: torch.Tensor,
+                     original_wh,
                      params
                      ) -> torch.Tensor:
-        rad = torch.deg2rad(params)
+        original_wh = torch.tensor(original_wh, dtype=torch.float).view(1, 2)
+        rad = torch.deg2rad(torch.tensor(params, dtype=torch.float))
         # rotation matrix
-        rot = torch.cat([torch.cos(rad), -torch.sin(rad), torch.sin(rad), torch.cos(rad)]).view(2, 2)
-        center = size_wh / 2
+        rot = torch.stack([torch.cos(rad), -torch.sin(rad), torch.sin(rad), torch.cos(rad)]).view(2, 2)
+        center = original_wh / 2
         coords -= center
         coords @= rot
         coords += center
@@ -396,15 +403,14 @@ class CenterCrop(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh: torch.Tensor,
+                     original_wh,
                      params
                      ) -> torch.Tensor:
-        w, h = size_wh
+        w, h = original_wh
         eh, ew = self.size
         crop_top = int((h - eh + 1) * 0.5)
         crop_left = int((w - ew + 1) * 0.5)
-        coords[:, 0] -= crop_left
-        coords[:, 1] -= crop_top
+        coords = _crop_coods_(coords, crop_top, crop_left, eh, ew, eh, ew)
         return coords
 
     def __repr__(self):
@@ -416,7 +422,7 @@ class CenterCrop(GeometricTransformBase):
 class NonGeometricTransformBase(TransformBase, ABC):
     def apply_coords(self,
                      coords: torch.Tensor,
-                     size_wh: torch.Tensor,
+                     original_wh: torch.Tensor,
                      params
                      ) -> torch.Tensor:
         pass
@@ -430,7 +436,7 @@ class NonGeometricTransformBase(TransformBase, ABC):
     def apply_bbox(self,
                    bbox: torch.Tensor,
                    params,
-                   size_wh: Tuple[int, int]
+                   original_wh: Tuple[int, int]
                    ) -> torch.Tensor:
         # because no-geometric transform does not affect bounding boxes
         return bbox

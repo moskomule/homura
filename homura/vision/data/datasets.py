@@ -2,18 +2,23 @@ import copy
 import inspect
 import pathlib
 from dataclasses import dataclass
-from functools import partial
-from typing import Callable, Optional, Tuple, Type
+from typing import Callable, Optional, Protocol, Tuple, Type
 
 import numpy as np
 import torch
 from PIL import Image
 from torch.jit.annotations import List
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
-from torchvision import datasets, transforms
+from torchvision import datasets as VD, transforms as VT
 
-from homura import Registry, get_environ, is_distributed
+from homura import is_distributed
 from .prefetcher import DataPrefetchWrapper
+
+
+class VisionSetProtocol(Protocol):
+    def __init__(self, root, train, transform, download): pass
+
+    def __len__(self): pass
 
 
 # to enable _split_dataset
@@ -26,25 +31,28 @@ def _svhn_getitem(self,
     return img, target
 
 
-datasets.SVHN.__getitem__ = _svhn_getitem
+VD.SVHN.__getitem__ = _svhn_getitem
 
 
-# Dataset(root, train, transform, download) is expected
-class ImageNet(datasets.ImageFolder):
+class ImageNet(VD.ImageFolder):
     def __init__(self,
                  root,
                  train=True,
                  transform=None,
+                 loader=None,
                  download=False):
         assert not download, "Download dataset by yourself!"
         root = pathlib.Path(root) / ('train' if train else 'val')
-        super(ImageNet, self).__init__(root, transform=transform)
+        kwargs = dict(transform=transform)
+        if loader is not None:
+            kwargs[loader] = loader
+        super(ImageNet, self).__init__(root, **kwargs)
         import warnings
 
         warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
 
 
-class OriginalSVHN(datasets.SVHN):
+class OriginalSVHN(VD.SVHN):
     def __init__(self,
                  root,
                  train=True,
@@ -62,31 +70,10 @@ class ExtraSVHN(object):
                 transform=None,
                 download=False):
         if train:
-            return (datasets.SVHN(root, split='train', transform=transform, download=download) +
-                    datasets.SVHN(root, split='extra', transform=transform, download=download))
+            return (VD.SVHN(root, split='train', transform=transform, download=download) +
+                    VD.SVHN(root, split='extra', transform=transform, download=download))
         else:
             return OriginalSVHN(root, train=False, transform=transform, download=download)
-
-
-def fast_collate(batch: List[Tuple[Image.Image, int]],
-                 memory_format: torch.memory_format,
-                 mean: Tuple[int, ...],
-                 std: Tuple[int, ...]
-                 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    imgs = [img[0] for img in batch]
-    targets = torch.tensor([target[1] for target in batch], dtype=torch.long)
-    mean = torch.as_tensor(mean, dtype=torch.float)
-    std = torch.as_tensor(std, dtype=torch.float)
-    w = imgs[0].size[0]
-    h = imgs[0].size[1]
-    tensor = torch.empty((len(imgs), 3, h, w), dtype=torch.uint8).contiguous(memory_format=memory_format)
-    for i, img in enumerate(imgs):
-        img = torch.ByteTensor(torch.ByteStorage.from_buffer(img.tobytes()))
-        img = img.view(h, w, 3).permute((2, 0, 1)).contiguous()
-        tensor[i].copy_(img)
-    tensor = tensor.float().div_(255)
-    tensor.sub_(mean[:, None, None]).div_(std[:, None, None])
-    return tensor, targets
 
 
 @dataclass
@@ -94,7 +81,7 @@ class VisionSet:
     """ Dataset abstraction for vision datasets.
     """
 
-    tv_class: Type[datasets.VisionDataset]
+    tv_class: Type[VisionSetProtocol]
     root: str or pathlib.Path
     num_classes: int
     default_norm: List
@@ -126,7 +113,7 @@ class VisionSet:
                     pre_default_train_da: Optional[List] = None,
                     post_default_train_da: Optional[List] = None,
                     post_norm_train_da: Optional[List] = None
-                    ) -> Tuple[datasets.VisionDataset, datasets.VisionDataset, Optional[datasets.VisionDataset]]:
+                    ) -> Tuple[VD.VisionDataset, VD.VisionDataset, Optional[VD.VisionDataset]]:
         """ Get Dataset
 
         :param train_size: Size of training dataset. If None, full dataset will be available.
@@ -157,13 +144,13 @@ class VisionSet:
         post_default_train_da = unpack_optional_list(post_default_train_da)
         post_norm_train_da = unpack_optional_list(post_norm_train_da)
 
-        train_transform = transforms.Compose(pre_default_train_da + train_da + post_default_train_da
-                                             + norm + post_norm_train_da)
+        train_transform = VT.Compose(pre_default_train_da + train_da + post_default_train_da
+                                     + norm + post_norm_train_da)
         train_set = self.tv_class(self.root, train=True, transform=train_transform, download=download)
         if train_size is not None and train_size > len(train_set):
             raise ValueError(f'train_size should be <={len(train_set)}')
 
-        test_transform = transforms.Compose(test_da + norm)
+        test_transform = VT.Compose(test_da + norm)
         test_set = self.tv_class(self.root, train=False, transform=test_transform, download=download)
         if test_size is not None and test_size > len(test_set):
             raise ValueError(f'test_size should be <={len(test_set)}')
@@ -282,9 +269,9 @@ class VisionSet:
     __call__ = get_dataloader
 
     @staticmethod
-    def _split_dataset(train_set: datasets.VisionDataset,
+    def _split_dataset(train_set: VisionSetProtocol,
                        val_size: int
-                       ) -> (datasets.VisionDataset, datasets.VisionDataset):
+                       ) -> (VisionSetProtocol, VisionSetProtocol):
         # split train_set to train_set and val_set
         assert len(train_set) >= val_size
         indices = torch.randperm(len(train_set))
@@ -303,9 +290,9 @@ class VisionSet:
         return train_set, valset
 
     @staticmethod
-    def _sample_dataset(dataset: datasets.VisionDataset,
+    def _sample_dataset(dataset: VisionSetProtocol,
                         size: int
-                        ) -> datasets.VisionDataset:
+                        ) -> VisionSetProtocol:
         indices = torch.randperm(len(dataset))[:size]
         if hasattr(dataset, 'data'):
             dataset.data = [dataset.data[i] for i in indices]
@@ -314,55 +301,3 @@ class VisionSet:
             dataset.samples = [dataset.samples[i] for i in indices]
         dataset.targets = [dataset.targets[i] for i in indices]
         return dataset
-
-
-DATASET_REGISTRY = Registry('vision_datasets', type=VisionSet)
-
-DATASET_REGISTRY.register_from_dict(
-    {  # fast_cifar10 uses fast_collate
-        'fast_cifar10': VisionSet(datasets.CIFAR10, "~/.torch/data/cifar10", 10,
-                                  [],
-                                  [transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
-                                   transforms.RandomHorizontalFlip()],
-                                  collate_fn=partial(fast_collate,
-                                                     memory_format=torch.contiguous_format,
-                                                     mean=(0.4914, 0.4822, 0.4465),
-                                                     std=(0.2023, 0.1994, 0.2010))),
-
-        'cifar10': VisionSet(datasets.CIFAR10, "~/.torch/data/cifar10", 10,
-                             [transforms.ToTensor(),
-                              transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))],
-                             [transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
-                              transforms.RandomHorizontalFlip()]),
-
-        'cifar100': VisionSet(datasets.CIFAR100, "~/.torch/data/cifar100", 100,
-                              [transforms.ToTensor(),
-                               transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))],
-                              [transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
-                               transforms.RandomHorizontalFlip()]),
-
-        'SVHN': VisionSet(OriginalSVHN, "~/.torch/data/svhn", 10,
-                          [transforms.ToTensor(),
-                           transforms.Normalize((0.4390, 0.4443, 0.4692), (0.1189, 0.1222, 0.1049))],
-                          [transforms.RandomCrop(32, padding=4, padding_mode='reflect')]
-                          ),
-
-        'fast_imagenet': VisionSet(ImageNet, get_environ('IMAGENET_ROOT', '~/.torch/data/imagenet'), 1_000,
-                                   [],
-                                   [transforms.RandomResizedCrop(
-                                       224), transforms.RandomHorizontalFlip()],
-                                   [transforms.Resize(256), transforms.CenterCrop(224)],
-                                   collate_fn=partial(fast_collate,
-                                                      memory_format=torch.contiguous_format,
-                                                      mean=(0.485, 0.456, 0.406),
-                                                      std=(0.229, 0.224, 0.225))),
-
-        'imagenet': VisionSet(ImageNet, get_environ('IMAGENET_ROOT', '~/.torch/data/imagenet'), 1_000,
-                              [transforms.ToTensor(),
-                               transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))],
-                              [transforms.RandomResizedCrop(
-                                  224), transforms.RandomHorizontalFlip()],
-                              [transforms.Resize(256), transforms.CenterCrop(224)]),
-
-    }
-)
