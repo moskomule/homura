@@ -331,6 +331,9 @@ class RandomResize(GeometricTransformBase):
                      ) -> torch.Tensor:
         raise NotImplementedError()
 
+    def __repr__(self):
+        return f"RandomResize(min_size={self.min_size}, max_size={self.max_size})"
+
 
 class RandomResizedCrop(GeometricTransformBase):
     def __init__(self,
