@@ -1,5 +1,7 @@
 from homura import Registry, get_environ
-from .datasets import ExtendedVOCSegmentation, ExtraSVHN, ImageNet, OriginalSVHN
+from .classification import ExtraSVHN, ImageNet, OriginalSVHN
+from .detection import VOCDetection, det_collate_fn
+from .segmentation import ExtendedVOCSegmentation, seg_collate_fn
 from .visionset import VisionSet
 
 DATASET_REGISTRY = Registry('vision_datasets', type=VisionSet)
@@ -37,14 +39,23 @@ DATASET_REGISTRY.register_from_dict(
                               [transforms.ToTensor(),
                                transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))],
                               [transforms.RandomResizedCrop(224), transforms.RandomHorizontalFlip()],
-                              [transforms.Resize(256), transforms.CenterCrop(224)]),
+                              [transforms.Resize(256), transforms.CenterCrop(224)]
+                              ),
 
-        'voc_seg': VisionSet(ExtendedVOCSegmentation, "~/.torch/data/voc", 21,
-                             [homura_transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])],
-                             [homura_transforms.RandomResize(520 // 2, 520 * 2),
-                              homura_transforms.RandomCrop(480),
-                              homura_transforms.RandomHorizontalFlip()],
-                             [homura_transforms.RandomResize(520)])
+        'vocseg_aug': VisionSet(ExtendedVOCSegmentation, "~/.torch/data/voc", 21,
+                                [homura_transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])],
+                                [homura_transforms.RandomResize(520 // 2, 520 * 2),
+                                 homura_transforms.RandomCrop(480),
+                                 homura_transforms.RandomHorizontalFlip()],
+                                [homura_transforms.RandomResize(520)],
+                                collate_fn=seg_collate_fn
+                                ),
+
+        'vocdet': VisionSet(VOCDetection, "~/.torch/data/voc", 21,
+                            [homura_transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])],
+                            [homura_transforms.RandomHorizontalFlip()],
+                            [],
+                            collate_fn=det_collate_fn)
 
     }
 )

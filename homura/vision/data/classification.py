@@ -61,20 +61,3 @@ class ExtraSVHN(object):
 
     def __len__(self):
         ...
-
-
-class ExtendedVOCSegmentation(object):
-    def __new__(cls,
-                root,
-                train=True,
-                transform=None,
-                download=False):
-        root = pathlib.Path(root).parent
-        if train:
-            return VD.SBDataset(root / "sbd", image_set='train_noval', mode='segmentation', transforms=transform,
-                                download=download)
-        else:
-            return VD.VOCSegmentation(root / "voc", image_set="val", transforms=transform, download=download)
-
-    def __len__(self):
-        ...
