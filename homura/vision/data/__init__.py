@@ -1,9 +1,11 @@
 from homura import Registry, get_environ
-from .datasets import ImageNet, OriginalSVHN, VisionSet
+from .datasets import ExtendedVOCSegmentation, ExtraSVHN, ImageNet, OriginalSVHN
+from .visionset import VisionSet
 
 DATASET_REGISTRY = Registry('vision_datasets', type=VisionSet)
 
 from torchvision import datasets, transforms
+from .. import transforms as homura_transforms
 
 DATASET_REGISTRY.register_from_dict(
     {
@@ -19,18 +21,30 @@ DATASET_REGISTRY.register_from_dict(
                               [transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
                                transforms.RandomHorizontalFlip()]),
 
-        'SVHN': VisionSet(OriginalSVHN, "~/.torch/data/svhn", 10,
+        'svhn': VisionSet(OriginalSVHN, "~/.torch/data/svhn", 10,
                           [transforms.ToTensor(),
                            transforms.Normalize((0.4390, 0.4443, 0.4692), (0.1189, 0.1222, 0.1049))],
                           [transforms.RandomCrop(32, padding=4, padding_mode='reflect')]
                           ),
 
+        'ext_svhn': VisionSet(ExtraSVHN, "~/.torch/data/svhn", 10,
+                              [transforms.ToTensor(),
+                               transforms.Normalize((0.4390, 0.4443, 0.4692), (0.1189, 0.1222, 0.1049))],
+                              [transforms.RandomCrop(32, padding=4, padding_mode='reflect')]
+                              ),
+
         'imagenet': VisionSet(ImageNet, get_environ('IMAGENET_ROOT', '~/.torch/data/imagenet'), 1_000,
                               [transforms.ToTensor(),
                                transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))],
-                              [transforms.RandomResizedCrop(
-                                  224), transforms.RandomHorizontalFlip()],
+                              [transforms.RandomResizedCrop(224), transforms.RandomHorizontalFlip()],
                               [transforms.Resize(256), transforms.CenterCrop(224)]),
+
+        'voc_seg': VisionSet(ExtendedVOCSegmentation, "~/.torch/data/voc", 21,
+                             [homura_transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])],
+                             [homura_transforms.RandomResize(520 // 2, 520 * 2),
+                              homura_transforms.RandomCrop(480),
+                              homura_transforms.RandomHorizontalFlip()],
+                             [homura_transforms.RandomResize(520)])
 
     }
 )

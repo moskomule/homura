@@ -13,7 +13,7 @@ from torchvision.transforms import functional as VF, transforms as VT
 __all__ = ["TransformBase",
            "ConcatTransform",
            "GeometricTransformBase", "NonGeometricTransformBase",
-           "RandomResizedCrop", "RandomCrop", "RandomRotation", "RandomHorizontalFlip", "CenterCrop",
+           "RandomResizedCrop", "RandomCrop", "RandomRotation", "RandomHorizontalFlip", "CenterCrop", "RandomResize",
            "Normalize", "ColorJitter", "RandomGrayScale"]
 
 TargetType = Literal["bbox", "mask"]
@@ -293,6 +293,43 @@ class RandomCrop(GeometricTransformBase):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(size={self.size}, pad={self.pad_if_needed})"
+
+
+class RandomResize(GeometricTransformBase):
+    def __init__(self,
+                 min_size: int,
+                 max_size: Optional[int] = None,
+                 target_type: Optional[TargetType] = None):
+        super().__init__(target_type)
+        if max_size is not None and min_size > max_size:
+            raise ValueError(f"Invalid size: min_size={min_size} > max_size={max_size}")
+        self.min_size = min_size
+        self.max_size = max_size
+
+    def get_params(self,
+                   image: Optional[torch.Tensor]) -> Optional:
+        if self.max_size is None:
+            return self.min_size
+        return random.randint(self.min_size, self.max_size)
+
+    def apply_image(self,
+                    image: torch.Tensor,
+                    params
+                    ) -> torch.Tensor:
+        return VF.resize(image, params)
+
+    def apply_mask(self,
+                   mask: torch.Tensor,
+                   params
+                   ) -> torch.Tensor:
+        return VF.resize(mask, params, interpolation=Image.NEAREST)
+
+    def apply_coords(self,
+                     coords: torch.Tensor,
+                     original_wh: Tuple[int, int],
+                     params
+                     ) -> torch.Tensor:
+        raise NotImplementedError()
 
 
 class RandomResizedCrop(GeometricTransformBase):
