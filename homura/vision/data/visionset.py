@@ -35,10 +35,12 @@ class VisionSet:
 
     def __post_init__(self):
         # _ is trainer
-        _, *args = inspect.getfullargspec(self.tv_class.__init__).args
-        if not ({'root', 'train', 'transform', 'download'} <= set(args)):
-            raise RuntimeError(f"dataset DataSet(root, train, transform, download) is expected, "
-                               f"but {self.tv_class} has arguments of {args} instead.")
+        args = {'root', 'train', 'transform', 'download'}
+        _, *args_init = inspect.getfullargspec(self.tv_class.__init__).args
+        _, *args_new = inspect.getfullargspec(self.tv_class.__new__).args
+        if not (args <= set(args_init) or args <= set(args_new)):
+            raise RuntimeError(f"tv_class is expected to have signiture of DataSet(root, train, transform, download),"
+                               f"but {self.tv_class} has arguments of {args_init} instead.")
         self.root = pathlib.Path(self.root).expanduser()
         if self.default_train_da is None:
             self.default_train_da = []
