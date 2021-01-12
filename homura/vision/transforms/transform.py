@@ -43,7 +43,7 @@ class TransformBase(ABC):
     def ensure_tensor(t,
                       is_input: bool) -> torch.Tensor:
         # is_input may be useful for users to modify the behavior
-        return t if torch.is_tensor(t) else VF.to_tensor(t)
+        return t if isinstance(t, torch.Tensor) else VF.to_tensor(t)
 
     def __call__(self,
                  input: torch.Tensor,

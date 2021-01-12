@@ -37,10 +37,10 @@ def timeit(func: Optional[Callable] = None,
         def _timeit(*args, **kwargs) -> Dict[str, float]:
             is_cuda = False
             for v in args:
-                if torch.is_tensor(v) and v.is_cuda:
+                if isinstance(v, torch.Tensor) and v.is_cuda:
                     is_cuda = True
             for v in kwargs.values():
-                if torch.is_tensor(v) and v.is_cuda:
+                if isinstance(v, torch.Tensor) and v.is_cuda:
                     is_cuda = True
 
             if is_cuda and warmup_iters is None:

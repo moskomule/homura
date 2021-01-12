@@ -57,13 +57,13 @@ class EMA(nn.Module):
     @torch.no_grad()
     def _update(self):
         # _foreach_** is n times faster than for loops
-        o_p = [p.data for p in self._original_model.parameters() if torch.is_tensor(p)]
-        e_p = [p.data for p in self._ema_model.parameters() if torch.is_tensor(p)]
+        o_p = [p.data for p in self._original_model.parameters() if isinstance(p, torch.Tensor)]
+        e_p = [p.data for p in self._ema_model.parameters() if isinstance(p, torch.Tensor)]
         torch._foreach_mul_(e_p, self.momentum)
         torch._foreach_add_(e_p, o_p, alpha=1 - self.momentum)
 
-        o_b = [b for b in self._original_model.buffers() if torch.is_tensor(b) and torch.is_floating_point(b)]
-        e_b = [b for b in self._ema_model.buffers() if torch.is_tensor(b) and torch.is_floating_point(b)]
+        o_b = [b for b in self._original_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
+        e_b = [b for b in self._ema_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
         torch._foreach_mul_(e_b, self.momentum)
         torch._foreach_add_(e_b, o_b, alpha=1 - self.momentum)
 

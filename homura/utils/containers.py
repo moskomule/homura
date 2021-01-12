@@ -16,7 +16,7 @@ class TensorTuple(tuple):
         """ Move stored tensors to a given device
         """
 
-        return TensorTuple((t.to(*args, **kwargs) for t in self if torch.is_tensor(t)))
+        return TensorTuple((t.to(*args, **kwargs) for t in self if isinstance(t, torch.Tensor)))
 
 
 @dataclasses.dataclass
@@ -37,7 +37,7 @@ class TensorDataClass(object):
     def to(self,
            *args,
            **kwargs):
-        new = type(self)(*((t.to(*args, **kwargs) if torch.is_tensor(t) else t) for t in self))
+        new = type(self)(*((t.to(*args, **kwargs) if isinstance(t, torch.Tensor) else t) for t in self))
         return new
 
 
