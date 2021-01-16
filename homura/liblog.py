@@ -143,9 +143,9 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
     """
     import tqdm
 
-    class TQDMHandler(logging.StreamHandler):
-        def __init__(self):
-            logging.StreamHandler.__init__(self)
+    class TQDMHandler(logging.Handler):
+        def __init__(self, level=logging.NOTSET):
+            super().__init__(level)
 
         def emit(self, record):
             try:
