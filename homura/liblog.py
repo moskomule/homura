@@ -139,16 +139,23 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
+    https://stackoverflow.com/questions/38543506/change-logging-print-function-to-tqdm-write-so-logging-doesnt-interfere-wit
     """
-    from tqdm import tqdm
+    import tqdm
 
     class TQDMHandler(logging.StreamHandler):
         def __init__(self):
             logging.StreamHandler.__init__(self)
 
         def emit(self, record):
-            msg = self.format(record)
-            tqdm.write(msg)
+            try:
+                msg = self.format(record)
+                tqdm.tqdm.write(msg)
+                self.flush()
+            except (KeyboardInterrupt, SystemExit):
+                raise
+            except Exception:
+                self.handleError(record)
 
     _configure_root_logger()
     th = TQDMHandler()
