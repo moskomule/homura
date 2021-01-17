@@ -2,6 +2,7 @@
 ported from Optuna and Transformers
 """
 
+import io
 import logging
 import os
 import sys
@@ -185,7 +186,7 @@ def set_tqdm_stdout_stderr():
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
     # Some libraries override sys.stdout, which causes OSError: [Errno 9] Bad file descriptor.
     # To avoid this, this if statement is necessary
-    # if isinstance(sys.stdout, io.TextIOWrapper):
+    if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
 
 
