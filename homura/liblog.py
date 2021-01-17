@@ -2,7 +2,6 @@
 ported from Optuna and Transformers
 """
 
-import io
 import logging
 import os
 import sys
@@ -137,6 +136,9 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 # internal
 
 def _get_file_descripter():
+    # check if stderr and stdout are two different ptys.
+    # this detects tampering by wandb which messes up tqdm logging.
+    # fix it by writing to stderr instead of stdout.
     file_ = sys.stdout
     try:
         if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
@@ -160,10 +162,6 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
         """
 
         def emit(self, record):
-            # check if stderr and stdout are two different ptys.
-            # this detects tampering by wandb which messes up tqdm logging.
-            # fix it by writing to stderr instead of stdout.
-
             msg = self.format(record)
             tqdm.tqdm.write(msg, file=_get_file_descripter())
 
@@ -187,7 +185,7 @@ def set_tqdm_stdout_stderr():
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
     # Some libraries override sys.stdout, which causes OSError: [Errno 9] Bad file descriptor.
     # To avoid this, this if statement is necessary
-    if isinstance(sys.stdout, io.TextIOWrapper):
+    # if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
 
 
