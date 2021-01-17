@@ -135,6 +135,18 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 
 
 # internal
+
+def _get_file_descripter():
+    file_ = sys.stdout
+    try:
+        if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
+            file_ = sys.stderr
+    except OSError:
+        # stdout or stderr is not a pty. default to stdout.
+        pass
+    return file_
+
+
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
@@ -151,16 +163,9 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
             # check if stderr and stdout are two different ptys.
             # this detects tampering by wandb which messes up tqdm logging.
             # fix it by writing to stderr instead of stdout.
-            try:
-                file_ = sys.stdout
-                if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
-                    file_ = sys.stderr
-            except OSError:
-                # stdout or stderr is not a pty. default to stdout.
-                file_ = sys.stdout
 
             msg = self.format(record)
-            tqdm.tqdm.write(msg, file=file_)
+            tqdm.tqdm.write(msg, file=_get_file_descripter())
 
     _configure_root_logger()
     th = TQDMHandler()
@@ -189,8 +194,8 @@ def set_tqdm_stdout_stderr():
 def tqdm(*args, **kwargs):
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
     if kwargs.get("file") is None:
-        kwargs["file"] = _original_stds[0]
-    # tqdm seems to prioritize dynamic_ncols over ncols
+        kwargs["file"] = _get_file_descripter()
+        # tqdm seems to prioritize dynamic_ncols over ncols
     if kwargs.get("ncols") is None and kwargs.get("dynamic_ncols") is None:
         kwargs["dynamic_ncols"] = True
     return _tqdm.tqdm(*args, **kwargs)
