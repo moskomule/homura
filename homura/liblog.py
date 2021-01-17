@@ -1,11 +1,10 @@
 """ logging tools
-
+ported from Optuna and Transformers
 """
-
-# ported from Optuna and Transformers
 
 import io
 import logging
+import os
 import sys
 import threading
 from typing import Optional, TextIO
@@ -139,23 +138,29 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
-    https://stackoverflow.com/questions/38543506/change-logging-print-function-to-tqdm-write-so-logging-doesnt-interfere-wit
     """
+
     import tqdm
 
-    class TQDMHandler(logging.Handler):
-        def __init__(self, level=logging.NOTSET):
-            super().__init__(level)
+    class TQDMHandler(logging.StreamHandler):
+        """A logging handler compatible with tqdm progress bars from
+        https://github.com/pesser/edflow/blob/317cb1b61bf810a68004788d08418a5352653264/edflow/custom_logging.py#L322
+        """
 
         def emit(self, record):
+            # check if stderr and stdout are two different ptys.
+            # this detects tampering by wandb which messes up tqdm logging.
+            # fix it by writing to stderr instead of stdout.
             try:
-                msg = self.format(record)
-                tqdm.tqdm.write(msg)
-                self.flush()
-            except (KeyboardInterrupt, SystemExit):
-                raise
-            except Exception:
-                self.handleError(record)
+                file_ = sys.stdout
+                if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
+                    file_ = sys.stderr
+            except OSError:
+                # stdout or stderr is not a pty. default to stdout.
+                file_ = sys.stdout
+
+            msg = self.format(record)
+            tqdm.tqdm.write(msg, file=file_)
 
     _configure_root_logger()
     th = TQDMHandler()
