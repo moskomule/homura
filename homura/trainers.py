@@ -145,7 +145,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
-            if torch.is_tensor(v):
+            if isinstance(v, torch.Tensor):
                 v = v.to(self.device)
             if isinstance(v, nn.Module):
                 v.to(self.device)

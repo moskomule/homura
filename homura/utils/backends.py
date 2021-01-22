@@ -17,7 +17,7 @@ def torch_to_xp(input: torch.Tensor
     """ Convert a PyTorch tensor to a Cupy/Numpy array.
     """
 
-    if not torch.is_tensor(input):
+    if not isinstance(input, torch.Tensor):
         raise RuntimeError(f'torch_to_numpy expects torch.Tensor as input, but got {type(input)}')
 
     if IS_CUPY_AVAILABLE and input.is_cuda:

@@ -1,5 +1,5 @@
 import copy
-from typing import Optional
+from typing import Iterator
 
 import torch
 from torch import nn
@@ -19,51 +19,64 @@ def exponential_moving_average_(base: torch.Tensor,
     return base.mul_(momentum).add_(update, alpha=1 - momentum)
 
 
-class EMANet(nn.Module):
-    """ Tracking exponential moving average of a given model
+class EMA(nn.Module):
+    """ Exponential moving average of a given model. ::
 
-    :param model: model to be tracked
-    :param momentum: momentum for EMA
-    :param weight_decay: If a float value is given, apply weight decay to the original model.
+    model = EMA(original_model, 0.99999)
+
     """
 
     def __init__(self,
-                 model: nn.Module,
-                 momentum: float,
-                 weight_decay: Optional[float] = None):
-
-        super(EMANet, self).__init__()
-        self.original_model = model
-        self.ema_model = copy.deepcopy(model)
-        self.ema_model.requires_grad_(False)
-        if momentum < 0 or 1 < momentum:
-            raise RuntimeError(f"`momentum` is expected to be in [0, 1], but got {momentum}.")
+                 original_model: nn.Module,
+                 momentum: float = 0.999):
+        super().__init__()
+        if not (0 <= momentum <= 1):
+            raise ValueError(f"Invalid momentum: {momentum}")
         self.momentum = momentum
-        self.weight_decay = weight_decay
 
-    def forward(self,
-                *inputs: torch.Tensor,
-                update_buffers: bool = True,
-                **kwargs):
+        self._original_model = original_model
+        self._ema_model = copy.deepcopy(original_model)
+        for p in self._ema_model.parameters():
+            p.requires_grad_(False)
 
+    @property
+    def original_model(self) -> nn.Module:
+        return self._original_model
+
+    @property
+    def ema_model(self) -> nn.Module:
+        return self._ema_model
+
+    def parameters(self, recurse: bool = True) -> Iterator[nn.Parameter]:
+        # this makes it simple, but may incur unexpected behavior
+        return self._original_model.parameters(recurse)
+
+    def requires_grad_(self, requires_grad: bool = True):
+        return self._original_model.requires_grad_(requires_grad)
+
+    @torch.no_grad()
+    def _update(self):
+        # _foreach_** is n times faster than for loops
+        o_p = [p.data for p in self._original_model.parameters() if isinstance(p, torch.Tensor)]
+        e_p = [p.data for p in self._ema_model.parameters() if isinstance(p, torch.Tensor)]
+        torch._foreach_mul_(e_p, self.momentum)
+        torch._foreach_add_(e_p, o_p, alpha=1 - self.momentum)
+
+        # some buffers are integer for counting etc.
+        o_b = [b for b in self._original_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
+        if len(o_b) > 0:
+            e_b = [b for b in self._ema_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
+            torch._foreach_mul_(e_b, self.momentum)
+            torch._foreach_add_(e_b, o_b, alpha=1 - self.momentum)
+
+    def forward(self, *args, **kwargs):
         if self.training:
-            self.ema_model.train()
-            outputs = self.original_model(*inputs, **kwargs)
-            self._update(update_buffers)
+            self._update()
+            return self._original_model(*args, **kwargs)
+        return self._ema_model(*args, **kwargs)
 
-        else:
-            self.ema_model.eval()
-            outputs = self.ema_model(*inputs, **kwargs)
-
-        return outputs
-
-    def _update(self,
-                update_buffers: bool):
-        # update ema model
-        for o_p, e_p in zip(self.original_model.parameters(), self.ema_model.parameters()):
-            exponential_moving_average_(e_p.data, o_p.data, self.momentum)
-            if self.weight_decay is not None:
-                o_p.data.mul_(1 - self.weight_decay)
-        if update_buffers:
-            for o_b, e_b in zip(self.original_model.buffers(), self.ema_model.buffers()):
-                e_b.data.copy_(o_b.data)
+    def __repr__(self):
+        s = f"EMA(beta={self.momentum},\n"
+        s += f"  {self._original_model}\n"
+        s += ")"
+        return s

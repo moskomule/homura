@@ -19,7 +19,6 @@ class Config:
     bn_no_wd: bool = False
     use_amp: bool = False
     use_accimage: bool = False
-    use_fast_collate: bool = False
     use_prefetcher: bool = False
     debug: bool = False
 
@@ -29,7 +28,7 @@ def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
     model = MODEL_REGISTRY(cfg.name)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY("fast_cifar10" if cfg.use_fast_collate else "cifar10"
+    train_loader, test_loader = DATASET_REGISTRY("cifar10"
                                                  )(cfg.batch_size, num_workers=4,
                                                    use_prefetcher=cfg.use_prefetcher)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay)

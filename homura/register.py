@@ -2,7 +2,9 @@ import contextlib
 import functools
 import types
 from pathlib import Path
-from typing import Callable, Dict, Optional, Type
+from typing import Dict, Optional, Type, TypeVar
+
+T = TypeVar("T")
 
 
 class Registry(object):
@@ -25,7 +27,7 @@ class Registry(object):
 
     def __new__(cls,
                 name: str,
-                type: Optional[Type] = None
+                type: Optional[Type[T]] = None
                 ):
         if name in Registry._available_registries:
             return Registry._available_registries[name]
@@ -34,22 +36,22 @@ class Registry(object):
 
     def __init__(self,
                  name: str,
-                 type: Optional[Type] = None):
+                 type: Optional[Type[T]] = None):
         self.name = name
         Registry._available_registries[name] = self
         self.type = type
         self._registry = {}
 
     def register_from_dict(self,
-                           name_to_func: Dict[str, Callable]):
+                           name_to_func: Dict[str, T]):
         for k, v in name_to_func.items():
             self.register(v, name=k)
 
     def register(self,
-                 func: Callable = None,
+                 func: T = None,
                  *,
                  name: Optional[str] = None
-                 ) -> Callable:
+                 ) -> T:
         if func is None:
             return functools.partial(self.register, name=name)
 

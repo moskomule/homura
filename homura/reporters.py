@@ -99,7 +99,7 @@ class TQDMReporter(_ReporterBase):
                    value: Number or torch.Tensor,
                    step: Optional[int] = None
                    ) -> None:
-        if torch.is_tensor(value):
+        if isinstance(value, torch.Tensor):
             value = value.item()
         self._temporal_memory[key] = (value, step)
 
@@ -414,13 +414,14 @@ class ReporterList(object):
             # accumulate stored values during an epoch
             key = f"{k}/{mode}" if len(mode) > 0 else k
             accumulated = v.accumulate()
-            accumulated = (accumulated if isinstance(accumulated, (Number, Dict)) or torch.is_tensor(accumulated)
+            accumulated = (accumulated
+                           if isinstance(accumulated, (Number, Dict)) or isinstance(accumulated, torch.Tensor)
                            else None)
             self._persistent_hist[key].append(accumulated)
             temporal_memory[key] = accumulated
 
         for k, v in temporal_memory.items():
-            if torch.is_tensor(v):
+            if isinstance(v, torch.Tensor):
                 if v.nelement() == 1:
                     for rep in self.reporters:
                         rep.add_scalar(k, v, step)
