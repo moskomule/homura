@@ -62,10 +62,12 @@ class EMA(nn.Module):
         torch._foreach_mul_(e_p, self.momentum)
         torch._foreach_add_(e_p, o_p, alpha=1 - self.momentum)
 
+        # some buffers are integer for counting etc.
         o_b = [b for b in self._original_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
-        e_b = [b for b in self._ema_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
-        torch._foreach_mul_(e_b, self.momentum)
-        torch._foreach_add_(e_b, o_b, alpha=1 - self.momentum)
+        if len(o_b) > 0:
+            e_b = [b for b in self._ema_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
+            torch._foreach_mul_(e_b, self.momentum)
+            torch._foreach_add_(e_b, o_b, alpha=1 - self.momentum)
 
     def forward(self, *args, **kwargs):
         if self.training:
