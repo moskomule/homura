@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>homura.nlp package &mdash; homura  documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,8 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> homura
+            <a href="index.html" class="icon icon-home"> homura
           
 
           
@@ -90,8 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.utils.html">homura.utils package</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">homura.nlp package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.nlp.transformer">homura.nlp.transformer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-homura.nlp">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#homura-nlp-transformer-module">homura.nlp.transformer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
@@ -135,6 +136,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -146,7 +149,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/homura.nlp.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -165,402 +168,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.nlp.transformer">
-<span id="homura-nlp-transformer-module"></span><h2>homura.nlp.transformer module<a class="headerlink" href="#module-homura.nlp.transformer" title="Permalink to this headline">¶</a></h2>
-<p>More customizable Transformers than nn.Transformer. Codes are ported from PyTorch and its examples.</p>
-<dl class="py class">
-<dt id="homura.nlp.transformer.PositionalEncoding">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">PositionalEncoding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d_model</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">max_len</span><span class="o">=</span><span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#PositionalEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.PositionalEncoding" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="simple">
-<dt>Inject some information about the relative or absolute position of the tokens</dt><dd><p>in the sequence. The positional encodings have the same dimension as
-the embeddings, so that the two can be summed. Here, we use sine and cosine
-functions of different frequencies.</p>
-</dd>
-</dl>
-<div class="math notranslate nohighlight">
-\[\text{PosEncoder}(pos, 2i) = sin(pos/10000^(2i/d_model))
-\text{PosEncoder}(pos, 2i+1) = cos(pos/10000^(2i/d_model))
-\text{where pos is the word position and i is the embed idx)\]</div>
-<dl>
-<dt>Args:</dt><dd><p>d_model: the embed dim (required).
-dropout: the dropout value (default=0.1).
-max_len: the max. length of the incoming sequence (default=5000).</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pos_encoder</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
-</pre></div>
+<div class="section" id="homura-nlp-transformer-module">
+<h2>homura.nlp.transformer module<a class="headerlink" href="#homura-nlp-transformer-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="homura.nlp.transformer.PositionalEncoding.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#PositionalEncoding.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.PositionalEncoding.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inputs of forward function
-Args:</p>
-<blockquote>
-<div><p>x: the sequence fed to the positional encoder model (required).</p>
-</div></blockquote>
-<dl>
-<dt>Shape:</dt><dd><p>x: [sequence length, batch size, embed dim]
-output: [sequence length, batch size, embed dim]</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">pos_encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="homura.nlp.transformer.Transformer">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">Transformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim_model</span><span class="o">=</span><span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">num_encoder_layers</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">num_decoder_layers</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">dim_feedforward</span><span class="o">=</span><span class="default_value">2048</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">activation</span><span class="o">=</span><span class="default_value">'relu'</span></em>, <em class="sig-param"><span class="n">pre_ln</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">custom_encoder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">custom_decoder</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#Transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.Transformer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>A transformer model. User is able to modify the attributes as needed. The architecture
-is based on the paper “Attention Is All You Need”. Ashish Vaswani, Noam Shazeer,
-Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser, and
-Illia Polosukhin. 2017. Attention is all you need. In Advances in Neural Information
-Processing Systems, pages 6000-6010. Users can build the BERT(<a class="reference external" href="https://arxiv.org/abs/1810.04805">https://arxiv.org/abs/1810.04805</a>)
-model with corresponding parameters.
-Args:</p>
-<blockquote>
-<div><p>dim_model: the number of expected features in the encoder/decoder inputs (default=512).
-num_heads: the number of heads in the multiheadattention models (default=8).
-num_encoder_layers: the number of sub-encoder-layers in the encoder (default=6).
-num_decoder_layers: the number of sub-decoder-layers in the decoder (default=6).
-dim_feedforward: the dimension of the feedforward network model (default=2048).
-dropout: the dropout value (default=0.1).
-activation: the activation function of encoder/decoder intermediate layer, relu or gelu (default=relu).
-pre_ln: if using PreLN preposed in “On Layer Normalization in the Transformer Architecture” [Xiong+2020]. (defalt=false)
-custom_encoder: custom encoder (default=None).
-custom_decoder: custom decoder (default=None).</p>
-</div></blockquote>
-<dl>
-<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transformer_model</span> <span class="o">=</span> <span class="n">Transformer</span><span class="p">(</span><span class="n">num_heads</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">num_encoder_layers</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">transformer_model</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<p>Note: A full example to apply nn.Transformer module for the word language model is available in
-<a class="reference external" href="https://github.com/pytorch/examples/tree/master/word_language_model">https://github.com/pytorch/examples/tree/master/word_language_model</a></p>
-<dl class="py method">
-<dt id="homura.nlp.transformer.Transformer.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em>, <em class="sig-param"><span class="n">tgt</span></em>, <em class="sig-param"><span class="n">src_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tgt_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">src_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tgt_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#Transformer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.Transformer.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Take in and process masked source/target sequences.
-Args:</p>
-<blockquote>
-<div><p>src: the sequence to the encoder (required).
-tgt: the sequence to the decoder (required).
-src_mask: the additive mask for the src sequence (optional).
-tgt_mask: the additive mask for the tgt sequence (optional).
-memory_mask: the additive mask for the encoder output (optional).
-src_key_padding_mask: the ByteTensor mask for src keys per batch (optional).
-tgt_key_padding_mask: the ByteTensor mask for tgt keys per batch (optional).
-memory_key_padding_mask: the ByteTensor mask for memory keys per batch (optional).</p>
-</div></blockquote>
-<dl>
-<dt>Shape:</dt><dd><ul class="simple">
-<li><p>src: <span class="math notranslate nohighlight">\((S, N, E)\)</span>.</p></li>
-<li><p>tgt: <span class="math notranslate nohighlight">\((T, N, E)\)</span>.</p></li>
-<li><p>src_mask: <span class="math notranslate nohighlight">\((S, S)\)</span>.</p></li>
-<li><p>tgt_mask: <span class="math notranslate nohighlight">\((T, T)\)</span>.</p></li>
-<li><p>memory_mask: <span class="math notranslate nohighlight">\((T, S)\)</span>.</p></li>
-<li><p>src_key_padding_mask: <span class="math notranslate nohighlight">\((N, S)\)</span>.</p></li>
-<li><p>tgt_key_padding_mask: <span class="math notranslate nohighlight">\((N, T)\)</span>.</p></li>
-<li><p>memory_key_padding_mask: <span class="math notranslate nohighlight">\((N, S)\)</span>.</p></li>
-</ul>
-<p>Note: [src/tgt/memory]_mask ensures that position i is allowed to attend the unmasked
-positions. If a ByteTensor is provided, the non-zero positions are not allowed to attend
-while the zero positions will be unchanged. If a BoolTensor is provided, positions with <code class="docutils literal notranslate"><span class="pre">True</span></code>
-are not allowed to attend while <code class="docutils literal notranslate"><span class="pre">False</span></code> values will be unchanged. If a FloatTensor
-is provided, it will be added to the attention weight.
-[src/tgt/memory]_key_padding_mask provides specified elements in the key to be ignored by
-the attention. If a ByteTensor is provided, the non-zero positions will be ignored while the zero
-positions will be unchanged. If a BoolTensor is provided, the positions with the
-value of <code class="docutils literal notranslate"><span class="pre">True</span></code> will be ignored while the position with the value of <code class="docutils literal notranslate"><span class="pre">False</span></code> will be unchanged.
-- output: <span class="math notranslate nohighlight">\((T, N, E)\)</span>.
-Note: Due to the multi-head attention architecture in the transformer model,
-the output sequence length of a transformer is same as the input sequence
-(i.e. target) length of the decode.
-where S is the source sequence length, T is the target sequence length, N is the
-batch size, E is the feature number</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">transformer_model</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">src_mask</span><span class="o">=</span><span class="n">src_mask</span><span class="p">,</span> <span class="n">tgt_mask</span><span class="o">=</span><span class="n">tgt_mask</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>tgt</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>src_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>tgt_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>src_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>tgt_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.nlp.transformer.Transformer.generate_square_subsequent_mask">
-<em class="property">static </em><code class="sig-name descname">generate_square_subsequent_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sz</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#Transformer.generate_square_subsequent_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.Transformer.generate_square_subsequent_mask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a square mask for the sequence. The masked positions are filled with float(‘-inf’).
-Unmasked positions are filled with float(0.0).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sz</strong> (<em>int</em>) – </p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="homura.nlp.transformer.TransformerDecoder">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">TransformerDecoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">decoder_layer</span></em>, <em class="sig-param"><span class="n">num_layers</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerDecoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>TransformerDecoder is a stack of N decoder layers
-Args:</p>
-<blockquote>
-<div><p>decoder_layer: an instance of the TransformerDecoderLayer() class (required).
-num_layers: the number of sub-decoder-layers in the decoder (required).
-norm: the layer normalization component (optional).</p>
-</div></blockquote>
-<dl>
-<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decoder_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerDecoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer_decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerDecoder</span><span class="p">(</span><span class="n">decoder_layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">memory</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">transformer_decoder</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="homura.nlp.transformer.TransformerDecoder.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tgt</span></em>, <em class="sig-param"><span class="n">memory</span></em>, <em class="sig-param"><span class="n">tgt_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tgt_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerDecoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerDecoder.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pass the inputs (and mask) through the decoder layer in turn.
-Args:</p>
-<blockquote>
-<div><p>tgt: the sequence to the decoder (required).
-memory: the sequence from the last layer of the encoder (required).
-tgt_mask: the mask for the tgt sequence (optional).
-memory_mask: the mask for the memory sequence (optional).
-tgt_key_padding_mask: the mask for the tgt keys per batch (optional).
-memory_key_padding_mask: the mask for the memory keys per batch (optional).</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Shape:</dt><dd><p>see the docs in Transformer class.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tgt</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>memory</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>tgt_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>tgt_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="homura.nlp.transformer.TransformerDecoderLayer">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">TransformerDecoderLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim_model</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">dim_feedforward</span><span class="o">=</span><span class="default_value">2048</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">activation</span><span class="o">=</span><span class="default_value">'relu'</span></em>, <em class="sig-param"><span class="n">pre_ln</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerDecoderLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerDecoderLayer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>TransformerDecoderLayer is made up of self-attn, multi-head-attn and feedforward network.
-This standard decoder layer is based on the paper “Attention Is All You Need”.
-Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
-Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in
-Neural Information Processing Systems, pages 6000-6010. Users may modify or implement
-in a different way during application.
-Args:</p>
-<blockquote>
-<div><p>dim_model: the number of expected features in the input (required).
-num_heads: the number of heads in the multiheadattention models (required).
-dim_feedforward: the dimension of the feedforward network model (default=2048).
-dropout: the dropout value (default=0.1).
-activation: the activation function of intermediate layer, relu or gelu (default=relu).
-pre_ln: True if PreLN is used</p>
-</div></blockquote>
-<dl>
-<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decoder_layer</span> <span class="o">=</span> <span class="n">TransformerDecoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">memory</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">decoder_layer</span><span class="p">(</span><span class="n">tgt</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="homura.nlp.transformer.TransformerDecoderLayer.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tgt</span></em>, <em class="sig-param"><span class="n">memory</span></em>, <em class="sig-param"><span class="n">tgt_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tgt_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">memory_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerDecoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerDecoderLayer.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pass the inputs (and mask) through the decoder layer.
-Args:</p>
-<blockquote>
-<div><p>tgt: the sequence to the decoder layer (required).
-memory: the sequence from the last layer of the encoder (required).
-tgt_mask: the mask for the tgt sequence (optional).
-memory_mask: the mask for the memory sequence (optional).
-tgt_key_padding_mask: the mask for the tgt keys per batch (optional).
-memory_key_padding_mask: the mask for the memory keys per batch (optional).</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Shape:</dt><dd><p>see the docs in Transformer class.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tgt</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>memory</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>tgt_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>tgt_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>memory_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="homura.nlp.transformer.TransformerEncoder">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">TransformerEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoder_layer</span></em>, <em class="sig-param"><span class="n">num_layers</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerEncoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>TransformerEncoder is a stack of N encoder layers
-Args:</p>
-<blockquote>
-<div><p>encoder_layer: an instance of the TransformerEncoderLayer() class (required).
-num_layers: the number of sub-encoder-layers in the encoder (required).
-norm: the layer normalization component (optional).</p>
-</div></blockquote>
-<dl>
-<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer_encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoder</span><span class="p">(</span><span class="n">encoder_layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">transformer_encoder</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="homura.nlp.transformer.TransformerEncoder.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">src_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerEncoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerEncoder.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pass the input through the encoder layers in turn.
-Args:</p>
-<blockquote>
-<div><p>src: the sequence to the encoder (required).
-mask: the mask for the src sequence (optional).
-src_key_padding_mask: the mask for the src keys per batch (optional).</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Shape:</dt><dd><p>see the docs in Transformer class.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>src_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="homura.nlp.transformer.TransformerEncoderLayer">
-<em class="property">class </em><code class="sig-prename descclassname">homura.nlp.transformer.</code><code class="sig-name descname">TransformerEncoderLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim_model</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">dim_feedforward</span><span class="o">=</span><span class="default_value">2048</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">activation</span><span class="o">=</span><span class="default_value">'relu'</span></em>, <em class="sig-param"><span class="n">pre_ln</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerEncoderLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerEncoderLayer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>TransformerEncoderLayer is made up of self-attn and feedforward network.
-This standard encoder layer is based on the paper “Attention Is All You Need”.
-Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
-Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in
-Neural Information Processing Systems, pages 6000-6010. Users may modify or implement
-in a different way during application.
-Args:</p>
-<blockquote>
-<div><p>dim_model: the number of expected features in the input (required).
-num_heads: the number of heads in the multiheadattention models (required).
-dim_feedforward: the dimension of the feedforward network model (default=2048).
-dropout: the dropout value (default=0.1).
-activation: the activation function of intermediate layer, relu or gelu (default=relu).
-pre_ln: True if PreLN is used</p>
-</div></blockquote>
-<dl>
-<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">encoder_layer</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="homura.nlp.transformer.TransformerEncoderLayer.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em>, <em class="sig-param"><span class="n">src_mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">src_key_padding_mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/nlp/transformer.html#TransformerEncoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.nlp.transformer.TransformerEncoderLayer.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pass the input through the encoder layer.
-Args:</p>
-<blockquote>
-<div><p>src: the sequence to the encoder layer (required).
-src_mask: the mask for the src sequence (optional).
-src_key_padding_mask: the mask for the src keys per batch (optional).</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Shape:</dt><dd><p>see the docs in Transformer class.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>src_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>src_key_padding_mask</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>torch.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-homura.nlp">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.nlp" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -569,37 +181,29 @@ src_key_padding_mask: the mask for the src keys per batch (optional).</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="homura.vision.html" class="btn btn-neutral float-right" title="homura.vision package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="homura.utils.html" class="btn btn-neutral float-left" title="homura.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="homura.vision.html" class="btn btn-neutral float-right" title="homura.vision package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="homura.utils.html" class="btn btn-neutral float-left" title="homura.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019-, Ryuichiro Hataya
+        &#169; Copyright 2019-, Ryuichiro Hataya.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>homura.vision.data package &mdash; homura  documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,8 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> homura
+            <a href="index.html" class="icon icon-home"> homura
           
 
           
@@ -93,18 +94,20 @@
 <li class="toctree-l2 current"><a class="reference internal" href="homura.vision.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.vision.data package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data.datasets">homura.vision.data.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data.prefetcher">homura.vision.data.prefetcher module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data.statistics">homura.vision.data.statistics module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data.utils">homura.vision.data.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.data.classification">homura.vision.data.classification module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-vision-data-detection-module">homura.vision.data.detection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-vision-data-prefetcher-module">homura.vision.data.prefetcher module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-vision-data-segmentation-module">homura.vision.data.segmentation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-vision-data-statistics-module">homura.vision.data.statistics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homura-vision-data-visionset-module">homura.vision.data.visionset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.transforms.html">homura.vision.transforms package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -147,6 +150,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -160,7 +165,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/homura.vision.data.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -179,229 +184,44 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.vision.data.datasets">
-<span id="homura-vision-data-datasets-module"></span><h2>homura.vision.data.datasets module<a class="headerlink" href="#module-homura.vision.data.datasets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.data.classification">
+<span id="homura-vision-data-classification-module"></span><h2>homura.vision.data.classification module<a class="headerlink" href="#module-homura.vision.data.classification" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.vision.data.datasets.ExtraSVHN">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">ExtraSVHN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#ExtraSVHN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.ExtraSVHN" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.vision.data.classification.ExtraSVHN">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.classification.</code><code class="sig-name descname">ExtraSVHN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/classification.html#ExtraSVHN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.classification.ExtraSVHN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.vision.data.datasets.ImageNet">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">ImageNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#ImageNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.ImageNet" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.vision.data.classification.ImageNet">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.classification.</code><code class="sig-name descname">ImageNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">loader</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/classification.html#ImageNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.classification.ImageNet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.datasets.folder.ImageFolder</span></code></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.vision.data.datasets.OriginalSVHN">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">OriginalSVHN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#OriginalSVHN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.OriginalSVHN" title="Permalink to this definition">¶</a></dt>
+<dt id="homura.vision.data.classification.OriginalSVHN">
+<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.classification.</code><code class="sig-name descname">OriginalSVHN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">train</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/classification.html#OriginalSVHN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.classification.OriginalSVHN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.datasets.svhn.SVHN</span></code></p>
 </dd></dl>
 
-<dl class="py class">
-<dt id="homura.vision.data.datasets.VisionSet">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">VisionSet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tv_class</span></em>, <em class="sig-param"><span class="n">root</span></em>, <em class="sig-param"><span class="n">num_classes</span></em>, <em class="sig-param"><span class="n">default_norm</span></em>, <em class="sig-param"><span class="n">default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">collate_fn</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Dataset abstraction for vision datasets.</p>
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.collate_fn">
-<code class="sig-name descname">collate_fn</code><em class="property">: Optional<span class="p">[</span>Callable<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.collate_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.default_norm">
-<code class="sig-name descname">default_norm</code><em class="property">: List</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.default_norm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.default_test_da">
-<code class="sig-name descname">default_test_da</code><em class="property">: Optional<span class="p">[</span>List<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.default_test_da" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.default_train_da">
-<code class="sig-name descname">default_train_da</code><em class="property">: Optional<span class="p">[</span>List<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.default_train_da" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.datasets.VisionSet.get_dataloader">
-<code class="sig-name descname">get_dataloader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">train_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">val_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">non_training_bs_factor</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">drop_last</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pin_memory</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_num_classes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_norm_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_prefetcher</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">start_epoch</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet.get_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.get_dataloader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Dataloader. This will automatically handle distributed setting</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
-<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
-<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
-<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset.</p></li>
-<li><p><strong>download</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>num_workers</strong> (<em>int</em>) – </p></li>
-<li><p><strong>drop_last</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>pin_memory</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>return_num_classes</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>test_batch_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>use_prefetcher</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>start_epoch</strong> (<em>bool</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[torch.utils.data.dataloader.DataLoader, torch.utils.data.dataloader.DataLoader]</p>
-</dd>
-</dl>
-<p>If None, None will be returned.
-:param download: If dataset needs downloading
-:param num_workers: Number of workers in data loaders
-:param non_training_bs_factor: Batch size scale factor during non training. For example,
-testing time requires no backward cache, so basically batch size can be doubled.
-:param drop_last: If drop last batch or not
-:param pin_memory: If pin memory or not
-:param return_num_classes: If return number of classes as the last return value
-:param test_batch_size: Test time batch size. If None, non_training_bs_factor * batch_size is used.
-:param pre_default_train_da: Data Augmentation before the default data augmentation
-:param post_default_train_da: Data Augmentation after the default data augmentation
-:param post_norm_train_da: Data Augmentation after normalization (i.e., norm)
-:param use_prefetcher: Use prefetcher or Not
-:param start_epoch: Epoch at start time
-:return: train_loader, test_loader, [val_loader], [num_classes]</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.datasets.VisionSet.get_dataset">
-<code class="sig-name descname">get_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">train_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">val_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">pre_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_default_train_da</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_norm_train_da</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#VisionSet.get_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.get_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Dataset</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
-<li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
-<li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset. If None, None will be returned.</p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
-<li><p><strong>download</strong> (<em>bool</em>) – If dataset needs downloading</p></li>
-<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation before the default data augmentation</p></li>
-<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after the default data augmentation</p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after normalization (i.e., norm)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>train_set, test_set, Optional[val_set]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[torchvision.datasets.vision.VisionDataset, torchvision.datasets.vision.VisionDataset, Optional[torchvision.datasets.vision.VisionDataset]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.num_classes">
-<code class="sig-name descname">num_classes</code><em class="property">: int</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.num_classes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.root">
-<code class="sig-name descname">root</code><em class="property">: str</em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.root" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="homura.vision.data.datasets.VisionSet.tv_class">
-<code class="sig-name descname">tv_class</code><em class="property">: Type<span class="p">[</span>torchvision.datasets.vision.VisionDataset<span class="p">]</span></em><a class="headerlink" href="#homura.vision.data.datasets.VisionSet.tv_class" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="homura.vision.data.datasets.fast_collate">
-<code class="sig-prename descclassname">homura.vision.data.datasets.</code><code class="sig-name descname">fast_collate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em>, <em class="sig-param"><span class="n">memory_format</span></em>, <em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">std</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/datasets.html#fast_collate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.datasets.fast_collate" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>PIL.Image.Image</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>memory_format</strong> (<em>torch.memory_format</em>) – </p></li>
-<li><p><strong>mean</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – </p></li>
-<li><p><strong>std</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[torch.Tensor, torch.Tensor]</p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
-<div class="section" id="module-homura.vision.data.prefetcher">
-<span id="homura-vision-data-prefetcher-module"></span><h2>homura.vision.data.prefetcher module<a class="headerlink" href="#module-homura.vision.data.prefetcher" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="homura.vision.data.prefetcher.DataPrefetchWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.prefetcher.</code><code class="sig-name descname">DataPrefetchWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loader</span></em>, <em class="sig-param"><span class="n">start_epoch</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/prefetcher.html#DataPrefetchWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.prefetcher.DataPrefetchWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>from NVidia’s DeepLearningExamples</p>
-</dd></dl>
-
+<div class="section" id="homura-vision-data-detection-module">
+<h2>homura.vision.data.detection module<a class="headerlink" href="#homura-vision-data-detection-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.vision.data.statistics">
-<span id="homura-vision-data-statistics-module"></span><h2>homura.vision.data.statistics module<a class="headerlink" href="#module-homura.vision.data.statistics" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="homura.vision.data.statistics.PerChannelStatistics">
-<em class="property">class </em><code class="sig-prename descclassname">homura.vision.data.statistics.</code><code class="sig-name descname">PerChannelStatistics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_samples</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>estimates per channel image dataset statistics (mean, stdev)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span> <span class="o">=</span> <span class="n">PerChannelStatistics</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span><span class="s2">&quot;data/images&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">from_batch</span><span class="p">(</span><span class="n">img_tensor</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimator</span><span class="o">.</span><span class="n">estimated</span>
-</pre></div>
+<div class="section" id="homura-vision-data-prefetcher-module">
+<h2>homura.vision.data.prefetcher module<a class="headerlink" href="#homura-vision-data-prefetcher-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<dl class="py method">
-<dt id="homura.vision.data.statistics.PerChannelStatistics.estimated">
-<em class="property">property </em><code class="sig-name descname">estimated</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.estimated" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.statistics.PerChannelStatistics.from_batch">
-<code class="sig-name descname">from_batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_batch" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>batch</strong> (<em>Sequence</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.statistics.PerChannelStatistics.from_directory">
-<code class="sig-name descname">from_directory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/data/statistics.html#PerChannelStatistics.from_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.from_directory" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>root</strong> (<em>pathlib.Path</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.statistics.PerChannelStatistics.mean">
-<em class="property">property </em><code class="sig-name descname">mean</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.mean" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="homura.vision.data.statistics.PerChannelStatistics.stdev">
-<em class="property">property </em><code class="sig-name descname">stdev</code><a class="headerlink" href="#homura.vision.data.statistics.PerChannelStatistics.stdev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="homura-vision-data-segmentation-module">
+<h2>homura.vision.data.segmentation module<a class="headerlink" href="#homura-vision-data-segmentation-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.vision.data.utils">
-<span id="homura-vision-data-utils-module"></span><h2>homura.vision.data.utils module<a class="headerlink" href="#module-homura.vision.data.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="homura-vision-data-statistics-module">
+<h2>homura.vision.data.statistics module<a class="headerlink" href="#homura-vision-data-statistics-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-homura.vision.data">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.vision.data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="homura-vision-data-visionset-module">
+<h2>homura.vision.data.visionset module<a class="headerlink" href="#homura-vision-data-visionset-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -410,37 +230,29 @@ testing time requires no backward cache, so basically batch size can be doubled.
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="homura.vision.models.html" class="btn btn-neutral float-right" title="homura.vision.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="homura.vision.html" class="btn btn-neutral float-left" title="homura.vision package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="homura.vision.models.html" class="btn btn-neutral float-right" title="homura.vision.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="homura.vision.html" class="btn btn-neutral float-left" title="homura.vision package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019-, Ryuichiro Hataya
+        &#169; Copyright 2019-, Ryuichiro Hataya.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

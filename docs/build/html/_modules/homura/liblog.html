@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>homura.liblog &mdash; homura  documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,8 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> homura
+            <a href="../../index.html" class="icon icon-home"> homura
           
 
           
@@ -128,6 +129,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -153,12 +156,12 @@
             
   <h1>Source code for homura.liblog</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; logging tools</span>
-
+<span class="sd">ported from Optuna and Transformers</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># ported from Optuna and Transformers</span>
-
+<span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span>
@@ -289,19 +292,36 @@
 
 
 <span class="c1"># internal</span>
+
+<span class="k">def</span> <span class="nf">_get_file_descripter</span><span class="p">():</span>
+    <span class="c1"># check if stderr and stdout are two different ptys.</span>
+    <span class="c1"># this detects tampering by wandb which messes up tqdm logging.</span>
+    <span class="c1"># fix it by writing to stderr instead of stdout.</span>
+    <span class="n">file_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">ttyname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">ttyname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">fileno</span><span class="p">()):</span>
+            <span class="n">file_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="c1"># stdout or stderr is not a pty. default to stdout.</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">file_</span>
+
+
 <span class="k">def</span> <span class="nf">_set_tqdm_handler</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
                       <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; An alternative handler to avoid disturbing tqdm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+    <span class="kn">import</span> <span class="nn">tqdm</span>
 
     <span class="k">class</span> <span class="nc">TQDMHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">):</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;A logging handler compatible with tqdm progress bars from</span>
+<span class="sd">        https://github.com/pesser/edflow/blob/317cb1b61bf810a68004788d08418a5352653264/edflow/custom_logging.py#L322</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-            <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">_get_file_descripter</span><span class="p">())</span>
 
     <span class="n">_configure_root_logger</span><span class="p">()</span>
     <span class="n">th</span> <span class="o">=</span> <span class="n">TQDMHandler</span><span class="p">()</span>
@@ -317,18 +337,21 @@
     <span class="n">_get_root_logger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_tqdm_stdout_stderr</span><span class="p">():</span>
-    <span class="c1"># https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">DummyTqdmFile</span><span class="p">,</span> <span class="n">_original_stds</span><span class="p">)</span>
-
-
 <span class="c1"># tqdm</span>
+
+<div class="viewcode-block" id="set_tqdm_stdout_stderr"><a class="viewcode-back" href="../../homura.html#homura.liblog.set_tqdm_stdout_stderr">[docs]</a><span class="k">def</span> <span class="nf">set_tqdm_stdout_stderr</span><span class="p">():</span>
+    <span class="c1"># https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py</span>
+    <span class="c1"># Some libraries override sys.stdout, which causes OSError: [Errno 9] Bad file descriptor.</span>
+    <span class="c1"># To avoid this, this if statement is necessary</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">DummyTqdmFile</span><span class="p">,</span> <span class="n">_original_stds</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="tqdm"><a class="viewcode-back" href="../../homura.html#homura.liblog.tqdm">[docs]</a><span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_original_stds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># tqdm seems to prioritize dynamic_ncols over ncols</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_file_descripter</span><span class="p">()</span>
+        <span class="c1"># tqdm seems to prioritize dynamic_ncols over ncols</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ncols&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dynamic_ncols&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dynamic_ncols&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">_tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -369,28 +392,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019-, Ryuichiro Hataya
+        &#169; Copyright 2019-, Ryuichiro Hataya.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
