@@ -44,7 +44,8 @@ pip install -U git+https://github.com/moskomule/homura
 ```
 faiss (for faster kNN)
 accimage (for faster image pre-processing)
-cupy
+cupy (homura)
+opt_einsum (for accelerated einsum)
 ```
 
 ## test

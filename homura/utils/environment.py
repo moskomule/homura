@@ -40,6 +40,10 @@ def is_cupy_available() -> bool:
     return importlib.util.find_spec("cupy") is not None
 
 
+def is_opteinsum_available() -> bool:
+    return importlib.util.find_spec("opt_einsum") is not None
+
+
 # get environment information
 
 def get_git_hash() -> str:
