@@ -137,6 +137,7 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 # internal
 
 def _get_file_descripter():
+    # ported from https://github.com/pesser/edflow/
     # check if stderr and stdout are two different ptys.
     # this detects tampering by wandb which messes up tqdm logging.
     # fix it by writing to stderr instead of stdout.
@@ -153,18 +154,24 @@ def _get_file_descripter():
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
+    https://stackoverflow.com/questions/38543506/change-logging-print-function-to-tqdm-write-so-logging-doesnt-interfere-wit
     """
 
     import tqdm
 
-    class TQDMHandler(logging.StreamHandler):
-        """A logging handler compatible with tqdm progress bars from
-        https://github.com/pesser/edflow/blob/317cb1b61bf810a68004788d08418a5352653264/edflow/custom_logging.py#L322
-        """
+    class TQDMHandler(logging.Handler):
+        def __init__(self, level):
+            super().__init__(level)
 
         def emit(self, record):
-            msg = self.format(record)
-            tqdm.tqdm.write(msg, file=_get_file_descripter())
+            try:
+                msg = self.format(record)
+                tqdm.tqdm.write(msg, file=_get_file_descripter())
+                self.flush()
+            except (KeyboardInterrupt, SystemExit):
+                raise
+            except Exception:
+                self.handleError(record)
 
     _configure_root_logger()
     th = TQDMHandler()

@@ -78,6 +78,7 @@ class TQDMReporter(_ReporterBase):
         self.writer.set_postfix(postfix)
 
         if len(postfix) != len(postfix):
+            # todo: what's this?
             for k, v in {key: value
                          for key, (value, _) in self._temporal_memory.items() if
                          not isinstance(value, Number)}.items():
