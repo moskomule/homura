@@ -174,7 +174,7 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
                 self.handleError(record)
 
     _configure_root_logger()
-    th = TQDMHandler()
+    th = TQDMHandler(level)
     if isinstance(level, str):
         level = _LOG_LEVEL[level]
     th.setLevel(level)
