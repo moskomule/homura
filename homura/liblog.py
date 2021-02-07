@@ -174,8 +174,9 @@ def set_tqdm_stdout_stderr():
     if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
     else:
-        warnings.warn("sys.stdout is not expected type. If you use wandb, for example, set WANDB_CONSOLE=off to avoid "
-                      "tqdm-related problems.", UserWarning)
+        warnings.warn(f"sys.stdout is unexpected type: {type(sys.stdout)}. "
+                      f"If you use wandb, for example, set WANDB_CONSOLE=off to avoid tqdm-related problems.",
+                      UserWarning)
 
 
 def tqdm(*args, **kwargs):
