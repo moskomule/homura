@@ -181,7 +181,7 @@ def set_tqdm_stdout_stderr():
 def tqdm(*args, **kwargs):
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
     if kwargs.get("file") is None:
-        kwargs["file"] = _get_file_descripter()
+        kwargs["file"] = _original_stds[0]
         # tqdm seems to prioritize dynamic_ncols over ncols
     if kwargs.get("ncols") is None and kwargs.get("dynamic_ncols") is None:
         kwargs["dynamic_ncols"] = True
