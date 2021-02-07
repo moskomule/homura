@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import threading
+import warnings
 from typing import Optional, TextIO
 
 import tqdm as _tqdm
@@ -134,47 +135,24 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
     _get_root_logger().addHandler(fh)
 
 
-# internal
-
-def _get_file_descripter():
-    # ported from https://github.com/pesser/edflow/
-    # check if stderr and stdout are two different ptys.
-    # this detects tampering by wandb which messes up tqdm logging.
-    # fix it by writing to stderr instead of stdout.
-    file_ = sys.stdout
-    try:
-        if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
-            file_ = sys.stderr
-    except OSError:
-        # stdout or stderr is not a pty. default to stdout.
-        pass
-    return file_
-
-
+# internal APIs
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
-    https://stackoverflow.com/questions/38543506/change-logging-print-function-to-tqdm-write-so-logging-doesnt-interfere-wit
     """
 
     import tqdm
 
-    class TQDMHandler(logging.Handler):
-        def __init__(self, level):
-            super().__init__(level)
+    class TQDMHandler(logging.StreamHandler):
+        def __init__(self):
+            logging.StreamHandler.__init__(self)
 
         def emit(self, record):
-            try:
-                msg = self.format(record)
-                tqdm.tqdm.write(msg, file=_get_file_descripter())
-                self.flush()
-            except (KeyboardInterrupt, SystemExit):
-                raise
-            except Exception:
-                self.handleError(record)
+            msg = self.format(record)
+            tqdm.tqdm.write(msg)
 
     _configure_root_logger()
-    th = TQDMHandler(level)
+    th = TQDMHandler()
     if isinstance(level, str):
         level = _LOG_LEVEL[level]
     th.setLevel(level)
@@ -195,6 +173,9 @@ def set_tqdm_stdout_stderr():
     # To avoid this, this if statement is necessary
     if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
+    else:
+        warnings.warn("sys.stdout is not expected type. If you use wandb, for example, set WANDB_CONSOLE=off to avoid "
+                      "tqdm-related problems.", UserWarning)
 
 
 def tqdm(*args, **kwargs):
