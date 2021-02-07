@@ -177,6 +177,16 @@
 <span id="homura-utils-backends-module"></span><h2>homura.utils.backends module<a class="headerlink" href="#module-homura.utils.backends" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions to convert PyTorch Tensors &lt;-&gt;  Cupy/Numpy arrays. These functions  are useful to write device-agnostic extensions.</p>
 <dl class="py function">
+<dt id="homura.utils.backends.einsum">
+<code class="sig-prename descclassname">homura.utils.backends.</code><code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expr</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">xs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/backends.html#einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.backends.einsum" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>expr</strong> (<em>str</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="homura.utils.backends.torch_to_xp">
 <code class="sig-prename descclassname">homura.utils.backends.</code><code class="sig-name descname">torch_to_xp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/backends.html#torch_to_xp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.backends.torch_to_xp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a PyTorch tensor to a Cupy/Numpy array.</p>
@@ -558,6 +568,16 @@
 <dl class="py function">
 <dt id="homura.utils.environment.is_faiss_available">
 <code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_faiss_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#is_faiss_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_faiss_available" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.utils.environment.is_opteinsum_available">
+<code class="sig-prename descclassname">homura.utils.environment.</code><code class="sig-name descname">is_opteinsum_available</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/environment.html#is_opteinsum_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#homura.utils.environment.is_opteinsum_available" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>

@@ -162,11 +162,15 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch.utils.dlpack</span> <span class="kn">import</span> <span class="n">from_dlpack</span><span class="p">,</span> <span class="n">to_dlpack</span>
 
-<span class="kn">from</span> <span class="nn">.environment</span> <span class="kn">import</span> <span class="n">is_cupy_available</span>
+<span class="kn">from</span> <span class="nn">.environment</span> <span class="kn">import</span> <span class="n">is_cupy_available</span><span class="p">,</span> <span class="n">is_opteinsum_available</span>
 
-<span class="n">IS_CUPY_AVAILABLE</span> <span class="o">=</span> <span class="n">is_cupy_available</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">IS_CUPY_AVAILABLE</span><span class="p">:</span>
+<span class="n">has_cupy</span> <span class="o">=</span> <span class="n">is_cupy_available</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">has_cupy</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">cupy</span>
+
+<span class="n">has_opt_einsum</span> <span class="o">=</span> <span class="n">is_opteinsum_available</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">has_opt_einsum</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">opt_einsum</span>
 
 
 <div class="viewcode-block" id="torch_to_xp"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.backends.torch_to_xp">[docs]</a><span class="k">def</span> <span class="nf">torch_to_xp</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
@@ -177,7 +181,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;torch_to_numpy expects torch.Tensor as input, but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">IS_CUPY_AVAILABLE</span> <span class="ow">and</span> <span class="nb">input</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">has_cupy</span> <span class="ow">and</span> <span class="nb">input</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">cupy</span><span class="o">.</span><span class="n">fromDlpack</span><span class="p">(</span><span class="n">to_dlpack</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">input</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
@@ -190,10 +194,17 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">IS_CUPY_AVAILABLE</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">cupy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">has_cupy</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">cupy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">from_dlpack</span><span class="p">(</span><span class="n">cupy</span><span class="o">.</span><span class="n">ToDlpack</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;xp_to_torch expects numpy/cupy.ndarray as input, but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.backends.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+           <span class="o">*</span><span class="n">xs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">has_opt_einsum</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">opt_einsum</span><span class="o">.</span><span class="n">contract</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="o">*</span><span class="n">xs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
