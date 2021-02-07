@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import threading
+import warnings
 from typing import Optional, TextIO
 
 import tqdm as _tqdm
@@ -134,22 +135,7 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
     _get_root_logger().addHandler(fh)
 
 
-# internal
-
-def _get_file_descripter():
-    # check if stderr and stdout are two different ptys.
-    # this detects tampering by wandb which messes up tqdm logging.
-    # fix it by writing to stderr instead of stdout.
-    file_ = sys.stdout
-    try:
-        if os.ttyname(sys.stdout.fileno()) != os.ttyname(sys.stderr.fileno()):
-            file_ = sys.stderr
-    except OSError:
-        # stdout or stderr is not a pty. default to stdout.
-        pass
-    return file_
-
-
+# internal APIs
 def _set_tqdm_handler(level: str or int = logging.INFO,
                       formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
@@ -158,13 +144,12 @@ def _set_tqdm_handler(level: str or int = logging.INFO,
     import tqdm
 
     class TQDMHandler(logging.StreamHandler):
-        """A logging handler compatible with tqdm progress bars from
-        https://github.com/pesser/edflow/blob/317cb1b61bf810a68004788d08418a5352653264/edflow/custom_logging.py#L322
-        """
+        def __init__(self):
+            logging.StreamHandler.__init__(self)
 
         def emit(self, record):
             msg = self.format(record)
-            tqdm.tqdm.write(msg, file=_get_file_descripter())
+            tqdm.tqdm.write(msg)
 
     _configure_root_logger()
     th = TQDMHandler()
@@ -188,12 +173,16 @@ def set_tqdm_stdout_stderr():
     # To avoid this, this if statement is necessary
     if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout, sys.stderr = map(DummyTqdmFile, _original_stds)
+    elif not isinstance(sys.stdout, DummyTqdmFile):
+        warnings.warn(f"sys.stdout is unexpected type: {type(sys.stdout)}.\n"
+                      f"If you use wandb, set WANDB_CONSOLE=off to avoid tqdm-related problems.",
+                      UserWarning)
 
 
 def tqdm(*args, **kwargs):
     # https://github.com/tqdm/tqdm/blob/master/examples/redirect_print.py
     if kwargs.get("file") is None:
-        kwargs["file"] = _get_file_descripter()
+        kwargs["file"] = _original_stds[0]
         # tqdm seems to prioritize dynamic_ncols over ncols
     if kwargs.get("ncols") is None and kwargs.get("dynamic_ncols") is None:
         kwargs["dynamic_ncols"] = True

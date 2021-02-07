@@ -24,18 +24,18 @@ __all__ = ["TrainerBase", "SupervisedTrainer"]
 class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
     """ Baseclass for Trainers
 
-    :param model:
-    :param optimizer:
-    :param loss_f:
-    :param reporters:
-    :param scheduler:
-    :param device:
-    :param verb:
-    :param use_cudnn_benchmark:
-    :param use_cuda_nonblocking:
-    :param logger:
-    :param use_sync_bn:
-    :param tqdm_ncols:
+    :param model: model to be trained
+    :param optimizer: optimizer for the model
+    :param loss_f: loss function for training
+    :param reporters: list of reporters
+    :param scheduler: learning rate scheduler
+    :param device: device to be used
+    :param quiet: True to disable tqdm
+    :param disable_cudnn_benchmark: True to disable cudnn benchmark mode
+    :param disable_cuda_nonblocking: True to disable cuda nonblocking
+    :param logger: optional logger
+    :param use_sync_bn: True to convert BN to sync BN
+    :param tqdm_ncols: number of columns of tqdm
     :param kwargs:
     """
 
@@ -47,9 +47,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  device: Optional[torch.device or str] = None,
-                 verb: bool = True,
-                 use_cudnn_benchmark: bool = True,
-                 use_cuda_nonblocking: bool = True,
+                 quiet: bool = True,
+                 disable_cudnn_benchmark: bool = False,
+                 disable_cuda_nonblocking: bool = False,
                  logger=None,
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 120,
@@ -81,25 +81,26 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             torch.cuda.set_device(rank)
             if get_global_rank() > 0:
                 # to avoid overwriting
-                verb = False
+                quiet = True
 
         self.loss_f = loss_f
-        self._verb = verb
+        self._verbose = not quiet
 
         # setup model
         if isinstance(model, nn.Module):
             self.model = model
         elif isinstance(model, dict):
             self.model = nn.ModuleDict(model)
+            self.logger.debug(f"model is nn.ModuleDict of {self.model.keys()}")
         else:
             raise TypeError(f"Unknown type for `model`. Expected nn.Module or Dict[str, Module], but got {type(model)}")
 
         if GPU in str(self.device):
             self.model.to(self.device)
-            torch.backends.cudnn.benchmark = use_cudnn_benchmark
-            self._cuda_nonblocking = use_cuda_nonblocking
-            self.logger.debug(f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, "
-                              f"cuda.nonblocking: {use_cuda_nonblocking}")
+            torch.backends.cudnn.benchmark = not disable_cudnn_benchmark
+            self._cuda_nonblocking = not disable_cuda_nonblocking
+            self.logger.debug(f"cuda: True, cudnn.benchmark: {not disable_cudnn_benchmark}, "
+                              f"cuda.nonblocking: {not disable_cuda_nonblocking}")
         else:
             self._cuda_nonblocking = False
             # usually, this is not expected
@@ -107,7 +108,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         if is_distributed():
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
-            self.logger.debug("model converted to DistributedDataParallel")
+            self.logger.debug(f"model converted to DistributedDataParallel at rank={rank}")
 
         # self.accessible_model is useful for e.g., checkpointing
         if isinstance(self.model, nn.parallel.DistributedDataParallel) or isinstance(self.model, nn.DataParallel):
@@ -128,6 +129,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
             # if reporters not contain TQDMReporter
             reporters.append(TQDMReporter(ncols=tqdm_ncols))
+        self.logger.debug(f"reporter is ready: {reporters}")
         self.reporter = ReporterList(reporters)
 
         # called via property
@@ -138,9 +140,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         # to nest, leave=False (https://github.com/tqdm/tqdm/blob/master/examples/simple_examples.py#L19)
         self._tqdm = lambda x: x
-        if verb:
+        if self._verbose:
             self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
             set_tqdm_stdout_stderr()
+            self.logger.debug("verbose: setup tqdm")
+        else:
+            self.logger.debug("quiet: no tqdm")
 
         for k, v in kwargs.items():
             if hasattr(self, k):
@@ -436,8 +441,8 @@ class SupervisedTrainer(TrainerBase):
                  *,
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Scheduler] = None,
-                 verb=True,
-                 use_cudnn_benchmark=True,
+                 quiet=False,
+                 disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
@@ -445,11 +450,12 @@ class SupervisedTrainer(TrainerBase):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, reporters=reporters, scheduler=scheduler,
-                                                verb=verb, use_cudnn_benchmark=use_cudnn_benchmark, **kwargs)
+                                                quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark, **kwargs)
 
         if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
             self.model.to(self.device)
+            self.logger.info("model converted to DataParallel")
 
         self._use_amp = use_amp
         if self._use_amp:
