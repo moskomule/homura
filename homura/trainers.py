@@ -15,7 +15,6 @@ from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tq
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
-from .utils._vocabulary import *
 from .utils.containers import StepDict, TensorTuple
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
@@ -63,7 +62,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             raise DeprecationWarning("callback is deprecated, if you need, use homura before v2020.8")
 
         self.logger = logger or get_logger(__name__)
-        self.device = device or (torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU))
+        self.device = device or (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
         self._is_debug = debug
 
         if self._is_debug:
@@ -95,7 +94,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             raise TypeError(f"Unknown type for `model`. Expected nn.Module or Dict[str, Module], but got {type(model)}")
 
-        if GPU in str(self.device):
+        if "cuda" in str(self.device):
             self.model.to(self.device)
             torch.backends.cudnn.benchmark = not disable_cudnn_benchmark
             self._cuda_nonblocking = not disable_cuda_nonblocking
@@ -266,7 +265,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def train(self,
               data_loader: Iterable or DataLoader,
-              mode: str = TRAIN
+              mode: str = "train"
               ) -> None:
         """ Training the model for an epoch.
 
@@ -293,7 +292,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def test(self,
              data_loader: Iterable or DataLoader,
-             mode: str = TEST
+             mode: str = "test"
              ) -> None:
         """ Evaluate the model.
 
