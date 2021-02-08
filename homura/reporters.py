@@ -51,7 +51,7 @@ class TQDMReporter(_ReporterBase):
         self._ncols = ncols
         self._temporal_memory = {}
 
-        liblog._set_tqdm_handler()
+        liblog.set_tqdm_handler()
         liblog.set_tqdm_stdout_stderr()
 
     def set_iterator(self,
@@ -77,11 +77,10 @@ class TQDMReporter(_ReporterBase):
                    if isinstance(value, Number)}
         self.writer.set_postfix(postfix)
 
-        if len(postfix) != len(postfix):
-            # todo: what's this?
+        if len(postfix) != len(self._temporal_memory):
             for k, v in {key: value
-                         for key, (value, _) in self._temporal_memory.items() if
-                         not isinstance(value, Number)}.items():
+                         for key, (value, _) in self._temporal_memory.items()
+                         if not isinstance(value, Number)}.items():
                 self.add_text(k, v)
         # clear temporal memory
         self._temporal_memory = {}
