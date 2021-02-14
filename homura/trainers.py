@@ -474,8 +474,6 @@ class SupervisedTrainer(TrainerBase):
                   data: Tuple[Tensor, Tensor]
                   ) -> None:
         input, target = data
-        if self._use_channel_last:
-            input = input.to(memory_format=torch.channels_last)
         with torch.cuda.amp.autocast(self._use_amp):
             output = self.model(input)
             loss = self.loss_f(output, target)
@@ -497,6 +495,15 @@ class SupervisedTrainer(TrainerBase):
         if self._report_topk is not None:
             for top_k in self._report_topk:
                 self.reporter.add(f'accuracy@{top_k}', accuracy(output, target, top_k))
+
+    def data_preprocess(self,
+                        data: Tuple[Tensor, Tensor]
+                        ) -> (Tuple[Tensor, Tensor], int):
+
+        return (TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking,
+                                     memory_format=torch.channels_last if self._use_channel_last
+                                     else torch.preserve_format),
+                data[0].size(0))
 
     def state_dict(self
                    ) -> Mapping[str, Any]:
