@@ -445,6 +445,7 @@ class SupervisedTrainer(TrainerBase):
                  disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
+                 use_channel_last=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
                  **kwargs):
         if isinstance(model, dict):
@@ -461,6 +462,10 @@ class SupervisedTrainer(TrainerBase):
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
+        self._use_channel_last = use_channel_last
+        if self._use_channel_last:
+            self.logger.warning("channel_last format is an experimental feature")
+            self.model.to(memory_format=torch.channels_last)
         if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
             report_accuracy_topk = [report_accuracy_topk]
         self._report_topk = report_accuracy_topk
@@ -469,6 +474,8 @@ class SupervisedTrainer(TrainerBase):
                   data: Tuple[Tensor, Tensor]
                   ) -> None:
         input, target = data
+        if self._use_channel_last:
+            input = input.to(memory_format=torch.channels_last)
         with torch.cuda.amp.autocast(self._use_amp):
             output = self.model(input)
             loss = self.loss_f(output, target)

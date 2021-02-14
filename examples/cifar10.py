@@ -20,6 +20,7 @@ class Config:
     use_amp: bool = False
     use_accimage: bool = False
     use_prefetcher: bool = False
+    use_channel_last: bool = False
     debug: bool = False
 
 
@@ -57,6 +58,7 @@ def main(cfg):
                                     reporters=[reporters.TensorboardReporter('.')],
                                     scheduler=scheduler,
                                     use_amp=cfg.use_amp,
+                                    use_channel_last=cfg.use_channel_last,
                                     debug=cfg.debug
                                     ) as trainer:
 
