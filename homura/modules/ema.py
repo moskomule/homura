@@ -24,15 +24,20 @@ class EMA(nn.Module):
 
     model = EMA(original_model, 0.99999)
 
+    :param original_model: Original model
+    :param momentum: Momentum value for EMA
+    :param copy_buffer: If true, copy float buffers instead of EMA
     """
 
     def __init__(self,
                  original_model: nn.Module,
-                 momentum: float = 0.999):
+                 momentum: float = 0.999,
+                 copy_buffer: bool = False):
         super().__init__()
         if not (0 <= momentum <= 1):
             raise ValueError(f"Invalid momentum: {momentum}")
         self.momentum = momentum
+        self.copy_buffer = copy_buffer
 
         self._original_model = original_model
         self._ema_model = copy.deepcopy(original_model)
@@ -63,11 +68,21 @@ class EMA(nn.Module):
         torch._foreach_add_(e_p, o_p, alpha=1 - self.momentum)
 
         # some buffers are integer for counting etc.
+        alpha = 0 if self.copy_buffer else self.momentum
         o_b = [b for b in self._original_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
         if len(o_b) > 0:
             e_b = [b for b in self._ema_model.buffers() if isinstance(b, torch.Tensor) and torch.is_floating_point(b)]
-            torch._foreach_mul_(e_b, self.momentum)
-            torch._foreach_add_(e_b, o_b, alpha=1 - self.momentum)
+            torch._foreach_mul_(e_b, alpha)
+            torch._foreach_add_(e_b, o_b, alpha=1 - alpha)
+
+        # integers
+        o_b = [b for b in self._original_model.buffers()
+               if isinstance(b, torch.Tensor) and not torch.is_floating_point(b)]
+        if len(o_b) > 0:
+            e_b = [b for b in self._ema_model.buffers()
+                   if isinstance(b, torch.Tensor) and not torch.is_floating_point(b)]
+            for o, e in zip(o_b, e_b):
+                e.copy_(o)
 
     def forward(self, *args, **kwargs):
         if self.training:
