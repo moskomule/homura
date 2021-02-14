@@ -20,6 +20,7 @@ class Config:
     use_amp: bool = False
     use_accimage: bool = False
     use_prefetcher: bool = False
+    use_multi_tensor: bool = False
     use_channel_last: bool = False
     debug: bool = False
 
@@ -32,7 +33,8 @@ def main(cfg):
     train_loader, test_loader = DATASET_REGISTRY("cifar10"
                                                  )(cfg.batch_size, num_workers=4,
                                                    use_prefetcher=cfg.use_prefetcher)
-    optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay)
+    optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
+                                                    multi_tensor=cfg.use_multi_tensor)
     scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
 
     if cfg.bn_no_wd:
