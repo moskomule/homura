@@ -46,7 +46,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  device: Optional[torch.device or str] = None,
-                 quiet: bool = True,
+                 quiet: bool = False,
                  disable_cudnn_benchmark: bool = False,
                  disable_cuda_nonblocking: bool = False,
                  logger=None,
@@ -202,7 +202,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self.logger.debug("Override iteration")
 
     def epoch_range(self,
-                    epoch: int):
+                    epoch: int
+                    ) -> TQDMReporter:
         tqdm_reporter = [rep for rep in self.reporter.reporters if isinstance(rep, TQDMReporter)][0]
         tqdm_reporter.set_iterator(range(epoch))
         return tqdm_reporter
