@@ -16,6 +16,8 @@ class Config:
     weight_decay: float = 1e-4
     lr_decay: float = 0.1
 
+    data: str = chika.choices("cifar10", "cifar100", "svhn")
+
     bn_no_wd: bool = False
     use_amp: bool = False
     use_accimage: bool = False
@@ -30,7 +32,7 @@ def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
     model = MODEL_REGISTRY(cfg.model)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.batch_size, num_workers=4, download=cfg.download)
+    train_loader, test_loader = DATASET_REGISTRY(cfg.data)(cfg.batch_size, num_workers=4, download=cfg.download)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
                                                     multi_tensor=cfg.use_multi_tensor)
     scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
