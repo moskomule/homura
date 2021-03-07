@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 import inspect
 import pathlib
@@ -10,7 +12,6 @@ from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import transforms as VT
 
 from homura import is_distributed
-from .prefetcher import DataPrefetchWrapper
 from ..transforms import ConcatTransform, TransformBase
 
 
@@ -22,7 +23,15 @@ class VisionSetProtocol(Protocol):
 
 @dataclass
 class VisionSet:
-    """ Dataset abstraction for vision datasets.
+    """ Dataset abstraction for vision datasets. Use case ::
+
+        data = DATASET_REGISTER("cifar10").setup(...)
+        for img, label in data.tran_loader:
+            ...
+
+        
+
+
     """
 
     tv_class: Type[VisionSetProtocol]
@@ -46,6 +55,50 @@ class VisionSet:
             self.default_train_da = []
         if self.default_test_da is None:
             self.default_test_da = []
+        self._train_set = None
+        self._train_loader = None
+        self._val_set = None
+        self._val_loader = None
+        self._test_set = None
+        self._test_loader = None
+
+    @property
+    def train_loader(self):
+        return self._train_loader
+
+    @property
+    def val_loader(self):
+        return self._val_loader
+
+    @property
+    def test_loader(self):
+        return self._test_loader
+
+    def setup(self,
+              batch_size: int,
+              train_da: Optional[List] = None,
+              test_da: Optional[List] = None,
+              norm: Optional[List] = None,
+              train_size: Optional[int] = None,
+              test_size: Optional[int] = None,
+              val_size: Optional[int] = None,
+              download: bool = False,
+              num_workers: int = 1,
+              non_training_bs_factor=2,
+              drop_last: bool = False,
+              pin_memory: bool = True,
+              return_num_classes: bool = False,
+              test_batch_size: Optional[int] = None,
+              pre_default_train_da: Optional[List] = None,
+              post_default_train_da: Optional[List] = None,
+              post_norm_train_da: Optional[List] = None,
+              prefetch_factor: int = 2,
+              persistent_workers: bool = False,
+              worker_init_fn: Optional[Callable] = None,
+              start_epoch: bool = 0
+              ) -> VisionSet:
+        self.get_dataloader(**locals())
+        return self
 
     def get_dataset(self,
                     train_size: Optional[int] = None,
@@ -122,6 +175,10 @@ class VisionSet:
         if test_size is not None:
             test_set = self._sample_dataset(test_set, test_size)
 
+        self._train_set = train_set
+        self._val_set = val_set
+        self._test_set = test_set
+
         return train_set, test_set, val_set
 
     def get_dataloader(self,
@@ -142,7 +199,9 @@ class VisionSet:
                        pre_default_train_da: Optional[List] = None,
                        post_default_train_da: Optional[List] = None,
                        post_norm_train_da: Optional[List] = None,
-                       use_prefetcher: bool = False,
+                       prefetch_factor: int = 2,
+                       persistent_workers: bool = False,
+                       worker_init_fn: Optional[Callable] = None,
                        start_epoch: bool = 0
                        ) -> (Tuple[DataLoader, DataLoader]
                              or Tuple[DataLoader, DataLoader, DataLoader]
@@ -169,7 +228,9 @@ class VisionSet:
         :param pre_default_train_da: Data Augmentation before the default data augmentation
         :param post_default_train_da: Data Augmentation after the default data augmentation
         :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)
-        :param use_prefetcher: Use prefetcher or Not
+        :param prefetch_factor:
+        :param persistent_workers:
+        :param worker_init_fn:
         :param start_epoch: Epoch at start time
         :return: train_loader, test_loader, [val_loader], [num_classes]
         """
@@ -196,12 +257,12 @@ class VisionSet:
             samplers[0] = RandomSampler(train_set, True)
 
         shared_kwargs = dict(drop_last=drop_last, num_workers=num_workers, pin_memory=pin_memory,
-                             collate_fn=self.collate_fn)
+                             collate_fn=self.collate_fn, prefetch_factor=prefetch_factor,
+                             persistent_workers=persistent_workers, worker_init_fn=worker_init_fn)
         train_loader = DataLoader(train_set, batch_size, sampler=samplers[0], **shared_kwargs)
         test_loader = DataLoader(test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
-        if use_prefetcher:
-            train_loader = DataPrefetchWrapper(train_loader, start_epoch)
-            test_loader = DataPrefetchWrapper(test_loader, start_epoch)
+        self._train_loader = train_loader
+        self._test_loader = test_loader
 
         ret = [train_loader, test_loader]
 
@@ -210,9 +271,8 @@ class VisionSet:
                 samplers[1] = DistributedSampler(val_set, **dist_sampler_kwargs)
                 samplers[1].set_epoch(start_epoch)
             val_loader = DataLoader(val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
-            if use_prefetcher:
-                val_loader = DataPrefetchWrapper(test_loader)
             ret.append(val_loader)
+            self._val_loader = val_loader
 
         if return_num_classes:
             ret.append(self.num_classes)
