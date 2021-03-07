@@ -31,8 +31,8 @@ class Config:
 def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
-    model = MODEL_REGISTRY(cfg.model)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY(cfg.data)(cfg.batch_size, num_workers=4, download=cfg.download)
+    data = DATASET_REGISTRY(cfg.data).setup(cfg.batch_size, num_workers=4, download=cfg.download)
+    model = MODEL_REGISTRY(cfg.model)(num_classes=data.num_classes)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
                                                     multi_tensor=cfg.use_multi_tensor)
     scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
@@ -65,8 +65,8 @@ def main(cfg):
                                     ) as trainer:
 
         for _ in trainer.epoch_range(cfg.epochs):
-            trainer.train(train_loader)
-            trainer.test(test_loader)
+            trainer.train(data.train_loader)
+            trainer.test(data.test_loader)
             trainer.scheduler.step()
 
         print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
