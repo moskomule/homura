@@ -52,7 +52,6 @@ class AttentionPool2d(nn.Module):
         self.q_proj = nn.Linear(embed_dim, embed_dim)
         self.v_proj = nn.Linear(embed_dim, embed_dim)
         self.c_proj = nn.Linear(embed_dim, embed_dim)
-        self._bias = torch.cat([self.q_proj.bias, self.k_proj.bias, self.v_proj.bias])
         self.num_heads = num_heads
 
     def forward(self,
@@ -68,7 +67,7 @@ class AttentionPool2d(nn.Module):
             k_proj_weight=self.k_proj.weight,
             v_proj_weight=self.v_proj.weight,
             in_proj_weight=None,
-            in_proj_bias=self._bias,
+            in_proj_bias=torch.cat([self.q_proj.bias, self.k_proj.bias, self.v_proj.bias]),
             bias_k=None,
             bias_v=None,
             add_zero_attn=False,
