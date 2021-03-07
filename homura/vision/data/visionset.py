@@ -29,7 +29,7 @@ class VisionSet:
         for img, label in data.tran_loader:
             ...
 
-        
+
 
 
     """
@@ -97,7 +97,9 @@ class VisionSet:
               worker_init_fn: Optional[Callable] = None,
               start_epoch: bool = 0
               ) -> VisionSet:
-        self.get_dataloader(**locals())
+        vals = locals()
+        vals.pop("self")
+        self.get_dataloader(**vals)
         return self
 
     def get_dataset(self,
