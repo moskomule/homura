@@ -4,6 +4,7 @@ from typing import Callable, Optional, Type, Union
 
 import torch
 from torch import nn
+from torchvision import models
 
 from homura.vision.models import MODEL_REGISTRY
 from homura.vision.models._utils import SELayer, conv1x1, conv3x3, init_parameters
@@ -380,3 +381,21 @@ def resnext29_8x64d(num_classes: int = 10,
     """ ResNeXT by Xie+17
     """
     return resnext(num_classes, 29, 64, 8, in_channels)
+
+
+class TVResNet(models.ResNet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxpool = nn.Identity()
+
+
+@MODEL_REGISTRY.register
+def cifar_resnet18(num_classes: int = 10,
+                   ) -> TVResNet:
+    return TVResNet(models.resnet.BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
+
+
+@MODEL_REGISTRY.register
+def cifar_resnet50(num_classes: int = 10,
+                   ) -> TVResNet:
+    return TVResNet(models.resnet.Bottleneck, [3, 4, 6, 3], num_classes=num_classes)
