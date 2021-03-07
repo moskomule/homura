@@ -8,7 +8,7 @@ from homura.vision import DATASET_REGISTRY, MODEL_REGISTRY
 
 @chika.config
 class Config:
-    name: str = chika.choices(*MODEL_REGISTRY.choices())
+    model: str = chika.choices(*MODEL_REGISTRY.choices())
     batch_size: int = 128
 
     epochs: int = 200
@@ -22,14 +22,15 @@ class Config:
     use_multi_tensor: bool = False
     use_channel_last: bool = False
     debug: bool = False
+    download: bool = False
 
 
 @chika.main(cfg_cls=Config)
 def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
-    model = MODEL_REGISTRY(cfg.name)(num_classes=10)
-    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.batch_size, num_workers=4)
+    model = MODEL_REGISTRY(cfg.model)(num_classes=10)
+    train_loader, test_loader = DATASET_REGISTRY("cifar10")(cfg.batch_size, num_workers=4, download=cfg.download)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
                                                     multi_tensor=cfg.use_multi_tensor)
     scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
