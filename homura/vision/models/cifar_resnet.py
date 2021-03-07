@@ -6,6 +6,7 @@ import torch
 from torch import nn
 from torchvision import models
 
+from homura.modules.attention import AttentionPool2d
 from homura.vision.models import MODEL_REGISTRY
 from homura.vision.models._utils import SELayer, conv1x1, conv3x3, init_parameters
 
@@ -173,7 +174,8 @@ class ResNet(nn.Module):
                  width_per_group: int = 16,
                  norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
                  act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-                 preact: bool = False
+                 preact: bool = False,
+                 final_pool: Callable = nn.AdaptiveAvgPool2d(1)
                  ):
         super(ResNet, self).__init__()
         self.inplane = width
@@ -189,7 +191,7 @@ class ResNet(nn.Module):
         self.layer1 = self._make_layer(block, width * widen_factor, layer_depth=layer_depth, stride=1)
         self.layer2 = self._make_layer(block, width * 2 * widen_factor, layer_depth=layer_depth, stride=2)
         self.layer3 = self._make_layer(block, width * 4 * widen_factor, layer_depth=layer_depth, stride=2)
-        self.avgpool = nn.AdaptiveAvgPool2d(1)
+        self.final_pool = final_pool
         self.fc = nn.Linear(4 * width * block.expansion * widen_factor, num_classes)
         initialization(self, False)
 
@@ -224,7 +226,7 @@ class ResNet(nn.Module):
             x = self.norm1(x)
             x = self.act(x)
 
-        x = self.avgpool(x)
+        x = self.final_pool(x)
         x = x.flatten(1)
         x = self.fc(x)
 
@@ -236,12 +238,13 @@ def resnet(num_classes: int,
            in_channels: int = 3,
            norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
            act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-           block: Type[BasicBlock] = BasicBlock
+           block: Type[BasicBlock] = BasicBlock,
+           **kwargs
            ) -> ResNet:
     f"resnet-{depth}"
     assert (depth - 2) % 6 == 0
     layer_depth = (depth - 2) // 6
-    return ResNet(block, num_classes, layer_depth, in_channels=in_channels, norm=norm, act=act)
+    return ResNet(block, num_classes, layer_depth, in_channels=in_channels, norm=norm, act=act, **kwargs)
 
 
 def wide_resnet(num_classes: int,
@@ -250,13 +253,14 @@ def wide_resnet(num_classes: int,
                 in_channels: int = 3,
                 norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
                 act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-                block: Type[BasicBlock] = PreactBasicBlock
+                block: Type[BasicBlock] = PreactBasicBlock,
+                **kwargs
                 ) -> ResNet:
     f"wideresnet-{depth}-{widen_factor}"
     assert (depth - 4) % 6 == 0
     layer_depth = (depth - 4) // 6
     return ResNet(block, num_classes, layer_depth, in_channels=in_channels,
-                  widen_factor=widen_factor, norm=norm, act=act, preact=True)
+                  widen_factor=widen_factor, norm=norm, act=act, preact=True, **kwargs)
 
 
 def resnext(num_classes: int,
@@ -266,13 +270,14 @@ def resnext(num_classes: int,
             in_channels: int,
             norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
             act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
-            block: Type[Bottleneck] = Bottleneck
+            block: Type[Bottleneck] = Bottleneck,
+            **kwargs
             ) -> ResNet:
     f"resnext-{depth}_{groups}x{width_per_group}d"
     assert (depth - 2) % 9 == 0
     layer_depth = (depth - 2) // 9
     return ResNet(block, num_classes, layer_depth, width=64, in_channels=in_channels, groups=groups,
-                  width_per_group=width_per_group, norm=norm, act=act)
+                  width_per_group=width_per_group, norm=norm, act=act, **kwargs)
 
 
 @MODEL_REGISTRY.register
@@ -381,6 +386,22 @@ def resnext29_8x64d(num_classes: int = 10,
     """ ResNeXT by Xie+17
     """
     return resnext(num_classes, 29, 64, 8, in_channels)
+
+
+@MODEL_REGISTRY.register
+def wrn28_2_attention_pool(num_classes: int = 10,
+                           in_channels: int = 3,
+                           num_heads: int = 1
+                           ) -> ResNet:
+    return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(2 * 64, num_heads))
+
+
+@MODEL_REGISTRY.register
+def wrn28_10_attention_pool(num_classes: int = 10,
+                            in_channels: int = 3,
+                            num_heads: int = 1
+                            ) -> ResNet:
+    return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads))
 
 
 class TVResNet(models.ResNet):
