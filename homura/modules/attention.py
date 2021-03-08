@@ -54,6 +54,7 @@ class AttentionPool2d(nn.Module):
         self.bias = nn.Parameter(torch.randn(3 * embed_dim))
         self.c_proj = nn.Linear(embed_dim, embed_dim)
         self.num_heads = num_heads
+        self.initialize_weights()
 
     def forward(self,
                 x: torch.Tensor
