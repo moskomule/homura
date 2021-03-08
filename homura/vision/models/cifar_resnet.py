@@ -401,7 +401,7 @@ def wrn28_10_attention_pool(num_classes: int = 10,
                             in_channels: int = 3,
                             num_heads: int = 1
                             ) -> ResNet:
-    return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads))
+    return wide_resnet(num_classes, 28, 10, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads))
 
 
 class TVResNet(models.ResNet):
