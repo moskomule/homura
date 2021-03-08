@@ -84,8 +84,8 @@ class AttentionPool2d(nn.Module):
 
     def initialize_weights(self):
         std = self.c_proj.in_features ** -0.5
-        nn.init.normal_(self.k_proj, std)
-        nn.init.normal_(self.q_proj, std)
-        nn.init.normal_(self.v_proj, std)
-        nn.init.normal_(self.c_proj.weight, std)
+        nn.init.normal_(self.k_proj, std=std)
+        nn.init.normal_(self.q_proj, std=std)
+        nn.init.normal_(self.v_proj, std=std)
+        nn.init.normal_(self.c_proj.weight, std=std)
         nn.init.zeros_(self.bias)

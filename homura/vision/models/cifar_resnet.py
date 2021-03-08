@@ -397,8 +397,7 @@ def wrn28_2_attention_pool(num_classes: int = 10,
                            in_channels: int = 3,
                            num_heads: int = 2
                            ) -> ResNet:
-    return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(2 * 64, num_heads),
-                       initializer=partial(initialization, use_zero_init=True))
+    return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(2 * 64, num_heads))
 
 
 @MODEL_REGISTRY.register
@@ -406,8 +405,7 @@ def wrn28_10_attention_pool(num_classes: int = 10,
                             in_channels: int = 3,
                             num_heads: int = 10
                             ) -> ResNet:
-    return wide_resnet(num_classes, 28, 10, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads),
-                       initializer=partial(initialization, use_zero_init=True))
+    return wide_resnet(num_classes, 28, 10, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads))
 
 
 class TVResNet(models.ResNet):
