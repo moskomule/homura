@@ -175,7 +175,8 @@ class ResNet(nn.Module):
                  norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
                  act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
                  preact: bool = False,
-                 final_pool: Callable = nn.AdaptiveAvgPool2d(1)
+                 final_pool: Callable[[torch.Tensor], torch.Tensor] = nn.AdaptiveAvgPool2d(1),
+                 initializer: Optional[Callable[[nn.Module], None]] = None
                  ):
         super(ResNet, self).__init__()
         self.inplane = width
@@ -193,7 +194,10 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, width * 4 * widen_factor, layer_depth=layer_depth, stride=2)
         self.final_pool = final_pool
         self.fc = nn.Linear(4 * width * block.expansion * widen_factor, num_classes)
-        initialization(self, False)
+        if initializer is None:
+            initialization(self, False)
+        else:
+            initializer(self)
 
     def _make_layer(self,
                     block: Type[Union[BasicBlock, Bottleneck]],
@@ -391,7 +395,7 @@ def resnext29_8x64d(num_classes: int = 10,
 @MODEL_REGISTRY.register
 def wrn28_2_attention_pool(num_classes: int = 10,
                            in_channels: int = 3,
-                           num_heads: int = 1
+                           num_heads: int = 2
                            ) -> ResNet:
     return wide_resnet(num_classes, 28, 2, in_channels, final_pool=AttentionPool2d(2 * 64, num_heads))
 
@@ -399,7 +403,7 @@ def wrn28_2_attention_pool(num_classes: int = 10,
 @MODEL_REGISTRY.register
 def wrn28_10_attention_pool(num_classes: int = 10,
                             in_channels: int = 3,
-                            num_heads: int = 1
+                            num_heads: int = 10
                             ) -> ResNet:
     return wide_resnet(num_classes, 28, 10, in_channels, final_pool=AttentionPool2d(10 * 64, num_heads))
 

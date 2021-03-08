@@ -48,9 +48,10 @@ class AttentionPool2d(nn.Module):
                  embed_dim: int,
                  num_heads: int):
         super().__init__()
-        self.k_proj = nn.Linear(embed_dim, embed_dim)
-        self.q_proj = nn.Linear(embed_dim, embed_dim)
-        self.v_proj = nn.Linear(embed_dim, embed_dim)
+        self.k_proj = nn.Parameter(torch.randn(embed_dim, embed_dim))
+        self.q_proj = nn.Parameter(torch.randn(embed_dim, embed_dim))
+        self.v_proj = nn.Parameter(torch.randn(embed_dim, embed_dim))
+        self.bias = nn.Parameter(torch.randn(3 * embed_dim))
         self.c_proj = nn.Linear(embed_dim, embed_dim)
         self.num_heads = num_heads
 
@@ -63,11 +64,11 @@ class AttentionPool2d(nn.Module):
             query=x, key=x, value=x,
             embed_dim_to_check=x.shape[-1],
             num_heads=self.num_heads,
-            q_proj_weight=self.q_proj.weight,
-            k_proj_weight=self.k_proj.weight,
-            v_proj_weight=self.v_proj.weight,
+            q_proj_weight=self.q_proj,
+            k_proj_weight=self.k_proj,
+            v_proj_weight=self.v_proj,
             in_proj_weight=None,
-            in_proj_bias=torch.cat([self.q_proj.bias, self.k_proj.bias, self.v_proj.bias]),
+            in_proj_bias=self.bias,
             bias_k=None,
             bias_v=None,
             add_zero_attn=False,
@@ -79,3 +80,11 @@ class AttentionPool2d(nn.Module):
             need_weights=False
         )
         return x[0]
+
+    def initialize_weights(self):
+        std = self.c_proj.in_features ** -0.5
+        nn.init.normal_(self.k_proj, std)
+        nn.init.normal_(self.q_proj, std)
+        nn.init.normal_(self.v_proj, std)
+        nn.init.normal_(self.c_proj, std)
+        nn.init.zeros_(self.bias)
