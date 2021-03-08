@@ -87,5 +87,5 @@ class AttentionPool2d(nn.Module):
         nn.init.normal_(self.k_proj, std)
         nn.init.normal_(self.q_proj, std)
         nn.init.normal_(self.v_proj, std)
-        nn.init.normal_(self.c_proj, std)
+        nn.init.normal_(self.c_proj.weight, std)
         nn.init.zeros_(self.bias)
