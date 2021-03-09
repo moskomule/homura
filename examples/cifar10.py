@@ -23,6 +23,7 @@ class Config:
     use_accimage: bool = False
     use_multi_tensor: bool = False
     use_channel_last: bool = False
+    prefetch_factor: int = 2
     debug: bool = False
     download: bool = False
 
@@ -31,7 +32,8 @@ class Config:
 def main(cfg):
     if cfg.use_accimage:
         enable_accimage()
-    data = DATASET_REGISTRY(cfg.data).setup(cfg.batch_size, num_workers=4, download=cfg.download)
+    data = DATASET_REGISTRY(cfg.data).setup(cfg.batch_size, num_workers=4, download=cfg.download,
+                                            prefetch_factor=cfg.prefetch_factor)
     model = MODEL_REGISTRY(cfg.model)(num_classes=data.num_classes)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
                                                     multi_tensor=cfg.use_multi_tensor)
