@@ -14,7 +14,6 @@ class Config:
     epochs: int = 200
     lr: float = 0.1
     weight_decay: float = 1e-4
-    lr_decay: float = 0.1
 
     data: str = chika.choices("cifar10", "cifar100", "svhn")
 
@@ -46,7 +45,7 @@ def main(cfg):
             bn_params = []
             non_bn_parameters = []
             for name, p in trainer.model.named_parameters():
-                if "bn" in name:
+                if "norm" in name:
                     bn_params.append(p)
                 else:
                     non_bn_parameters.append(p)
