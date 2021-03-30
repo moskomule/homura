@@ -4,14 +4,13 @@ import copy
 import inspect
 import pathlib
 from dataclasses import dataclass
-from typing import Callable, Optional, Protocol, Tuple, Type
+from typing import Callable, List, Optional, Protocol, Tuple, Type
 
 import torch
-from torch.jit.annotations import List
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
 from torchvision import transforms as VT
 
-from homura import is_distributed
+from homura import get_global_rank, get_world_size, is_distributed
 from ..transforms import ConcatTransform, TransformBase
 
 
@@ -28,9 +27,6 @@ class VisionSet:
         data = DATASET_REGISTER("cifar10").setup(...)
         for img, label in data.tran_loader:
             ...
-
-
-
 
     """
 
@@ -51,10 +47,8 @@ class VisionSet:
             raise RuntimeError(f"tv_class is expected to have signiture of DataSet(root, train, transform, download),"
                                f"but {self.tv_class} has arguments of {args_init} instead.")
         self.root = pathlib.Path(self.root).expanduser()
-        if self.default_train_da is None:
-            self.default_train_da = []
-        if self.default_test_da is None:
-            self.default_test_da = []
+        self.default_train_da = self.default_test_da or []
+        self.default_test_da = self.default_test_da or []
         self._train_set = None
         self._train_loader = None
         self._val_set = None
@@ -110,9 +104,8 @@ class VisionSet:
                     test_da: Optional[List] = None,
                     norm: Optional[List] = None,
                     download: bool = False,
-                    *,
-                    pre_default_train_da: Optional[List] = None,
-                    post_default_train_da: Optional[List] = None,
+                    pre_train_da: Optional[List] = None,
+                    post_train_da: Optional[List] = None,
                     post_norm_train_da: Optional[List] = None
                     ) -> Tuple[VisionSetProtocol, VisionSetProtocol, Optional[VisionSetProtocol]]:
         """ Get Dataset
@@ -124,28 +117,22 @@ class VisionSet:
         :param test_da: Data Augmentation for testing and validation
         :param norm: Normalization after train_da and test_da
         :param download: If dataset needs downloading
-        :param pre_default_train_da: Data Augmentation before the default data augmentation
-        :param post_default_train_da: Data Augmentation after the default data augmentation
+        :param pre_train_da: Data Augmentation before the default data augmentation
+        :param post_train_da: Data Augmentation after the default data augmentation
         :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)
         :return: train_set, test_set, Optional[val_set]
         """
 
         assert (download or self.root.exists()), "root does not exist"
-        if train_da is None:
-            train_da = list(self.default_train_da)
-        if test_da is None:
-            test_da = list(self.default_test_da)
-        if norm is None:
-            norm = list(self.default_norm)
+        train_da = train_da or list(self.default_train_da)
+        test_da = test_da or list(self.default_test_da)
+        norm = norm or list(self.default_norm)
 
-        def unpack_optional_list(x: Optional[List]) -> List:
-            return [] if x is None else x
+        pre_train_da = pre_train_da or []
+        post_train_da = post_train_da or []
+        post_norm_train_da = post_norm_train_da or []
 
-        pre_default_train_da = unpack_optional_list(pre_default_train_da)
-        post_default_train_da = unpack_optional_list(post_default_train_da)
-        post_norm_train_da = unpack_optional_list(post_norm_train_da)
-
-        train_transform = pre_default_train_da + train_da + post_default_train_da + norm + post_norm_train_da
+        train_transform = pre_train_da + train_da + post_train_da + norm + post_norm_train_da
         if any([isinstance(t, TransformBase) for t in train_transform]):
             train_transform = ConcatTransform(*train_transform)
         else:
@@ -172,6 +159,8 @@ class VisionSet:
             val_set.transform = test_transform
 
         if train_size is not None:
+            if train_size > len(train_set):
+                raise ValueError(f"train_size should be <= {len(train_set)}")
             train_set = self._sample_dataset(train_set, train_size)
 
         if test_size is not None:
@@ -239,18 +228,16 @@ class VisionSet:
 
         train_set, test_set, val_set = self.get_dataset(train_size, test_size, val_size,
                                                         train_da, test_da, norm, download,
-                                                        pre_default_train_da=pre_default_train_da,
-                                                        post_default_train_da=post_default_train_da,
+                                                        pre_train_da=pre_default_train_da,
+                                                        post_train_da=post_default_train_da,
                                                         post_norm_train_da=post_norm_train_da)
         if test_batch_size is None:
             test_batch_size = non_training_bs_factor * batch_size
 
         samplers = [None, None, None]
         if is_distributed():
-            import homura
 
-            dist_sampler_kwargs = dict(num_replicas=homura.get_world_size(),
-                                       rank=homura.get_global_rank())
+            dist_sampler_kwargs = dict(num_replicas=get_world_size(), rank=get_global_rank())
             samplers[0] = DistributedSampler(train_set, **dist_sampler_kwargs)
             samplers[2] = DistributedSampler(test_set, **dist_sampler_kwargs)
             samplers[0].set_epoch(start_epoch)
@@ -290,19 +277,21 @@ class VisionSet:
         # split train_set to train_set and val_set
         assert len(train_set) >= val_size
         indices = torch.randperm(len(train_set))
-        valset = copy.deepcopy(train_set)
+        val_set = copy.deepcopy(train_set)
 
         if hasattr(train_set, 'data'):
             train_set.data = [train_set.data[i] for i in indices[val_size:]]
+            val_set.data = [val_set.data[i] for i in indices[:val_size]]
         if hasattr(train_set, 'samples'):
             train_set.samples = [train_set.samples[i] for i in indices[val_size:]]
+            val_set.samples = [val_set.samples[i] for i in indices[:val_size]]
+            train_set.data = train_set.samples
+            val_set.data = val_set.samples
 
         train_set.targets = [train_set.targets[i] for i in indices[val_size:]]
+        val_set.targets = [val_set.targets[i] for i in indices[:val_size]]
 
-        valset.data = [valset.data[i] for i in indices[:val_size]]
-        valset.targets = [valset.targets[i] for i in indices[:val_size]]
-
-        return train_set, valset
+        return train_set, val_set
 
     @staticmethod
     def _sample_dataset(dataset: VisionSetProtocol,
