@@ -87,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../homura.nlp.html">homura.nlp package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -211,8 +210,11 @@
                 <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">train</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">VD</span><span class="o">.</span><span class="n">SVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span> <span class="o">+</span>
-                    <span class="n">VD</span><span class="o">.</span><span class="n">SVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">))</span>
+            <span class="n">td</span> <span class="o">=</span> <span class="n">OriginalSVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span>
+            <span class="n">ed</span> <span class="o">=</span> <span class="n">VD</span><span class="o">.</span><span class="n">SVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span>
+            <span class="n">td</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">ed</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">td</span><span class="o">.</span><span class="n">targets</span> <span class="o">+=</span> <span class="n">ed</span><span class="o">.</span><span class="n">labels</span>
+            <span class="k">return</span> <span class="n">td</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">OriginalSVHN</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span>
 

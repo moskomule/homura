@@ -87,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.utils.html">homura.utils package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../homura.nlp.html">homura.nlp package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -155,13 +154,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for homura.liblog</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; logging tools</span>
-<span class="sd">ported from Optuna and Transformers</span>
+<span></span><span class="sd">&quot;&quot;&quot; logging tools leaned a lot from Optuna and Transformers</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -195,10 +191,7 @@
 
 <span class="k">def</span> <span class="nf">_create_default_formatter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">:</span>
     <span class="n">datefmt</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
-    <span class="k">if</span> <span class="n">_has_colorlog</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">ColoredFormatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(log_color)s</span><span class="s1">[</span><span class="si">%(name)s</span><span class="s1">|</span><span class="si">%(asctime)s</span><span class="s1">|</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
-                                         <span class="n">datefmt</span><span class="o">=</span><span class="n">datefmt</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%(name)s</span><span class="s2">|</span><span class="si">%(asctime)s</span><span class="s2">|</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="n">datefmt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">ColoredFormatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(log_color)s</span><span class="s1">[</span><span class="si">%(name)s</span><span class="s1">|</span><span class="si">%(asctime)s</span><span class="s1">|</span><span class="si">%(levelname)s</span><span class="s1">] </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="n">datefmt</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_get_root_logger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
@@ -293,8 +286,8 @@
 
 
 <span class="c1"># internal APIs</span>
-<span class="k">def</span> <span class="nf">_set_tqdm_handler</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-                      <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="set_tqdm_handler"><a class="viewcode-back" href="../../homura.html#homura.liblog.set_tqdm_handler">[docs]</a><span class="k">def</span> <span class="nf">set_tqdm_handler</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                     <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; An alternative handler to avoid disturbing tqdm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -319,7 +312,7 @@
     <span class="k">if</span> <span class="n">formatter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">_create_default_formatter</span><span class="p">()</span>
     <span class="n">th</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
-    <span class="n">_get_root_logger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+    <span class="n">_get_root_logger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">th</span><span class="p">)</span></div>
 
 
 <span class="c1"># tqdm</span>

@@ -87,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../homura.nlp.html">homura.nlp package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
@@ -274,9 +273,26 @@
         <span class="n">builtins</span><span class="o">.</span><span class="n">print</span> <span class="o">=</span> <span class="n">_print_if_master</span></div>
 
 
+<div class="viewcode-block" id="distributed_ready_main"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.distributed.distributed_ready_main">[docs]</a><span class="k">def</span> <span class="nf">distributed_ready_main</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">init_method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">disable_distributed_print</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">False</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Wrap a main function to make it distributed ready</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">init_distributed</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">init_method</span><span class="p">,</span> <span class="n">disable_distributed_print</span><span class="o">=</span><span class="n">disable_distributed_print</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
 <div class="viewcode-block" id="if_is_master"><a class="viewcode-back" href="../../../homura.utils.html#homura.utils.distributed.if_is_master">[docs]</a><span class="k">def</span> <span class="nf">if_is_master</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span>
                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Wraps void functions that are active only if it is the master process::</span>
+    <span class="sd">&quot;&quot;&quot; Wrap a void function that are active only if it is the master process::</span>
 
 <span class="sd">    @if_is_master</span>
 <span class="sd">    def print_master(message):</span>
