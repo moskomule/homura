@@ -1,10 +1,7 @@
-""" logging tools
-ported from Optuna and Transformers
+""" logging tools leaned a lot from Optuna and Transformers
 """
-
 import io
 import logging
-import os
 import sys
 import threading
 import warnings
@@ -38,10 +35,7 @@ def _name() -> str:
 
 def _create_default_formatter() -> logging.Formatter:
     datefmt = "%Y-%m-%d %H:%M:%S"
-    if _has_colorlog:
-        return colorlog.ColoredFormatter('%(log_color)s[%(name)s|%(asctime)s|%(levelname)s] %(message)s',
-                                         datefmt=datefmt)
-    return logging.Formatter("[%(name)s|%(asctime)s|%(levelname)s] %(message)s", datefmt=datefmt)
+    return colorlog.ColoredFormatter('%(log_color)s[%(name)s|%(asctime)s|%(levelname)s] %(message)s', datefmt=datefmt)
 
 
 def _get_root_logger() -> logging.Logger:
@@ -136,8 +130,8 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 
 
 # internal APIs
-def _set_tqdm_handler(level: str or int = logging.INFO,
-                      formatter: Optional[logging.Formatter] = None) -> None:
+def set_tqdm_handler(level: str or int = logging.INFO,
+                     formatter: Optional[logging.Formatter] = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
     """
 

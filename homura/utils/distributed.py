@@ -117,9 +117,26 @@ def init_distributed(use_horovod: bool = False,
         builtins.print = _print_if_master
 
 
+def distributed_ready_main(func: Callable = None,
+                           backend: Optional[str] = None,
+                           init_method: Optional[str] = None,
+                           disable_distributed_print: str = False
+                           ) -> Callable:
+    """ Wrap a main function to make it distributed ready
+    """
+
+    init_distributed(backend=backend, init_method=init_method, disable_distributed_print=disable_distributed_print)
+
+    @wraps(func)
+    def inner(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return inner
+
+
 def if_is_master(func: Callable
                  ) -> Callable:
-    """ Wraps void functions that are active only if it is the master process::
+    """ Wrap a void function that are active only if it is the master process::
 
     @if_is_master
     def print_master(message):

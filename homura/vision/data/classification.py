@@ -54,8 +54,11 @@ class ExtraSVHN(object):
                 transform=None,
                 download=False):
         if train:
-            return (VD.SVHN(root, split='train', transform=transform, download=download) +
-                    VD.SVHN(root, split='extra', transform=transform, download=download))
+            td = OriginalSVHN(root, train=True, transform=transform, download=download)
+            ed = VD.SVHN(root, split='extra', transform=transform, download=download)
+            td.data += ed.data
+            td.targets += ed.labels
+            return td
         else:
             return OriginalSVHN(root, train=False, transform=transform, download=download)
 

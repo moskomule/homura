@@ -2,7 +2,7 @@
 
 ## Requirements
 
-* `homura`
+* `homura` by `pip install -U homura-core`
 * `chika` by `pip install -U chika`
 
 ## Contents

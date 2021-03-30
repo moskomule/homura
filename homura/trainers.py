@@ -15,7 +15,6 @@ from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tq
 from .metrics import accuracy
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
-from .utils._vocabulary import *
 from .utils.containers import StepDict, TensorTuple
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
@@ -47,7 +46,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
                  scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
                  device: Optional[torch.device or str] = None,
-                 quiet: bool = True,
+                 quiet: bool = False,
                  disable_cudnn_benchmark: bool = False,
                  disable_cuda_nonblocking: bool = False,
                  logger=None,
@@ -63,7 +62,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             raise DeprecationWarning("callback is deprecated, if you need, use homura before v2020.8")
 
         self.logger = logger or get_logger(__name__)
-        self.device = device or (torch.device(GPU) if torch.cuda.is_available() else torch.device(CPU))
+        self.device = device or (torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"))
         self._is_debug = debug
 
         if self._is_debug:
@@ -95,7 +94,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             raise TypeError(f"Unknown type for `model`. Expected nn.Module or Dict[str, Module], but got {type(model)}")
 
-        if GPU in str(self.device):
+        if "cuda" in str(self.device):
             self.model.to(self.device)
             torch.backends.cudnn.benchmark = not disable_cudnn_benchmark
             self._cuda_nonblocking = not disable_cuda_nonblocking
@@ -203,7 +202,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self.logger.debug("Override iteration")
 
     def epoch_range(self,
-                    epoch: int):
+                    epoch: int
+                    ) -> TQDMReporter:
         tqdm_reporter = [rep for rep in self.reporter.reporters if isinstance(rep, TQDMReporter)][0]
         tqdm_reporter.set_iterator(range(epoch))
         return tqdm_reporter
@@ -266,7 +266,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def train(self,
               data_loader: Iterable or DataLoader,
-              mode: str = TRAIN
+              mode: str = "train"
               ) -> None:
         """ Training the model for an epoch.
 
@@ -293,7 +293,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def test(self,
              data_loader: Iterable or DataLoader,
-             mode: str = TEST
+             mode: str = "test"
              ) -> None:
         """ Evaluate the model.
 
@@ -445,6 +445,7 @@ class SupervisedTrainer(TrainerBase):
                  disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
+                 use_channel_last=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
                  **kwargs):
         if isinstance(model, dict):
@@ -461,6 +462,10 @@ class SupervisedTrainer(TrainerBase):
         if self._use_amp:
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
+        self._use_channel_last = use_channel_last
+        if self._use_channel_last:
+            self.logger.warning("channel_last format is an experimental feature")
+            self.model.to(memory_format=torch.channels_last)
         if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
             report_accuracy_topk = [report_accuracy_topk]
         self._report_topk = report_accuracy_topk
@@ -490,6 +495,16 @@ class SupervisedTrainer(TrainerBase):
         if self._report_topk is not None:
             for top_k in self._report_topk:
                 self.reporter.add(f'accuracy@{top_k}', accuracy(output, target, top_k))
+
+    def data_preprocess(self,
+                        data: Tuple[Tensor, Tensor]
+                        ) -> (Tuple[Tensor, Tensor], int):
+        input, target = data
+        return ((input.to(self.device, non_blocking=self._cuda_nonblocking,
+                          memory_format=torch.channels_last if self._use_channel_last
+                          else torch.preserve_format),
+                 target.to(self.device, non_blocking=self._cuda_nonblocking)),
+                data[0].size(0))
 
     def state_dict(self
                    ) -> Mapping[str, Any]:
