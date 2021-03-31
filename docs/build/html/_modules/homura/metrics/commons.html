@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>homura.metrics.commons &mdash; homura  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../homura.vision.html">homura.vision package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>homura.metrics.commons</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for homura.metrics.commons</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+
+<span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;true_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;true_negative&quot;</span><span class="p">,</span> <span class="s2">&quot;false_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;false_negative&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;classwise_accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">,</span> <span class="s2">&quot;specificity&quot;</span><span class="p">,</span> <span class="s2">&quot;f1_score&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;confusion_matrix&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_base</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+          <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pred</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">classes</span>
+
+
+<div class="viewcode-block" id="true_positive"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.true_positive">[docs]</a><span class="k">def</span> <span class="nf">true_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                  <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate true positive</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: true positive in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">_base</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">classes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="n">classes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="true_negative"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.true_negative">[docs]</a><span class="k">def</span> <span class="nf">true_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                  <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate true negative</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: true negative in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">_base</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">pred</span> <span class="o">!=</span> <span class="n">classes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">target</span> <span class="o">!=</span> <span class="n">classes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="false_positive"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.false_positive">[docs]</a><span class="k">def</span> <span class="nf">false_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                   <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate false positive</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: false positive in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">_base</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">pred</span> <span class="o">==</span> <span class="n">classes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">target</span> <span class="o">!=</span> <span class="n">classes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="false_negative"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.false_negative">[docs]</a><span class="k">def</span> <span class="nf">false_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                   <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate false negative</span>
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: false negative in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pred</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">_base</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">pred</span> <span class="o">!=</span> <span class="n">classes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">target</span> <span class="o">==</span> <span class="n">classes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="classwise_accuracy"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.classwise_accuracy">[docs]</a><span class="k">def</span> <span class="nf">classwise_accuracy</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                       <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate class wise accuracy</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: class wise accuracy in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="n">true_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">tn</span> <span class="o">=</span> <span class="n">true_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">false_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">false_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span> <span class="o">+</span> <span class="n">fn</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Zero division in accuracy&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tn</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+<div class="viewcode-block" id="precision"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.precision">[docs]</a><span class="k">def</span> <span class="nf">precision</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+              <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate precision</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: precision in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="n">true_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">false_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Zero division in precision&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tp</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+<div class="viewcode-block" id="recall"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.recall">[docs]</a><span class="k">def</span> <span class="nf">recall</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+           <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate recall</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: recall in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="n">true_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">false_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Zero division in recall&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tp</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+<div class="viewcode-block" id="specificity"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.specificity">[docs]</a><span class="k">def</span> <span class="nf">specificity</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate specificity</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: specificity in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tn</span> <span class="o">=</span> <span class="n">true_negative</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">false_positive</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Zero division in specificity&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tn</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+<div class="viewcode-block" id="f1_score"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.f1_score">[docs]</a><span class="k">def</span> <span class="nf">f1_score</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate f1 score</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: f1 score in float tensor of `C`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">prec</span> <span class="o">=</span> <span class="n">precision</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">rec</span> <span class="o">=</span> <span class="n">recall</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">prec</span> <span class="o">*</span> <span class="n">rec</span> <span class="o">/</span> <span class="p">(</span><span class="n">prec</span> <span class="o">+</span> <span class="n">rec</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="confusion_matrix"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.confusion_matrix">[docs]</a><span class="k">def</span> <span class="nf">confusion_matrix</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+                     <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span>
+                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate confusion matrix</span>
+
+<span class="sd">    :param input: output of network, expected to be `BxCx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :param target: target, expected to be `Bx(OPTIONAL DIMENSIONS)`</span>
+<span class="sd">    :return: confusion matrix in long tensor of `CxC`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">target</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">target</span> <span class="o">&lt;</span> <span class="n">num_classes</span><span class="p">)</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">inds</span> <span class="o">=</span> <span class="n">num_classes</span> <span class="o">*</span> <span class="n">pred</span> <span class="o">+</span> <span class="n">target</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">inds</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">minlength</span><span class="o">=</span><span class="n">num_classes</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="accuracy"><a class="viewcode-back" href="../../../homura.metrics.html#homura.metrics.commons.accuracy">[docs]</a><span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">pred_idx</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">top_k</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">input</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">indices</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">pred_idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pred_idx</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-, Ryuichiro Hataya.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

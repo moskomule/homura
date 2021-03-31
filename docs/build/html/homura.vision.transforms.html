@@ -94,14 +94,14 @@
 <li class="toctree-l3"><a class="reference internal" href="homura.vision.models.html">homura.vision.models package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">homura.vision.transforms package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-mixup-module">homura.vision.transforms.mixup module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#homura-vision-transforms-transform-module">homura.vision.transforms.transform module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.mixup">homura.vision.transforms.mixup module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms.transform">homura.vision.transforms.transform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-homura.vision.transforms">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="homura.vision.html#module-homura.vision">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -178,14 +178,639 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="homura-vision-transforms-mixup-module">
-<h2>homura.vision.transforms.mixup module<a class="headerlink" href="#homura-vision-transforms-mixup-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.mixup">
+<span id="homura-vision-transforms-mixup-module"></span><h2>homura.vision.transforms.mixup module<a class="headerlink" href="#module-homura.vision.transforms.mixup" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="homura.vision.transforms.mixup.mixup">
+<code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.mixup.</span></code><code class="sig-name descname"><span class="pre">mixup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/mixup.html#mixup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.mixup.mixup" title="Permalink to this definition">¶</a></dt>
+<dd><p>mixup: Beyond Empirical Risk Minimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – </p></li>
+<li><p><strong>indices</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[torch.Tensor, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="homura.vision.transforms.mixup.partial_mixup">
+<code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.mixup.</span></code><code class="sig-name descname"><span class="pre">partial_mixup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/mixup.html#partial_mixup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.mixup.partial_mixup" title="Permalink to this definition">¶</a></dt>
+<dd><p>mixup: Beyond Empirical Risk Minimization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>gamma</strong> (<em>float</em>) – </p></li>
+<li><p><strong>indices</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="homura-vision-transforms-transform-module">
-<h2>homura.vision.transforms.transform module<a class="headerlink" href="#homura-vision-transforms-transform-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms.transform">
+<span id="homura-vision-transforms-transform-module"></span><h2>homura.vision.transforms.transform module<a class="headerlink" href="#module-homura.vision.transforms.transform" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.CenterCrop">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">CenterCrop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#CenterCrop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.CenterCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.CenterCrop.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#CenterCrop.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.CenterCrop.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.CenterCrop.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#CenterCrop.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.CenterCrop.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.ColorJitter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">ColorJitter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">brightness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contrast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saturation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ColorJitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ColorJitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.NonGeometricTransformBase" title="homura.vision.transforms.transform.NonGeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.NonGeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.ColorJitter.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ColorJitter.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ColorJitter.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.ConcatTransform">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">ConcatTransform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">transforms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ConcatTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ConcatTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.TransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.ConcatTransform.apply_bbox">
+<code class="sig-name descname"><span class="pre">apply_bbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ConcatTransform.apply_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ConcatTransform.apply_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.ConcatTransform.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ConcatTransform.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ConcatTransform.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.ConcatTransform.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ConcatTransform.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ConcatTransform.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.ConcatTransform.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#ConcatTransform.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.ConcatTransform.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.GeometricTransformBase">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">GeometricTransformBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#GeometricTransformBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.GeometricTransformBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.TransformBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.GeometricTransformBase.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#GeometricTransformBase.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.GeometricTransformBase.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.NonGeometricTransformBase">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">NonGeometricTransformBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#NonGeometricTransformBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.NonGeometricTransformBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.TransformBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.NonGeometricTransformBase.apply_bbox">
+<code class="sig-name descname"><span class="pre">apply_bbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#NonGeometricTransformBase.apply_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.NonGeometricTransformBase.apply_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.NonGeometricTransformBase.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#NonGeometricTransformBase.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.NonGeometricTransformBase.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.NonGeometricTransformBase.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#NonGeometricTransformBase.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.NonGeometricTransformBase.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.Normalize">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">Normalize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#Normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.Normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.NonGeometricTransformBase" title="homura.vision.transforms.transform.NonGeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.NonGeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.Normalize.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#Normalize.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.Normalize.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomCrop">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomCrop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_if_needed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'constant'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">255</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomCrop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomCrop.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomCrop.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomCrop.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomCrop.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomCrop.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomCrop.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomCrop.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomCrop.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomCrop.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[int, ..]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomGrayScale">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomGrayScale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomGrayScale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomGrayScale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.NonGeometricTransformBase" title="homura.vision.transforms.transform.NonGeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.NonGeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomGrayScale.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomGrayScale.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomGrayScale.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomHorizontalFlip">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomHorizontalFlip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomHorizontalFlip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomHorizontalFlip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomHorizontalFlip.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomHorizontalFlip.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomHorizontalFlip.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomHorizontalFlip.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomHorizontalFlip.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomHorizontalFlip.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomHorizontalFlip.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomHorizontalFlip.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomHorizontalFlip.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomResize">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomResize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResize.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResize.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResize.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResize.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomResizedCrop">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomResizedCrop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.08,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.75,</span> <span class="pre">1.3333333333333333)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResizedCrop.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResizedCrop.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResizedCrop.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomResizedCrop.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.RandomRotation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">RandomRotation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degrees</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">255</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomRotation.apply_coords">
+<code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomRotation.apply_image">
+<code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomRotation.apply_mask">
+<code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.RandomRotation.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="homura.vision.transforms.transform.TransformBase">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.vision.transforms.transform.</span></code><code class="sig-name descname"><span class="pre">TransformBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class of data augmentation transformations. Transform is expected to be used as drop-in
+replacements of torchvision’s transforms.</p>
+<p>train_da = CenterCrop(224, task=”segmentation”) * ColorJitter(task=”segmentation”) + …</p>
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.apply_bbox">
+<code class="sig-name descname"><span class="pre">apply_bbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.apply_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.apply_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.apply_coords">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">apply_coords</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.apply_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.apply_coords" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.apply_image">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">apply_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.apply_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.apply_image" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.apply_mask">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>torch.Tensor</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.ensure_tensor">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">ensure_tensor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.ensure_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.ensure_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>is_input</strong> (<em>bool</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="homura.vision.transforms.transform.TransformBase.get_params">
+<code class="sig-name descname"><span class="pre">get_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="homura.vision.transforms.transform.TransformBase.supported_target_types">
+<code class="sig-name descname"><span class="pre">supported_target_types</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'bbox',</span> <span class="pre">'mask'}</span></em><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.supported_target_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-homura.vision.transforms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.vision.transforms" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

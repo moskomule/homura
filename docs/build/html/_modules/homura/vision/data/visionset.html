@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>homura.vision.data.visionset &mdash; homura  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> homura
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Package Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.metrics.html">homura.metrics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.modules.html">homura.modules package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.utils.html">homura.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../homura.vision.html">homura.vision package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">homura</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>homura.vision.data.visionset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for homura.vision.data.visionset</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DistributedSampler</span><span class="p">,</span> <span class="n">RandomSampler</span>
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">VT</span>
+
+<span class="kn">from</span> <span class="nn">homura</span> <span class="kn">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_world_size</span><span class="p">,</span> <span class="n">is_distributed</span>
+<span class="kn">from</span> <span class="nn">..transforms</span> <span class="kn">import</span> <span class="n">ConcatTransform</span><span class="p">,</span> <span class="n">TransformBase</span>
+
+
+<div class="viewcode-block" id="VisionSetProtocol"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSetProtocol">[docs]</a><span class="k">class</span> <span class="nc">VisionSetProtocol</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">download</span><span class="p">):</span> <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="VisionSet"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSet">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">VisionSet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Dataset abstraction for vision datasets. Use case ::</span>
+
+<span class="sd">        data = DATASET_REGISTER(&quot;cifar10&quot;).setup(...)</span>
+<span class="sd">        for img, label in data.tran_loader:</span>
+<span class="sd">            ...</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tv_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">VisionSetProtocol</span><span class="p">]</span>
+    <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+    <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">default_norm</span><span class="p">:</span> <span class="n">List</span>
+    <span class="n">default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">default_test_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># _ is trainer</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;download&#39;</span><span class="p">}</span>
+        <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">args_init</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+        <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">args_new</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_class</span><span class="o">.</span><span class="fm">__new__</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">args</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">args_init</span><span class="p">)</span> <span class="ow">or</span> <span class="n">args</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">args_new</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tv_class is expected to have signiture of DataSet(root, train, transform, download),&quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;but </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tv_class</span><span class="si">}</span><span class="s2"> has arguments of </span><span class="si">{</span><span class="n">args_init</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_train_da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_test_da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_test_da</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_loader</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">train_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_loader</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">test_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span>
+
+<div class="viewcode-block" id="VisionSet.setup"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSet.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+              <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+              <span class="n">train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">test_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">test_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">non_training_bs_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+              <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+              <span class="n">return_num_classes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">test_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">pre_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">post_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">prefetch_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+              <span class="n">persistent_workers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">worker_init_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">start_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="mi">0</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VisionSet</span><span class="p">:</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+        <span class="n">vals</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="VisionSet.get_dataset"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSet.get_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">train_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">test_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">test_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">pre_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">post_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">VisionSetProtocol</span><span class="p">,</span> <span class="n">VisionSetProtocol</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VisionSetProtocol</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot; Get Dataset</span>
+
+<span class="sd">        :param train_size: Size of training dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param test_size: Size of test dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param val_size: Size of validation dataset, randomly split from the training dataset. If None, None will be returned.</span>
+<span class="sd">        :param train_da: Data Augmentation for training</span>
+<span class="sd">        :param test_da: Data Augmentation for testing and validation</span>
+<span class="sd">        :param norm: Normalization after train_da and test_da</span>
+<span class="sd">        :param download: If dataset needs downloading</span>
+<span class="sd">        :param pre_train_da: Data Augmentation before the default data augmentation</span>
+<span class="sd">        :param post_train_da: Data Augmentation after the default data augmentation</span>
+<span class="sd">        :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)</span>
+<span class="sd">        :return: train_set, test_set, Optional[val_set]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">download</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()),</span> <span class="s2">&quot;root does not exist&quot;</span>
+        <span class="n">train_da</span> <span class="o">=</span> <span class="n">train_da</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_train_da</span><span class="p">)</span>
+        <span class="n">test_da</span> <span class="o">=</span> <span class="n">test_da</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_test_da</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_norm</span><span class="p">)</span>
+
+        <span class="n">pre_train_da</span> <span class="o">=</span> <span class="n">pre_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">post_train_da</span> <span class="o">=</span> <span class="n">post_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">post_norm_train_da</span> <span class="o">=</span> <span class="n">post_norm_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
+
+        <span class="n">train_transform</span> <span class="o">=</span> <span class="n">pre_train_da</span> <span class="o">+</span> <span class="n">train_da</span> <span class="o">+</span> <span class="n">post_train_da</span> <span class="o">+</span> <span class="n">norm</span> <span class="o">+</span> <span class="n">post_norm_train_da</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">TransformBase</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">train_transform</span><span class="p">]):</span>
+            <span class="n">train_transform</span> <span class="o">=</span> <span class="n">ConcatTransform</span><span class="p">(</span><span class="o">*</span><span class="n">train_transform</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">train_transform</span> <span class="o">=</span> <span class="n">VT</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="n">train_transform</span><span class="p">)</span>
+        <span class="n">train_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tv_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">train_transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">train_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">train_size</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;train_size should be &lt;=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">test_transform</span> <span class="o">=</span> <span class="n">test_da</span> <span class="o">+</span> <span class="n">norm</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">TransformBase</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">test_transform</span><span class="p">):</span>
+            <span class="n">test_transform</span> <span class="o">=</span> <span class="n">ConcatTransform</span><span class="p">(</span><span class="o">*</span><span class="n">test_transform</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">test_transform</span> <span class="o">=</span> <span class="n">VT</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="n">test_transform</span><span class="p">)</span>
+        <span class="n">test_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tv_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">test_transform</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="n">download</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">test_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">test_size</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;test_size should be &lt;=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_set</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">val_set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">val_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">train_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">train_size</span> <span class="o">+</span> <span class="n">val_size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;train_set+val_size should be &lt;=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">train_set</span><span class="p">,</span> <span class="n">val_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">val_size</span><span class="p">)</span>
+            <span class="n">val_set</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">test_transform</span>
+
+        <span class="k">if</span> <span class="n">train_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">train_size</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train_size should be &lt;= </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">train_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">train_size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_dataset</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_set</span> <span class="o">=</span> <span class="n">train_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_set</span> <span class="o">=</span> <span class="n">val_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_set</span> <span class="o">=</span> <span class="n">test_set</span>
+
+        <span class="k">return</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span></div>
+
+<div class="viewcode-block" id="VisionSet.get_dataloader"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSet.get_dataloader">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                       <span class="n">train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">test_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">train_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">test_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">non_training_bs_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                       <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="n">return_num_classes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">test_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">pre_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">post_default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">post_norm_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">prefetch_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                       <span class="n">persistent_workers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">worker_init_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">start_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="mi">0</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+                             <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot; Get Dataloader. This will automatically handle distributed setting</span>
+
+<span class="sd">        :param batch_size: Batch size</span>
+<span class="sd">        :param train_da: Data Augmentation for training</span>
+<span class="sd">        :param test_da: Data Augmentation for testing and validation</span>
+<span class="sd">        :param norm: Normalization after train_da and test_da</span>
+<span class="sd">        :param train_size: Size of training dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param test_size: Size of test dataset. If None, full dataset will be available.</span>
+<span class="sd">        :param val_size: Size of validation dataset, randomly split from the training dataset.</span>
+<span class="sd">        If None, None will be returned.</span>
+<span class="sd">        :param download: If dataset needs downloading</span>
+<span class="sd">        :param num_workers: Number of workers in data loaders</span>
+<span class="sd">        :param non_training_bs_factor: Batch size scale factor during non training. For example,</span>
+<span class="sd">        testing time requires no backward cache, so basically batch size can be doubled.</span>
+<span class="sd">        :param drop_last: If drop last batch or not</span>
+<span class="sd">        :param pin_memory: If pin memory or not</span>
+<span class="sd">        :param return_num_classes: If return number of classes as the last return value</span>
+<span class="sd">        :param test_batch_size: Test time batch size. If None, non_training_bs_factor * batch_size is used.</span>
+<span class="sd">        :param pre_default_train_da: Data Augmentation before the default data augmentation</span>
+<span class="sd">        :param post_default_train_da: Data Augmentation after the default data augmentation</span>
+<span class="sd">        :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)</span>
+<span class="sd">        :param prefetch_factor:</span>
+<span class="sd">        :param persistent_workers:</span>
+<span class="sd">        :param worker_init_fn:</span>
+<span class="sd">        :param start_epoch: Epoch at start time</span>
+<span class="sd">        :return: train_loader, test_loader, [val_loader], [num_classes]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">train_size</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span>
+                                                        <span class="n">train_da</span><span class="p">,</span> <span class="n">test_da</span><span class="p">,</span> <span class="n">norm</span><span class="p">,</span> <span class="n">download</span><span class="p">,</span>
+                                                        <span class="n">pre_train_da</span><span class="o">=</span><span class="n">pre_default_train_da</span><span class="p">,</span>
+                                                        <span class="n">post_train_da</span><span class="o">=</span><span class="n">post_default_train_da</span><span class="p">,</span>
+                                                        <span class="n">post_norm_train_da</span><span class="o">=</span><span class="n">post_norm_train_da</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">test_batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">test_batch_size</span> <span class="o">=</span> <span class="n">non_training_bs_factor</span> <span class="o">*</span> <span class="n">batch_size</span>
+
+        <span class="n">samplers</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
+
+            <span class="n">dist_sampler_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">num_replicas</span><span class="o">=</span><span class="n">get_world_size</span><span class="p">(),</span> <span class="n">rank</span><span class="o">=</span><span class="n">get_global_rank</span><span class="p">())</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">shared_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">drop_last</span><span class="o">=</span><span class="n">drop_last</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="n">pin_memory</span><span class="p">,</span>
+                             <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">,</span> <span class="n">prefetch_factor</span><span class="o">=</span><span class="n">prefetch_factor</span><span class="p">,</span>
+                             <span class="n">persistent_workers</span><span class="o">=</span><span class="n">persistent_workers</span><span class="p">,</span> <span class="n">worker_init_fn</span><span class="o">=</span><span class="n">worker_init_fn</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_loader</span> <span class="o">=</span> <span class="n">train_loader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span> <span class="o">=</span> <span class="n">test_loader</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">val_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
+                <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
+                <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span> <span class="o">=</span> <span class="n">val_loader</span>
+
+        <span class="k">if</span> <span class="n">return_num_classes</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">get_dataloader</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_split_dataset</span><span class="p">(</span><span class="n">train_set</span><span class="p">:</span> <span class="n">VisionSetProtocol</span><span class="p">,</span>
+                       <span class="n">val_size</span><span class="p">:</span> <span class="nb">int</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">VisionSetProtocol</span><span class="p">,</span> <span class="n">VisionSetProtocol</span><span class="p">):</span>
+        <span class="c1"># split train_set to train_set and val_set</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">val_size</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_set</span><span class="p">))</span>
+        <span class="n">val_set</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+            <span class="n">train_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+            <span class="n">val_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">val_set</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:</span><span class="n">val_size</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="s1">&#39;samples&#39;</span><span class="p">):</span>
+            <span class="n">train_set</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+            <span class="n">val_set</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">val_set</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:</span><span class="n">val_size</span><span class="p">]]</span>
+            <span class="n">train_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">train_set</span><span class="o">.</span><span class="n">samples</span>
+            <span class="n">val_set</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">val_set</span><span class="o">.</span><span class="n">samples</span>
+
+        <span class="n">train_set</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_set</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">val_size</span><span class="p">:]]</span>
+        <span class="n">val_set</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">val_set</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:</span><span class="n">val_size</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">val_set</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_sample_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">VisionSetProtocol</span><span class="p">,</span>
+                        <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VisionSetProtocol</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))[:</span><span class="n">size</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;samples&#39;</span><span class="p">):</span>
+            <span class="c1"># e.g., imagenet</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-, Ryuichiro Hataya.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
