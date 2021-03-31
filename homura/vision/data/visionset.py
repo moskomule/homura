@@ -47,7 +47,7 @@ class VisionSet:
             raise RuntimeError(f"tv_class is expected to have signiture of DataSet(root, train, transform, download),"
                                f"but {self.tv_class} has arguments of {args_init} instead.")
         self.root = pathlib.Path(self.root).expanduser()
-        self.default_train_da = self.default_test_da or []
+        self.default_train_da = self.default_train_da or []
         self.default_test_da = self.default_test_da or []
         self._train_set = None
         self._train_loader = None
