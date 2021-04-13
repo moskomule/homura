@@ -53,6 +53,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 120,
                  debug: bool = False,
+                 dist_kwargs: dict,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -106,7 +107,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
         if is_distributed():
-            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank])
+            dist_kwargs = dist_kwargs or {}
+            self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank], **dist_kwargs)
             self.logger.debug(f"model converted to DistributedDataParallel at rank={rank}")
 
         # self.accessible_model is useful for e.g., checkpointing
