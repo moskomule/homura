@@ -61,6 +61,8 @@ class EMA(nn.Module):
 
     @torch.no_grad()
     def _update(self):
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
         # _foreach_** is n times faster than for loops
         o_p = [p.data for p in self._original_model.parameters() if isinstance(p, torch.Tensor)]
         e_p = [p.data for p in self._ema_model.parameters() if isinstance(p, torch.Tensor)]
