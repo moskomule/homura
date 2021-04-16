@@ -1,5 +1,5 @@
 import copy
-from typing import List, Optional
+from typing import Iterator
 
 import torch
 from torch import nn
@@ -32,9 +32,7 @@ class EMA(nn.Module):
     def __init__(self,
                  original_model: nn.Module,
                  momentum: float = 0.999,
-                 copy_buffer: bool = False,
-                 getattr_original: Optional[List[str]] = ("parameters", "requires_grad_"),
-                 getattr_ema: Optional[List[str]] = None):
+                 copy_buffer: bool = False):
         super().__init__()
         if not (0 <= momentum <= 1):
             raise ValueError(f"Invalid momentum: {momentum}")
@@ -45,17 +43,11 @@ class EMA(nn.Module):
         self._ema_model = copy.deepcopy(original_model)
         for p in self._ema_model.parameters():
             p.requires_grad_(False)
-        self._getattr_original = getattr_original
-        self._getattr_ema = getattr_ema
 
-    def __getattribute__(self,
-                         item: str):
-        if item in self._getattr_original:
-            return getattr(self.original_model, item)
-        elif item in self._getattr_ema:
-            return getattr(self.ema_model, item)
-        else:
-            return super().__getattribute__(item)
+    def __getattr__(self,
+                    item: str):
+        # fallback
+        return getattr(self._original_model, item)
 
     @property
     def original_model(self) -> nn.Module:
@@ -64,6 +56,12 @@ class EMA(nn.Module):
     @property
     def ema_model(self) -> nn.Module:
         return self._ema_model
+
+    def parameters(self, recurse: bool = True) -> Iterator[nn.Parameter]:
+        return self._original_model.parameters(recurse)
+
+    def requires_grad_(self, requires_grad: bool = True) -> nn.Module:
+        return self._original_model.requires_grad_(requires_grad)
 
     @torch.no_grad()
     def _update(self):
