@@ -47,7 +47,10 @@ class EMA(nn.Module):
     def __getattr__(self,
                     item: str):
         # fallback
-        return getattr(self.original_model, item)
+        try:
+            return super().__getattr__(item)
+        except AttributeError:
+            return getattr(self.original_model, item)
 
     @property
     def original_model(self) -> nn.Module:
