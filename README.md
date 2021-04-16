@@ -91,7 +91,7 @@ with trainers.SupervisedTrainer(model,
     trainer.run(train_loader, test_loader,
                 total_iterations=1_000, val_intervals=10)
 
-    print(f"Max Accuracy={max(trainer.history['accuracy']['test'])}")
+    print(f"Max Accuracy={max(trainer.history['accuracy']['tests'])}")
 ```
 
 You can customize `iteration` of `trainer` as follows.
