@@ -449,6 +449,7 @@ class SupervisedTrainer(TrainerBase):
                  use_amp=False,
                  use_channel_last=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
+                 update_scheduler_iter: bool = False,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -471,6 +472,11 @@ class SupervisedTrainer(TrainerBase):
         if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
             report_accuracy_topk = [report_accuracy_topk]
         self._report_topk = report_accuracy_topk
+        self.update_scheduler_iter = update_scheduler_iter & (scheduler is not None)
+        if self.update_scheduler_iter:
+            self.logger.info("scheduler is set to be updated after every iteration")
+        else:
+            self.logger.debug("self.update_scheduler_iter=False. Update scheduler manually")
 
     def iteration(self,
                   data: Tuple[Tensor, Tensor]
@@ -489,6 +495,8 @@ class SupervisedTrainer(TrainerBase):
             else:
                 loss.backward()
                 self.optimizer.step()
+            if self.update_scheduler_iter:
+                self.scheduler.step()
         if self._is_debug and torch.isnan(loss):
             self.logger.warning("loss is NaN")
 
