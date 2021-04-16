@@ -53,7 +53,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 120,
                  debug: bool = False,
-                 dist_kwargs: dict,
+                 dist_kwargs: Optional[dict] = None,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):

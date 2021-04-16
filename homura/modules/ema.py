@@ -41,13 +41,13 @@ class EMA(nn.Module):
 
         self._original_model = original_model
         self._ema_model = copy.deepcopy(original_model)
-        for p in self._ema_model.parameters():
+        for p in self.ema_model.parameters():
             p.requires_grad_(False)
 
     def __getattr__(self,
                     item: str):
         # fallback
-        return getattr(self._original_model, item)
+        return getattr(self.original_model, item)
 
     @property
     def original_model(self) -> nn.Module:
