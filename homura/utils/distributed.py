@@ -125,7 +125,8 @@ def distributed_ready_main(func: Callable = None,
     """ Wrap a main function to make it distributed ready
     """
 
-    init_distributed(backend=backend, init_method=init_method, disable_distributed_print=disable_distributed_print)
+    if is_distributed():
+        init_distributed(backend=backend, init_method=init_method, disable_distributed_print=disable_distributed_print)
 
     @wraps(func)
     def inner(*args, **kwargs):
