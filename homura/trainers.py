@@ -141,7 +141,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
         # to nest, leave=False (https://github.com/tqdm/tqdm/blob/master/examples/simple_examples.py#L19)
         self._tqdm = lambda x: x
-        if self._verbose:
+        if self.verbose:
             self._tqdm = Partial(tqdm, ncols=tqdm_ncols, leave=False)
             set_tqdm_stdout_stderr()
             self.logger.debug("verbose: setup tqdm")
@@ -157,6 +157,11 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                 v.to(self.device)
             setattr(self, k, v)
             self.logger.debug(f"trainer sets {k} as a new attribute")
+
+    @property
+    def verbose(self
+                ) -> bool:
+        return self._verbose
 
     @property
     def step(self
