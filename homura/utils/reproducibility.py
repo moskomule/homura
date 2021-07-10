@@ -47,24 +47,19 @@ def set_seed(seed: Optional[int] = None,
 @contextlib.contextmanager
 def set_deterministic(seed: Optional[int] = None,
                       by_rank: bool = False):
-    """ Set seed of `torch`, `random` and `numpy` to `seed` for making it deterministic. Because of CUDA's limitation, this
-    does not make everything deterministic, however.
+    """ Set seed of `torch`, `random` and `numpy` to `seed` for making it deterministic. Because of CUDA's limitation,
+    this may not make everything deterministic, however.
     """
 
-    has_set_deterministic = hasattr(torch, "set_deterministic")
     with set_seed(seed, by_rank):
         if seed is not None:
-            if has_set_deterministic:
-                torch.set_deterministic(True)
-            else:
-                torch.backends.cudnn.deterministic = True
-                torch.backends.cudnn.benchmark = False
+            torch.set_deterministic(True)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
             logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "
                         "Also, this may affect the performance.")
         yield
-    if has_set_deterministic:
-        torch.set_deterministic(False)
-    else:
-        torch.backends.cudnn.deterministic = False
-        torch.backends.cudnn.benchmark = True
+    torch.set_deterministic(False)
+    torch.backends.cudnn.deterministic = False
+    torch.backends.cudnn.benchmark = True
     logger.info("Back to non-deterministic.")

@@ -452,4 +452,4 @@ class ReporterList(object):
     def exit(self
              ) -> None:
         # expected to be used in TrainerBase.exit
-        self._persistent_hist = defaultdict(list)
+        ReporterList._persistent_hist = defaultdict(list)

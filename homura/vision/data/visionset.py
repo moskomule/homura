@@ -89,6 +89,9 @@ class VisionSet:
               prefetch_factor: int = 2,
               persistent_workers: bool = False,
               worker_init_fn: Optional[Callable] = None,
+              train_sampler: Optional[Callable] = None,
+              test_sampler: Optional[Callable] = None,
+              val_sampler: Optional[Callable] = None,
               start_epoch: bool = 0
               ) -> VisionSet:
         vals = locals()
@@ -193,6 +196,9 @@ class VisionSet:
                        prefetch_factor: int = 2,
                        persistent_workers: bool = False,
                        worker_init_fn: Optional[Callable] = None,
+                       train_sampler: Optional[Callable] = None,
+                       test_sampler: Optional[Callable] = None,
+                       val_sampler: Optional[Callable] = None,
                        start_epoch: bool = 0
                        ) -> (Tuple[DataLoader, DataLoader]
                              or Tuple[DataLoader, DataLoader, DataLoader]
@@ -222,6 +228,9 @@ class VisionSet:
         :param prefetch_factor:
         :param persistent_workers:
         :param worker_init_fn:
+        :param train_sampler: None or function of dataset -> sampler
+        :param test_sampler: None or function of dataset -> sampler
+        :param val_sampler: None or function of dataset -> sampler
         :param start_epoch: Epoch at start time
         :return: train_loader, test_loader, [val_loader], [num_classes]
         """
@@ -231,35 +240,24 @@ class VisionSet:
                                                         pre_train_da=pre_default_train_da,
                                                         post_train_da=post_default_train_da,
                                                         post_norm_train_da=post_norm_train_da)
+        train_sampler, test_sampler, val_sampler = self._get_sampler(train_set, test_set, val_set,
+                                                                     train_sampler, test_sampler, val_sampler,
+                                                                     start_epoch)
         if test_batch_size is None:
             test_batch_size = non_training_bs_factor * batch_size
-
-        samplers = [None, None, None]
-        if is_distributed():
-
-            dist_sampler_kwargs = dict(num_replicas=get_world_size(), rank=get_global_rank())
-            samplers[0] = DistributedSampler(train_set, **dist_sampler_kwargs)
-            samplers[2] = DistributedSampler(test_set, **dist_sampler_kwargs)
-            samplers[0].set_epoch(start_epoch)
-            samplers[2].set_epoch(start_epoch)
-        else:
-            samplers[0] = RandomSampler(train_set, True)
 
         shared_kwargs = dict(drop_last=drop_last, num_workers=num_workers, pin_memory=pin_memory,
                              collate_fn=self.collate_fn, prefetch_factor=prefetch_factor,
                              persistent_workers=persistent_workers, worker_init_fn=worker_init_fn)
-        train_loader = DataLoader(train_set, batch_size, sampler=samplers[0], **shared_kwargs)
-        test_loader = DataLoader(test_set, test_batch_size, sampler=samplers[2], **shared_kwargs)
+        train_loader = DataLoader(train_set, batch_size, sampler=train_sampler, **shared_kwargs)
+        test_loader = DataLoader(test_set, test_batch_size, sampler=test_sampler, **shared_kwargs)
         self._train_loader = train_loader
         self._test_loader = test_loader
 
         ret = [train_loader, test_loader]
 
         if val_set is not None:
-            if is_distributed():
-                samplers[1] = DistributedSampler(val_set, **dist_sampler_kwargs)
-                samplers[1].set_epoch(start_epoch)
-            val_loader = DataLoader(val_set, test_batch_size, sampler=samplers[1], **shared_kwargs)
+            val_loader = DataLoader(val_set, test_batch_size, sampler=val_sampler, **shared_kwargs)
             ret.append(val_loader)
             self._val_loader = val_loader
 
@@ -267,6 +265,33 @@ class VisionSet:
             ret.append(self.num_classes)
 
         return tuple(ret)
+
+    @staticmethod
+    def _get_sampler(train_set, test_set, val_set, train_sampler, test_sampler, val_sampler, start_epoch):
+        if train_sampler is None:
+            if is_distributed():
+                train_sampler = DistributedSampler(train_set, num_replicas=get_world_size(), rank=get_global_rank())
+                train_sampler.set_epoch(start_epoch)
+            else:
+                train_sampler = RandomSampler(train_set, True)
+        else:
+            train_sampler = train_sampler(train_set)
+
+        if test_sampler is None:
+            if is_distributed():
+                test_sampler = DistributedSampler(test_set, num_replicas=get_world_size(), rank=get_global_rank())
+                test_sampler.set_epoch(start_epoch)
+        else:
+            test_sampler = test_sampler(test_set)
+
+        if val_set is not None:
+            if val_sampler is None and is_distributed():
+                val_sampler = DistributedSampler(val_set, num_replicas=get_world_size(), rank=get_global_rank())
+                val_sampler.set_epoch(start_epoch)
+            else:
+                val_sampler = val_sampler(val_set)
+
+        return train_sampler, test_sampler, val_sampler
 
     __call__ = get_dataloader
 

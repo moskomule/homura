@@ -3,7 +3,7 @@ import torch
 from torch.nn import functional as F
 from torchvision.models import resnet50
 
-from homura import distributed_ready_main, enable_accimage, get_num_nodes, is_distributed, lr_scheduler, optim, \
+from homura import distributed_ready_main, enable_accimage, get_world_size, is_distributed, lr_scheduler, optim, \
     reporters
 from homura.trainers import SupervisedTrainer
 from homura.vision.data import DATASET_REGISTRY
@@ -11,6 +11,7 @@ from homura.vision.data import DATASET_REGISTRY
 
 @chika.config
 class Config:
+    base_lr: float = 0.1
     epochs: int = 90
     batch_size: int = 256
     enable_accimage: bool = False
@@ -30,10 +31,10 @@ def main(cfg: Config):
         enable_accimage()
 
     model = resnet50()
-    optimizer = optim.SGD(lr=1e-1 * cfg.batch_size * get_num_nodes() / 256, momentum=0.9, weight_decay=1e-4)
-    scheduler = lr_scheduler.MultiStepLR([30, 60, 80])
-    train_loader, test_loader = DATASET_REGISTRY("fast_imagenet" if cfg.use_fast_collate else
-                                                 "imagenet")(cfg.batch_size,
+    optimizer = optim.SGD(lr=cfg.base_lr * cfg.batch_size * get_world_size() / 256, momentum=0.9, weight_decay=1e-4,
+                          multi_tensor=True)
+    scheduler = lr_scheduler.MultiStepLR([30, 60, 90])
+    train_loader, test_loader = DATASET_REGISTRY("imagenet")(cfg.batch_size,
                                                              train_size=cfg.batch_size * 50 if cfg.debug else None,
                                                              test_size=cfg.batch_size * 50 if cfg.debug else None,
                                                              num_workers=cfg.num_workers)
