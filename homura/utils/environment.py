@@ -7,6 +7,8 @@ import subprocess
 import sys as python_sys
 from typing import Any, Optional
 
+import torch
+
 from homura.liblog import get_logger
 
 logger = get_logger("homura.environment")
@@ -42,6 +44,53 @@ def is_cupy_available() -> bool:
 
 def is_opteinsum_available() -> bool:
     return importlib.util.find_spec("opt_einsum") is not None
+
+
+# TF32
+def _enable_tf32(mode: bool) -> None:
+    try:
+        torch.backends.cuda.matmul.allow_tf32 = mode
+        torch.backends.cudnn.allow_tf32 = mode
+        if mode:
+            logger.info("TF32 is enabled")
+        else:
+            logger.info("TF32 is disabled")
+
+    except Exception as e:
+        logger.exception(e)
+
+
+def disable_tf32() -> None:
+    """ Globally disable TF32
+
+    """
+
+    _enable_tf32(False)
+
+
+class disable_tf32_locally(object):
+    """ Locally disable TF32
+
+    >>> with disable_tf32_locally():
+    >>>     ...
+
+
+    or
+
+    >>> @disable_tf32_locally()
+    >>> def function():
+    >>>     ...
+
+    """
+
+    def __call__(self):
+        _enable_tf32(False)
+
+    def __enter__(self):
+        _enable_tf32(False)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        _enable_tf32(True)
 
 
 # get environment information
