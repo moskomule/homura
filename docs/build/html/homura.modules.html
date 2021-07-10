@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -194,12 +197,20 @@
 <div class="section" id="module-homura.modules.attention">
 <span id="homura-modules-attention-module"></span><h2>homura.modules.attention module<a class="headerlink" href="#module-homura.modules.attention" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.modules.attention.AttentionPool2d">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.attention.</span></code><code class="sig-name descname"><span class="pre">AttentionPool2d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.AttentionPool2d">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.attention.</span></span><span class="sig-name descname"><span class="pre">AttentionPool2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_dim</strong> (<em>int</em>) – </p></li>
+<li><p><strong>num_heads</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
-<dt id="homura.modules.attention.AttentionPool2d.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.AttentionPool2d.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -220,33 +231,33 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="homura.modules.attention.AttentionPool2d.initialize_weights">
-<code class="sig-name descname"><span class="pre">initialize_weights</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d.initialize_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.initialize_weights" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.AttentionPool2d.initialize_weights">
+<span class="sig-name descname"><span class="pre">initialize_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#AttentionPool2d.initialize_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.initialize_weights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.attention.AttentionPool2d.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.AttentionPool2d.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.attention.AttentionPool2d.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.modules.attention.KeyValAttention">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.attention.</span></code><code class="sig-name descname"><span class="pre">KeyValAttention</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.KeyValAttention">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.attention.</span></span><span class="sig-name descname"><span class="pre">KeyValAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>Key-value attention.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scaling</strong> – </p></li>
-<li><p><strong>dropout_prob</strong> – </p></li>
+<li><p><strong>scaling</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>dropout_prob</strong> (<em>float</em>) – </p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="homura.modules.attention.KeyValAttention.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additive_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.KeyValAttention.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additive_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/attention.html#KeyValAttention.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.attention.KeyValAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>See <cite>functional.attention.kv_attention</cite> for details</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -268,8 +279,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.attention.KeyValAttention.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.attention.KeyValAttention.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.attention.KeyValAttention.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.attention.KeyValAttention.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -278,13 +289,21 @@ registered hooks while the latter silently ignores them.</p>
 <div class="section" id="module-homura.modules.discretization">
 <span id="homura-modules-discretization-module"></span><h2>homura.modules.discretization module<a class="headerlink" href="#module-homura.modules.discretization" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.modules.discretization.GumbelSigmoid">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></code><code class="sig-name descname"><span class="pre">GumbelSigmoid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.GumbelSigmoid">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></span><span class="sig-name descname"><span class="pre">GumbelSigmoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>This module outputs <cite>gumbel_sigmoid</cite> while training and <cite>input.sigmoid() &gt;= threshold</cite> while evaluation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temp</strong> (<em>float</em>) – </p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
-<dt id="homura.modules.discretization.GumbelSigmoid.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.GumbelSigmoid.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#GumbelSigmoid.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -305,19 +324,19 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.discretization.GumbelSigmoid.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.GumbelSigmoid.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.GumbelSigmoid.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.modules.discretization.SemanticHashing">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></code><code class="sig-name descname"><span class="pre">SemanticHashing</span></code><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.SemanticHashing">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></span><span class="sig-name descname"><span class="pre">SemanticHashing</span></span><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="homura.modules.discretization.SemanticHashing.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.SemanticHashing.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#SemanticHashing.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -338,19 +357,19 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.discretization.SemanticHashing.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.SemanticHashing.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.SemanticHashing.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.modules.discretization.StraightThroughEstimator">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></code><code class="sig-name descname"><span class="pre">StraightThroughEstimator</span></code><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.StraightThroughEstimator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.discretization.</span></span><span class="sig-name descname"><span class="pre">StraightThroughEstimator</span></span><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <dl class="py method">
-<dt id="homura.modules.discretization.StraightThroughEstimator.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.StraightThroughEstimator.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/discretization.html#StraightThroughEstimator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -368,8 +387,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.discretization.StraightThroughEstimator.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.discretization.StraightThroughEstimator.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.discretization.StraightThroughEstimator.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -378,28 +397,28 @@ registered hooks while the latter silently ignores them.</p>
 <div class="section" id="module-homura.modules.ema">
 <span id="homura-modules-ema-module"></span><h2>homura.modules.ema module<a class="headerlink" href="#module-homura.modules.ema" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.modules.ema.EMA">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.ema.</span></code><code class="sig-name descname"><span class="pre">EMA</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.EMA">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.ema.</span></span><span class="sig-name descname"><span class="pre">EMA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>Exponential moving average of a given model.</p>
 <p>model = EMA(original_model, 0.99999)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>original_model</strong> – Original model</p></li>
-<li><p><strong>momentum</strong> – Momentum value for EMA</p></li>
-<li><p><strong>copy_buffer</strong> – If true, copy float buffers instead of EMA</p></li>
+<li><p><strong>original_model</strong> (<em>torch.nn.modules.module.Module</em>) – Original model</p></li>
+<li><p><strong>momentum</strong> (<em>float</em>) – Momentum value for EMA</p></li>
+<li><p><strong>copy_buffer</strong> (<em>bool</em>) – If true, copy float buffers instead of EMA</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt id="homura.modules.ema.EMA.ema_model">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ema_model</span></code><a class="headerlink" href="#homura.modules.ema.EMA.ema_model" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.ema_model">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ema_model</span></span><em class="property"><span class="pre">:</span> <span class="pre">torch.nn.modules.module.Module</span></em><a class="headerlink" href="#homura.modules.ema.EMA.ema_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="homura.modules.ema.EMA.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -411,14 +430,14 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="homura.modules.ema.EMA.original_model">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">original_model</span></code><a class="headerlink" href="#homura.modules.ema.EMA.original_model" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.original_model">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">original_model</span></span><em class="property"><span class="pre">:</span> <span class="pre">torch.nn.modules.module.Module</span></em><a class="headerlink" href="#homura.modules.ema.EMA.original_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="homura.modules.ema.EMA.parameters">
-<code class="sig-name descname"><span class="pre">parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.parameters" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator over module parameters.</p>
 <p>This is typically passed to an optimizer.</p>
 <dl class="simple">
@@ -449,14 +468,16 @@ are direct members of this module.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="homura.modules.ema.EMA.requires_grad_">
-<code class="sig-name descname"><span class="pre">requires_grad_</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">requires_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.requires_grad_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.requires_grad_" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.requires_grad_">
+<span class="sig-name descname"><span class="pre">requires_grad_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">requires_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#EMA.requires_grad_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.EMA.requires_grad_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change if autograd should record operations on parameters in this
 module.</p>
 <p>This method sets the parameters’ <code class="xref py py-attr docutils literal notranslate"><span class="pre">requires_grad</span></code> attributes
 in-place.</p>
 <p>This method is helpful for freezing part of the module for finetuning
 or training parts of a model individually (e.g., GAN training).</p>
+<p>See <span class="xref std std-ref">locally-disable-grad-doc</span> for a comparison between
+<cite>.requires_grad_()</cite> and several similar mechanisms that may be confused with it.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>requires_grad (bool): whether autograd should record operations on</dt><dd><p>parameters in this module. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -470,19 +491,22 @@ or training parts of a model individually (e.g., GAN training).</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>requires_grad</strong> (<em>bool</em>) – </p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.nn.modules.module.Module</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="homura.modules.ema.EMA.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.ema.EMA.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.EMA.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.ema.EMA.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="homura.modules.ema.exponential_moving_average_">
-<code class="sig-prename descclassname"><span class="pre">homura.modules.ema.</span></code><code class="sig-name descname"><span class="pre">exponential_moving_average_</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#exponential_moving_average_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.exponential_moving_average_" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.ema.exponential_moving_average_">
+<span class="sig-prename descclassname"><span class="pre">homura.modules.ema.</span></span><span class="sig-name descname"><span class="pre">exponential_moving_average_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/ema.html#exponential_moving_average_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.ema.exponential_moving_average_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inplace exponential moving average of <cite>base</cite> tensor</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -505,23 +529,40 @@ or training parts of a model individually (e.g., GAN training).</p>
 <div class="section" id="module-homura.modules.loss">
 <span id="homura-modules-loss-module"></span><h2>homura.modules.loss module<a class="headerlink" href="#module-homura.modules.loss" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="homura.modules.loss.SmoothedCrossEntropy">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.loss.</span></code><code class="sig-name descname"><span class="pre">SmoothedCrossEntropy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/loss.html#SmoothedCrossEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.loss.SmoothedCrossEntropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.loss.SmoothedCrossEntropy">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.loss.</span></span><span class="sig-name descname"><span class="pre">SmoothedCrossEntropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/loss.html#SmoothedCrossEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.loss.SmoothedCrossEntropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.modules.loss._LossFunction</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>smoothing</strong> (<em>float</em>) – </p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – </p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
-<dt id="homura.modules.loss.SmoothedCrossEntropy.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.loss.SmoothedCrossEntropy.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.loss.SmoothedCrossEntropy.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.loss.SmoothedCrossEntropy.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="homura.modules.loss.SoftLabelCrossEntropy">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">homura.modules.loss.</span></code><code class="sig-name descname"><span class="pre">SoftLabelCrossEntropy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/loss.html#SoftLabelCrossEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.loss.SoftLabelCrossEntropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.loss.SoftLabelCrossEntropy">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.modules.loss.</span></span><span class="sig-name descname"><span class="pre">SoftLabelCrossEntropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/modules/loss.html#SoftLabelCrossEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.modules.loss.SoftLabelCrossEntropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.modules.loss._LossFunction</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<em>int</em>) – </p></li>
+<li><p><strong>reduction</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
-<dt id="homura.modules.loss.SoftLabelCrossEntropy.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.loss.SoftLabelCrossEntropy.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="homura.modules.loss.SoftLabelCrossEntropy.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.modules.loss.SoftLabelCrossEntropy.training" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

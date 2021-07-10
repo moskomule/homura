@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -245,6 +248,9 @@
               <span class="n">prefetch_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
               <span class="n">persistent_workers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">worker_init_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">test_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">val_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">start_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="mi">0</span>
               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VisionSet</span><span class="p">:</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
@@ -349,6 +355,9 @@
                        <span class="n">prefetch_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
                        <span class="n">persistent_workers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                        <span class="n">worker_init_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">train_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">test_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">val_sampler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">start_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="mi">0</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
                              <span class="ow">or</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">]</span>
@@ -378,6 +387,9 @@
 <span class="sd">        :param prefetch_factor:</span>
 <span class="sd">        :param persistent_workers:</span>
 <span class="sd">        :param worker_init_fn:</span>
+<span class="sd">        :param train_sampler: None or function of dataset -&gt; sampler</span>
+<span class="sd">        :param test_sampler: None or function of dataset -&gt; sampler</span>
+<span class="sd">        :param val_sampler: None or function of dataset -&gt; sampler</span>
 <span class="sd">        :param start_epoch: Epoch at start time</span>
 <span class="sd">        :return: train_loader, test_loader, [val_loader], [num_classes]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -387,35 +399,24 @@
                                                         <span class="n">pre_train_da</span><span class="o">=</span><span class="n">pre_default_train_da</span><span class="p">,</span>
                                                         <span class="n">post_train_da</span><span class="o">=</span><span class="n">post_default_train_da</span><span class="p">,</span>
                                                         <span class="n">post_norm_train_da</span><span class="o">=</span><span class="n">post_norm_train_da</span><span class="p">)</span>
+        <span class="n">train_sampler</span><span class="p">,</span> <span class="n">test_sampler</span><span class="p">,</span> <span class="n">val_sampler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span><span class="p">,</span>
+                                                                     <span class="n">train_sampler</span><span class="p">,</span> <span class="n">test_sampler</span><span class="p">,</span> <span class="n">val_sampler</span><span class="p">,</span>
+                                                                     <span class="n">start_epoch</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">test_batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_batch_size</span> <span class="o">=</span> <span class="n">non_training_bs_factor</span> <span class="o">*</span> <span class="n">batch_size</span>
-
-        <span class="n">samplers</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
-
-            <span class="n">dist_sampler_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">num_replicas</span><span class="o">=</span><span class="n">get_world_size</span><span class="p">(),</span> <span class="n">rank</span><span class="o">=</span><span class="n">get_global_rank</span><span class="p">())</span>
-            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
-            <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
-            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
-            <span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="n">shared_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">drop_last</span><span class="o">=</span><span class="n">drop_last</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="n">pin_memory</span><span class="p">,</span>
                              <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">,</span> <span class="n">prefetch_factor</span><span class="o">=</span><span class="n">prefetch_factor</span><span class="p">,</span>
                              <span class="n">persistent_workers</span><span class="o">=</span><span class="n">persistent_workers</span><span class="p">,</span> <span class="n">worker_init_fn</span><span class="o">=</span><span class="n">worker_init_fn</span><span class="p">)</span>
-        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
-        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">train_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">test_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_loader</span> <span class="o">=</span> <span class="n">train_loader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span> <span class="o">=</span> <span class="n">test_loader</span>
 
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">val_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
-                <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="o">**</span><span class="n">dist_sampler_kwargs</span><span class="p">)</span>
-                <span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
-            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">samplers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">val_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span> <span class="o">=</span> <span class="n">val_loader</span>
 
@@ -423,6 +424,33 @@
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_sampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span><span class="p">,</span> <span class="n">val_set</span><span class="p">,</span> <span class="n">train_sampler</span><span class="p">,</span> <span class="n">test_sampler</span><span class="p">,</span> <span class="n">val_sampler</span><span class="p">,</span> <span class="n">start_epoch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">train_sampler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
+                <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="n">get_world_size</span><span class="p">(),</span> <span class="n">rank</span><span class="o">=</span><span class="n">get_global_rank</span><span class="p">())</span>
+                <span class="n">train_sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">train_sampler</span> <span class="o">=</span> <span class="n">train_sampler</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">test_sampler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_distributed</span><span class="p">():</span>
+                <span class="n">test_sampler</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="n">get_world_size</span><span class="p">(),</span> <span class="n">rank</span><span class="o">=</span><span class="n">get_global_rank</span><span class="p">())</span>
+                <span class="n">test_sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">test_sampler</span> <span class="o">=</span> <span class="n">test_sampler</span><span class="p">(</span><span class="n">test_set</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">val_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">val_sampler</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_distributed</span><span class="p">():</span>
+                <span class="n">val_sampler</span> <span class="o">=</span> <span class="n">DistributedSampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="n">get_world_size</span><span class="p">(),</span> <span class="n">rank</span><span class="o">=</span><span class="n">get_global_rank</span><span class="p">())</span>
+                <span class="n">val_sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">val_sampler</span> <span class="o">=</span> <span class="n">val_sampler</span><span class="p">(</span><span class="n">val_set</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">train_sampler</span><span class="p">,</span> <span class="n">test_sampler</span><span class="p">,</span> <span class="n">val_sampler</span>
 
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">get_dataloader</span>
 
