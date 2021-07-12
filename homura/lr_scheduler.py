@@ -1,6 +1,6 @@
 import math
 import warnings
-from bisect import bisect
+import bisect
 from functools import partial
 from typing import List
 
