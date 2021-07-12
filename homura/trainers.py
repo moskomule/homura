@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 from homura import get_global_rank, get_local_rank, is_distributed
 from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tqdm
 from .metrics import accuracy
+from .optim import LARC
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
 from .utils.containers import StepDict, TensorTuple
@@ -117,21 +118,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        # setup optimizer and scheduler
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.set_optimizer()
-        self.set_scheduler()
-
-        if reporters is not None and not isinstance(reporters, Iterable):
-            reporters = [reporters]
-        reporters = reporters or []
-
-        if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
-            # if reporters not contain TQDMReporter
-            reporters.append(TQDMReporter(ncols=tqdm_ncols))
-        self.logger.debug(f"reporter is ready: {reporters}")
-        self.reporter = ReporterList(reporters)
+        self.reporter = None
 
         # called via property
         # _step and _epoch are set to -1 because they are incremented before each iteration and epoch
@@ -148,6 +137,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.logger.debug("quiet: no tqdm")
 
+        # this needs to be here to access members from set_*,
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
@@ -157,6 +147,20 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                 v.to(self.device)
             setattr(self, k, v)
             self.logger.debug(f"trainer sets {k} as a new attribute")
+
+        # setup optimizer and scheduler
+        self.set_optimizer()
+        self.set_scheduler()
+
+        if reporters is not None and not isinstance(reporters, Iterable):
+            reporters = [reporters]
+        reporters = reporters or []
+
+        if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
+            # if reporters not contain TQDMReporter
+            reporters.append(TQDMReporter(ncols=tqdm_ncols))
+        self.logger.debug(f"reporter is ready: {reporters}")
+        self.reporter = ReporterList(reporters)
 
     @property
     def verbose(self
@@ -455,6 +459,7 @@ class SupervisedTrainer(TrainerBase):
                  use_channel_last=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
                  update_scheduler_iter: bool = False,
+                 use_larc: bool = False,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -471,6 +476,7 @@ class SupervisedTrainer(TrainerBase):
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
         self._use_channel_last = use_channel_last
+        self._use_larc = use_larc
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
             self.model.to(memory_format=torch.channels_last)
@@ -541,3 +547,10 @@ class SupervisedTrainer(TrainerBase):
         self._epoch = state_dict['epoch']
         self._use_sync_bn = state_dict['use_sync_bn']
         self._use_amp = state_dict['use_amp']
+
+    def set_scheduler(self
+                      ) -> None:
+        super().set_scheduler()
+        if self._use_larc:
+            # scheduler expects optimizer is Optimizer, but LARC is not
+            self.optimizer = LARC(self.optimizer)
