@@ -1,5 +1,8 @@
 import math
+import warnings
+from bisect import bisect
 from functools import partial
+from typing import List
 
 from torch.optim import lr_scheduler as _lr_scheduler
 
@@ -14,6 +17,15 @@ def MultiStepLR(milestones,
                 gamma=0.1,
                 last_epoch=-1):
     return partial(_lr_scheduler.MultiStepLR, **locals())
+
+
+def MultiStepWithWarmup(warmup: int,
+                        milestones: List[int],
+                        gamma: float = 0.1,
+                        last_epoch: int = -1):
+    return partial(_lr_scheduler.LambdaLR,
+                   lr_lambda=multistep_with_warmup(warmup, milestones, gamma),
+                   last_epoch=last_epoch)
 
 
 def LambdaLR(lr_lambda,
@@ -40,10 +52,11 @@ def ReduceLROnPlateau(mode='min',
 
 
 def CosineAnnealingWithWarmup(total_epochs: int,
-                              multiplier: float,
                               warmup_epochs: int,
+                              multiplier: float = 1,
                               min_lr: float = 0,
                               last_epoch: int = -1):
+    warnings.warn("The order of arguments is changed! Check it carefully.", DeprecationWarning)
     return partial(_CosineAnnealingWithWarmup, **locals())
 
 
@@ -68,7 +81,11 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
 
             assert multiplier >= 1
             mul = 1 / multiplier
-            return lambda epoch: (1 - mul) * epoch / warmup_epochs + mul
+
+            def f(epoch):
+                return (1 - mul) * epoch / warmup_epochs + mul
+
+            return f
 
         warmup = _warmup(self.multiplier, self.warmup_epochs)
         if self.last_epoch < self.warmup_epochs:
@@ -79,3 +96,19 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
             return [self.min_lr + (base_lr - self.min_lr) *
                     (1 + math.cos(math.pi * new_epoch / (self.total_epochs - self.warmup_epochs))) / 2
                     for base_lr in self.base_lrs]
+
+
+def multistep_with_warmup(warmup_epochs: int,
+                          milestones: List[int],
+                          multiplier: float = 1,
+                          gamma: float = 0.1
+                          ):
+    assert multiplier >= 1
+
+    def f(epoch):
+        if epoch < warmup_epochs:
+            mul = 1 / multiplier
+            return (1 - mul) * epoch / warmup_epochs + mul
+        return gamma ** bisect.bisect_right(milestones, epoch)
+
+    return f
