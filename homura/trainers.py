@@ -464,7 +464,8 @@ class SupervisedTrainer(TrainerBase):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, reporters=reporters, scheduler=scheduler,
-                                                quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark, **kwargs)
+                                                quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark,
+                                                use_larc=use_larc, **kwargs)
 
         if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
@@ -476,7 +477,6 @@ class SupervisedTrainer(TrainerBase):
             self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
         self._use_channel_last = use_channel_last
-        self._use_larc = use_larc
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
             self.model.to(memory_format=torch.channels_last)
@@ -551,6 +551,6 @@ class SupervisedTrainer(TrainerBase):
     def set_scheduler(self
                       ) -> None:
         super().set_scheduler()
-        if self._use_larc:
+        if self.use_larc:
             # scheduler expects optimizer is Optimizer, but LARC is not
             self.optimizer = LARC(self.optimizer)
