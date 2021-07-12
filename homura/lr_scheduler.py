@@ -22,9 +22,10 @@ def MultiStepLR(milestones,
 def MultiStepWithWarmup(warmup: int,
                         milestones: List[int],
                         gamma: float = 0.1,
+                        multiplier: float = 1,
                         last_epoch: int = -1):
     return partial(_lr_scheduler.LambdaLR,
-                   lr_lambda=multistep_with_warmup(warmup, milestones, gamma),
+                   lr_lambda=multistep_with_warmup(warmup, milestones, gamma, multiplier),
                    last_epoch=last_epoch)
 
 
@@ -53,10 +54,10 @@ def ReduceLROnPlateau(mode='min',
 
 def CosineAnnealingWithWarmup(total_epochs: int,
                               warmup_epochs: int,
-                              multiplier: float = 1,
                               min_lr: float = 0,
+                              multiplier: float = 1,
                               last_epoch: int = -1):
-    warnings.warn("The order of arguments is changed! Check it carefully.", DeprecationWarning)
+    warnings.warn(f"The order of arguments is changed! ({locals()}) Check it carefully.", DeprecationWarning)
     return partial(_CosineAnnealingWithWarmup, **locals())
 
 
@@ -100,8 +101,8 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
 
 def multistep_with_warmup(warmup_epochs: int,
                           milestones: List[int],
-                          multiplier: float = 1,
-                          gamma: float = 0.1
+                          gamma: float = 0.1,
+                          multiplier: float = 1
                           ):
     assert multiplier >= 1
 
