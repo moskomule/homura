@@ -22,10 +22,9 @@ def MultiStepLR(milestones,
 def MultiStepWithWarmup(warmup: int,
                         milestones: List[int],
                         gamma: float = 0.1,
-                        multiplier: float = 1,
                         last_epoch: int = -1):
     return partial(_lr_scheduler.LambdaLR,
-                   lr_lambda=multistep_with_warmup(warmup, milestones, gamma, multiplier),
+                   lr_lambda=multistep_with_warmup(warmup, milestones, gamma),
                    last_epoch=last_epoch)
 
 
@@ -55,9 +54,9 @@ def ReduceLROnPlateau(mode='min',
 def CosineAnnealingWithWarmup(total_epochs: int,
                               warmup_epochs: int,
                               min_lr: float = 0,
-                              multiplier: float = 1,
                               last_epoch: int = -1):
-    warnings.warn(f"The order of arguments is changed! ({locals()}) Check it carefully.", DeprecationWarning)
+    if last_epoch == 0:
+        warnings.warn("last_epoch is set to 0, is it intended?", DeprecationWarning)
     return partial(_CosineAnnealingWithWarmup, **locals())
 
 
@@ -65,30 +64,23 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
     def __init__(self,
                  optimizer,
                  total_epochs: int,
-                 multiplier: float,
                  warmup_epochs: int,
                  min_lr: float = 0,
                  last_epoch: int = -1):
         self.total_epochs = total_epochs
         self.min_lr = min_lr
-        self.multiplier = multiplier
         self.warmup_epochs = warmup_epochs
         super(_CosineAnnealingWithWarmup, self).__init__(optimizer, last_epoch)
 
     def get_lr(self):
-        def _warmup(multiplier: float,
-                    warmup_epochs: int):
-            # Finally (at the warmup_epochs-th epoch), lr becomes base_lr
-
-            assert multiplier >= 1
-            mul = 1 / multiplier
+        def _warmup(warmup_epochs: int):
 
             def f(epoch):
-                return (1 - mul) * epoch / warmup_epochs + mul
+                return (epoch + 1) / warmup_epochs
 
             return f
 
-        warmup = _warmup(self.multiplier, self.warmup_epochs)
+        warmup = _warmup(self.warmup_epochs)
         if self.last_epoch < self.warmup_epochs:
             return [base_lr * warmup(self.last_epoch) for base_lr in self.base_lrs]
 
@@ -102,14 +94,10 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
 def multistep_with_warmup(warmup_epochs: int,
                           milestones: List[int],
                           gamma: float = 0.1,
-                          multiplier: float = 1
                           ):
-    assert multiplier >= 1
-
     def f(epoch):
         if epoch < warmup_epochs:
-            mul = 1 / multiplier
-            return (1 - mul) * epoch / warmup_epochs + mul
+            return (epoch + 1) / warmup_epochs
         return gamma ** bisect.bisect_right(milestones, epoch)
 
     return f
