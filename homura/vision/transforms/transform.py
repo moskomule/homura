@@ -18,6 +18,8 @@ __all__ = ["TransformBase",
 
 TargetType = Literal["bbox", "mask"]
 
+_get_image_size = VF.get_image_size if hasattr(VF, 'get_image_size') else VF._get_image_size
+
 
 class HomuraTransformWarning(UserWarning):
     pass
@@ -51,7 +53,7 @@ class TransformBase(ABC):
                  ) -> torch.Tensor or Tuple[torch.Tensor, torch.Tensor]:
 
         input = self.ensure_tensor(input, True)
-        original_size = VF._get_image_size(input)
+        original_size = _get_image_size(input)
         if target is not None:
             target = self.ensure_tensor(target, False)
 
@@ -265,7 +267,7 @@ class RandomCrop(GeometricTransformBase):
             input = VF.pad(input, self.padding, self.fill, self.padding_mode)
 
         if self.pad_if_needed:
-            w, h = VF._get_image_size(input)
+            w, h = _get_image_size(input)
             eh, ew = self.size
             pw, ph = max(ew - w, 0), max(eh - h, 0)
             if pw > 0 or ph > 0:
