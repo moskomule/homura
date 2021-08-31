@@ -183,7 +183,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
     def tqdm(self,
              iter: Iterable
              ) -> Iterable:
-        self._tqdm(iter)
+        return self._tqdm(iter)
 
     @property
     def verbose(self
