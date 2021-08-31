@@ -1,3 +1,4 @@
+import contextlib
 import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
@@ -54,7 +55,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 120,
                  debug: bool = False,
+                 profile: bool = False,
                  dist_kwargs: Optional[dict] = None,
+                 prof_kwargs: Optional[dict] = None,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -162,6 +165,26 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self.logger.debug(f"reporter is ready: {reporters}")
         self.reporter = ReporterList(reporters)
 
+        if profile:
+            default_prof_kwargs = dict(activities=[torch.profiler.ProfilerActivity.CPU,
+                                                   torch.profiler.ProfilerActivity.CUDA],
+                                       schedule=torch.profiler.schedule(wait=1, warmup=1, active=10),
+                                       on_trace_ready=torch.profiler.tensorboard_trace_handler("./profile"),
+                                       with_stack=True)
+            prof_kwargs = prof_kwargs or default_prof_kwargs
+            self._profile_cm = torch.profiler.profile(**prof_kwargs)
+            self.logger.warning("profiler is activated")
+        else:
+            class Dummy:
+                def step(self): ...
+
+            self._profile_cm = contextlib.nullcontext(Dummy())
+
+    def tqdm(self,
+             iter: Iterable
+             ) -> Iterable:
+        self._tqdm(iter)
+
     @property
     def verbose(self
                 ) -> bool:
@@ -236,8 +259,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             if any([isinstance(m, nn.modules.batchnorm._BatchNorm) for m in self.accessible_model.modules()]):
                 warnings.warn("BatchNorm exists, while batch size is 1", RuntimeWarning)
 
-        with torch.autograd.set_detect_anomaly(self._is_debug):
+        with torch.autograd.set_detect_anomaly(self._is_debug) and self._profile_cm as p:
             self.iteration(data)
+            p.step()
 
     def __enter__(self):
         """
@@ -257,7 +281,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
               mode: str
               ) -> None:
 
-        for data in self._tqdm(data_loader):
+        for data in self.tqdm(data_loader):
             if self.is_train:
                 # increment step here for `callbacks`
                 self._step += 1
