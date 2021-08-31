@@ -53,13 +53,15 @@ def set_deterministic(seed: Optional[int] = None,
 
     with set_seed(seed, by_rank):
         if seed is not None:
-            torch.set_deterministic(True)
+            if hasattr(torch, "set_deterministic"):
+                torch.set_deterministic(True)
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
             logger.info("Set deterministic. But some GPU computations might be still non-deterministic. "
                         "Also, this may affect the performance.")
         yield
-    torch.set_deterministic(False)
+    if hasattr(torch, "set_deterministic"):
+        torch.set_deterministic(False)
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = True
     logger.info("Back to non-deterministic.")
