@@ -8,27 +8,19 @@
 
 🔥🔥🔥🔥 *homura* (焰) is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
 
-## Important Notes
-
-* In order to avoid a name conflict on pypi, the library name is renamed to `homura-core`.
-    + For *installation*, use `homura-core`.
-    + For *importing*, use `homura`.
-    + If you have already installed `homura<2020.12.0`, uninstall it before installing the latest one.
-
 ## Requirements
 
 ### Minimal requirements
 
 ```
-Python>=3.8
-PyTorch>=1.7.0
-torchvision>=0.8.0
+Python>=3.9
+PyTorch>=1.9.0
+torchvision>=0.10.0
 ```
 
 ## Installation
 
 ```console
-pip uninstall homura
 pip install -U homura-core
 ```
 
