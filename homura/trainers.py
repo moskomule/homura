@@ -487,9 +487,10 @@ class SupervisedTrainer(TrainerBase):
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
+        self.use_larc = use_larc
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, reporters=reporters, scheduler=scheduler,
                                                 quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark,
-                                                use_larc=use_larc, **kwargs)
+                                                **kwargs)
 
         if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
@@ -506,7 +507,7 @@ class SupervisedTrainer(TrainerBase):
             self.model.to(memory_format=torch.channels_last)
         if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
             report_accuracy_topk = [report_accuracy_topk]
-        self._report_topk = report_accuracy_topk
+        self._report_topk = [k for k in report_accuracy_topk if k != 1]
         self.update_scheduler_iter = update_scheduler_iter & (scheduler is not None)
         if self.update_scheduler_iter:
             self.logger.info("scheduler is set to be updated after every iteration")
