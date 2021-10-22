@@ -1,3 +1,4 @@
+import warnings
 from functools import partial
 
 import torch
@@ -19,6 +20,8 @@ class SoftLabelCrossEntropy(_LossFunction):
                  dim: int = 1,
                  reduction: str = "mean"):
         super().__init__()
+        if hasattr(nn.CrossEntropyLoss, "label_smoothing"):
+            warnings.warn("Use PyTorch's nn.CrossEntropyLoss", DeprecationWarning)
         self.impl = partial(cross_entropy_with_softlabels, dim=dim, reduction=reduction)
 
 
@@ -28,4 +31,6 @@ class SmoothedCrossEntropy(_LossFunction):
                  dim: int = 1,
                  reduction: str = "mean"):
         super().__init__()
+        if hasattr(nn.CrossEntropyLoss, "label_smoothing"):
+            warnings.warn("Use PyTorch's nn.CrossEntropyLoss", DeprecationWarning)
         self.impl = partial(cross_entropy_with_smoothing, smoothing=smoothing, dim=dim, reduction=reduction)
