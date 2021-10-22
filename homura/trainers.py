@@ -505,9 +505,11 @@ class SupervisedTrainer(TrainerBase):
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
             self.model.to(memory_format=torch.channels_last)
-        if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
-            report_accuracy_topk = [report_accuracy_topk]
-        self._report_topk = [k for k in report_accuracy_topk if k != 1]
+        if report_accuracy_topk is not None:
+            if not isinstance(report_accuracy_topk, Iterable):
+                report_accuracy_topk = [report_accuracy_topk]
+            report_accuracy_topk = [k for k in report_accuracy_topk if k != 1]
+        self._report_topk = report_accuracy_topk
         self.update_scheduler_iter = update_scheduler_iter & (scheduler is not None)
         if self.update_scheduler_iter:
             self.logger.info("scheduler is set to be updated after every iteration")
