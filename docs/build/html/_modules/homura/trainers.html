@@ -1,71 +1,31 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>homura.trainers &mdash; homura  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> homura
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +33,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Package Reference:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Package Reference:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homura.modules.html">homura.modules package</a></li>
@@ -93,71 +42,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../../homura.vision.html">homura.vision package</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">homura</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>homura.trainers</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for homura.trainers</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span> <span class="k">as</span> <span class="n">Partial</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MethodType</span>
@@ -172,6 +83,7 @@
 <span class="kn">from</span> <span class="nn">homura</span> <span class="kn">import</span> <span class="n">get_global_rank</span><span class="p">,</span> <span class="n">get_local_rank</span><span class="p">,</span> <span class="n">is_distributed</span>
 <span class="kn">from</span> <span class="nn">homura.liblog</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">set_tqdm_stdout_stderr</span><span class="p">,</span> <span class="n">set_verb_level</span><span class="p">,</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">.metrics</span> <span class="kn">import</span> <span class="n">accuracy</span>
+<span class="kn">from</span> <span class="nn">.optim</span> <span class="kn">import</span> <span class="n">LARC</span>
 <span class="kn">from</span> <span class="nn">.reporters</span> <span class="kn">import</span> <span class="n">ReporterList</span><span class="p">,</span> <span class="n">TQDMReporter</span><span class="p">,</span> <span class="n">_ReporterBase</span>
 <span class="kn">from</span> <span class="nn">.utils._mixin</span> <span class="kn">import</span> <span class="n">StateDictMixIn</span>
 <span class="kn">from</span> <span class="nn">.utils.containers</span> <span class="kn">import</span> <span class="n">StepDict</span><span class="p">,</span> <span class="n">TensorTuple</span>
@@ -212,7 +124,9 @@
                  <span class="n">use_sync_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">tqdm_ncols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span>
                  <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">dist_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prof_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;update_scheduler_by_epoch&quot;</span><span class="p">):</span>
@@ -276,21 +190,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">accessible_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
 
-        <span class="c1"># setup optimizer and scheduler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_optimizer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">reporters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reporters</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">reporters</span> <span class="o">=</span> <span class="p">[</span><span class="n">reporters</span><span class="p">]</span>
-        <span class="n">reporters</span> <span class="o">=</span> <span class="n">reporters</span> <span class="ow">or</span> <span class="p">[]</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">rep</span><span class="p">,</span> <span class="n">TQDMReporter</span><span class="p">)</span> <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">reporters</span><span class="p">]):</span>
-            <span class="c1"># if reporters not contain TQDMReporter</span>
-            <span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TQDMReporter</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="n">tqdm_ncols</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reporter is ready: </span><span class="si">{</span><span class="n">reporters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reporter</span> <span class="o">=</span> <span class="n">ReporterList</span><span class="p">(</span><span class="n">reporters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reporter</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># called via property</span>
         <span class="c1"># _step and _epoch are set to -1 because they are incremented before each iteration and epoch</span>
@@ -307,6 +209,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;quiet: no tqdm&quot;</span><span class="p">)</span>
 
+        <span class="c1"># this needs to be here to access members from set_*,</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> already has </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -316,6 +219,40 @@
                 <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;trainer sets </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> as a new attribute&quot;</span><span class="p">)</span>
+
+        <span class="c1"># setup optimizer and scheduler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_optimizer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">reporters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reporters</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">reporters</span> <span class="o">=</span> <span class="p">[</span><span class="n">reporters</span><span class="p">]</span>
+        <span class="n">reporters</span> <span class="o">=</span> <span class="n">reporters</span> <span class="ow">or</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">rep</span><span class="p">,</span> <span class="n">TQDMReporter</span><span class="p">)</span> <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">reporters</span><span class="p">]):</span>
+            <span class="c1"># if reporters not contain TQDMReporter</span>
+            <span class="n">reporters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TQDMReporter</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="n">tqdm_ncols</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;reporter is ready: </span><span class="si">{</span><span class="n">reporters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reporter</span> <span class="o">=</span> <span class="n">ReporterList</span><span class="p">(</span><span class="n">reporters</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+            <span class="n">default_prof_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">activities</span><span class="o">=</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">ProfilerActivity</span><span class="o">.</span><span class="n">CPU</span><span class="p">,</span>
+                                                   <span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">ProfilerActivity</span><span class="o">.</span><span class="n">CUDA</span><span class="p">],</span>
+                                       <span class="n">schedule</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+                                       <span class="n">on_trace_ready</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">tensorboard_trace_handler</span><span class="p">(</span><span class="s2">&quot;./profile&quot;</span><span class="p">),</span>
+                                       <span class="n">with_stack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">prof_kwargs</span> <span class="o">=</span> <span class="n">prof_kwargs</span> <span class="ow">or</span> <span class="n">default_prof_kwargs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_profile_cm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="o">**</span><span class="n">prof_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;profiler is activated&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_profile_cm</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">(</span><span class="n">Dummy</span><span class="p">())</span>
+
+<div class="viewcode-block" id="TrainerBase.tqdm"><a class="viewcode-back" href="../../homura.html#homura.trainers.TrainerBase.tqdm">[docs]</a>    <span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="nb">iter</span><span class="p">:</span> <span class="n">Iterable</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tqdm</span><span class="p">(</span><span class="nb">iter</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">verbose</span><span class="p">(</span><span class="bp">self</span>
@@ -391,8 +328,9 @@
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">batchnorm</span><span class="o">.</span><span class="n">_BatchNorm</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessible_model</span><span class="o">.</span><span class="n">modules</span><span class="p">()]):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;BatchNorm exists, while batch size is 1&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">set_detect_anomaly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_debug</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">set_detect_anomaly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_debug</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_cm</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -412,7 +350,7 @@
               <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span>
               <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tqdm</span><span class="p">(</span><span class="n">data_loader</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">data_loader</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
                 <span class="c1"># increment step here for `callbacks`</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -614,11 +552,14 @@
                  <span class="n">use_channel_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">report_accuracy_topk</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span> <span class="ow">or</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">update_scheduler_iter</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">use_larc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not support dict model&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_larc</span> <span class="o">=</span> <span class="n">use_larc</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">loss_f</span><span class="p">,</span> <span class="n">reporters</span><span class="o">=</span><span class="n">reporters</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
-                                                <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span> <span class="n">disable_cudnn_benchmark</span><span class="o">=</span><span class="n">disable_cudnn_benchmark</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                                <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span> <span class="n">disable_cudnn_benchmark</span><span class="o">=</span><span class="n">disable_cudnn_benchmark</span><span class="p">,</span>
+                                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">data_parallel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">)</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
@@ -633,8 +574,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_channel_last</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;channel_last format is an experimental feature&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">memory_format</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">channels_last</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">report_accuracy_topk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">report_accuracy_topk</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">report_accuracy_topk</span> <span class="o">=</span> <span class="p">[</span><span class="n">report_accuracy_topk</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">report_accuracy_topk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">report_accuracy_topk</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="n">report_accuracy_topk</span> <span class="o">=</span> <span class="p">[</span><span class="n">report_accuracy_topk</span><span class="p">]</span>
+            <span class="n">report_accuracy_topk</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">report_accuracy_topk</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_report_topk</span> <span class="o">=</span> <span class="n">report_accuracy_topk</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler_iter</span> <span class="o">=</span> <span class="n">update_scheduler_iter</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_scheduler_iter</span><span class="p">:</span>
@@ -699,50 +642,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">last_epoch</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_sync_bn</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;use_sync_bn&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_amp</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;use_amp&#39;</span><span class="p">]</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_amp</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;use_amp&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="SupervisedTrainer.set_scheduler"><a class="viewcode-back" href="../../homura.html#homura.trainers.SupervisedTrainer.set_scheduler">[docs]</a>    <span class="k">def</span> <span class="nf">set_scheduler</span><span class="p">(</span><span class="bp">self</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_larc</span><span class="p">:</span>
+            <span class="c1"># scheduler expects optimizer is Optimizer, but LARC is not</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARC</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-, Ryuichiro Hataya.
-
-    </p>
+    <p>&#169; Copyright 2019-, Ryuichiro Hataya.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>homura.utils package &mdash; homura  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="homura.vision package" href="homura.vision.html" />
     <link rel="prev" title="homura.modules.functional package" href="homura.modules.functional.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> homura
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,19 +36,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Package Reference:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Package Reference:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="homura.metrics.html">homura.metrics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="homura.modules.html">homura.modules package</a></li>
@@ -98,6 +48,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.containers">homura.utils.containers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.distributed">homura.utils.distributed module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.environment">homura.utils.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.grad_tools">homura.utils.grad_tools module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils.reproducibility">homura.utils.reproducibility module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-homura.utils">Module contents</a></li>
 </ul>
@@ -105,77 +56,36 @@
 <li class="toctree-l1"><a class="reference internal" href="homura.vision.html">homura.vision package</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">homura</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>homura.utils package</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/homura.utils.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="homura-utils-package">
+             
+  <section id="homura-utils-package">
 <h1>homura.utils package<a class="headerlink" href="#homura-utils-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-homura.utils.backends">
+</section>
+<section id="module-homura.utils.backends">
 <span id="homura-utils-backends-module"></span><h2>homura.utils.backends module<a class="headerlink" href="#module-homura.utils.backends" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions to convert PyTorch Tensors &lt;-&gt;  Cupy/Numpy arrays. These functions  are useful to write device-agnostic extensions.</p>
 <dl class="py function">
@@ -216,8 +126,8 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils.benchmarks">
+</section>
+<section id="module-homura.utils.benchmarks">
 <span id="homura-utils-benchmarks-module"></span><h2>homura.utils.benchmarks module<a class="headerlink" href="#module-homura.utils.benchmarks" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="homura.utils.benchmarks.timeit">
@@ -241,8 +151,8 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils.containers">
+</section>
+<section id="module-homura.utils.containers">
 <span id="homura-utils-containers-module"></span><h2>homura.utils.containers module<a class="headerlink" href="#module-homura.utils.containers" title="Permalink to this headline">¶</a></h2>
 <p>Useful containers for PyTorch tensors and others</p>
 <dl class="py class">
@@ -359,8 +269,8 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils.distributed">
+</section>
+<section id="module-homura.utils.distributed">
 <span id="homura-utils-distributed-module"></span><h2>homura.utils.distributed module<a class="headerlink" href="#module-homura.utils.distributed" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions to make distributed training easy</p>
 <dl class="py function">
@@ -460,12 +370,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="homura.utils.distributed.init_distributed">
-<span class="sig-prename descclassname"><span class="pre">homura.utils.distributed.</span></span><span class="sig-name descname"><span class="pre">init_distributed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_horovod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_distributed_print</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/distributed.html#init_distributed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.distributed.init_distributed" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">homura.utils.distributed.</span></span><span class="sig-name descname"><span class="pre">init_distributed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_distributed_print</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/distributed.html#init_distributed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.distributed.init_distributed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple initializer for distributed training. This function substitutes print function with <cite>_print_if_master</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>use_horovod</strong> (<em>bool</em>) – If use horovod as distributed backend</p></li>
 <li><p><strong>backend</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – backend of torch.distributed.init_process_group</p></li>
 <li><p><strong>init_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – init_method of torch.distributed.init_process_group</p></li>
 <li><p><strong>disable_distributed_print</strong> (<em>str</em>) – </p></li>
@@ -502,16 +411,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="homura.utils.distributed.is_horovod_available">
-<span class="sig-prename descclassname"><span class="pre">homura.utils.distributed.</span></span><span class="sig-name descname"><span class="pre">is_horovod_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/distributed.html#is_horovod_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.distributed.is_horovod_available" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="homura.utils.distributed.is_master">
 <span class="sig-prename descclassname"><span class="pre">homura.utils.distributed.</span></span><span class="sig-name descname"><span class="pre">is_master</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/distributed.html#is_master"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.distributed.is_master" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -521,8 +420,8 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils.environment">
+</section>
+<section id="module-homura.utils.environment">
 <span id="homura-utils-environment-module"></span><h2>homura.utils.environment module<a class="headerlink" href="#module-homura.utils.environment" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions to get information about the environment.</p>
 <dl class="py function">
@@ -639,8 +538,99 @@
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils.reproducibility">
+</section>
+<section id="module-homura.utils.grad_tools">
+<span id="homura-utils-grad-tools-module"></span><h2>homura.utils.grad_tools module<a class="headerlink" href="#module-homura.utils.grad_tools" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="homura.utils.grad_tools.ggnvp">
+<span class="sig-prename descclassname"><span class="pre">homura.utils.grad_tools.</span></span><span class="sig-name descname"><span class="pre">ggnvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/grad_tools.html#ggnvp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.grad_tools.ggnvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generalized Gaussian Newton vector product.  In case of loss=F.cross_entropy(output, target),
+GGN matrix is equivalent to the Fisher matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loss</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>f</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>p</strong> (<em>nn.Parameter</em><em> | </em><em>list</em><em>[</em><em>nn.Parameter</em><em>]</em>) – </p></li>
+<li><p><strong>v</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="homura.utils.grad_tools.hvp">
+<span class="sig-prename descclassname"><span class="pre">homura.utils.grad_tools.</span></span><span class="sig-name descname"><span class="pre">hvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/grad_tools.html#hvp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.grad_tools.hvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hessian vector product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loss</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>p</strong> (<em>torch.nn.parameter.Parameter</em>) – </p></li>
+<li><p><strong>v</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="homura.utils.grad_tools.jvp">
+<span class="sig-prename descclassname"><span class="pre">homura.utils.grad_tools.</span></span><span class="sig-name descname"><span class="pre">jvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/grad_tools.html#jvp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.grad_tools.jvp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jacobian vector product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>p</strong> (<em>nn.Parameter</em><em> | </em><em>list</em><em>[</em><em>nn.Parameter</em><em>]</em>) – </p></li>
+<li><p><strong>v</strong> (<em>torch.Tensor</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="homura.utils.grad_tools.param_to_vector">
+<span class="sig-prename descclassname"><span class="pre">homura.utils.grad_tools.</span></span><span class="sig-name descname"><span class="pre">param_to_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/grad_tools.html#param_to_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.grad_tools.param_to_vector" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameters</strong> (<em>collections.abc.Iterable</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="homura.utils.grad_tools.vjp">
+<span class="sig-prename descclassname"><span class="pre">homura.utils.grad_tools.</span></span><span class="sig-name descname"><span class="pre">vjp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_retain_graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/utils/grad_tools.html#vjp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.utils.grad_tools.vjp" title="Permalink to this definition">¶</a></dt>
+<dd><p>vector Jacobian product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>p</strong> (<em>nn.Parameter</em><em> | </em><em>list</em><em>[</em><em>nn.Parameter</em><em>]</em>) – </p></li>
+<li><p><strong>v</strong> (<em>torch.Tensor</em>) – </p></li>
+<li><p><strong>only_retain_graph</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-homura.utils.reproducibility">
 <span id="homura-utils-reproducibility-module"></span><h2>homura.utils.reproducibility module<a class="headerlink" href="#module-homura.utils.reproducibility" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="homura.utils.reproducibility.set_deterministic">
@@ -675,58 +665,41 @@ this may not make everything deterministic, however.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-homura.utils">
+</section>
+<section id="module-homura.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-homura.utils" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="homura.vision.html" class="btn btn-neutral float-right" title="homura.vision package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="homura.modules.functional.html" class="btn btn-neutral float-left" title="homura.modules.functional package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="homura.vision.html" class="btn btn-neutral float-right" title="homura.vision package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019-, Ryuichiro Hataya.
-
-    </p>
+    <p>&#169; Copyright 2019-, Ryuichiro Hataya.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
