@@ -1,3 +1,5 @@
+import warnings
+
 import torch
 
 
@@ -24,7 +26,8 @@ def cross_entropy_with_softlabels(input: torch.Tensor,
     :param reduction:
     :return:
     """
-
+    if hasattr(torch.nn.CrossEntropyLoss, "label_smoothing"):
+        warnings.warn("Use PyTorch's F.cross_entropy", DeprecationWarning)
     if input.size() != target.size():
         raise RuntimeError(f"Input size ({input.size()}) and target size ({target.size()}) should be same!")
     return _reduction(-(input.log_softmax(dim=dim) * target).sum(dim=dim), reduction)
@@ -46,6 +49,8 @@ def cross_entropy_with_smoothing(input: torch.Tensor,
     :return:
     """
 
+    if hasattr(torch.nn.CrossEntropyLoss, "label_smoothing"):
+        warnings.warn("Use PyTorch's F.cross_entropy", DeprecationWarning)
     log_prob = input.log_softmax(dim=dim)
     nll_loss = -log_prob.gather(dim=dim, index=target.unsqueeze(dim=dim))
     nll_loss = nll_loss.squeeze(dim=dim)

@@ -280,7 +280,6 @@ class VisionSet:
         if test_sampler is None:
             if is_distributed():
                 test_sampler = DistributedSampler(test_set, num_replicas=get_world_size(), rank=get_global_rank())
-                test_sampler.set_epoch(start_epoch)
         else:
             test_sampler = test_sampler(test_set)
 
@@ -288,7 +287,7 @@ class VisionSet:
             if val_sampler is None and is_distributed():
                 val_sampler = DistributedSampler(val_set, num_replicas=get_world_size(), rank=get_global_rank())
                 val_sampler.set_epoch(start_epoch)
-            else:
+            elif val_sampler is not None:
                 val_sampler = val_sampler(val_set)
 
         return train_sampler, test_sampler, val_sampler

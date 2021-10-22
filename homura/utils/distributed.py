@@ -2,8 +2,8 @@
 """
 
 import builtins
+import functools
 import os as python_os
-import warnings
 from functools import wraps
 from typing import Callable, Optional
 
@@ -15,11 +15,6 @@ from .environment import get_args, get_environ
 
 logger = get_logger("homura.distributed")
 original_print = builtins.print
-
-
-def is_horovod_available() -> bool:
-    warnings.warn("horovod is no longer supported by homura", DeprecationWarning)
-    return False
 
 
 def is_distributed_available() -> bool:
@@ -81,14 +76,12 @@ def distributed_print(self, *args, sep=' ', end='\n', file=None) -> None:
     original_print(self, *args, sep=sep, end=end, file=file)
 
 
-def init_distributed(use_horovod: bool = False,
-                     backend: Optional[str] = None,
+def init_distributed(backend: Optional[str] = None,
                      init_method: Optional[str] = None,
                      disable_distributed_print: str = False
                      ) -> None:
     """ Simple initializer for distributed training. This function substitutes print function with `_print_if_master`.
 
-    :param use_horovod: If use horovod as distributed backend
     :param backend: backend of torch.distributed.init_process_group
     :param init_method: init_method of torch.distributed.init_process_group
     :param disable_distributed_print:
@@ -98,15 +91,12 @@ def init_distributed(use_horovod: bool = False,
     if not is_distributed_available():
         raise RuntimeError('Distributed training is not available on this machine')
 
-    if use_horovod:
-        raise DeprecationWarning("horovod is no longer supported by homura")
-
     # default values
     backend = backend or "nccl"
     init_method = init_method or "env://"
 
     if not is_distributed():
-        raise RuntimeError(f"For distributed training, use `python -m torch.distributed.launch "
+        raise RuntimeError(f"For distributed training, use `python -m torch.distributed.run "
                            f"--nproc_per_node={device_count()} {get_args()}` ...")
 
     if not distributed.is_initialized():
@@ -132,7 +122,11 @@ def distributed_ready_main(func: Callable = None,
     def inner(*args, **kwargs):
         return func(*args, **kwargs)
 
-    return inner
+    if func is None:
+        return functools.partial(distributed_ready_main, backend=backend, init_method=init_method,
+                                 disable_distributed_print=disable_distributed_print)
+    else:
+        return inner
 
 
 def if_is_master(func: Callable

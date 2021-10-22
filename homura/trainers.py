@@ -1,3 +1,4 @@
+import contextlib
 import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
@@ -13,6 +14,7 @@ from torch.utils.data import DataLoader
 from homura import get_global_rank, get_local_rank, is_distributed
 from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tqdm
 from .metrics import accuracy
+from .optim import LARC
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
 from .utils.containers import StepDict, TensorTuple
@@ -53,7 +55,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  use_sync_bn: bool = False,
                  tqdm_ncols: int = 120,
                  debug: bool = False,
+                 profile: bool = False,
                  dist_kwargs: Optional[dict] = None,
+                 prof_kwargs: Optional[dict] = None,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -117,21 +121,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.accessible_model = self.model
 
-        # setup optimizer and scheduler
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.set_optimizer()
-        self.set_scheduler()
-
-        if reporters is not None and not isinstance(reporters, Iterable):
-            reporters = [reporters]
-        reporters = reporters or []
-
-        if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
-            # if reporters not contain TQDMReporter
-            reporters.append(TQDMReporter(ncols=tqdm_ncols))
-        self.logger.debug(f"reporter is ready: {reporters}")
-        self.reporter = ReporterList(reporters)
+        self.reporter = None
 
         # called via property
         # _step and _epoch are set to -1 because they are incremented before each iteration and epoch
@@ -148,6 +140,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             self.logger.debug("quiet: no tqdm")
 
+        # this needs to be here to access members from set_*,
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
@@ -157,6 +150,40 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                 v.to(self.device)
             setattr(self, k, v)
             self.logger.debug(f"trainer sets {k} as a new attribute")
+
+        # setup optimizer and scheduler
+        self.set_optimizer()
+        self.set_scheduler()
+
+        if reporters is not None and not isinstance(reporters, Iterable):
+            reporters = [reporters]
+        reporters = reporters or []
+
+        if not any([isinstance(rep, TQDMReporter) for rep in reporters]):
+            # if reporters not contain TQDMReporter
+            reporters.append(TQDMReporter(ncols=tqdm_ncols))
+        self.logger.debug(f"reporter is ready: {reporters}")
+        self.reporter = ReporterList(reporters)
+
+        if profile:
+            default_prof_kwargs = dict(activities=[torch.profiler.ProfilerActivity.CPU,
+                                                   torch.profiler.ProfilerActivity.CUDA],
+                                       schedule=torch.profiler.schedule(wait=1, warmup=1, active=10),
+                                       on_trace_ready=torch.profiler.tensorboard_trace_handler("./profile"),
+                                       with_stack=True)
+            prof_kwargs = prof_kwargs or default_prof_kwargs
+            self._profile_cm = torch.profiler.profile(**prof_kwargs)
+            self.logger.warning("profiler is activated")
+        else:
+            class Dummy:
+                def step(self): ...
+
+            self._profile_cm = contextlib.nullcontext(Dummy())
+
+    def tqdm(self,
+             iter: Iterable
+             ) -> Iterable:
+        return self._tqdm(iter)
 
     @property
     def verbose(self
@@ -232,8 +259,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             if any([isinstance(m, nn.modules.batchnorm._BatchNorm) for m in self.accessible_model.modules()]):
                 warnings.warn("BatchNorm exists, while batch size is 1", RuntimeWarning)
 
-        with torch.autograd.set_detect_anomaly(self._is_debug):
+        with torch.autograd.set_detect_anomaly(self._is_debug) and self._profile_cm as p:
             self.iteration(data)
+            p.step()
 
     def __enter__(self):
         """
@@ -253,7 +281,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
               mode: str
               ) -> None:
 
-        for data in self._tqdm(data_loader):
+        for data in self.tqdm(data_loader):
             if self.is_train:
                 # increment step here for `callbacks`
                 self._step += 1
@@ -455,11 +483,14 @@ class SupervisedTrainer(TrainerBase):
                  use_channel_last=False,
                  report_accuracy_topk: Optional[int or List[int]] = None,
                  update_scheduler_iter: bool = False,
+                 use_larc: bool = False,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
+        self.use_larc = use_larc
         super(SupervisedTrainer, self).__init__(model, optimizer, loss_f, reporters=reporters, scheduler=scheduler,
-                                                quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark, **kwargs)
+                                                quiet=quiet, disable_cudnn_benchmark=disable_cudnn_benchmark,
+                                                **kwargs)
 
         if data_parallel and not isinstance(self.model, nn.DataParallel) and torch.cuda.device_count() > 1:
             self.model = nn.DataParallel(self.model)
@@ -474,8 +505,10 @@ class SupervisedTrainer(TrainerBase):
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
             self.model.to(memory_format=torch.channels_last)
-        if report_accuracy_topk is not None and not isinstance(report_accuracy_topk, Iterable):
-            report_accuracy_topk = [report_accuracy_topk]
+        if report_accuracy_topk is not None:
+            if not isinstance(report_accuracy_topk, Iterable):
+                report_accuracy_topk = [report_accuracy_topk]
+            report_accuracy_topk = [k for k in report_accuracy_topk if k != 1]
         self._report_topk = report_accuracy_topk
         self.update_scheduler_iter = update_scheduler_iter & (scheduler is not None)
         if self.update_scheduler_iter:
@@ -541,3 +574,10 @@ class SupervisedTrainer(TrainerBase):
         self._epoch = state_dict['epoch']
         self._use_sync_bn = state_dict['use_sync_bn']
         self._use_amp = state_dict['use_amp']
+
+    def set_scheduler(self
+                      ) -> None:
+        super().set_scheduler()
+        if self.use_larc:
+            # scheduler expects optimizer is Optimizer, but LARC is not
+            self.optimizer = LARC(self.optimizer)
