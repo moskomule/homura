@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import contextlib
 import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Tuple
+from typing import Any, Callable, Iterable, Optional, TypeVar
 
 import torch
 from torch import Tensor, nn
@@ -20,6 +22,8 @@ from .utils._mixin import StateDictMixIn
 from .utils.containers import StepDict, TensorTuple
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
+
+DataType = TypeVar('DataType', Tensor, tuple[Tensor, ...])
 
 
 class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
@@ -41,12 +45,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
     """
 
     def __init__(self,
-                 model: nn.Module or Dict[str, nn.Module],
-                 optimizer: Optional[Partial or Optimizer or Dict[str, Optimizer]],
-                 loss_f: Optional[Callable or Dict[str, Callable]] = None,
+                 model: nn.Module or dict[str, nn.Module],
+                 optimizer: Optional[Partial or Optimizer or dict[str, Optimizer]],
+                 loss_f: Optional[Callable or dict[str, Callable]] = None,
                  *,
-                 reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
-                 scheduler: Optional[Partial or Scheduler or Dict[str, Scheduler]] = None,
+                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
+                 scheduler: Optional[Partial or Scheduler or dict[str, Scheduler]] = None,
                  device: Optional[torch.device or str] = None,
                  quiet: bool = False,
                  disable_cudnn_benchmark: bool = False,
@@ -97,7 +101,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.model = nn.ModuleDict(model)
             self.logger.debug(f"model is nn.ModuleDict of {self.model.keys()}")
         else:
-            raise TypeError(f"Unknown type for `model`. Expected nn.Module or Dict[str, Module], but got {type(model)}")
+            raise TypeError(f"Unknown type for `model`. Expected nn.Module or dict[str, Module], but got {type(model)}")
 
         if "cuda" in str(self.device):
             self.model.to(self.device)
@@ -207,18 +211,18 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     @property
     def history(self
-                ) -> Dict[str, List[float]]:
+                ) -> dict[str, list[float]]:
         return self.reporter.history
 
     @abstractmethod
     def iteration(self,
-                  data: Tuple[Tensor, ...]
+                  data: DataType
                   ) -> None:
         # Iteration
         pass
 
     def override_iteration(self,
-                           new_iteration: Callable[[Tuple], None]
+                           new_iteration: Callable[[DataType], None]
                            ) -> None:
         """ Override iteration method ::
 
@@ -242,8 +246,17 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         tqdm_reporter.set_iterator(range(epoch))
         return tqdm_reporter
 
+    def infer_batch_size(self,
+                         data: DataType
+                         ) -> int:
+        if isinstance(data, Tensor):
+            batch_size = data.size(0)
+        else:
+            batch_size = data[0].size(0)
+        return batch_size
+
     def _iteration(self,
-                   data: Tuple[Tensor, ...],
+                   data: DataType,
                    mode: str
                    ) -> None:
         """ Iteration level training loop
@@ -253,7 +266,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         :return:
         """
 
-        data, batch_size = self.data_preprocess(data)
+        data = self.data_preprocess(data)
+        batch_size = self.infer_batch_size(data)
         self.reporter.set_batch_size(batch_size)
         if self._is_debug and batch_size == 1 and self.is_train:
             if any([isinstance(m, nn.modules.batchnorm._BatchNorm) for m in self.accessible_model.modules()]):
@@ -291,13 +305,13 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         self.logger.debug(f"epoch {self.epoch} finished")
 
     def data_preprocess(self,
-                        data: Tuple[Tensor, ...]
-                        ) -> (Tuple[Tensor, ...], int):
+                        data: DataType
+                        ) -> DataType:
         """ preprocess data and return (TensorTuple, batch_size)
 
         """
 
-        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking), data[0].size(0)
+        return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
 
     def train(self,
               data_loader: Iterable or DataLoader,
@@ -348,7 +362,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def run(self,
             train_loader: Iterable or DataLoader,
-            val_loaders: Iterable or DataLoader or Dict[str, Iterable or DataLoader],
+            val_loaders: Iterable or DataLoader or dict[str, Iterable or DataLoader],
             total_iterations: int,
             val_intervals: int
             ) -> None:
@@ -384,7 +398,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                         counter += 1
 
         train_loader = ProxyLoader(train_loader)
-        if not isinstance(val_loaders, Dict) and (isinstance(val_loaders, Iterable) or
+        if not isinstance(val_loaders, dict) and (isinstance(val_loaders, Iterable) or
                                                   isinstance(val_loaders, DataLoader)):
             val_loaders = {'val': val_loaders}
 
@@ -474,14 +488,14 @@ class SupervisedTrainer(TrainerBase):
                  optimizer: Optimizer,
                  loss_f: Callable,
                  *,
-                 reporters: Optional[_ReporterBase or List[_ReporterBase]] = None,
+                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
                  scheduler: Optional[Scheduler] = None,
                  quiet=False,
                  disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
                  use_channel_last=False,
-                 report_accuracy_topk: Optional[int or List[int]] = None,
+                 report_accuracy_topk: Optional[int or list[int]] = None,
                  update_scheduler_iter: bool = False,
                  use_larc: bool = False,
                  **kwargs):
@@ -517,7 +531,7 @@ class SupervisedTrainer(TrainerBase):
             self.logger.debug("self.update_scheduler_iter=False. Update scheduler manually")
 
     def iteration(self,
-                  data: Tuple[Tensor, Tensor]
+                  data: tuple[Tensor, Tensor]
                   ) -> None:
         input, target = data
         with torch.cuda.amp.autocast(self._use_amp):
@@ -545,8 +559,8 @@ class SupervisedTrainer(TrainerBase):
                 self.reporter.add(f'accuracy@{top_k}', accuracy(output, target, top_k))
 
     def data_preprocess(self,
-                        data: Tuple[Tensor, Tensor]
-                        ) -> (Tuple[Tensor, Tensor], int):
+                        data: tuple[Tensor, Tensor]
+                        ) -> (tuple[Tensor, Tensor], int):
         input, target = data
         return ((input.to(self.device, non_blocking=self._cuda_nonblocking,
                           memory_format=torch.channels_last if self._use_channel_last
@@ -555,7 +569,7 @@ class SupervisedTrainer(TrainerBase):
                 data[0].size(0))
 
     def state_dict(self
-                   ) -> Mapping[str, Any]:
+                   ) -> dict[str, Any]:
 
         return {'model': self.accessible_model.state_dict(),
                 'optim': self.optimizer.state_dict(),
@@ -565,7 +579,7 @@ class SupervisedTrainer(TrainerBase):
                 'use_amp': self._use_amp}
 
     def load_state_dict(self,
-                        state_dict: Mapping[str, Any]
+                        state_dict: dict[str, Any]
                         ) -> None:
         self.accessible_model.load_state_dict(state_dict['model'])
         self.optimizer.load_state_dict(state_dict['optim'])
