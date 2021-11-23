@@ -562,11 +562,10 @@ class SupervisedTrainer(TrainerBase):
                         data: tuple[Tensor, Tensor]
                         ) -> (tuple[Tensor, Tensor], int):
         input, target = data
-        return ((input.to(self.device, non_blocking=self._cuda_nonblocking,
-                          memory_format=torch.channels_last if self._use_channel_last
-                          else torch.preserve_format),
-                 target.to(self.device, non_blocking=self._cuda_nonblocking)),
-                data[0].size(0))
+        return (input.to(self.device, non_blocking=self._cuda_nonblocking,
+                         memory_format=torch.channels_last if self._use_channel_last
+                         else torch.preserve_format),
+                target.to(self.device, non_blocking=self._cuda_nonblocking))
 
     def state_dict(self
                    ) -> dict[str, Any]:
