@@ -43,6 +43,7 @@ class VisionSet:
     default_train_da: Optional[List] = None
     default_test_da: Optional[List] = None
     collate_fn: Optional[Callable] = None
+    test_collate_fn: Optional[Callable] = None
 
     def __post_init__(self):
         # _ is trainer
@@ -61,6 +62,8 @@ class VisionSet:
         self._val_loader = None
         self._test_set = None
         self._test_loader = None
+        if self.collate_fn is not None and self.test_collate_fn is None:
+            self.test_collate_fn = self.collate_fn
 
     @property
     def train_set(self):
@@ -268,12 +271,12 @@ class VisionSet:
 
         test_num_workers = test_num_workers or num_workers
         shared_kwargs = dict(drop_last=drop_last, pin_memory=pin_memory,
-                             collate_fn=self.collate_fn, prefetch_factor=prefetch_factor,
+                             prefetch_factor=prefetch_factor,
                              persistent_workers=persistent_workers, worker_init_fn=worker_init_fn)
         train_loader = DataLoader(train_set, batch_size, sampler=train_sampler, num_workers=num_workers,
-                                  **shared_kwargs)
+                                  collate_fn=self.collate_fn, **shared_kwargs)
         test_loader = DataLoader(test_set, test_batch_size, sampler=test_sampler, num_workers=test_num_workers,
-                                 **shared_kwargs)
+                                 collate_fn=self.test_collate_fn, **shared_kwargs)
         self._train_loader = train_loader
         self._test_loader = test_loader
 
@@ -281,7 +284,7 @@ class VisionSet:
 
         if val_set is not None:
             val_loader = DataLoader(val_set, test_batch_size, sampler=val_sampler, num_workers=test_num_workers,
-                                    **shared_kwargs)
+                                    collate_fn=self.test_collate_fn, **shared_kwargs)
             ret.append(val_loader)
             self._val_loader = val_loader
 
