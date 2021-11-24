@@ -7,12 +7,12 @@ with open("requirements.txt") as f:
     requirements = f.read().split()
 
 setup(name="homura-core",
-      version="2021.10.0",
+      version="2021.11.0",
       author="Ryuichiro Hataya",
       author_email="hataya@nlab-mpg.jp",
       packages=find_packages(exclude=["tests", "docs", "examples"]),
       url="https://github.com/moskomule/homura",
-      python_requires=">=3.8",
+      python_requires=">=3.9",
       description="a fast prototyping library for DL research",
       long_description=readme,
       long_description_content_type="text/markdown",
