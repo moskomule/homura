@@ -89,6 +89,12 @@
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span></div>
 
 
+<span class="k">def</span> <span class="nf">_optional</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+    <span class="c1"># default iff x is None</span>
+    <span class="c1"># x or default returns default if x is [], False, ...</span>
+    <span class="k">return</span> <span class="n">default</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">x</span>
+
+
 <div class="viewcode-block" id="VisionSet"><a class="viewcode-back" href="../../../../homura.vision.data.html#homura.vision.data.visionset.VisionSet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">VisionSet</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Dataset abstraction for vision datasets. Use case ::</span>
@@ -106,6 +112,7 @@
     <span class="n">default_train_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">default_test_da</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">test_collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># _ is trainer</span>
@@ -124,6 +131,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_test_set</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_collate_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_collate_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">train_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_set</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val_set</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">test_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_set</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">train_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -147,6 +168,7 @@
               <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">test_num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">non_training_bs_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
               <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -196,9 +218,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">assert</span> <span class="p">(</span><span class="n">download</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">exists</span><span class="p">()),</span> <span class="s2">&quot;root does not exist&quot;</span>
-        <span class="n">train_da</span> <span class="o">=</span> <span class="n">train_da</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_train_da</span><span class="p">)</span>
-        <span class="n">test_da</span> <span class="o">=</span> <span class="n">test_da</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_test_da</span><span class="p">)</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_norm</span><span class="p">)</span>
+        <span class="n">train_da</span> <span class="o">=</span> <span class="n">_optional</span><span class="p">(</span><span class="n">train_da</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_train_da</span><span class="p">))</span>
+        <span class="n">test_da</span> <span class="o">=</span> <span class="n">_optional</span><span class="p">(</span><span class="n">test_da</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_test_da</span><span class="p">))</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">_optional</span><span class="p">(</span><span class="n">norm</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_norm</span><span class="p">))</span>
 
         <span class="n">pre_train_da</span> <span class="o">=</span> <span class="n">pre_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="n">post_train_da</span> <span class="o">=</span> <span class="n">post_train_da</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -254,6 +276,7 @@
                        <span class="n">val_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">download</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                        <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">test_num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">non_training_bs_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                        <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                        <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -315,18 +338,22 @@
         <span class="k">if</span> <span class="n">test_batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">test_batch_size</span> <span class="o">=</span> <span class="n">non_training_bs_factor</span> <span class="o">*</span> <span class="n">batch_size</span>
 
-        <span class="n">shared_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">drop_last</span><span class="o">=</span><span class="n">drop_last</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="n">pin_memory</span><span class="p">,</span>
-                             <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">,</span> <span class="n">prefetch_factor</span><span class="o">=</span><span class="n">prefetch_factor</span><span class="p">,</span>
+        <span class="n">test_num_workers</span> <span class="o">=</span> <span class="n">test_num_workers</span> <span class="ow">or</span> <span class="n">num_workers</span>
+        <span class="n">shared_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">drop_last</span><span class="o">=</span><span class="n">drop_last</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="n">pin_memory</span><span class="p">,</span>
+                             <span class="n">prefetch_factor</span><span class="o">=</span><span class="n">prefetch_factor</span><span class="p">,</span>
                              <span class="n">persistent_workers</span><span class="o">=</span><span class="n">persistent_workers</span><span class="p">,</span> <span class="n">worker_init_fn</span><span class="o">=</span><span class="n">worker_init_fn</span><span class="p">)</span>
-        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">train_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
-        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">test_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">train_sampler</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
+                                  <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">test_sampler</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">test_num_workers</span><span class="p">,</span>
+                                 <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test_collate_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_loader</span> <span class="o">=</span> <span class="n">train_loader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_test_loader</span> <span class="o">=</span> <span class="n">test_loader</span>
 
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">val_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">val_sampler</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
+            <span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_set</span><span class="p">,</span> <span class="n">test_batch_size</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">val_sampler</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">test_num_workers</span><span class="p">,</span>
+                                    <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test_collate_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">)</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_val_loader</span> <span class="o">=</span> <span class="n">val_loader</span>
 

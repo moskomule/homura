@@ -408,7 +408,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.optim.LARC">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.optim.</span></span><span class="sig-name descname"><span class="pre">LARC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_coefficient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#LARC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.optim.LARC" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.optim.</span></span><span class="sig-name descname"><span class="pre">LARC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_coefficient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/optim.html#LARC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.optim.LARC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>LARC based on NVIDIA’s Apex for Layer-wise Adaptive Rate Scaling. LARC is designed to wrap a given optimizer.
 Optimizer should be wrapped after initializing scheduler.</p>
@@ -434,12 +434,12 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.optim.LARC.param_groups">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">param_groups</span></span><a class="headerlink" href="#homura.optim.LARC.param_groups" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_groups</span></span><a class="headerlink" href="#homura.optim.LARC.param_groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.optim.LARC.state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#homura.optim.LARC.state" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#homura.optim.LARC.state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -484,7 +484,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span id="homura-register-module"></span><h2>homura.register module<a class="headerlink" href="#module-homura.register" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.register.Registry">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.register.</span></span><span class="sig-name descname"><span class="pre">Registry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.register.</span></span><span class="sig-name descname"><span class="pre">Registry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Registry of models, datasets and anything you like.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model_registry</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
@@ -506,7 +506,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="homura.register.Registry.available_registries">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">available_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detailed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry.available_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry.available_registries" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detailed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry.available_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry.available_registries" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>detailed</strong> (<em>bool</em>) – </p>
@@ -526,7 +526,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="homura.register.Registry.import_modules">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">import_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry.import_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry.import_modules" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">import_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/register.html#Registry.import_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.register.Registry.import_modules" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>package_name</strong> (<em>str</em>) – </p>
@@ -570,7 +570,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span id="homura-reporters-module"></span><h2>homura.reporters module<a class="headerlink" href="#module-homura.reporters" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.reporters.ReporterList">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">ReporterList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reporters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.ReporterList" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">ReporterList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reporters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#ReporterList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.ReporterList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ReporterList is expected to be used in TrainerBase</p>
 <dl class="field-list simple">
@@ -725,7 +725,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.reporters.ReporterList.history">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="pre">:</span> <span class="pre">homura.reporters._History</span></em><a class="headerlink" href="#homura.reporters.ReporterList.history" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">homura.reporters._History</span></em><a class="headerlink" href="#homura.reporters.ReporterList.history" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -761,7 +761,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.reporters.TQDMReporter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">TQDMReporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">TQDMReporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TQDMReporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.TQDMReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters._ReporterBase</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -844,7 +844,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.reporters.TensorboardReporter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">TensorboardReporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.reporters.</span></span><span class="sig-name descname"><span class="pre">TensorboardReporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/reporters.html#TensorboardReporter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.reporters.TensorboardReporter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.reporters._ReporterBase</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -981,18 +981,18 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span id="homura-trainers-module"></span><h2>homura.trainers module<a class="headerlink" href="#module-homura.trainers" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.trainers.SupervisedTrainer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.trainers.</span></span><span class="sig-name descname"><span class="pre">SupervisedTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_f</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reporters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cudnn_benchmark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_channel_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_accuracy_topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_scheduler_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_larc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.trainers.</span></span><span class="sig-name descname"><span class="pre">SupervisedTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_f</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reporters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cudnn_benchmark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_channel_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_accuracy_topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_scheduler_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_larc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#homura.trainers.TrainerBase" title="homura.trainers.TrainerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.trainers.TrainerBase</span></code></a></p>
 <p>A simple trainer for supervised image classification. It only accepts single model. AMP-ready.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – </p></li>
-<li><p><strong>optimizer</strong> (<em>torch.optim.optimizer.Optimizer</em>) – </p></li>
+<li><p><strong>model</strong> (<em>nn.Module</em>) – </p></li>
+<li><p><strong>optimizer</strong> (<em>Optimizer</em>) – </p></li>
 <li><p><strong>loss_f</strong> (<em>Callable</em>) – </p></li>
-<li><p><strong>reporters</strong> (<em>Optional</em><em>[</em><em>homura.reporters._ReporterBase</em><em>]</em>) – </p></li>
-<li><p><strong>scheduler</strong> (<em>Optional</em><em>[</em><em>torch.optim.lr_scheduler._LRScheduler</em><em>]</em>) – </p></li>
-<li><p><strong>report_accuracy_topk</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>reporters</strong> (<em>Optional</em><em>[</em><em>_ReporterBase</em><em> or </em><em>list</em><em>[</em><em>_ReporterBase</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>scheduler</strong> (<em>Optional</em><em>[</em><em>Scheduler</em><em>]</em>) – </p></li>
+<li><p><strong>report_accuracy_topk</strong> (<em>Optional</em><em>[</em><em>int</em><em> or </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>update_scheduler_iter</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>use_larc</strong> (<em>bool</em>) – </p></li>
 </ul>
@@ -1004,10 +1004,10 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <dd><p>preprocess data and return (TensorTuple, batch_size)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>tuple</em><em>[</em><em>Tensor</em><em>, </em><em>Tensor</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(typing.Tuple[torch.Tensor, torch.Tensor], &lt;class ‘int’&gt;)</p>
+<dd class="field-even"><p>(tuple[Tensor, Tensor], int)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1017,7 +1017,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None</p>
@@ -1030,7 +1030,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span class="sig-name descname"><span class="pre">load_state_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.load_state_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.load_state_dict" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>state_dict</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>state_dict</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>typing.Any</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None</p>
@@ -1062,7 +1062,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <span class="sig-name descname"><span class="pre">state_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#SupervisedTrainer.state_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.SupervisedTrainer.state_dict" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Mapping[str, Any]</p>
+<dd class="field-odd"><p>dict[str, typing.Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1071,18 +1071,18 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">homura.trainers.</span></span><span class="sig-name descname"><span class="pre">TrainerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reporters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cudnn_benchmark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cuda_nonblocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sync_bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tqdm_ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prof_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">homura.trainers.</span></span><span class="sig-name descname"><span class="pre">TrainerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reporters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cudnn_benchmark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_cuda_nonblocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sync_bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tqdm_ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prof_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.TrainerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">homura.utils._mixin.StateDictMixIn</span></code></p>
 <p>Baseclass for Trainers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – model to be trained</p></li>
-<li><p><strong>optimizer</strong> (<em>Optional</em><em>[</em><em>functools.partial</em><em>]</em>) – optimizer for the model</p></li>
-<li><p><strong>loss_f</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – loss function for training</p></li>
-<li><p><strong>reporters</strong> (<em>Optional</em><em>[</em><em>homura.reporters._ReporterBase</em><em>]</em>) – list of reporters</p></li>
-<li><p><strong>scheduler</strong> (<em>Optional</em><em>[</em><em>functools.partial</em><em>]</em>) – learning rate scheduler</p></li>
-<li><p><strong>device</strong> (<em>Optional</em><em>[</em><em>torch.device</em><em>]</em>) – device to be used</p></li>
+<li><p><strong>model</strong> (<em>nn.Module</em><em> or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>nn.Module</em><em>]</em>) – model to be trained</p></li>
+<li><p><strong>optimizer</strong> (<em>Optional</em><em>[</em><em>Partial</em><em> or </em><em>Optimizer</em><em> or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Optimizer</em><em>]</em><em>]</em>) – optimizer for the model</p></li>
+<li><p><strong>loss_f</strong> (<em>Optional</em><em>[</em><em>Callable</em><em> or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Callable</em><em>]</em><em>]</em>) – loss function for training</p></li>
+<li><p><strong>reporters</strong> (<em>Optional</em><em>[</em><em>_ReporterBase</em><em> or </em><em>list</em><em>[</em><em>_ReporterBase</em><em>]</em><em>]</em>) – list of reporters</p></li>
+<li><p><strong>scheduler</strong> (<em>Optional</em><em>[</em><em>Partial</em><em> or </em><em>Scheduler</em><em> or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Scheduler</em><em>]</em><em>]</em>) – learning rate scheduler</p></li>
+<li><p><strong>device</strong> (<em>Optional</em><em>[</em><em>torch.device</em><em> or </em><em>str</em><em>]</em>) – device to be used</p></li>
 <li><p><strong>quiet</strong> (<em>bool</em>) – True to disable tqdm</p></li>
 <li><p><strong>disable_cudnn_benchmark</strong> (<em>bool</em>) – True to disable cudnn benchmark mode</p></li>
 <li><p><strong>disable_cuda_nonblocking</strong> (<em>bool</em>) – True to disable cuda nonblocking</p></li>
@@ -1103,17 +1103,17 @@ Optimizer should be wrapped after initializing scheduler.</p>
 <dd><p>preprocess data and return (TensorTuple, batch_size)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>...</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>homura.trainers.DataType</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(typing.Tuple[torch.Tensor, …], &lt;class ‘int’&gt;)</p>
+<dd class="field-even"><p>homura.trainers.DataType</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.epoch">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">epoch</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epoch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.epoch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1136,20 +1136,33 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.history">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#homura.trainers.TrainerBase.history" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#homura.trainers.TrainerBase.history" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="homura.trainers.TrainerBase.infer_batch_size">
+<span class="sig-name descname"><span class="pre">infer_batch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.infer_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.TrainerBase.infer_batch_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>homura.trainers.DataType</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.is_train">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_train</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_train</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.is_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.iteration">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.TrainerBase.iteration" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/trainers.html#TrainerBase.iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.trainers.TrainerBase.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>...</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>data</strong> (<em>homura.trainers.DataType</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None</p>
@@ -1171,7 +1184,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>new_iteration</strong> (<em>Callable</em><em>[</em><em>[</em><em>Tuple</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>new_iteration</strong> (<em>Callable</em><em>[</em><em>[</em><em>homura.trainers.DataType</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -1250,7 +1263,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.step">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.step" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.step" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1305,7 +1318,7 @@ Optimizer should be wrapped after initializing scheduler.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="homura.trainers.TrainerBase.verbose">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">verbose</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.verbose" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">verbose</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#homura.trainers.TrainerBase.verbose" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
