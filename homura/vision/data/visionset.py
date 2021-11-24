@@ -20,6 +20,12 @@ class VisionSetProtocol(Protocol):
     def __len__(self): ...
 
 
+def _optional(x, default):
+    # default iff x is None
+    # x or default returns default if x is [], False, ...
+    return default if x is None else x
+
+
 @dataclass
 class VisionSet:
     """ Dataset abstraction for vision datasets. Use case ::
@@ -37,6 +43,7 @@ class VisionSet:
     default_train_da: Optional[List] = None
     default_test_da: Optional[List] = None
     collate_fn: Optional[Callable] = None
+    test_collate_fn: Optional[Callable] = None
 
     def __post_init__(self):
         # _ is trainer
@@ -55,6 +62,20 @@ class VisionSet:
         self._val_loader = None
         self._test_set = None
         self._test_loader = None
+        if self.collate_fn is not None and self.test_collate_fn is None:
+            self.test_collate_fn = self.collate_fn
+
+    @property
+    def train_set(self):
+        return self._train_set
+
+    @property
+    def val_set(self):
+        return self._val_set
+
+    @property
+    def test_set(self):
+        return self._test_set
 
     @property
     def train_loader(self):
@@ -78,6 +99,7 @@ class VisionSet:
               val_size: Optional[int] = None,
               download: bool = False,
               num_workers: int = 1,
+              test_num_workers: int = None,
               non_training_bs_factor=2,
               drop_last: bool = False,
               pin_memory: bool = True,
@@ -127,9 +149,9 @@ class VisionSet:
         """
 
         assert (download or self.root.exists()), "root does not exist"
-        train_da = train_da or list(self.default_train_da)
-        test_da = test_da or list(self.default_test_da)
-        norm = norm or list(self.default_norm)
+        train_da = _optional(train_da, list(self.default_train_da))
+        test_da = _optional(test_da, list(self.default_test_da))
+        norm = _optional(norm, list(self.default_norm))
 
         pre_train_da = pre_train_da or []
         post_train_da = post_train_da or []
@@ -185,6 +207,7 @@ class VisionSet:
                        val_size: Optional[int] = None,
                        download: bool = False,
                        num_workers: int = 1,
+                       test_num_workers: int = None,
                        non_training_bs_factor=2,
                        drop_last: bool = False,
                        pin_memory: bool = True,
@@ -246,18 +269,22 @@ class VisionSet:
         if test_batch_size is None:
             test_batch_size = non_training_bs_factor * batch_size
 
-        shared_kwargs = dict(drop_last=drop_last, num_workers=num_workers, pin_memory=pin_memory,
-                             collate_fn=self.collate_fn, prefetch_factor=prefetch_factor,
+        test_num_workers = test_num_workers or num_workers
+        shared_kwargs = dict(drop_last=drop_last, pin_memory=pin_memory,
+                             prefetch_factor=prefetch_factor,
                              persistent_workers=persistent_workers, worker_init_fn=worker_init_fn)
-        train_loader = DataLoader(train_set, batch_size, sampler=train_sampler, **shared_kwargs)
-        test_loader = DataLoader(test_set, test_batch_size, sampler=test_sampler, **shared_kwargs)
+        train_loader = DataLoader(train_set, batch_size, sampler=train_sampler, num_workers=num_workers,
+                                  collate_fn=self.collate_fn, **shared_kwargs)
+        test_loader = DataLoader(test_set, test_batch_size, sampler=test_sampler, num_workers=test_num_workers,
+                                 collate_fn=self.test_collate_fn, **shared_kwargs)
         self._train_loader = train_loader
         self._test_loader = test_loader
 
         ret = [train_loader, test_loader]
 
         if val_set is not None:
-            val_loader = DataLoader(val_set, test_batch_size, sampler=val_sampler, **shared_kwargs)
+            val_loader = DataLoader(val_set, test_batch_size, sampler=val_sampler, num_workers=test_num_workers,
+                                    collate_fn=self.test_collate_fn, **shared_kwargs)
             ret.append(val_loader)
             self._val_loader = val_loader
 
