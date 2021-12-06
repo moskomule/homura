@@ -3,7 +3,7 @@
 
 import dataclasses
 import types
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 import torch
 
@@ -95,7 +95,7 @@ class StepDict(dict):
                 v.step()
 
     def state_dict(self
-                   ) -> Dict[str, Any]:
+                   ) -> dict[str, Any]:
         return {k: v.state_dict() for k, v in self.items()
                 if hasattr(v, "state_dict")}
 

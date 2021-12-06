@@ -1,8 +1,7 @@
+import bisect
 import math
 import warnings
-import bisect
 from functools import partial
-from typing import List
 
 from torch.optim import lr_scheduler as _lr_scheduler
 
@@ -20,7 +19,7 @@ def MultiStepLR(milestones,
 
 
 def MultiStepWithWarmup(warmup: int,
-                        milestones: List[int],
+                        milestones: list[int],
                         gamma: float = 0.1,
                         last_epoch: int = -1):
     return partial(_lr_scheduler.LambdaLR,
@@ -92,7 +91,7 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
 
 
 def multistep_with_warmup(warmup_epochs: int,
-                          milestones: List[int],
+                          milestones: list[int],
                           gamma: float = 0.1,
                           ):
     def f(epoch):

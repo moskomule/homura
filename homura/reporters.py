@@ -4,7 +4,7 @@ import warnings
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Iterator, Optional
 
 import torch
 from torch import distributed
@@ -13,7 +13,7 @@ from homura import get_args, if_is_master, is_distributed, is_master, liblog
 
 __all__ = ["ReporterList", "TensorboardReporter", "TQDMReporter"]
 
-Value = torch.Tensor or Number or Dict[str, torch.Tensor or Number]
+Value = torch.Tensor or Number or dict[str, torch.Tensor or Number]
 
 
 class _ReporterBase(object):
@@ -37,7 +37,7 @@ class _ReporterBase(object):
 
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Number or torch.Tensor],
+                    value: dict[str, Number or torch.Tensor],
                     step: Optional[int] = None
                     ) -> None:
         pass
@@ -106,7 +106,7 @@ class TQDMReporter(_ReporterBase):
     @if_is_master
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Number or torch.Tensor],
+                    value: dict[str, Number or torch.Tensor],
                     step: Optional[int] = None
                     ) -> None:
         self._temporal_memory[key] = (value, step)
@@ -175,7 +175,7 @@ class TensorboardReporter(_ReporterBase):
     @if_is_master
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Any],
+                    value: dict[str, Any],
                     step: Optional[int] = None
                     ) -> None:
         self.writer.add_scalars(key, value, step)
@@ -204,7 +204,7 @@ class _Accumulator(object):
         self._sync = not no_sync and is_distributed()
         self._total_size: int = 0
 
-        self._memory: List[Any] = []
+        self._memory: list[Any] = []
 
     def set_batch_size(self,
                        batch_size: int
@@ -223,7 +223,7 @@ class _Accumulator(object):
         # value is extpected to be
         # 1. Number
         # 2. Tensor
-        # 3. Dict[str, Number or Tensor]
+        # 3. dict[str, Number or Tensor]
         value = self._process_tensor(value)
 
         if isinstance(value, dict):
@@ -242,7 +242,7 @@ class _Accumulator(object):
         return value
 
     def _reduce(self,
-                values: List[Value]
+                values: list[Value]
                 ) -> Value:
         if self._reduction == 'sum':
             return sum(values)
@@ -263,14 +263,14 @@ class _Accumulator(object):
         return self._reduce(self._memory)
 
 
-class _History(Dict):
+class _History(dict):
     # Dictionary that can be access via () and []
-    def __init__(self, history_dict: Dict[str, List[float]]) -> None:
+    def __init__(self, history_dict: dict[str, list[float]]) -> None:
         super().__init__(history_dict)
 
     def __getitem__(self,
                     item: str
-                    ) -> List[float]:
+                    ) -> list[float]:
         return super().__getitem__(item)
 
     __call__ = __getitem__
@@ -282,15 +282,15 @@ class ReporterList(object):
     """
 
     # _persistent_hist tracks scalar values
-    _persistent_hist: Dict[str, List[Value]] = defaultdict(list)
+    _persistent_hist: dict[str, list[Value]] = defaultdict(list)
 
     def __init__(self,
-                 reporters: List[_ReporterBase]
+                 reporters: list[_ReporterBase]
                  ) -> None:
         self.reporters = reporters
         # _epoch_hist clears after each epoch
         self._batch_size: Optional[int] = None
-        self._epoch_hist: Dict[str, _Accumulator] = {}
+        self._epoch_hist: dict[str, _Accumulator] = {}
 
     def set_batch_size(self,
                        batch_size: int
@@ -316,7 +316,7 @@ class ReporterList(object):
         :param key: Unique key to track value
         :param value: Value
         :param is_averaged: If value is averaged
-        :param reduction: Method of reduction after epoch, 'average', 'sum' or function of List[Value] -> Value
+        :param reduction: Method of reduction after epoch, 'average', 'sum' or function of list[Value] -> Value
         :param no_sync: If not sync in distributed setting
         :return:
         """
@@ -415,7 +415,7 @@ class ReporterList(object):
             key = f"{k}/{mode}" if len(mode) > 0 else k
             accumulated = v.accumulate()
             accumulated = (accumulated
-                           if isinstance(accumulated, (Number, Dict)) or isinstance(accumulated, torch.Tensor)
+                           if isinstance(accumulated, (Number, dict)) or isinstance(accumulated, torch.Tensor)
                            else None)
             self._persistent_hist[key].append(accumulated)
             temporal_memory[key] = accumulated

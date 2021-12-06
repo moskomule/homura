@@ -4,7 +4,7 @@ from __future__ import annotations
 import random
 import warnings
 from abc import ABC, abstractmethod
-from typing import List, Literal, Optional, Tuple
+from typing import Literal, Optional
 
 import torch
 from PIL import Image
@@ -50,7 +50,7 @@ class TransformBase(ABC):
     def __call__(self,
                  input: torch.Tensor,
                  target: Optional[torch.Tensor] = None
-                 ) -> torch.Tensor or Tuple[torch.Tensor, torch.Tensor]:
+                 ) -> torch.Tensor or tuple[torch.Tensor, torch.Tensor]:
 
         input = self.ensure_tensor(input, True)
         original_size = _get_image_size(input)
@@ -97,7 +97,7 @@ class TransformBase(ABC):
     @abstractmethod
     def apply_coords(self,
                      coords: torch.Tensor,
-                     original_wh: Tuple[int, int],
+                     original_wh: tuple[int, int],
                      params
                      ) -> torch.Tensor:
         # transform coordinates of shape Nx2
@@ -106,7 +106,7 @@ class TransformBase(ABC):
     def apply_bbox(self,
                    bbox: torch.Tensor,
                    params,
-                   original_wh: Tuple[int, int]
+                   original_wh: tuple[int, int]
                    ) -> torch.Tensor:
         # see also fvcore
         # bbox: Nx4 float tensor of XYXY format in absolute coordinate
@@ -175,7 +175,7 @@ class ConcatTransform(TransformBase):
     def apply_coords(self, coords: torch.Tensor, original_wh: torch.Tensor, params) -> torch.Tensor:
         pass
 
-    def apply_bbox(self, bbox: torch.Tensor, params, original_wh: Tuple[int, int]) -> torch.Tensor:
+    def apply_bbox(self, bbox: torch.Tensor, params, original_wh: tuple[int, int]) -> torch.Tensor:
         pass
 
 
@@ -256,7 +256,7 @@ class RandomCrop(GeometricTransformBase):
                           f"Inconsistency with this may cause unexpected results.",
                           HomuraTransformWarning)
 
-    def get_params(self, image) -> Tuple[int, ...]:
+    def get_params(self, image) -> tuple[int, ...]:
         return VT.RandomCrop.get_params(image, self.size)
 
     def __call__(self,
@@ -328,7 +328,7 @@ class RandomResize(GeometricTransformBase):
 
     def apply_coords(self,
                      coords: torch.Tensor,
-                     original_wh: Tuple[int, int],
+                     original_wh: tuple[int, int],
                      params
                      ) -> torch.Tensor:
         raise NotImplementedError()
@@ -477,7 +477,7 @@ class NonGeometricTransformBase(TransformBase, ABC):
     def apply_bbox(self,
                    bbox: torch.Tensor,
                    params,
-                   original_wh: Tuple[int, int]
+                   original_wh: tuple[int, int]
                    ) -> torch.Tensor:
         # because no-geometric transform does not affect bounding boxes
         return bbox
@@ -485,8 +485,8 @@ class NonGeometricTransformBase(TransformBase, ABC):
 
 class Normalize(NonGeometricTransformBase):
     def __init__(self,
-                 mean: List[float],
-                 std: List[float],
+                 mean: list[float],
+                 std: list[float],
                  target_type: Optional[TargetType] = None):
         super().__init__(target_type)
         self.mean = mean

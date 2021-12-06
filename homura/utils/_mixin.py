@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import torch
 
@@ -8,11 +8,11 @@ from homura import if_is_master
 
 class StateDictMixIn(object):
     def state_dict(self
-                   ) -> Dict[str, Any]:
+                   ) -> dict[str, Any]:
         raise NotImplementedError
 
     def load_state_dict(self,
-                        state_dict: Dict[str, Any]
+                        state_dict: dict[str, Any]
                         ) -> None:
         raise NotImplementedError
 

@@ -1,6 +1,8 @@
 # ResNet variants
+from __future__ import annotations
+
 from functools import partial
-from typing import Callable, Optional, Type, Union
+from typing import Callable, Optional, Type
 
 import torch
 from torch import nn
@@ -164,7 +166,7 @@ class ResNet(nn.Module):
     """
 
     def __init__(self,
-                 block: Type[Union[BasicBlock, Bottleneck]],
+                 block: Type[BasicBlock | Bottleneck],
                  num_classes: int,
                  layer_depth: int,
                  width: int = 16,
@@ -200,7 +202,7 @@ class ResNet(nn.Module):
             initializer(self)
 
     def _make_layer(self,
-                    block: Type[Union[BasicBlock, Bottleneck]],
+                    block: Type[BasicBlock | Bottleneck],
                     planes: int,
                     layer_depth: int,
                     stride: int,

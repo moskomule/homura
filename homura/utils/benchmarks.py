@@ -2,7 +2,7 @@ import functools
 import statistics
 import time
 from contextlib import contextmanager
-from typing import Callable, Dict, Optional
+from typing import Callable, Optional
 
 import torch
 
@@ -34,7 +34,7 @@ def timeit(func: Optional[Callable] = None,
 
     def _wrap(func):
         @functools.wraps(func)
-        def _timeit(*args, **kwargs) -> Dict[str, float]:
+        def _timeit(*args, **kwargs) -> dict[str, float]:
             is_cuda = False
             for v in args:
                 if isinstance(v, torch.Tensor) and v.is_cuda:

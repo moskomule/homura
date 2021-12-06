@@ -4,7 +4,7 @@ import copy
 import inspect
 import pathlib
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Protocol, Tuple, Type
+from typing import Callable, Optional, Protocol, Type
 
 import torch
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
@@ -39,9 +39,9 @@ class VisionSet:
     tv_class: Type[VisionSetProtocol]
     root: str or pathlib.Path
     num_classes: int
-    default_norm: List
-    default_train_da: Optional[List] = None
-    default_test_da: Optional[List] = None
+    default_norm: list
+    default_train_da: Optional[list] = None
+    default_test_da: Optional[list] = None
     collate_fn: Optional[Callable] = None
     test_collate_fn: Optional[Callable] = None
 
@@ -91,9 +91,9 @@ class VisionSet:
 
     def setup(self,
               batch_size: int,
-              train_da: Optional[List] = None,
-              test_da: Optional[List] = None,
-              norm: Optional[List] = None,
+              train_da: Optional[list] = None,
+              test_da: Optional[list] = None,
+              norm: Optional[list] = None,
               train_size: Optional[int] = None,
               test_size: Optional[int] = None,
               val_size: Optional[int] = None,
@@ -105,9 +105,9 @@ class VisionSet:
               pin_memory: bool = True,
               return_num_classes: bool = False,
               test_batch_size: Optional[int] = None,
-              pre_default_train_da: Optional[List] = None,
-              post_default_train_da: Optional[List] = None,
-              post_norm_train_da: Optional[List] = None,
+              pre_default_train_da: Optional[list] = None,
+              post_default_train_da: Optional[list] = None,
+              post_norm_train_da: Optional[list] = None,
               prefetch_factor: int = 2,
               persistent_workers: bool = False,
               worker_init_fn: Optional[Callable] = None,
@@ -125,14 +125,14 @@ class VisionSet:
                     train_size: Optional[int] = None,
                     test_size: Optional[int] = None,
                     val_size: Optional[int] = None,
-                    train_da: Optional[List] = None,
-                    test_da: Optional[List] = None,
-                    norm: Optional[List] = None,
+                    train_da: Optional[list] = None,
+                    test_da: Optional[list] = None,
+                    norm: Optional[list] = None,
                     download: bool = False,
-                    pre_train_da: Optional[List] = None,
-                    post_train_da: Optional[List] = None,
-                    post_norm_train_da: Optional[List] = None
-                    ) -> Tuple[VisionSetProtocol, VisionSetProtocol, Optional[VisionSetProtocol]]:
+                    pre_train_da: Optional[list] = None,
+                    post_train_da: Optional[list] = None,
+                    post_norm_train_da: Optional[list] = None
+                    ) -> tuple[VisionSetProtocol, VisionSetProtocol, Optional[VisionSetProtocol]]:
         """ Get Dataset
 
         :param train_size: Size of training dataset. If None, full dataset will be available.
@@ -199,9 +199,9 @@ class VisionSet:
 
     def get_dataloader(self,
                        batch_size: int,
-                       train_da: Optional[List] = None,
-                       test_da: Optional[List] = None,
-                       norm: Optional[List] = None,
+                       train_da: Optional[list] = None,
+                       test_da: Optional[list] = None,
+                       norm: Optional[list] = None,
                        train_size: Optional[int] = None,
                        test_size: Optional[int] = None,
                        val_size: Optional[int] = None,
@@ -213,9 +213,9 @@ class VisionSet:
                        pin_memory: bool = True,
                        return_num_classes: bool = False,
                        test_batch_size: Optional[int] = None,
-                       pre_default_train_da: Optional[List] = None,
-                       post_default_train_da: Optional[List] = None,
-                       post_norm_train_da: Optional[List] = None,
+                       pre_default_train_da: Optional[list] = None,
+                       post_default_train_da: Optional[list] = None,
+                       post_norm_train_da: Optional[list] = None,
                        prefetch_factor: int = 2,
                        persistent_workers: bool = False,
                        worker_init_fn: Optional[Callable] = None,
@@ -223,10 +223,10 @@ class VisionSet:
                        test_sampler: Optional[Callable] = None,
                        val_sampler: Optional[Callable] = None,
                        start_epoch: bool = 0
-                       ) -> (Tuple[DataLoader, DataLoader]
-                             or Tuple[DataLoader, DataLoader, DataLoader]
-                             or Tuple[DataLoader, DataLoader, int]
-                             or Tuple[DataLoader, DataLoader, DataLoader, int]):
+                       ) -> (tuple[DataLoader, DataLoader]
+                             or tuple[DataLoader, DataLoader, DataLoader]
+                             or tuple[DataLoader, DataLoader, int]
+                             or tuple[DataLoader, DataLoader, DataLoader, int]):
         """ Get Dataloader. This will automatically handle distributed setting
 
         :param batch_size: Batch size
