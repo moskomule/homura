@@ -307,9 +307,6 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
     def data_preprocess(self,
                         data: DataType
                         ) -> DataType:
-        """ preprocess data and return (TensorTuple, batch_size)
-
-        """
 
         return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
 
