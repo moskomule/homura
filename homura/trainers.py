@@ -62,6 +62,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  profile: bool = False,
                  dist_kwargs: Optional[dict] = None,
                  prof_kwargs: Optional[dict] = None,
+                 disable_auto_ddp: bool = False,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -104,7 +105,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             raise TypeError(f"Unknown type for `model`. Expected nn.Module or dict[str, Module], but got {type(model)}")
 
         if "cuda" in str(self.device):
-            self.model.to(self.device)
+            if not disable_auto_ddp:
+                self.model.to(self.device)
             torch.backends.cudnn.benchmark = not disable_cudnn_benchmark
             self._cuda_nonblocking = not disable_cuda_nonblocking
             self.logger.debug(f"cuda: True, cudnn.benchmark: {not disable_cudnn_benchmark}, "
@@ -114,7 +116,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             # usually, this is not expected
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
-        if is_distributed():
+        if is_distributed() and not disable_auto_ddp:
             dist_kwargs = dist_kwargs or {}
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank], **dist_kwargs)
             self.logger.debug(f"model converted to DistributedDataParallel at rank={rank}")
@@ -124,6 +126,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.accessible_model = self.model.module
         else:
             self.accessible_model = self.model
+        if disable_auto_ddp:
+            self.logger.info("self.accessible_model need to be set manually")
 
         self.optimizer = optimizer
         self.scheduler = scheduler
