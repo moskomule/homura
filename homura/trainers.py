@@ -498,6 +498,7 @@ class SupervisedTrainer(TrainerBase):
                  report_accuracy_topk: Optional[int or list[int]] = None,
                  update_scheduler_iter: bool = False,
                  use_larc: bool = False,
+                 grad_accum_steps: int = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -530,6 +531,12 @@ class SupervisedTrainer(TrainerBase):
         else:
             self.logger.debug("self.update_scheduler_iter=False. Update scheduler manually")
 
+        if grad_accum_steps is not None and grad_accum_steps <= 1:
+            raise ValueError('grad_accum_steps should be equal or larger than 2.')
+        self.grad_accum_steps = 1 if grad_accum_steps is None else grad_accum_steps
+        if self.grad_accum_steps > 1:
+            self.logger.info('Gradient accumulation is activated')
+
     def iteration(self,
                   data: tuple[Tensor, Tensor]
                   ) -> None:
@@ -541,9 +548,10 @@ class SupervisedTrainer(TrainerBase):
         if self.is_train:
             # this code supports both AMP and non AMP
             self.scaler.scale(loss).backward()
-            self.scaler.step(self.optimizer)
-            self.scaler.update()
-            self.optimizer.zero_grad()
+            if (self.step + 1) % self.grad_accum_steps == 0:
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+                self.optimizer.zero_grad()
             if self.update_scheduler_iter:
                 self.scheduler.step()
         if self._is_debug and torch.isnan(loss):
