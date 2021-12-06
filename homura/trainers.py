@@ -512,8 +512,8 @@ class SupervisedTrainer(TrainerBase):
             self.logger.info("model converted to DataParallel")
 
         self._use_amp = use_amp
+        self.scaler = torch.cuda.amp.GradScaler(enabled=self._use_amp)
         if self._use_amp:
-            self.scaler = torch.cuda.amp.GradScaler()
             self.logger.info("AMP is activated")
         self._use_channel_last = use_channel_last
         if self._use_channel_last:
@@ -539,14 +539,11 @@ class SupervisedTrainer(TrainerBase):
             loss = self.loss_f(output, target)
 
         if self.is_train:
+            # this code supports both AMP and non AMP
+            self.scaler.scale(loss).backward()
+            self.scaler.step(self.optimizer)
+            self.scaler.update()
             self.optimizer.zero_grad()
-            if self._use_amp:
-                self.scaler.scale(loss).backward()
-                self.scaler.step(self.optimizer)
-                self.scaler.update()
-            else:
-                loss.backward()
-                self.optimizer.step()
             if self.update_scheduler_iter:
                 self.scheduler.step()
         if self._is_debug and torch.isnan(loss):
