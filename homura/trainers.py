@@ -13,7 +13,7 @@ from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader
 
-from homura import get_global_rank, get_local_rank, is_distributed
+from homura import get_global_rank, get_local_rank, is_distributed, is_master
 from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tqdm
 from .metrics import accuracy
 from .optim import LARC
@@ -84,7 +84,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         if is_distributed():
             if self._use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-                self.logger.info("BNs of model are converted to nn.SyncBatchNorm")
+                (self.logger.info if is_master() else self.logger.debug)("BNs of model are converted to nn.SyncBatchNorm")
 
             rank = get_local_rank()
             torch.cuda.set_device(rank)
@@ -478,6 +478,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
 
+        if self.verbose and hasattr(self.scheduler, 'verbose'):
+            self.scheduler.verbose = True
+
 
 class SupervisedTrainer(TrainerBase):
     """ A simple trainer for supervised image classification. It only accepts single model. AMP-ready.
@@ -516,7 +519,7 @@ class SupervisedTrainer(TrainerBase):
         self._use_amp = use_amp
         self.scaler = torch.cuda.amp.GradScaler(enabled=self._use_amp)
         if self._use_amp:
-            self.logger.info("AMP is activated")
+            (self.logger.info if is_master() else self.logger.debug)("AMP is activated")
         self._use_channel_last = use_channel_last
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
