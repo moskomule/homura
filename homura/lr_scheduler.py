@@ -52,6 +52,10 @@ def ReduceLROnPlateau(mode='min',
 
 def InverseSquareRootWithWarmup(warmup_epochs: int,
                                 last_epoch: int = -1):
+    """ inverse square root with warmup: $\\sqrt{w} \\min(1/\\sqrt{e}, e/\\sqrt{e}^3)$, where $w$ is `warmup_epochs` and
+    `e` is the current epoch
+
+    """
     return partial(_lr_scheduler.LambdaLR,
                    lr_lambda=inverse_square_root_with_warmup(warmup_epochs),
                    last_epoch=last_epoch)
