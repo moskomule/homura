@@ -50,6 +50,13 @@ def ReduceLROnPlateau(mode='min',
     return partial(_lr_scheduler.ReduceLROnPlateau, **locals())
 
 
+def InverseSquareRootWithWarmup(warmup_epochs: int,
+                                last_epoch: int = -1):
+    return partial(_lr_scheduler.LambdaLR,
+                   lr_lambda=inverse_square_root_with_warmup(warmup_epochs),
+                   last_epoch=last_epoch)
+
+
 def CosineAnnealingWithWarmup(total_epochs: int,
                               warmup_epochs: int,
                               min_lr: float = 0,
@@ -98,5 +105,15 @@ def multistep_with_warmup(warmup_epochs: int,
         if epoch < warmup_epochs:
             return (epoch + 1) / warmup_epochs
         return gamma ** bisect.bisect_right(milestones, epoch)
+
+    return f
+
+
+def inverse_square_root_with_warmup(warmup_epochs: int,
+                                    ):
+    def f(epoch):
+        epoch += 1
+        factor = warmup_epochs ** 0.5
+        return factor * min(epoch ** -0.5, epoch * warmup_epochs ** -1.5)
 
     return f
