@@ -8,7 +8,7 @@ from homura.vision import DATASET_REGISTRY, MODEL_REGISTRY
 
 @chika.config
 class Config:
-    model: str = chika.choices(*MODEL_REGISTRY.choices())
+    model: str = chika.choices("wrn28_2", "wrn28_10")
     batch_size: int = 128
 
     epochs: int = 200
@@ -38,7 +38,7 @@ def main(cfg):
     model = MODEL_REGISTRY(cfg.model)(num_classes=data.num_classes)
     optimizer = None if cfg.bn_no_wd else optim.SGD(lr=cfg.lr, momentum=0.9, weight_decay=cfg.weight_decay,
                                                     multi_tensor=cfg.use_multi_tensor)
-    scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 4, 5)
+    scheduler = lr_scheduler.CosineAnnealingWithWarmup(cfg.epochs, 5)
 
     if cfg.bn_no_wd:
         def set_optimizer(trainer):
@@ -53,7 +53,7 @@ def main(cfg):
                 {"params": bn_params, "weight_decay": 0},
                 {"params": non_bn_parameters, "weight_decay": cfg.weight_decay},
             ]
-            trainer.optimizer = torch.optim.SGD(optim_params, lr=1e-1, momentum=0.9)
+            trainer.optimizer = torch.optim.SGD(optim_params, lr=cfg.lr, momentum=0.9)
 
         trainers.SupervisedTrainer.set_optimizer = set_optimizer
 
