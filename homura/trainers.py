@@ -84,7 +84,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         if is_distributed():
             if self._use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-                (self.logger.info if is_master() else self.logger.debug)("BNs of model are converted to nn.SyncBatchNorm")
+                (self.logger.info if is_master() else self.logger.debug)(
+                    "BNs of model are converted to nn.SyncBatchNorm")
 
             rank = get_local_rank()
             torch.cuda.set_device(rank)
@@ -385,6 +386,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         class ProxyLoader(object):
             def __init__(self, loader):
                 self.loader = loader
+                self._epoch = 0
 
             def __len__(self):
                 return val_intervals
@@ -397,6 +399,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                             return  # from python 3.7, this is valid
                         yield data
                         counter += 1
+                    self._epoch += 1
+                    if hasattr(self.loader.sampler, 'set_epoch'):
+                        self.loader.sampler.set_epoch(self._epoch)
 
         train_loader = ProxyLoader(train_loader)
         if not isinstance(val_loaders, dict) and (isinstance(val_loaders, Iterable) or

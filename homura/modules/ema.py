@@ -64,7 +64,8 @@ class EMA(nn.Module):
         return self._original_model.parameters(recurse)
 
     def requires_grad_(self, requires_grad: bool = True) -> nn.Module:
-        return self._original_model.requires_grad_(requires_grad)
+        self._original_model.requires_grad_(requires_grad)
+        return self
 
     @torch.no_grad()
     def _update(self):
