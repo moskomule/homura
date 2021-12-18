@@ -528,7 +528,7 @@ class SupervisedTrainer(TrainerBase):
         self._use_channel_last = use_channel_last
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
-            self.model.to(memory_format=torch.channels_last)
+            self.model = self.model.to(memory_format=torch.channels_last)
         if report_accuracy_topk is not None:
             if not isinstance(report_accuracy_topk, Iterable):
                 report_accuracy_topk = [report_accuracy_topk]
@@ -574,7 +574,7 @@ class SupervisedTrainer(TrainerBase):
 
     def data_preprocess(self,
                         data: tuple[Tensor, Tensor]
-                        ) -> (tuple[Tensor, Tensor], int):
+                        ) -> tuple[Tensor, Tensor]:
         input, target = data
         return (input.to(self.device, non_blocking=self._cuda_nonblocking,
                          memory_format=torch.channels_last if self._use_channel_last
