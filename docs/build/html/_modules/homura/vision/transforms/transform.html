@@ -76,8 +76,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">VF</span><span class="p">,</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">VT</span>
+<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">VF</span><span class="p">,</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">VT</span><span class="p">,</span> <span class="n">InterpolationMode</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TransformBase&quot;</span><span class="p">,</span>
            <span class="s2">&quot;ConcatTransform&quot;</span><span class="p">,</span>
@@ -393,7 +392,7 @@
                    <span class="n">mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
                    <span class="n">params</span>
                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">VF</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">VF</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">InterpolationMode</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RandomResize.apply_coords"><a class="viewcode-back" href="../../../../homura.vision.transforms.html#homura.vision.transforms.transform.RandomResize.apply_coords">[docs]</a>    <span class="k">def</span> <span class="nf">apply_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">coords</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
@@ -433,7 +432,7 @@
                    <span class="n">params</span>
                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">params</span>
-        <span class="k">return</span> <span class="n">VF</span><span class="o">.</span><span class="n">resized_crop</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">VF</span><span class="o">.</span><span class="n">resized_crop</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">InterpolationMode</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RandomResizedCrop.apply_coords"><a class="viewcode-back" href="../../../../homura.vision.transforms.html#homura.vision.transforms.transform.RandomResizedCrop.apply_coords">[docs]</a>    <span class="k">def</span> <span class="nf">apply_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">coords</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
