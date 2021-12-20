@@ -2,7 +2,7 @@ import functools
 import statistics
 import time
 from contextlib import contextmanager
-from typing import Callable, Optional
+from typing import Callable
 
 import torch
 
@@ -20,9 +20,9 @@ def _syncronize(is_cuda: bool):
         torch.cuda.synchronize()
 
 
-def timeit(func: Optional[Callable] = None,
-           num_iters: Optional[int] = 100,
-           warmup_iters: Optional[int] = None):
+def timeit(func: Callable = None,
+           num_iters: int = 100,
+           warmup_iters: int = None):
     """ A simple timeit for GPU operations.
 
     >>> @timeit(num_iters=100, warmup_iters=100)

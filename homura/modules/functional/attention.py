@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import torch
 from torch.nn import functional as F
@@ -7,12 +7,12 @@ from torch.nn import functional as F
 def kv_attention(query: torch.Tensor,
                  key: torch.Tensor,
                  value: torch.Tensor,
-                 mask: Optional[torch.Tensor] = None,
-                 additive_mask: Optional[torch.Tensor] = None,
+                 mask: torch.Tensor = None,
+                 additive_mask: torch.Tensor = None,
                  training: bool = True,
                  dropout_prob: float = 0,
                  scaling: bool = True
-                 ) -> (torch.Tensor, torch.Tensor):
+                 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Attention using queries, keys and value
 
     :param query: `...JxM`

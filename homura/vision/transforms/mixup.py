@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from __future__ import annotations
 
 import torch
 
@@ -24,8 +24,8 @@ def partial_mixup(input: torch.Tensor,
 def mixup(input: torch.Tensor,
           target: torch.Tensor,
           gamma: float,
-          indices: Optional[torch.Tensor] = None
-          ) -> Tuple[torch.Tensor, torch.Tensor]:
+          indices: torch.Tensor = None
+          ) -> tuple[torch.Tensor, torch.Tensor]:
     """ mixup: Beyond Empirical Risk Minimization
 
     :param input:

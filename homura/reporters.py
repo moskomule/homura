@@ -4,7 +4,7 @@ import warnings
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
-from typing import Any, Callable, Iterator, Optional
+from typing import Any, Callable, Iterator
 
 import torch
 from torch import distributed
@@ -24,21 +24,21 @@ class _ReporterBase(object):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         pass
 
     def add_scalar(self,
                    key: str,
                    value: Number or torch.Tensor,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         pass
 
     def add_scalars(self,
                     key: str,
                     value: dict[str, Number or torch.Tensor],
-                    step: Optional[int] = None
+                    step: int = None
                     ) -> None:
         pass
 
@@ -89,7 +89,7 @@ class TQDMReporter(_ReporterBase):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         self.writer.write(value)
 
@@ -97,7 +97,7 @@ class TQDMReporter(_ReporterBase):
     def add_scalar(self,
                    key: str,
                    value: Number or torch.Tensor,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         if isinstance(value, torch.Tensor):
             value = value.item()
@@ -107,14 +107,14 @@ class TQDMReporter(_ReporterBase):
     def add_scalars(self,
                     key: str,
                     value: dict[str, Number or torch.Tensor],
-                    step: Optional[int] = None
+                    step: int = None
                     ) -> None:
         self._temporal_memory[key] = (value, step)
 
 
 class TensorboardReporter(_ReporterBase):
     def __init__(self,
-                 save_dir: Optional[str] = None
+                 save_dir: str = None
                  ) -> None:
         if is_master():
             from torch.utils import tensorboard
@@ -127,7 +127,7 @@ class TensorboardReporter(_ReporterBase):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         self.writer.add_text(key, value, step)
 
@@ -135,7 +135,7 @@ class TensorboardReporter(_ReporterBase):
     def add_audio(self,
                   key: str,
                   audio: torch.Tensor,
-                  step: Optional[int] = None
+                  step: int = None
                   ) -> None:
         if audio.ndim != 2 or audio.size(0) != 1:
             raise RuntimeError(f"Shape of audio tensor is expected to be [1, L], but got {audio.shape}")
@@ -145,7 +145,7 @@ class TensorboardReporter(_ReporterBase):
     def add_histogram(self,
                       key: str,
                       values: torch.Tensor,
-                      step: Optional[int],
+                      step: int,
                       bins: str = 'tensorflow'
                       ) -> None:
         self.writer.add_histogram(key, values, step, bins=bins)
@@ -154,7 +154,7 @@ class TensorboardReporter(_ReporterBase):
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
-                  step: Optional[int] = None
+                  step: int = None
                   ) -> None:
         dim = image.dim()
         if dim == 3:
@@ -168,7 +168,7 @@ class TensorboardReporter(_ReporterBase):
     def add_scalar(self,
                    key: str,
                    value: Any,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         self.writer.add_scalar(key, value, step)
 
@@ -176,7 +176,7 @@ class TensorboardReporter(_ReporterBase):
     def add_scalars(self,
                     key: str,
                     value: dict[str, Any],
-                    step: Optional[int] = None
+                    step: int = None
                     ) -> None:
         self.writer.add_scalars(key, value, step)
 
@@ -184,7 +184,7 @@ class TensorboardReporter(_ReporterBase):
     def add_figure(self,
                    key: str,
                    figure: "matplotlib.pyplot.figure",
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         self.writer.add_figure(key, figure, step)
 
@@ -289,7 +289,7 @@ class ReporterList(object):
                  ) -> None:
         self.reporters = reporters
         # _epoch_hist clears after each epoch
-        self._batch_size: Optional[int] = None
+        self._batch_size: int = None
         self._epoch_hist: dict[str, _Accumulator] = {}
 
     def set_batch_size(self,
@@ -350,7 +350,7 @@ class ReporterList(object):
     def add_figure(self,
                    key: str,
                    figure: "matplotlib.pyplot.figure",
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         """ Report Figure of matplotlib.pyplot
         """
@@ -360,7 +360,7 @@ class ReporterList(object):
     def add_histogram(self,
                       key: str,
                       value: torch.Tensor,
-                      step: Optional[int] = None,
+                      step: int = None,
                       bins: str = "tensorflow"
                       ) -> None:
         """ Report histogram of a given tensor
@@ -371,7 +371,7 @@ class ReporterList(object):
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
-                  step: Optional[int] = None,
+                  step: int = None,
                   normalize: bool = False
                   ) -> None:
         """ Report a single image or a batch of images
@@ -394,14 +394,14 @@ class ReporterList(object):
     def add_text(self,
                  key: str,
                  text: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         """ Report text
         """
         self._add_backend("add_text", key, text, step)
 
     def report(self,
-               step: Optional[int] = None,
+               step: int = None,
                mode: str = ""
                ) -> None:
         # intended to be called after epoch

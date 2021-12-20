@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from __future__ import annotations
 
 import torch
 from torch import nn
@@ -25,9 +25,9 @@ class KeyValAttention(nn.Module):
                 query: torch.Tensor,
                 key: torch.Tensor,
                 value: torch.Tensor,
-                mask: Optional[torch.Tensor] = None,
-                additive_mask: Optional[torch.Tensor] = None,
-                ) -> Tuple[torch.Tensor, torch.Tensor]:
+                mask: torch.Tensor = None,
+                additive_mask: torch.Tensor = None,
+                ) -> tuple[torch.Tensor, torch.Tensor]:
         """ See `functional.attention.kv_attention` for details
 
         :param query:

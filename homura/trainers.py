@@ -5,7 +5,7 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Any, Callable, Iterable, Optional, TypeVar
+from typing import Any, Callable, Iterable, TypeVar
 
 import torch
 from torch import Tensor, nn
@@ -46,12 +46,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def __init__(self,
                  model: nn.Module or dict[str, nn.Module],
-                 optimizer: Optional[Partial or Optimizer or dict[str, Optimizer]],
-                 loss_f: Optional[Callable or dict[str, Callable]] = None,
+                 optimizer: Partial or Optimizer or dict[str, Optimizer],
+                 loss_f: Callable or dict[str, Callable] = None,
                  *,
-                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
-                 scheduler: Optional[Partial or Scheduler or dict[str, Scheduler]] = None,
-                 device: Optional[torch.device or str] = None,
+                 reporters: _ReporterBase or list[_ReporterBase] = None,
+                 scheduler: Partial or Scheduler or dict[str, Scheduler] = None,
+                 device: torch.device or str = None,
                  quiet: bool = False,
                  disable_cudnn_benchmark: bool = False,
                  disable_cuda_nonblocking: bool = False,
@@ -60,8 +60,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  tqdm_ncols: int = 120,
                  debug: bool = False,
                  profile: bool = False,
-                 dist_kwargs: Optional[dict] = None,
-                 prof_kwargs: Optional[dict] = None,
+                 dist_kwargs: dict = None,
+                 prof_kwargs: dict = None,
                  disable_auto_ddp: bool = False,
                  **kwargs):
 
@@ -497,14 +497,14 @@ class SupervisedTrainer(TrainerBase):
                  optimizer: Optimizer,
                  loss_f: Callable,
                  *,
-                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
-                 scheduler: Optional[Scheduler] = None,
+                 reporters: _ReporterBase or list[_ReporterBase] = None,
+                 scheduler: Scheduler = None,
                  quiet=False,
                  disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
                  use_channel_last=False,
-                 report_accuracy_topk: Optional[int or list[int]] = None,
+                 report_accuracy_topk: int or list[int] = None,
                  update_scheduler_iter: bool = False,
                  use_larc: bool = False,
                  grad_accum_steps: int = None,

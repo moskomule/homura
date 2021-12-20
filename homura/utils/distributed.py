@@ -5,7 +5,7 @@ import builtins
 import functools
 import os as python_os
 from functools import wraps
-from typing import Callable, Optional
+from typing import Callable
 
 from torch import distributed
 from torch.cuda import device_count
@@ -76,8 +76,8 @@ def distributed_print(self, *args, sep=' ', end='\n', file=None) -> None:
     original_print(self, *args, sep=sep, end=end, file=file)
 
 
-def init_distributed(backend: Optional[str] = None,
-                     init_method: Optional[str] = None,
+def init_distributed(backend: str = None,
+                     init_method: str = None,
                      disable_distributed_print: str = False
                      ) -> None:
     """ Simple initializer for distributed training. This function substitutes print function with `_print_if_master`.
@@ -108,8 +108,8 @@ def init_distributed(backend: Optional[str] = None,
 
 
 def distributed_ready_main(func: Callable = None,
-                           backend: Optional[str] = None,
-                           init_method: Optional[str] = None,
+                           backend: str = None,
+                           init_method: str = None,
                            disable_distributed_print: str = False
                            ) -> Callable:
     """ Wrap a main function to make it distributed ready

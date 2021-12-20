@@ -4,7 +4,7 @@ import copy
 import inspect
 import pathlib
 from dataclasses import dataclass
-from typing import Callable, Optional, Protocol, Type
+from typing import Callable, Protocol, Type
 
 import torch
 from torch.utils.data import DataLoader, DistributedSampler, RandomSampler
@@ -40,10 +40,10 @@ class VisionSet:
     root: str or pathlib.Path
     num_classes: int
     default_norm: list
-    default_train_da: Optional[list] = None
-    default_test_da: Optional[list] = None
-    collate_fn: Optional[Callable] = None
-    test_collate_fn: Optional[Callable] = None
+    default_train_da: list = None
+    default_test_da: list = None
+    collate_fn: Callable = None
+    test_collate_fn: Callable = None
 
     def __post_init__(self):
         # _ is trainer
@@ -91,12 +91,12 @@ class VisionSet:
 
     def setup(self,
               batch_size: int,
-              train_da: Optional[list] = None,
-              test_da: Optional[list] = None,
-              norm: Optional[list] = None,
-              train_size: Optional[int] = None,
-              test_size: Optional[int] = None,
-              val_size: Optional[int] = None,
+              train_da: list = None,
+              test_da: list = None,
+              norm: list = None,
+              train_size: int = None,
+              test_size: int = None,
+              val_size: int = None,
               download: bool = False,
               num_workers: int = 1,
               test_num_workers: int = None,
@@ -104,16 +104,16 @@ class VisionSet:
               drop_last: bool = False,
               pin_memory: bool = True,
               return_num_classes: bool = False,
-              test_batch_size: Optional[int] = None,
-              pre_default_train_da: Optional[list] = None,
-              post_default_train_da: Optional[list] = None,
-              post_norm_train_da: Optional[list] = None,
+              test_batch_size: int = None,
+              pre_default_train_da: list = None,
+              post_default_train_da: list = None,
+              post_norm_train_da: list = None,
               prefetch_factor: int = 2,
               persistent_workers: bool = False,
-              worker_init_fn: Optional[Callable] = None,
-              train_sampler: Optional[Callable] = None,
-              test_sampler: Optional[Callable] = None,
-              val_sampler: Optional[Callable] = None,
+              worker_init_fn: Callable = None,
+              train_sampler: Callable = None,
+              test_sampler: Callable = None,
+              val_sampler: Callable = None,
               start_epoch: bool = 0
               ) -> VisionSet:
         vals = locals()
@@ -122,17 +122,17 @@ class VisionSet:
         return self
 
     def get_dataset(self,
-                    train_size: Optional[int] = None,
-                    test_size: Optional[int] = None,
-                    val_size: Optional[int] = None,
-                    train_da: Optional[list] = None,
-                    test_da: Optional[list] = None,
-                    norm: Optional[list] = None,
+                    train_size: int = None,
+                    test_size: int = None,
+                    val_size: int = None,
+                    train_da: list = None,
+                    test_da: list = None,
+                    norm: list = None,
                     download: bool = False,
-                    pre_train_da: Optional[list] = None,
-                    post_train_da: Optional[list] = None,
-                    post_norm_train_da: Optional[list] = None
-                    ) -> tuple[VisionSetProtocol, VisionSetProtocol, Optional[VisionSetProtocol]]:
+                    pre_train_da: list = None,
+                    post_train_da: list = None,
+                    post_norm_train_da: list = None
+                    ) -> tuple[VisionSetProtocol, VisionSetProtocol, VisionSetProtocol]:
         """ Get Dataset
 
         :param train_size: Size of training dataset. If None, full dataset will be available.
@@ -145,7 +145,7 @@ class VisionSet:
         :param pre_train_da: Data Augmentation before the default data augmentation
         :param post_train_da: Data Augmentation after the default data augmentation
         :param post_norm_train_da: Data Augmentation after normalization (i.e., norm)
-        :return: train_set, test_set, Optional[val_set]
+        :return: train_set, test_set, val_set
         """
 
         assert (download or self.root.exists()), "root does not exist"
@@ -199,12 +199,12 @@ class VisionSet:
 
     def get_dataloader(self,
                        batch_size: int,
-                       train_da: Optional[list] = None,
-                       test_da: Optional[list] = None,
-                       norm: Optional[list] = None,
-                       train_size: Optional[int] = None,
-                       test_size: Optional[int] = None,
-                       val_size: Optional[int] = None,
+                       train_da: list = None,
+                       test_da: list = None,
+                       norm: list = None,
+                       train_size: int = None,
+                       test_size: int = None,
+                       val_size: int = None,
                        download: bool = False,
                        num_workers: int = 1,
                        test_num_workers: int = None,
@@ -212,16 +212,16 @@ class VisionSet:
                        drop_last: bool = False,
                        pin_memory: bool = True,
                        return_num_classes: bool = False,
-                       test_batch_size: Optional[int] = None,
-                       pre_default_train_da: Optional[list] = None,
-                       post_default_train_da: Optional[list] = None,
-                       post_norm_train_da: Optional[list] = None,
+                       test_batch_size: int = None,
+                       pre_default_train_da: list = None,
+                       post_default_train_da: list = None,
+                       post_norm_train_da: list = None,
                        prefetch_factor: int = 2,
                        persistent_workers: bool = False,
-                       worker_init_fn: Optional[Callable] = None,
-                       train_sampler: Optional[Callable] = None,
-                       test_sampler: Optional[Callable] = None,
-                       val_sampler: Optional[Callable] = None,
+                       worker_init_fn: Callable = None,
+                       train_sampler: Callable = None,
+                       test_sampler: Callable = None,
+                       val_sampler: Callable = None,
                        start_epoch: bool = 0
                        ) -> (tuple[DataLoader, DataLoader]
                              or tuple[DataLoader, DataLoader, DataLoader]

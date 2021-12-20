@@ -36,7 +36,7 @@ class TransformBase(ABC):
     supported_target_types = {"bbox", "mask"}
 
     def __init__(self,
-                 target_type: Optional[TargetType]):
+                 target_type: TargetType):
         if target_type is not None and target_type not in TransformBase.supported_target_types:
             raise RuntimeError(f"Invalid target_type: {target_type}")
         self.target_type = target_type
@@ -49,7 +49,7 @@ class TransformBase(ABC):
 
     def __call__(self,
                  input: torch.Tensor,
-                 target: Optional[torch.Tensor] = None
+                 target: torch.Tensor = None
                  ) -> torch.Tensor or tuple[torch.Tensor, torch.Tensor]:
 
         input = self.ensure_tensor(input, True)
@@ -84,7 +84,7 @@ class TransformBase(ABC):
         return ConcatTransform(other, self, target_type=self.target_type)
 
     def get_params(self,
-                   image: Optional[torch.Tensor]) -> Optional:
+                   image: torch.Tensor) -> Optional:
         return None
 
     @abstractmethod
@@ -140,7 +140,7 @@ class TransformBase(ABC):
 class ConcatTransform(TransformBase):
     def __init__(self,
                  *transforms: TransformBase,
-                 target_type: Optional[TargetType] = None):
+                 target_type: TargetType = None):
         super().__init__(target_type)
         self.transforms = transforms
 
@@ -151,8 +151,8 @@ class ConcatTransform(TransformBase):
 
     def __call__(self,
                  input: torch.Tensor,
-                 target: Optional[torch.Tensor] = None
-                 ) -> (torch.Tensor, Optional[torch.Tensor]):
+                 target: torch.Tensor = None
+                 ) -> (torch.Tensor, torch.Tensor):
         for transform in self.transforms:
             input, target = transform(input, target)
         return input, target
@@ -192,7 +192,7 @@ class GeometricTransformBase(TransformBase, ABC):
 class RandomHorizontalFlip(GeometricTransformBase):
     def __init__(self,
                  p: float = 0.5,
-                 target_type: Optional[TargetType] = None
+                 target_type: TargetType = None
                  ):
         super().__init__(target_type)
         self.p = p
@@ -240,7 +240,7 @@ class RandomCrop(GeometricTransformBase):
                  fill=0,
                  padding_mode="constant",
                  mask_fill=255,
-                 target_type: Optional[TargetType] = None):
+                 target_type: TargetType = None):
         super().__init__(target_type)
         self.size = VT._setup_size(size, "Invalid value for size (h, w)")
         self.padding = padding
@@ -261,8 +261,8 @@ class RandomCrop(GeometricTransformBase):
 
     def __call__(self,
                  input: torch.Tensor,
-                 target: Optional[torch.Tensor] = None
-                 ) -> (torch.Tensor, Optional[torch.Tensor]):
+                 target: torch.Tensor = None
+                 ) -> (torch.Tensor, torch.Tensor):
         if self.padding is not None:
             input = VF.pad(input, self.padding, self.fill, self.padding_mode)
 
@@ -300,8 +300,8 @@ class RandomCrop(GeometricTransformBase):
 class RandomResize(GeometricTransformBase):
     def __init__(self,
                  min_size: int,
-                 max_size: Optional[int] = None,
-                 target_type: Optional[TargetType] = None):
+                 max_size: int = None,
+                 target_type: TargetType = None):
         super().__init__(target_type)
         if max_size is not None and min_size > max_size:
             raise ValueError(f"Invalid size: min_size={min_size} > max_size={max_size}")
@@ -309,7 +309,7 @@ class RandomResize(GeometricTransformBase):
         self.max_size = max_size
 
     def get_params(self,
-                   image: Optional[torch.Tensor]) -> Optional:
+                   image: torch.Tensor) -> Optional:
         if self.max_size is None:
             return self.min_size
         return random.randint(self.min_size, self.max_size)
@@ -349,7 +349,7 @@ class RandomResizedCrop(GeometricTransformBase):
         self.ratio = ratio
 
     def get_params(self,
-                   image: Optional[torch.Tensor]) -> Optional:
+                   image: torch.Tensor) -> Optional:
         return VT.RandomResizedCrop.get_params(image, self.scale, self.ratio)
 
     def apply_image(self,
@@ -393,7 +393,7 @@ class RandomRotation(GeometricTransformBase):
             warnings.warn("Rotated bbox may exceeds image area. Please check it carefully.", HomuraTransformWarning)
 
     def get_params(self,
-                   image: Optional[torch.Tensor]) -> Optional:
+                   image: torch.Tensor) -> Optional:
         return VT.RandomRotation.get_params(self.degrees)
 
     def apply_image(self,
@@ -487,7 +487,7 @@ class Normalize(NonGeometricTransformBase):
     def __init__(self,
                  mean: list[float],
                  std: list[float],
-                 target_type: Optional[TargetType] = None):
+                 target_type: TargetType = None):
         super().__init__(target_type)
         self.mean = mean
         self.std = std
@@ -505,7 +505,7 @@ class Normalize(NonGeometricTransformBase):
 class RandomGrayScale(NonGeometricTransformBase):
     def __init__(self,
                  p: float = 0.5,
-                 target_type: Optional[TargetType] = None):
+                 target_type: TargetType = None):
         super().__init__(target_type)
         self._impl = VT.RandomGrayscale(p)
 
@@ -525,7 +525,7 @@ class ColorJitter(NonGeometricTransformBase):
                  contrast=0,
                  saturation=0,
                  hue=0,
-                 target_type: Optional[TargetType] = None):
+                 target_type: TargetType = None):
         super().__init__(target_type)
         self._impl = VT.ColorJitter(brightness, contrast, saturation, hue)
 

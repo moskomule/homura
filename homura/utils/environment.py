@@ -5,7 +5,7 @@ import importlib.util
 import os as python_os
 import subprocess
 import sys as python_sys
-from typing import Any, Optional
+from typing import Any
 
 import torch
 
@@ -119,6 +119,6 @@ def get_args() -> list:
 
 
 def get_environ(name: str,
-                default: Optional[Any] = None
+                default: Any = None
                 ) -> str:
     return python_os.environ.get(name, default)

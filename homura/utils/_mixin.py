@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import torch
 
@@ -30,8 +30,8 @@ class StateDictMixIn(object):
 
     def load(self,
              path: str,
-             file_name: Optional[str],
-             device: Optional[torch.device] = None
+             file_name: str,
+             device: torch.device = None
              ) -> None:
         path = Path(path)
         if not path.exists():
