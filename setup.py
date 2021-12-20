@@ -7,7 +7,7 @@ with open("requirements.txt") as f:
     requirements = f.read().split()
 
 setup(name="homura-core",
-      version="2021.12.0",
+      version="2021.12.1",
       author="Ryuichiro Hataya",
       author_email="hataya@nlab-mpg.jp",
       packages=find_packages(exclude=["tests", "docs", "examples"]),
