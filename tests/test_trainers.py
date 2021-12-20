@@ -53,3 +53,31 @@ def test_basic_trainer():
                                          update_scheduler_by_epoch=False)
     trainer.run(loader, loader, 15, 11)
     assert trainer.step == 11 - 1
+
+
+def test_trainer_grad_accumulate():
+    model = nn.Linear(10, 10)
+    loader = [(torch.randn(4, 10), torch.zeros(4, dtype=torch.long)) for _ in range(10)]
+
+    class _Optimizer(object):
+        def step(self, *args, **kwargs): ...
+
+        def zero_grad(self): ...
+
+    class _Trainer(trainers.SupervisedTrainer):
+        def set_optimizer(self
+                          ) -> None:
+            self.optimizer = _Optimizer()
+
+    trainer = _Trainer(model, None, F.cross_entropy, quiet=True)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
+    grads0 = [p.grad.data for p in model.parameters()]
+    model.zero_grad()
+
+    trainer = _Trainer(model, None, F.cross_entropy, grad_accum_steps=2, quiet=True)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
+    grads1 = [p.grad.data for p in model.parameters()]
+
+    assert all([torch.allclose(p0, p1) for p0, p1 in zip(grads0, grads1)])
