@@ -63,6 +63,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  dist_kwargs: dict = None,
                  prof_kwargs: dict = None,
                  disable_auto_ddp: bool = False,
+                 show_learning_rate: bool = False,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -161,6 +162,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.logger.debug(f"trainer sets {k} as a new attribute")
 
         # setup optimizer and scheduler
+        self.show_learning_rate = show_learning_rate
         self.set_optimizer()
         self.set_scheduler()
 
@@ -483,7 +485,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
 
-        if self.verbose and hasattr(self.scheduler, 'verbose'):
+        if self.show_learning_rate and hasattr(self.scheduler, 'verbose'):
             self.scheduler.verbose = True
 
 
