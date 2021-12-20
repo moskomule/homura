@@ -400,7 +400,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                         yield data
                         counter += 1
                     self._epoch += 1
-                    if hasattr(self.loader.sampler, 'set_epoch'):
+                    if hasattr(self.loader, 'sampler') and hasattr(self.loader.sampler, 'set_epoch'):
                         self.loader.sampler.set_epoch(self._epoch)
 
         train_loader = ProxyLoader(train_loader)
@@ -561,8 +561,8 @@ class SupervisedTrainer(TrainerBase):
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
                 self.optimizer.zero_grad()
-            if self.update_scheduler_iter:
-                self.scheduler.step()
+                if self.update_scheduler_iter:
+                    self.scheduler.step()
         if self._is_debug and torch.isnan(loss):
             self.logger.warning("loss is NaN")
 
