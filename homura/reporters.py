@@ -4,7 +4,7 @@ import warnings
 from collections import defaultdict
 from numbers import Number
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Iterator
 
 import torch
 from torch import distributed
@@ -13,7 +13,7 @@ from homura import get_args, if_is_master, is_distributed, is_master, liblog
 
 __all__ = ["ReporterList", "TensorboardReporter", "TQDMReporter"]
 
-Value = torch.Tensor or Number or Dict[str, torch.Tensor or Number]
+Value = torch.Tensor or Number or dict[str, torch.Tensor or Number]
 
 
 class _ReporterBase(object):
@@ -24,21 +24,21 @@ class _ReporterBase(object):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         pass
 
     def add_scalar(self,
                    key: str,
                    value: Number or torch.Tensor,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         pass
 
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Number or torch.Tensor],
-                    step: Optional[int] = None
+                    value: dict[str, Number or torch.Tensor],
+                    step: int = None
                     ) -> None:
         pass
 
@@ -89,7 +89,7 @@ class TQDMReporter(_ReporterBase):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         self.writer.write(value)
 
@@ -97,7 +97,7 @@ class TQDMReporter(_ReporterBase):
     def add_scalar(self,
                    key: str,
                    value: Number or torch.Tensor,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         if isinstance(value, torch.Tensor):
             value = value.item()
@@ -106,15 +106,15 @@ class TQDMReporter(_ReporterBase):
     @if_is_master
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Number or torch.Tensor],
-                    step: Optional[int] = None
+                    value: dict[str, Number or torch.Tensor],
+                    step: int = None
                     ) -> None:
         self._temporal_memory[key] = (value, step)
 
 
 class TensorboardReporter(_ReporterBase):
     def __init__(self,
-                 save_dir: Optional[str] = None
+                 save_dir: str = None
                  ) -> None:
         if is_master():
             from torch.utils import tensorboard
@@ -127,7 +127,7 @@ class TensorboardReporter(_ReporterBase):
     def add_text(self,
                  key: str,
                  value: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         self.writer.add_text(key, value, step)
 
@@ -135,7 +135,7 @@ class TensorboardReporter(_ReporterBase):
     def add_audio(self,
                   key: str,
                   audio: torch.Tensor,
-                  step: Optional[int] = None
+                  step: int = None
                   ) -> None:
         if audio.ndim != 2 or audio.size(0) != 1:
             raise RuntimeError(f"Shape of audio tensor is expected to be [1, L], but got {audio.shape}")
@@ -145,7 +145,7 @@ class TensorboardReporter(_ReporterBase):
     def add_histogram(self,
                       key: str,
                       values: torch.Tensor,
-                      step: Optional[int],
+                      step: int,
                       bins: str = 'tensorflow'
                       ) -> None:
         self.writer.add_histogram(key, values, step, bins=bins)
@@ -154,7 +154,7 @@ class TensorboardReporter(_ReporterBase):
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
-                  step: Optional[int] = None
+                  step: int = None
                   ) -> None:
         dim = image.dim()
         if dim == 3:
@@ -168,15 +168,15 @@ class TensorboardReporter(_ReporterBase):
     def add_scalar(self,
                    key: str,
                    value: Any,
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         self.writer.add_scalar(key, value, step)
 
     @if_is_master
     def add_scalars(self,
                     key: str,
-                    value: Dict[str, Any],
-                    step: Optional[int] = None
+                    value: dict[str, Any],
+                    step: int = None
                     ) -> None:
         self.writer.add_scalars(key, value, step)
 
@@ -184,7 +184,7 @@ class TensorboardReporter(_ReporterBase):
     def add_figure(self,
                    key: str,
                    figure: "matplotlib.pyplot.figure",
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         self.writer.add_figure(key, figure, step)
 
@@ -204,7 +204,7 @@ class _Accumulator(object):
         self._sync = not no_sync and is_distributed()
         self._total_size: int = 0
 
-        self._memory: List[Any] = []
+        self._memory: list[Any] = []
 
     def set_batch_size(self,
                        batch_size: int
@@ -223,7 +223,7 @@ class _Accumulator(object):
         # value is extpected to be
         # 1. Number
         # 2. Tensor
-        # 3. Dict[str, Number or Tensor]
+        # 3. dict[str, Number or Tensor]
         value = self._process_tensor(value)
 
         if isinstance(value, dict):
@@ -242,7 +242,7 @@ class _Accumulator(object):
         return value
 
     def _reduce(self,
-                values: List[Value]
+                values: list[Value]
                 ) -> Value:
         if self._reduction == 'sum':
             return sum(values)
@@ -263,14 +263,14 @@ class _Accumulator(object):
         return self._reduce(self._memory)
 
 
-class _History(Dict):
+class _History(dict):
     # Dictionary that can be access via () and []
-    def __init__(self, history_dict: Dict[str, List[float]]) -> None:
+    def __init__(self, history_dict: dict[str, list[float]]) -> None:
         super().__init__(history_dict)
 
     def __getitem__(self,
                     item: str
-                    ) -> List[float]:
+                    ) -> list[float]:
         return super().__getitem__(item)
 
     __call__ = __getitem__
@@ -282,15 +282,15 @@ class ReporterList(object):
     """
 
     # _persistent_hist tracks scalar values
-    _persistent_hist: Dict[str, List[Value]] = defaultdict(list)
+    _persistent_hist: dict[str, list[Value]] = defaultdict(list)
 
     def __init__(self,
-                 reporters: List[_ReporterBase]
+                 reporters: list[_ReporterBase]
                  ) -> None:
         self.reporters = reporters
         # _epoch_hist clears after each epoch
-        self._batch_size: Optional[int] = None
-        self._epoch_hist: Dict[str, _Accumulator] = {}
+        self._batch_size: int = None
+        self._epoch_hist: dict[str, _Accumulator] = {}
 
     def set_batch_size(self,
                        batch_size: int
@@ -316,7 +316,7 @@ class ReporterList(object):
         :param key: Unique key to track value
         :param value: Value
         :param is_averaged: If value is averaged
-        :param reduction: Method of reduction after epoch, 'average', 'sum' or function of List[Value] -> Value
+        :param reduction: Method of reduction after epoch, 'average', 'sum' or function of list[Value] -> Value
         :param no_sync: If not sync in distributed setting
         :return:
         """
@@ -350,7 +350,7 @@ class ReporterList(object):
     def add_figure(self,
                    key: str,
                    figure: "matplotlib.pyplot.figure",
-                   step: Optional[int] = None
+                   step: int = None
                    ) -> None:
         """ Report Figure of matplotlib.pyplot
         """
@@ -360,7 +360,7 @@ class ReporterList(object):
     def add_histogram(self,
                       key: str,
                       value: torch.Tensor,
-                      step: Optional[int] = None,
+                      step: int = None,
                       bins: str = "tensorflow"
                       ) -> None:
         """ Report histogram of a given tensor
@@ -371,7 +371,7 @@ class ReporterList(object):
     def add_image(self,
                   key: str,
                   image: torch.Tensor,
-                  step: Optional[int] = None,
+                  step: int = None,
                   normalize: bool = False
                   ) -> None:
         """ Report a single image or a batch of images
@@ -394,14 +394,14 @@ class ReporterList(object):
     def add_text(self,
                  key: str,
                  text: str,
-                 step: Optional[int] = None
+                 step: int = None
                  ) -> None:
         """ Report text
         """
         self._add_backend("add_text", key, text, step)
 
     def report(self,
-               step: Optional[int] = None,
+               step: int = None,
                mode: str = ""
                ) -> None:
         # intended to be called after epoch
@@ -415,7 +415,7 @@ class ReporterList(object):
             key = f"{k}/{mode}" if len(mode) > 0 else k
             accumulated = v.accumulate()
             accumulated = (accumulated
-                           if isinstance(accumulated, (Number, Dict)) or isinstance(accumulated, torch.Tensor)
+                           if isinstance(accumulated, (Number, dict)) or isinstance(accumulated, torch.Tensor)
                            else None)
             self._persistent_hist[key].append(accumulated)
             temporal_memory[key] = accumulated

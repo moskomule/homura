@@ -18,7 +18,7 @@ class Config:
     debug: bool = False
     use_amp: bool = False
     use_sync_bn: bool = False
-    num_workers: int = 4
+    num_workers: int = 16
 
     init_method: str = "env://"
     backend: str = "nccl"
@@ -51,9 +51,10 @@ def main(cfg: Config):
                            use_sync_bn=cfg.use_sync_bn,
                            report_accuracy_topk=5) as trainer:
 
-        for epoch in trainer.epoch_range(cfg.epochs):
+        for _ in trainer.epoch_range(cfg.epochs):
             trainer.train(train_loader)
             trainer.test(test_loader)
+            trainer.scheduler.step()
 
         print(f"Max Test Accuracy={max(trainer.reporter.history('accuracy/test')):.3f}")
 

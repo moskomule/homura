@@ -5,7 +5,7 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Any, Callable, Iterable, Optional, TypeVar
+from typing import Any, Callable, Iterable, TypeVar
 
 import torch
 from torch import Tensor, nn
@@ -13,7 +13,7 @@ from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler as Scheduler
 from torch.utils.data import DataLoader
 
-from homura import get_global_rank, get_local_rank, is_distributed
+from homura import get_global_rank, get_local_rank, is_distributed, is_master
 from homura.liblog import get_logger, set_tqdm_stdout_stderr, set_verb_level, tqdm
 from .metrics import accuracy
 from .optim import LARC
@@ -46,12 +46,12 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
     def __init__(self,
                  model: nn.Module or dict[str, nn.Module],
-                 optimizer: Optional[Partial or Optimizer or dict[str, Optimizer]],
-                 loss_f: Optional[Callable or dict[str, Callable]] = None,
+                 optimizer: Partial or Optimizer or dict[str, Optimizer],
+                 loss_f: Callable or dict[str, Callable] = None,
                  *,
-                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
-                 scheduler: Optional[Partial or Scheduler or dict[str, Scheduler]] = None,
-                 device: Optional[torch.device or str] = None,
+                 reporters: _ReporterBase or list[_ReporterBase] = None,
+                 scheduler: Partial or Scheduler or dict[str, Scheduler] = None,
+                 device: torch.device or str = None,
                  quiet: bool = False,
                  disable_cudnn_benchmark: bool = False,
                  disable_cuda_nonblocking: bool = False,
@@ -60,8 +60,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                  tqdm_ncols: int = 120,
                  debug: bool = False,
                  profile: bool = False,
-                 dist_kwargs: Optional[dict] = None,
-                 prof_kwargs: Optional[dict] = None,
+                 dist_kwargs: dict = None,
+                 prof_kwargs: dict = None,
+                 disable_auto_ddp: bool = False,
                  **kwargs):
 
         if kwargs.get("update_scheduler_by_epoch"):
@@ -83,7 +84,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         if is_distributed():
             if self._use_sync_bn:
                 model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-                self.logger.info("BNs of model are converted to nn.SyncBatchNorm")
+                (self.logger.info if is_master() else self.logger.debug)(
+                    "BNs of model are converted to nn.SyncBatchNorm")
 
             rank = get_local_rank()
             torch.cuda.set_device(rank)
@@ -104,7 +106,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             raise TypeError(f"Unknown type for `model`. Expected nn.Module or dict[str, Module], but got {type(model)}")
 
         if "cuda" in str(self.device):
-            self.model.to(self.device)
+            if not disable_auto_ddp:
+                self.model.to(self.device)
             torch.backends.cudnn.benchmark = not disable_cudnn_benchmark
             self._cuda_nonblocking = not disable_cuda_nonblocking
             self.logger.debug(f"cuda: True, cudnn.benchmark: {not disable_cudnn_benchmark}, "
@@ -114,7 +117,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             # usually, this is not expected
             self.logger.info(f"cuda: False (torch.cuda.is_available()={torch.cuda.is_available()})")
 
-        if is_distributed():
+        if is_distributed() and not disable_auto_ddp:
             dist_kwargs = dist_kwargs or {}
             self.model = nn.parallel.DistributedDataParallel(self.model, device_ids=[rank], **dist_kwargs)
             self.logger.debug(f"model converted to DistributedDataParallel at rank={rank}")
@@ -124,6 +127,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.accessible_model = self.model.module
         else:
             self.accessible_model = self.model
+        if disable_auto_ddp:
+            self.logger.info("self.accessible_model need to be set manually")
 
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -307,9 +312,6 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
     def data_preprocess(self,
                         data: DataType
                         ) -> DataType:
-        """ preprocess data and return (TensorTuple, batch_size)
-
-        """
 
         return TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
 
@@ -384,6 +386,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         class ProxyLoader(object):
             def __init__(self, loader):
                 self.loader = loader
+                self._epoch = 0
 
             def __len__(self):
                 return val_intervals
@@ -396,6 +399,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                             return  # from python 3.7, this is valid
                         yield data
                         counter += 1
+                    self._epoch += 1
+                    if hasattr(self.loader, 'sampler') and hasattr(self.loader.sampler, 'set_epoch'):
+                        self.loader.sampler.set_epoch(self._epoch)
 
         train_loader = ProxyLoader(train_loader)
         if not isinstance(val_loaders, dict) and (isinstance(val_loaders, Iterable) or
@@ -477,6 +483,9 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
 
+        if self.verbose and hasattr(self.scheduler, 'verbose'):
+            self.scheduler.verbose = True
+
 
 class SupervisedTrainer(TrainerBase):
     """ A simple trainer for supervised image classification. It only accepts single model. AMP-ready.
@@ -488,16 +497,17 @@ class SupervisedTrainer(TrainerBase):
                  optimizer: Optimizer,
                  loss_f: Callable,
                  *,
-                 reporters: Optional[_ReporterBase or list[_ReporterBase]] = None,
-                 scheduler: Optional[Scheduler] = None,
+                 reporters: _ReporterBase or list[_ReporterBase] = None,
+                 scheduler: Scheduler = None,
                  quiet=False,
                  disable_cudnn_benchmark=False,
                  data_parallel=False,
                  use_amp=False,
                  use_channel_last=False,
-                 report_accuracy_topk: Optional[int or list[int]] = None,
+                 report_accuracy_topk: int or list[int] = None,
                  update_scheduler_iter: bool = False,
                  use_larc: bool = False,
+                 grad_accum_steps: int = None,
                  **kwargs):
         if isinstance(model, dict):
             raise TypeError(f"{type(self)} does not support dict model")
@@ -512,13 +522,13 @@ class SupervisedTrainer(TrainerBase):
             self.logger.info("model converted to DataParallel")
 
         self._use_amp = use_amp
+        self.scaler = torch.cuda.amp.GradScaler(enabled=self._use_amp)
         if self._use_amp:
-            self.scaler = torch.cuda.amp.GradScaler()
-            self.logger.info("AMP is activated")
+            (self.logger.info if is_master() else self.logger.debug)("AMP is activated")
         self._use_channel_last = use_channel_last
         if self._use_channel_last:
             self.logger.warning("channel_last format is an experimental feature")
-            self.model.to(memory_format=torch.channels_last)
+            self.model = self.model.to(memory_format=torch.channels_last)
         if report_accuracy_topk is not None:
             if not isinstance(report_accuracy_topk, Iterable):
                 report_accuracy_topk = [report_accuracy_topk]
@@ -530,6 +540,12 @@ class SupervisedTrainer(TrainerBase):
         else:
             self.logger.debug("self.update_scheduler_iter=False. Update scheduler manually")
 
+        if grad_accum_steps is not None and grad_accum_steps <= 1:
+            raise ValueError('grad_accum_steps should be equal or larger than 2.')
+        self.grad_accum_steps = 1 if grad_accum_steps is None else grad_accum_steps
+        if self.grad_accum_steps > 1:
+            self.logger.info('Gradient accumulation is activated')
+
     def iteration(self,
                   data: tuple[Tensor, Tensor]
                   ) -> None:
@@ -539,16 +555,14 @@ class SupervisedTrainer(TrainerBase):
             loss = self.loss_f(output, target)
 
         if self.is_train:
-            self.optimizer.zero_grad()
-            if self._use_amp:
-                self.scaler.scale(loss).backward()
+            # this code supports both AMP and non AMP
+            self.scaler.scale(loss).backward()
+            if (self.step + 1) % self.grad_accum_steps == 0:
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
-            else:
-                loss.backward()
-                self.optimizer.step()
-            if self.update_scheduler_iter:
-                self.scheduler.step()
+                self.optimizer.zero_grad()
+                if self.update_scheduler_iter:
+                    self.scheduler.step()
         if self._is_debug and torch.isnan(loss):
             self.logger.warning("loss is NaN")
 
@@ -560,7 +574,7 @@ class SupervisedTrainer(TrainerBase):
 
     def data_preprocess(self,
                         data: tuple[Tensor, Tensor]
-                        ) -> (tuple[Tensor, Tensor], int):
+                        ) -> tuple[Tensor, Tensor]:
         input, target = data
         return (input.to(self.device, non_blocking=self._cuda_nonblocking,
                          memory_format=torch.channels_last if self._use_channel_last

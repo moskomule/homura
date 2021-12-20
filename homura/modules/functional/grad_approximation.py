@@ -1,4 +1,4 @@
-from typing import Tuple
+from __future__ import annotations
 
 import torch
 from torch.autograd import Function
@@ -21,7 +21,7 @@ class _CustomSTE(Function):
 
     @staticmethod
     def backward(ctx,
-                 grad_in: torch.Tensor) -> Tuple[None, torch.Tensor]:
+                 grad_in: torch.Tensor) -> tuple[None, torch.Tensor]:
         return None, grad_in.sum_to_size(ctx.shape)
 
 

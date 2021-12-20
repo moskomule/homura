@@ -1,8 +1,7 @@
+import bisect
 import math
 import warnings
-import bisect
 from functools import partial
-from typing import List
 
 from torch.optim import lr_scheduler as _lr_scheduler
 
@@ -20,7 +19,7 @@ def MultiStepLR(milestones,
 
 
 def MultiStepWithWarmup(warmup: int,
-                        milestones: List[int],
+                        milestones: list[int],
                         gamma: float = 0.1,
                         last_epoch: int = -1):
     return partial(_lr_scheduler.LambdaLR,
@@ -49,6 +48,17 @@ def ReduceLROnPlateau(mode='min',
                       min_lr=0,
                       eps=1e-8):
     return partial(_lr_scheduler.ReduceLROnPlateau, **locals())
+
+
+def InverseSquareRootWithWarmup(warmup_epochs: int,
+                                last_epoch: int = -1):
+    """ inverse square root with warmup: $\\sqrt{w} \\min(1/\\sqrt{e}, e/\\sqrt{e}^3)$, where $w$ is `warmup_epochs` and
+    `e` is the current epoch
+
+    """
+    return partial(_lr_scheduler.LambdaLR,
+                   lr_lambda=inverse_square_root_with_warmup(warmup_epochs),
+                   last_epoch=last_epoch)
 
 
 def CosineAnnealingWithWarmup(total_epochs: int,
@@ -92,12 +102,22 @@ class _CosineAnnealingWithWarmup(_lr_scheduler._LRScheduler):
 
 
 def multistep_with_warmup(warmup_epochs: int,
-                          milestones: List[int],
+                          milestones: list[int],
                           gamma: float = 0.1,
                           ):
     def f(epoch):
         if epoch < warmup_epochs:
             return (epoch + 1) / warmup_epochs
         return gamma ** bisect.bisect_right(milestones, epoch)
+
+    return f
+
+
+def inverse_square_root_with_warmup(warmup_epochs: int,
+                                    ):
+    def f(epoch):
+        epoch += 1
+        factor = warmup_epochs ** 0.5
+        return factor * min(epoch ** -0.5, epoch * warmup_epochs ** -1.5)
 
     return f

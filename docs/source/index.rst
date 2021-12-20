@@ -12,9 +12,7 @@ Welcome to `homura`'s documentation!
 
    homura.metrics
    homura.modules
-
    homura.utils
-   homura.nlp
    homura.vision
 
 Indices and tables

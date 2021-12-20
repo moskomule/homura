@@ -5,7 +5,7 @@ import logging
 import sys
 import threading
 import warnings
-from typing import Optional, TextIO
+from typing import TextIO
 
 import tqdm as _tqdm
 from tqdm.contrib import DummyTqdmFile
@@ -117,7 +117,7 @@ def disable_propagation() -> None:
 
 
 def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
-                     formatter: Optional[logging.Formatter] = None) -> None:
+                     formatter: logging.Formatter = None) -> None:
     _configure_root_logger()
     fh = logging.FileHandler(log_file)
     if isinstance(level, str):
@@ -131,7 +131,7 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
 
 # internal APIs
 def set_tqdm_handler(level: str or int = logging.INFO,
-                     formatter: Optional[logging.Formatter] = None) -> None:
+                     formatter: logging.Formatter = None) -> None:
     """ An alternative handler to avoid disturbing tqdm
     """
 
@@ -189,7 +189,7 @@ _LOG_CACHE = set()
 
 def log_once(logger,
              message: str,
-             key=Optional[str]) -> None:
+             key=str) -> None:
     """ Log message only once.
 
     :param logger: e.g., `print`, `logger.info`
@@ -207,7 +207,7 @@ def log_once(logger,
 
 
 def print_once(message: str,
-               key=Optional[str]) -> None:
+               key=str) -> None:
     """ `print` version of `log_once`
     """
 

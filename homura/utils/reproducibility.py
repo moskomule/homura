@@ -1,6 +1,5 @@
 import contextlib
 import random
-from typing import Optional
 
 import numpy
 import torch
@@ -12,7 +11,7 @@ logger = get_logger(__name__)
 
 
 @contextlib.contextmanager
-def set_seed(seed: Optional[int] = None,
+def set_seed(seed: int = None,
              by_rank: bool = False):
     """ Fix seed of random generator in the given context. ::
 
@@ -45,7 +44,7 @@ def set_seed(seed: Optional[int] = None,
 
 
 @contextlib.contextmanager
-def set_deterministic(seed: Optional[int] = None,
+def set_deterministic(seed: int = None,
                       by_rank: bool = False):
     """ Set seed of `torch`, `random` and `numpy` to `seed` for making it deterministic. Because of CUDA's limitation,
     this may not make everything deterministic, however.

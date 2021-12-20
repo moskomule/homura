@@ -1,4 +1,4 @@
-from typing import Tuple
+from __future__ import annotations
 
 import torch
 
@@ -22,7 +22,7 @@ def torch_knn(keys: torch.Tensor,
               queries: torch.Tensor,
               num_neighbors: int,
               distance: str
-              ) -> Tuple[torch.Tensor, torch.Tensor]:
+              ) -> tuple[torch.Tensor, torch.Tensor]:
     """ k nearest neighbor using torch. Users are recommended to use `k_nearest_neighbor` instead.
     """
 
@@ -48,7 +48,7 @@ def faiss_knn(keys: torch.Tensor,
               queries: torch.Tensor,
               num_neighbors: int,
               distance: str
-              ) -> Tuple[torch.Tensor, torch.Tensor]:
+              ) -> tuple[torch.Tensor, torch.Tensor]:
     """ k nearest neighbor using faiss. Users are recommended to use `k_nearest_neighbor` instead.
 
     :param keys: tensor of (num_keys, dim)
@@ -96,7 +96,7 @@ def k_nearest_neighbor(keys: torch.Tensor,
                        queries: torch.Tensor,
                        num_neighbors: int,
                        distance: str, *,
-                       backend: str = "torch") -> Tuple[torch.Tensor, torch.Tensor]:
+                       backend: str = "torch") -> tuple[torch.Tensor, torch.Tensor]:
     """ k-Nearest Neighbor search. Faiss backend requires GPU. torch backend is JITtable
 
     :param keys: tensor of (num_keys, dim)

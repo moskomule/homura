@@ -1,4 +1,4 @@
-from typing import Tuple
+from __future__ import annotations
 
 import torch
 from torch import Tensor
@@ -14,7 +14,7 @@ __all__ = ["true_positive", "true_negative", "false_positive", "false_negative",
 
 def _base(input: Tensor,
           target: Tensor
-          ) -> Tuple[Tensor, Tensor, Tensor]:
+          ) -> tuple[Tensor, Tensor, Tensor]:
     classes = torch.arange(input.size(1), device=input.device)
     pred = input.argmax(dim=1).view(-1, 1)
     target = target.view(-1, 1)

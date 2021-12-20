@@ -1,6 +1,8 @@
 # ResNet variants
+from __future__ import annotations
+
 from functools import partial
-from typing import Callable, Optional, Type, Union
+from typing import Callable, Type
 
 import torch
 from torch import nn
@@ -32,7 +34,7 @@ class BasicBlock(nn.Module):
                  stride: int,
                  groups: int,
                  width_per_group: int,
-                 norm: Optional[Type[nn.BatchNorm2d]],
+                 norm: Type[nn.BatchNorm2d],
                  act: Callable[[torch.Tensor], torch.Tensor]
                  ):
         super().__init__()
@@ -71,7 +73,7 @@ class PreactBasicBlock(BasicBlock):
                  stride: int,
                  groups: int,
                  width_per_group: int,
-                 norm: Optional[Type[nn.BatchNorm2d]],
+                 norm: Type[nn.BatchNorm2d],
                  act: Callable[[torch.Tensor], torch.Tensor]
                  ):
         super().__init__(in_planes, planes, stride, groups, width_per_group, norm, act)
@@ -104,7 +106,7 @@ class Bottleneck(nn.Module):
                  stride: int,
                  groups: int,
                  width_per_group: int,
-                 norm: Optional[Type[nn.BatchNorm2d]],
+                 norm: Type[nn.BatchNorm2d],
                  act: Callable[[torch.Tensor], torch.Tensor]
                  ):
         super().__init__()
@@ -164,7 +166,7 @@ class ResNet(nn.Module):
     """
 
     def __init__(self,
-                 block: Type[Union[BasicBlock, Bottleneck]],
+                 block: Type[BasicBlock | Bottleneck],
                  num_classes: int,
                  layer_depth: int,
                  width: int = 16,
@@ -172,11 +174,11 @@ class ResNet(nn.Module):
                  in_channels: int = 3,
                  groups: int = 1,
                  width_per_group: int = 16,
-                 norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+                 norm: Type[nn.BatchNorm2d] = nn.BatchNorm2d,
                  act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
                  preact: bool = False,
                  final_pool: Callable[[torch.Tensor], torch.Tensor] = nn.AdaptiveAvgPool2d(1),
-                 initializer: Optional[Callable[[nn.Module], None]] = None
+                 initializer: Callable[[nn.Module, None]] = None
                  ):
         super(ResNet, self).__init__()
         self.inplane = width
@@ -200,7 +202,7 @@ class ResNet(nn.Module):
             initializer(self)
 
     def _make_layer(self,
-                    block: Type[Union[BasicBlock, Bottleneck]],
+                    block: Type[BasicBlock | Bottleneck],
                     planes: int,
                     layer_depth: int,
                     stride: int,
@@ -240,7 +242,7 @@ class ResNet(nn.Module):
 def resnet(num_classes: int,
            depth: int,
            in_channels: int = 3,
-           norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+           norm: Type[nn.BatchNorm2d] = nn.BatchNorm2d,
            act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
            block: Type[BasicBlock] = BasicBlock,
            **kwargs
@@ -255,7 +257,7 @@ def wide_resnet(num_classes: int,
                 depth: int,
                 widen_factor: int,
                 in_channels: int = 3,
-                norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+                norm: Type[nn.BatchNorm2d] = nn.BatchNorm2d,
                 act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
                 block: Type[BasicBlock] = PreactBasicBlock,
                 **kwargs
@@ -272,7 +274,7 @@ def resnext(num_classes: int,
             width_per_group: int,
             groups: int,
             in_channels: int,
-            norm: Optional[Type[nn.BatchNorm2d]] = nn.BatchNorm2d,
+            norm: Type[nn.BatchNorm2d] = nn.BatchNorm2d,
             act: Callable[[torch.Tensor], torch.Tensor] = nn.ReLU(),
             block: Type[Bottleneck] = Bottleneck,
             **kwargs
