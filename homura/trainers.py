@@ -553,7 +553,7 @@ class SupervisedTrainer(TrainerBase):
 
         if self.is_train:
             loss = 0
-            context = self.model.no_sync if is_distributed() else contextlib.nullcontext
+            context = self.model.join if is_distributed() else contextlib.nullcontext
             with context():
                 for input, target in zip(input.chunk(self.grad_accum_steps), target.chunk(self.grad_accum_steps)):
                     with torch.cuda.amp.autocast(self._use_amp):
