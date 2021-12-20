@@ -554,11 +554,8 @@ class SupervisedTrainer(TrainerBase):
         if self.is_train:
             loss = 0
 
-            for i, (input, target) in enumerate(zip(input.chunk(self.grad_accum_steps),
-                                                    target.chunk(self.grad_accum_steps))):
-                context = self.model.no_sync if is_distributed() and i < self.grad_accum_steps - 1 \
-                    else contextlib.nullcontext
-                with torch.cuda.amp.autocast(self._use_amp), context():
+            for input, target in zip(input.chunk(self.grad_accum_steps), target.chunk(self.grad_accum_steps)):
+                with torch.cuda.amp.autocast(self._use_amp):
                     output = self.model(input)
                     _loss = self.loss_f(output, target) / self.grad_accum_steps
                     loss += _loss.detach()
