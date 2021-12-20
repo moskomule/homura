@@ -550,19 +550,25 @@ class SupervisedTrainer(TrainerBase):
                   data: tuple[Tensor, Tensor]
                   ) -> None:
         input, target = data
-        with torch.cuda.amp.autocast(self._use_amp):
-            output = self.model(input)
-            loss = self.loss_f(output, target)
 
         if self.is_train:
-            # this code supports both AMP and non AMP
-            self.scaler.scale(loss).backward()
-            if (self.step + 1) % self.grad_accum_steps == 0:
-                self.scaler.step(self.optimizer)
-                self.scaler.update()
-                self.optimizer.zero_grad()
-                if self.update_scheduler_iter:
-                    self.scheduler.step()
+            for input, target in zip(input.chunk(self.grad_accum_steps), target.chunk(self.grad_accum_steps)):
+                with torch.cuda.amp.autocast(self._use_amp):
+                    output = self.model(input)
+                    loss = self.loss_f(output, target)
+                    # this code supports both AMP and non AMP
+                    self.scaler.scale(loss).backward()
+            self.scaler.step(self.optimizer)
+            self.scaler.update()
+            self.optimizer.zero_grad()
+            if self.update_scheduler_iter:
+                self.scheduler.step()
+
+        else:
+            # test time
+            with torch.cuda.amp.autocast(self._use_amp):
+                output = self.model(input)
+                loss = self.loss_f(output, target)
         if self._is_debug and torch.isnan(loss):
             self.logger.warning("loss is NaN")
 
