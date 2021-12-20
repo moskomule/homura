@@ -69,12 +69,12 @@ def test_trainer_grad_accumulate():
                           ) -> None:
             self.optimizer = _Optimizer()
 
-    trainer = _Trainer(model, None, F.cross_entropy)
+    trainer = _Trainer(model, None, F.cross_entropy, quiet=True)
     trainer.train(loader)
     grads0 = [p.grad.data for p in model.parameters()]
     model.zero_grad()
 
-    trainer = _Trainer(model, None, F.cross_entropy, grad_accum_steps=2)
+    trainer = _Trainer(model, None, F.cross_entropy, grad_accum_steps=2, quiet=True)
     trainer.train(loader)
     grads1 = [p.grad.data for p in model.parameters()]
 
