@@ -552,12 +552,16 @@ class SupervisedTrainer(TrainerBase):
         input, target = data
 
         if self.is_train:
-            for input, target in zip(input.chunk(self.grad_accum_steps), target.chunk(self.grad_accum_steps)):
-                with torch.cuda.amp.autocast(self._use_amp):
-                    output = self.model(input)
-                    loss = self.loss_f(output, target)
-                    # this code supports both AMP and non AMP
-                    self.scaler.scale(loss).backward()
+            loss = 0
+            context = self.model.no_sync if is_distributed() else contextlib.nullcontext
+            with context():
+                for input, target in zip(input.chunk(self.grad_accum_steps), target.chunk(self.grad_accum_steps)):
+                    with torch.cuda.amp.autocast(self._use_amp):
+                        output = self.model(input)
+                        _loss = self.loss_f(output, target) / self.grad_accum_steps
+                        loss += _loss.detach()
+                        # this code supports both AMP and non AMP
+                        self.scaler.scale(_loss).backward()
             self.scaler.step(self.optimizer)
             self.scaler.update()
             self.optimizer.zero_grad()
