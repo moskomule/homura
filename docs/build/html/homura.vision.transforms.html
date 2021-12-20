@@ -108,7 +108,7 @@
 <dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[torch.Tensor, torch.Tensor]</p>
+<dd class="field-odd"><p>tuple[torch.Tensor, torch.Tensor]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -175,7 +175,7 @@
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.NonGeometricTransformBase" title="homura.vision.transforms.transform.NonGeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.NonGeometricTransformBase</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>target_type</strong> (<em>TargetType</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
@@ -201,7 +201,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>transforms</strong> (<a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><em>TransformBase</em></a>) – </p></li>
-<li><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p></li>
+<li><p><strong>target_type</strong> (<em>TargetType</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -212,7 +212,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -271,7 +271,7 @@
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.TransformBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>target_type</strong> (<em>TargetType</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
@@ -295,7 +295,7 @@
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.TransformBase" title="homura.vision.transforms.transform.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.TransformBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>target_type</strong> (<em>TargetType</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
@@ -305,7 +305,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -352,9 +352,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mean</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>std</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p></li>
+<li><p><strong>mean</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – </p></li>
+<li><p><strong>std</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – </p></li>
+<li><p><strong>target_type</strong> (<em>TargetType</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -379,7 +379,7 @@
 <dd><p>Bases: <a class="reference internal" href="#homura.vision.transforms.transform.GeometricTransformBase" title="homura.vision.transforms.transform.GeometricTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">homura.vision.transforms.transform.GeometricTransformBase</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>target_type</strong> (<em>TargetType</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
@@ -413,7 +413,7 @@
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomCrop.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomCrop.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[int, …]</p>
+<dd class="field-odd"><p>tuple[int, …]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -428,7 +428,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> (<em>float</em>) – </p></li>
-<li><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p></li>
+<li><p><strong>target_type</strong> (<em>TargetType</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -455,7 +455,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> (<em>float</em>) – </p></li>
-<li><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p></li>
+<li><p><strong>target_type</strong> (<em>TargetType</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -505,8 +505,8 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>min_size</strong> (<em>int</em>) – </p></li>
-<li><p><strong>max_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p></li>
+<li><p><strong>max_size</strong> (<em>int</em>) – </p></li>
+<li><p><strong>target_type</strong> (<em>TargetType</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -517,7 +517,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -557,7 +557,7 @@
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResize.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResize.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Optional</p>
@@ -615,7 +615,7 @@
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomResizedCrop.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomResizedCrop.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Optional</p>
@@ -673,7 +673,7 @@
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#RandomRotation.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.RandomRotation.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Optional</p>
@@ -692,7 +692,7 @@ replacements of torchvision’s transforms.</p>
 <p>train_da = CenterCrop(224, task=”segmentation”) * ColorJitter(task=”segmentation”) + …</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_type</strong> (<em>Optional</em><em>[</em><em>TargetType</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>target_type</strong> (<em>TargetType</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
@@ -702,7 +702,7 @@ replacements of torchvision’s transforms.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bbox</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -718,7 +718,7 @@ replacements of torchvision’s transforms.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coords</strong> (<em>torch.Tensor</em>) – </p></li>
-<li><p><strong>original_wh</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>original_wh</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -771,7 +771,7 @@ replacements of torchvision’s transforms.</p>
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/homura/vision/transforms/transform.html#TransformBase.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#homura.vision.transforms.transform.TransformBase.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>Optional</em><em>[</em><em>torch.Tensor</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>image</strong> (<em>torch.Tensor</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Optional</p>

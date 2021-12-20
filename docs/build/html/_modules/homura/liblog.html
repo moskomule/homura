@@ -74,7 +74,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TextIO</span>
 
 <span class="kn">import</span> <span class="nn">tqdm</span> <span class="k">as</span> <span class="nn">_tqdm</span>
 <span class="kn">from</span> <span class="nn">tqdm.contrib</span> <span class="kn">import</span> <span class="n">DummyTqdmFile</span>
@@ -186,7 +186,7 @@
 
 
 <div class="viewcode-block" id="set_file_handler"><a class="viewcode-back" href="../../homura.html#homura.liblog.set_file_handler">[docs]</a><span class="k">def</span> <span class="nf">set_file_handler</span><span class="p">(</span><span class="n">log_file</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-                     <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                     <span class="n">formatter</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">_configure_root_logger</span><span class="p">()</span>
     <span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -200,7 +200,7 @@
 
 <span class="c1"># internal APIs</span>
 <div class="viewcode-block" id="set_tqdm_handler"><a class="viewcode-back" href="../../homura.html#homura.liblog.set_tqdm_handler">[docs]</a><span class="k">def</span> <span class="nf">set_tqdm_handler</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-                     <span class="n">formatter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                     <span class="n">formatter</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; An alternative handler to avoid disturbing tqdm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -258,7 +258,7 @@
 
 <div class="viewcode-block" id="log_once"><a class="viewcode-back" href="../../homura.html#homura.liblog.log_once">[docs]</a><span class="k">def</span> <span class="nf">log_once</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span>
              <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-             <span class="n">key</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+             <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Log message only once.</span>
 
 <span class="sd">    :param logger: e.g., `print`, `logger.info`</span>
@@ -276,7 +276,7 @@
 
 
 <div class="viewcode-block" id="print_once"><a class="viewcode-back" href="../../homura.html#homura.liblog.print_once">[docs]</a><span class="k">def</span> <span class="nf">print_once</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-               <span class="n">key</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+               <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; `print` version of `log_once`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

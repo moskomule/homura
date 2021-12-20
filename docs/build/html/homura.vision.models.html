@@ -105,7 +105,7 @@
 <li><p><strong>stride</strong> (<em>int</em>) – </p></li>
 <li><p><strong>groups</strong> (<em>int</em>) – </p></li>
 <li><p><strong>width_per_group</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>nn.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 </ul>
 </dd>
@@ -156,7 +156,7 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>stride</strong> (<em>int</em>) – </p></li>
 <li><p><strong>groups</strong> (<em>int</em>) – </p></li>
 <li><p><strong>width_per_group</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>nn.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 </ul>
 </dd>
@@ -207,7 +207,7 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>stride</strong> (<em>int</em>) – </p></li>
 <li><p><strong>groups</strong> (<em>int</em>) – </p></li>
 <li><p><strong>width_per_group</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>nn.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 </ul>
 </dd>
@@ -249,7 +249,7 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>block</strong> (<em>Type</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="#homura.vision.models.cifar_resnet.BasicBlock" title="homura.vision.models.cifar_resnet.BasicBlock"><em>homura.vision.models.cifar_resnet.BasicBlock</em></a><em>, </em><a class="reference internal" href="#homura.vision.models.cifar_resnet.Bottleneck" title="homura.vision.models.cifar_resnet.Bottleneck"><em>homura.vision.models.cifar_resnet.Bottleneck</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>block</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#homura.vision.models.cifar_resnet.BasicBlock" title="homura.vision.models.cifar_resnet.BasicBlock"><em>BasicBlock</em></a><em> | </em><a class="reference internal" href="#homura.vision.models.cifar_resnet.Bottleneck" title="homura.vision.models.cifar_resnet.Bottleneck"><em>Bottleneck</em></a><em>]</em>) – </p></li>
 <li><p><strong>num_classes</strong> (<em>int</em>) – </p></li>
 <li><p><strong>layer_depth</strong> (<em>int</em>) – </p></li>
 <li><p><strong>width</strong> (<em>int</em>) – </p></li>
@@ -257,11 +257,11 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>in_channels</strong> (<em>int</em>) – </p></li>
 <li><p><strong>groups</strong> (<em>int</em>) – </p></li>
 <li><p><strong>width_per_group</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>nn.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 <li><p><strong>preact</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>final_pool</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
-<li><p><strong>initializer</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>torch.nn.modules.module.Module</em><em>]</em><em>, </em><em>None</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>initializer</strong> (<em>Callable</em><em>[</em><em>[</em><em>nn.Module</em><em>, </em><em>None</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -367,7 +367,7 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>num_classes</strong> (<em>int</em>) – </p></li>
 <li><p><strong>depth</strong> (<em>int</em>) – </p></li>
 <li><p><strong>in_channels</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 <li><p><strong>block</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#homura.vision.models.cifar_resnet.BasicBlock" title="homura.vision.models.cifar_resnet.BasicBlock"><em>homura.vision.models.cifar_resnet.BasicBlock</em></a><em>]</em>) – </p></li>
 </ul>
@@ -457,7 +457,7 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>width_per_group</strong> (<em>int</em>) – </p></li>
 <li><p><strong>groups</strong> (<em>int</em>) – </p></li>
 <li><p><strong>in_channels</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 <li><p><strong>block</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#homura.vision.models.cifar_resnet.Bottleneck" title="homura.vision.models.cifar_resnet.Bottleneck"><em>homura.vision.models.cifar_resnet.Bottleneck</em></a><em>]</em>) – </p></li>
 </ul>
@@ -546,7 +546,7 @@ registered hooks while the latter silently ignores them.</p>
 <li><p><strong>depth</strong> (<em>int</em>) – </p></li>
 <li><p><strong>widen_factor</strong> (<em>int</em>) – </p></li>
 <li><p><strong>in_channels</strong> (<em>int</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Type</em><em>[</em><em>torch.nn.modules.batchnorm.BatchNorm2d</em><em>]</em>) – </p></li>
 <li><p><strong>act</strong> (<em>Callable</em><em>[</em><em>[</em><em>torch.Tensor</em><em>]</em><em>, </em><em>torch.Tensor</em><em>]</em>) – </p></li>
 <li><p><strong>block</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#homura.vision.models.cifar_resnet.BasicBlock" title="homura.vision.models.cifar_resnet.BasicBlock"><em>homura.vision.models.cifar_resnet.BasicBlock</em></a><em>]</em>) – </p></li>
 </ul>

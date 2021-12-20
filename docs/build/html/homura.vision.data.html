@@ -231,11 +231,11 @@ for img, label in data.tran_loader:</p>
 <li><p><strong>tv_class</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol"><em>homura.vision.data.visionset.VisionSetProtocol</em></a><em>]</em>) – </p></li>
 <li><p><strong>root</strong> (<em>str</em>) – </p></li>
 <li><p><strong>num_classes</strong> (<em>int</em>) – </p></li>
-<li><p><strong>default_norm</strong> (<em>List</em>) – </p></li>
-<li><p><strong>default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>default_test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>collate_fn</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – </p></li>
-<li><p><strong>test_collate_fn</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – </p></li>
+<li><p><strong>default_norm</strong> (<em>list</em>) – </p></li>
+<li><p><strong>default_train_da</strong> (<em>list</em>) – </p></li>
+<li><p><strong>default_test_da</strong> (<em>list</em>) – </p></li>
+<li><p><strong>collate_fn</strong> (<em>Callable</em>) – </p></li>
+<li><p><strong>test_collate_fn</strong> (<em>Callable</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -244,22 +244,22 @@ for img, label in data.tran_loader:</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="homura.vision.data.visionset.VisionSet.collate_fn">
-<span class="sig-name descname"><span class="pre">collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.collate_fn" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.collate_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="homura.vision.data.visionset.VisionSet.default_norm">
-<span class="sig-name descname"><span class="pre">default_norm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_norm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">default_norm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_norm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="homura.vision.data.visionset.VisionSet.default_test_da">
-<span class="sig-name descname"><span class="pre">default_test_da</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_test_da" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">default_test_da</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_test_da" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="homura.vision.data.visionset.VisionSet.default_train_da">
-<span class="sig-name descname"><span class="pre">default_train_da</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_train_da" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">default_train_da</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.default_train_da" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -270,9 +270,9 @@ for img, label in data.tran_loader:</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_size</strong> (<em>int</em>) – Batch size</p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
+<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation for training</p></li>
+<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
+<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Normalization after train_da and test_da</p></li>
 <li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
 <li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
 <li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset.</p></li>
@@ -283,9 +283,9 @@ for img, label in data.tran_loader:</p>
 <li><p><strong>pin_memory</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>return_num_classes</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>test_batch_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
+<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
 <li><p><strong>prefetch_factor</strong> (<em>int</em>) – </p></li>
 <li><p><strong>persistent_workers</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>worker_init_fn</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – </p></li>
@@ -296,7 +296,7 @@ for img, label in data.tran_loader:</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[torch.utils.data.dataloader.DataLoader, torch.utils.data.dataloader.DataLoader]</p>
+<dd class="field-even"><p>tuple[torch.utils.data.dataloader.DataLoader, torch.utils.data.dataloader.DataLoader]</p>
 </dd>
 </dl>
 <p>If None, None will be returned.
@@ -331,20 +331,20 @@ testing time requires no backward cache, so basically batch size can be doubled.
 <li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of training dataset. If None, full dataset will be available.</p></li>
 <li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of test dataset. If None, full dataset will be available.</p></li>
 <li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Size of validation dataset, randomly split from the training dataset. If None, None will be returned.</p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for training</p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Normalization after train_da and test_da</p></li>
+<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation for training</p></li>
+<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation for testing and validation</p></li>
+<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Normalization after train_da and test_da</p></li>
 <li><p><strong>download</strong> (<em>bool</em>) – If dataset needs downloading</p></li>
-<li><p><strong>pre_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation before the default data augmentation</p></li>
-<li><p><strong>post_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after the default data augmentation</p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – Data Augmentation after normalization (i.e., norm)</p></li>
+<li><p><strong>pre_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation before the default data augmentation</p></li>
+<li><p><strong>post_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation after the default data augmentation</p></li>
+<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – Data Augmentation after normalization (i.e., norm)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>train_set, test_set, Optional[val_set]</p>
+<dd class="field-even"><p>train_set, test_set, val_set</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[<a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>, <a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>, Optional[<a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>]]</p>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>, <a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>, <a class="reference internal" href="#homura.vision.data.visionset.VisionSetProtocol" title="homura.vision.data.visionset.VisionSetProtocol">homura.vision.data.visionset.VisionSetProtocol</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -366,9 +366,9 @@ testing time requires no backward cache, so basically batch size can be doubled.
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_size</strong> (<em>int</em>) – </p></li>
-<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
+<li><p><strong>train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>test_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>norm</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
 <li><p><strong>train_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
 <li><p><strong>test_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
 <li><p><strong>val_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
@@ -379,9 +379,9 @@ testing time requires no backward cache, so basically batch size can be doubled.
 <li><p><strong>pin_memory</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>return_num_classes</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>test_batch_size</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
-<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>List</em><em>]</em>) – </p></li>
+<li><p><strong>pre_default_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>post_default_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
+<li><p><strong>post_norm_train_da</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em>) – </p></li>
 <li><p><strong>prefetch_factor</strong> (<em>int</em>) – </p></li>
 <li><p><strong>persistent_workers</strong> (<em>bool</em>) – </p></li>
 <li><p><strong>worker_init_fn</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – </p></li>
@@ -399,7 +399,7 @@ testing time requires no backward cache, so basically batch size can be doubled.
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="homura.vision.data.visionset.VisionSet.test_collate_fn">
-<span class="sig-name descname"><span class="pre">test_collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.test_collate_fn" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">test_collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#homura.vision.data.visionset.VisionSet.test_collate_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
