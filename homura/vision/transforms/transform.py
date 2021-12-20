@@ -7,8 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Literal, Optional
 
 import torch
-from PIL import Image
-from torchvision.transforms import functional as VF, transforms as VT
+from torchvision.transforms import functional as VF, transforms as VT, InterpolationMode
 
 __all__ = ["TransformBase",
            "ConcatTransform",
@@ -324,7 +323,7 @@ class RandomResize(GeometricTransformBase):
                    mask: torch.Tensor,
                    params
                    ) -> torch.Tensor:
-        return VF.resize(mask, params, interpolation=Image.NEAREST)
+        return VF.resize(mask, params, interpolation=InterpolationMode.NEAREST)
 
     def apply_coords(self,
                      coords: torch.Tensor,
@@ -364,7 +363,7 @@ class RandomResizedCrop(GeometricTransformBase):
                    params
                    ) -> torch.Tensor:
         i, j, h, w = params
-        return VF.resized_crop(mask, i, j, h, w, self.size, interpolation=Image.NEAREST)
+        return VF.resized_crop(mask, i, j, h, w, self.size, interpolation=InterpolationMode.NEAREST)
 
     def apply_coords(self,
                      coords: torch.Tensor,
