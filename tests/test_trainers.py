@@ -70,12 +70,14 @@ def test_trainer_grad_accumulate():
             self.optimizer = _Optimizer()
 
     trainer = _Trainer(model, None, F.cross_entropy, quiet=True)
-    trainer.train(loader)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
     grads0 = [p.grad.data for p in model.parameters()]
     model.zero_grad()
 
     trainer = _Trainer(model, None, F.cross_entropy, grad_accum_steps=2, quiet=True)
-    trainer.train(loader)
+    for _ in trainer.epoch_range(1):
+        trainer.train(loader)
     grads1 = [p.grad.data for p in model.parameters()]
 
     assert all([torch.allclose(p0, p1) for p0, p1 in zip(grads0, grads1)])
