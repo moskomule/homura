@@ -32,8 +32,7 @@ def LambdaLR(lr_lambda,
     return partial(_lr_scheduler.LambdaLR, **locals())
 
 
-def ExponentialLR(T_max,
-                  eta_min=0,
+def ExponentialLR(gamma,
                   last_epoch=-1):
     return partial(_lr_scheduler.ExponentialLR, **locals())
 
