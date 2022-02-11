@@ -36,21 +36,19 @@ def test_basic_trainer():
     optimizer = optim.SGD()
     scheduler = lr_scheduler.StepLR(9)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
-                                         update_scheduler_by_epoch=False)
+                                         update_scheduler_iter=True)
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     for _ in trainer.epoch_range(1):
         trainer.train(loader)
     assert trainer.optimizer.param_groups[0]["lr"] == pytest.approx(0.01)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
-    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
-                                         update_scheduler_by_epoch=False)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler)
     for _ in trainer.epoch_range(1):
         trainer.train(loader)
 
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 9)
-    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,
-                                         update_scheduler_by_epoch=False)
+    trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler)
     trainer.run(loader, loader, 15, 11)
     assert trainer.step == 11 - 1
 
