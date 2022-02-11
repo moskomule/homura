@@ -86,7 +86,7 @@ class StepDict(dict):
     def __init__(self, _type: Type, **kwargs):
         super(StepDict, self).__init__(**kwargs)
         for k, v in self.items():
-            if not (v is None or isinstance(v, _type)):
+            if not (_type is not None or v is None or isinstance(v, _type)):
                 raise RuntimeError(f"Expected {_type} as values but got {type(v)} with key ({k})")
 
     def step(self):
@@ -104,7 +104,19 @@ class StepDict(dict):
             if isinstance(v, dict):
                 self[k].load_state_dict(v)
 
-    def zero_grad(self):
+
+class SchedulerDict(StepDict):
+    def __init__(self,
+                 **kwargs):
+        super().__init__(None, **kwargs)
+
+
+class OptimizerDict(StepDict):
+    def __init__(self,
+                 **kwargs):
+        super().__init__(torch.optim.Optimizer, **kwargs)
+
+    def zero_grad(self, set_to_none: bool = False):
         for v in self.values():
             if hasattr(v, "zero_grad"):
-                v.zero_grad()
+                v.zero_grad(set_to_none=set_to_none)

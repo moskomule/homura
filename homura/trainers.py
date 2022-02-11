@@ -5,7 +5,7 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from functools import partial as Partial
 from types import MethodType
-from typing import Any, Callable, Iterable, TypeVar
+from typing import Any, Callable, Iterable, TypeVar, Protocol
 
 import torch
 from torch import Tensor, nn
@@ -19,11 +19,31 @@ from .metrics import accuracy
 from .optim import LARC
 from .reporters import ReporterList, TQDMReporter, _ReporterBase
 from .utils._mixin import StateDictMixIn
-from .utils.containers import StepDict, TensorTuple
+from .utils.containers import OptimizerDict, SchedulerDict, TensorTuple
 
 __all__ = ["TrainerBase", "SupervisedTrainer"]
 
 DataType = TypeVar('DataType', Tensor, tuple[Tensor, ...])
+
+
+class _Stepable(Protocol):
+    def step(self):
+        ...
+
+    def state_dict(self) -> dict[str, Any]:
+        ...
+
+    def load_state_dict(self, state_dict: dict) -> None:
+        ...
+
+
+class _SchedulerLike(_Stepable):
+    ...
+
+
+class _OptimizerLike(_Stepable):
+    def zero_grad(self, set_to_none: bool) -> None:
+        ...
 
 
 class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
@@ -131,8 +151,8 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
         if disable_auto_ddp:
             self.logger.info("self.accessible_model need to be set manually")
 
-        self.optimizer = optimizer
-        self.scheduler = scheduler
+        self.optimizer: _OptimizerLike = optimizer
+        self.scheduler: _SchedulerLike = scheduler
         self.reporter = None
 
         # called via property
@@ -445,7 +465,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
 
             if isinstance(list(optimizer.values())[0], Partial):
                 optimizer = {k: v(self.model[k].parameters()) for k, v in optimizer.items() if v is not None}
-            self.optimizer = StepDict(Optimizer, **optimizer)
+            self.optimizer = OptimizerDict(**optimizer)
 
         else:
             raise TypeError(f"Unexpected type {type(optimizer)} for `optimizer`")
@@ -472,7 +492,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
             self.scheduler = scheduler(self.optimizer)
 
         elif isinstance(scheduler, dict):
-            if not isinstance(self.optimizer, StepDict):
+            if not isinstance(self.optimizer, OptimizerDict):
                 raise TypeError("When `scheduler` is `dict`, `optimizer` is also needs to be `dict`")
 
             _scheduler = {}
@@ -480,7 +500,7 @@ class TrainerBase(StateDictMixIn, metaclass=ABCMeta):
                 if isinstance(v, Partial):
                     v = v(self.optimizer[k])
                 _scheduler[k] = v
-            self.scheduler = StepDict(Scheduler, **_scheduler)
+            self.scheduler = SchedulerDict(Scheduler, **_scheduler)
 
         else:
             raise TypeError(f"Unexpected type {type(scheduler)} for `scheduler`")
