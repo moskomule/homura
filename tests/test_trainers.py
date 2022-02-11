@@ -40,7 +40,7 @@ def test_basic_trainer():
     loader = [(torch.randn(2, 10), torch.zeros(2, dtype=torch.long)) for _ in range(10)]
     for _ in trainer.epoch_range(1):
         trainer.train(loader)
-    assert pytest.approx(trainer.optimizer.param_groups[0]["lr"], 0.01)
+    assert trainer.optimizer.param_groups[0]["lr"] == pytest.approx(0.01)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-1)
     trainer = trainers.SupervisedTrainer(model, optimizer, F.cross_entropy, scheduler=scheduler,

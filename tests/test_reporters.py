@@ -14,7 +14,7 @@ def test_reporters_list():
         reporter_list.set_batch_size(batch.item())
         reporter_list.add("loss", value)
     reporter_list.report()
-    assert pytest.approx(reporter_list.history["loss"] == (values * batches).mean().item())
+    assert reporter_list.history["loss"] == pytest.approx((values * batches).mean().item())
 
     reporter_list.exit()
     assert len(reporter_list.history) == 0
