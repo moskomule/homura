@@ -14,8 +14,7 @@
 
 ```
 Python>=3.9
-PyTorch>=1.9.0
-torchvision>=0.10.0
+PyTorch>=1.10.0
 ```
 
 ## Installation
