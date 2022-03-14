@@ -16,15 +16,13 @@ def param_to_vector(parameters: Iterable[torch.Tensor]) -> torch.Tensor:
 
 
 def vjp(f: torch.Tensor,
-        p: nn.Parameter | list[nn.Parameter],
+        p: torch.Tensor | nn.Parameter | list[nn.Parameter],
         v: torch.Tensor,
-        *,
-        only_retain_graph: bool = False
         ) -> torch.Tensor:
     """ vector Jacobian product
     """
 
-    return param_to_vector(grad(f, p, v, create_graph=not only_retain_graph, retain_graph=True))  # dim p
+    return param_to_vector(grad(f, p, v, create_graph=True))  # dim p
 
 
 def jvp(f: torch.Tensor,
@@ -37,7 +35,7 @@ def jvp(f: torch.Tensor,
     dummy = torch.ones_like(f, requires_grad=True)
     g = vjp(f, p, dummy)
     # note that we don't need higher order gradient w.r.t. dummy
-    return vjp(g, dummy, v, only_retain_graph=True)  # dim y
+    return vjp(g, dummy, v)  # dim y
 
 
 def hvp(loss: torch.Tensor,
