@@ -1,4 +1,5 @@
 from setuptools import find_packages, setup
+from distutils.util import convert_path
 
 with open("README.md") as f:
     readme = f.read()
@@ -6,8 +7,13 @@ with open("README.md") as f:
 with open("requirements.txt") as f:
     requirements = f.read().split()
 
+main_ns = {}
+ver_path = convert_path('mymodule/version.py')
+with open(ver_path) as ver_file:
+      exec(ver_file.read(), main_ns)
+
 setup(name="homura-core",
-      version="2021.12.1",
+      version=main_ns['__version__'],
       author="Ryuichiro Hataya",
       author_email="hataya@nlab-mpg.jp",
       packages=find_packages(exclude=["tests", "docs", "examples"]),

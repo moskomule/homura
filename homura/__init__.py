@@ -7,3 +7,4 @@ from .utils import TensorDataClass, TensorTuple, disable_tf32, disable_tf32_loca
 Registry.import_modules('homura.vision')
 # to avoid circular import
 from . import reporters, trainers, optim, lr_scheduler
+from .version import __version__
