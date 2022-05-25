@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
     requirements = f.read().split()
 
 main_ns = {}
-ver_path = convert_path('mymodule/version.py')
+ver_path = convert_path('homura/version.py')
 with open(ver_path) as ver_file:
       exec(ver_file.read(), main_ns)
 
