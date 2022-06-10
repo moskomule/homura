@@ -3,4 +3,3 @@ torchvision>=0.9.1
 tqdm
 tensorboard
 colorlog
-pytest
